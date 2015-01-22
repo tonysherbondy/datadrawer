@@ -8,4 +8,15 @@
   </blockquote>
 </div>
 
-{{outlet}}
+<div class="main-container">
+  <ul class="nav nav-tabs">
+    {{#link-to 'pivot' tagName="li" href=false role="presentation"}}
+      <a {{bind-attr href="view.href"}}>Pivot Table</a>
+    {{/link-to}}
+    {{#link-to 'nhancat' tagName="li" href=false role="presentation"}}
+      <a {{bind-attr href="view.href"}}>Nhan Cat</a>
+    {{/link-to}}
+  </ul>
+
+  {{outlet}}
+</div>
