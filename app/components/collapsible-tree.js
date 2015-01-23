@@ -28,6 +28,7 @@ export default Ember.Component.extend({
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+    console.log('model', model);
     var root = (function transformNode(node) {
       if (node === null || (!Ember.isArray(node) && typeof(node) !== 'object')) {
         return {children: [{name: node}]};
