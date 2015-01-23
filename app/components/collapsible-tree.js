@@ -60,8 +60,6 @@ export default Ember.Component.extend({
     root.children.forEach(collapse);
     update(root);
 
-    d3.select(self.frameElement).style("height", "800px");
-
     function update(source) {
 
       // Compute the new tree layout.
@@ -78,7 +76,7 @@ export default Ember.Component.extend({
       // Enter any new nodes at the parent's previous position.
       var nodeEnter = node.enter().append("g")
       .attr("class", "node")
-      .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+      .attr("transform", function() { return "translate(" + source.y0 + "," + source.x0 + ")"; })
       .on("click", click);
 
       nodeEnter.append("circle")
@@ -107,7 +105,7 @@ export default Ember.Component.extend({
       // Transition exiting nodes to the parent's new position.
       var nodeExit = node.exit().transition()
       .duration(duration)
-      .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+      .attr("transform", function() { return "translate(" + source.y + "," + source.x + ")"; })
       .remove();
 
       nodeExit.select("circle")
@@ -123,7 +121,7 @@ export default Ember.Component.extend({
       // Enter any new links at the parent's previous position.
       link.enter().insert("path", "g")
       .attr("class", "link")
-      .attr("d", function(d) {
+      .attr("d", function() {
         var o = {x: source.x0, y: source.y0};
         return diagonal({source: o, target: o});
       });
@@ -136,7 +134,7 @@ export default Ember.Component.extend({
       // Transition exiting nodes to the parent's new position.
       link.exit().transition()
       .duration(duration)
-      .attr("d", function(d) {
+      .attr("d", function() {
         var o = {x: source.x, y: source.y};
         return diagonal({source: o, target: o});
       })
