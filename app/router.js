@@ -8,6 +8,7 @@ var Router = Ember.Router.extend({
 Router.map(function() {
   this.route('shapes', { path: '/' });
   this.route('politicians');
+  this.route('campaign');
 });
 
 export default Router;
