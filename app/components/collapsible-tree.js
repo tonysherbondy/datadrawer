@@ -13,9 +13,8 @@ export default Ember.Component.extend({
     width = 960 - margin.right - margin.left,
     height = 800 - margin.top - margin.bottom;
 
-    var i = 0,
-    duration = 750,
-    root;
+    var i = 0;
+    var duration = 750;
 
     var tree = d3.layout.tree()
     .size([height, width]);
@@ -29,26 +28,25 @@ export default Ember.Component.extend({
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    root = model;
-    root.x0 = height / 2;
-    root.y0 = 0;
-    root.name = "root";
-
-    (function transformNode(node) {
+    var root = (function transformNode(node) {
       if (node === null || (!Ember.isArray(node) && typeof(node) !== 'object')) {
-        return {value: node};
+        return {children: [{name: node}]};
       }
 
       var keys = Object.keys(node);
 
-      node.children = keys.map(function(key) {
+      var children = keys.map(function(key) {
         var ret = transformNode(node[key]);
         ret.name = key;
         return ret;
       });
 
-      return node;
-    })(root);
+      return {children: children};
+    })(model);
+
+    root.name = "root";
+    root.x0 = height / 2;
+    root.y0 = 0;
 
     function collapse(d) {
       if (d.children) {
