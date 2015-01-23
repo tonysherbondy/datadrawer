@@ -12,7 +12,7 @@ export default Ember.Component.extend({
     var self = this;
     var margin = {top: 20, right: 120, bottom: 20, left: 120},
     width = 960 - margin.right - margin.left,
-    height = 800 - margin.top - margin.bottom;
+    height = 400 - margin.top - margin.bottom;
 
     var i = 0;
     var duration = 750;
@@ -69,11 +69,12 @@ export default Ember.Component.extend({
     function update(source) {
 
       // Compute the new tree layout.
-      var nodes = tree.nodes(root).reverse(),
-      links = tree.links(nodes);
+      var treeSize = [300, 100];
+      var nodes = tree.size(treeSize).nodes(root).reverse(),
+      links = tree.size(treeSize).links(nodes);
 
       // Normalize for fixed-depth.
-      nodes.forEach(function(d) { d.y = d.depth * 180; });
+      nodes.forEach(function(d) { d.y = d.depth * 100; });
 
       // Update the nodes…
       var node = svg.selectAll("g.node")
