@@ -6,11 +6,8 @@ var Router = Ember.Router.extend({
 });
 
 Router.map(function() {
-  this.route('pivot', function() {
-    this.route('simple', { path: '/' });
-    this.route('politicians');
-  });
-  this.route('nhancat');
+  this.route('shapes', { path: '/' });
+  this.route('politicians');
 });
 
 export default Router;
