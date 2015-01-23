@@ -9,6 +9,7 @@ export default Ember.Component.extend({
       return;
     }
 
+    var self = this;
     var margin = {top: 20, right: 120, bottom: 20, left: 120},
     width = 960 - margin.right - margin.left,
     height = 800 - margin.top - margin.bottom;
@@ -31,7 +32,7 @@ export default Ember.Component.extend({
     console.log('model', model);
     var root = (function transformNode(node) {
       if (node === null || (!Ember.isArray(node) && typeof(node) !== 'object')) {
-        return {children: [{name: node}]};
+        return {value: node};
       }
 
       var keys = Object.keys(node);
@@ -77,7 +78,8 @@ export default Ember.Component.extend({
       var nodeEnter = node.enter().append("g")
       .attr("class", "node")
       .attr("transform", function() { return "translate(" + source.y0 + "," + source.x0 + ")"; })
-      .on("click", click);
+      .on("click", click)
+      .on("mouseover", hover);
 
       nodeEnter.append("circle")
       .attr("r", 1e-6)
@@ -145,6 +147,12 @@ export default Ember.Component.extend({
         d.x0 = d.x;
         d.y0 = d.y;
       });
+    }
+
+    self.set('detailValue', 'hello');
+    // Inspect value on double click
+    function hover(d) {
+      self.set('detailValue', d.name + ": " + d.value);
     }
 
     // Toggle children on click.

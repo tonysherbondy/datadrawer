@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Route.extend({
-  templateName: 'tree',
+  templateName: 'json-explorer',
 
   // TODO Make this just an ember object with payload
   // TODO Tree component will just know about pivot and feed it
