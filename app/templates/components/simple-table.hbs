@@ -1,0 +1,14 @@
+<table class="table table-bordered">
+  <tr>
+    {{#each column in columns}}
+      <th>{{column}}</th>
+    {{/each}}
+  </tr>
+  {{#each row in rows}}
+    <tr>
+      {{#each column in columns}}
+        {{simple-table-cell model=row column=column}}
+      {{/each}}
+    </tr>
+  {{/each}}
+</table>

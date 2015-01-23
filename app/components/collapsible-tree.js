@@ -43,7 +43,12 @@ export default Ember.Component.extend({
         return ret;
       });
 
-      return {children: children};
+      if (Ember.isArray(node)) {
+        return {array: node, children: children};
+      } else {
+        return {children: children};
+      }
+
     })(model);
 
     root.name = "root";
@@ -152,7 +157,11 @@ export default Ember.Component.extend({
     self.set('detailValue', 'hello');
     // Inspect value on double click
     function hover(d) {
-      self.set('detailValue', d.name + ": " + d.value);
+      if (d.array && d.array.length > 0 && typeof(d.array[0]) === 'object') {
+        self.set('tableModel', d.array);
+      } else {
+        self.set('detailValue', d.name + ": " + d.value);
+      }
     }
 
     // Toggle children on click.
