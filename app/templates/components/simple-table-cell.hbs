@@ -1,1 +1,10 @@
-{{value}}
+{{#if isImage}}
+  <img {{bind-attr src=value}}>
+{{else}}
+  {{#if isURL}}
+    <a {{bind-attr href=value}}>{{value}}</a>
+  {{else}}
+    {{value}}
+  {{/if}}
+{{/if}}
+
