@@ -1,4 +1,8 @@
-{{collapsible-tree model=model detailValue=detailValue tableModel=tableModel}}
+{{#json-input jsonInput=jsonInput jsonOutput=jsonOutput}}
+  {{textarea value=jsonInput cols="80" rows="6" jsonOutput=jsonOutput}}
+{{/json-input}}
+
+{{collapsible-tree model=jsonOutput detailValue=detailValue tableModel=tableModel}}
 
 {{! TODO Make component detail view }}
 <div class="detail-view">
