@@ -2,6 +2,8 @@
 @import 'font-awesome';
 @import 'tree';
 
+$vis-margin-top: 50px;
+
 .header blockquote {
   max-width: 400px;
   position: absolute;
@@ -10,23 +12,33 @@
 }
 
 .main-container {
-  width: 600px;
 }
 
 .pivot-table {
-  margin: 50px;
+  margin: $vis-margin-top;
 }
 
 table.table {
-  margin-top: 30px;
+  margin-top: $vis-margin-top;
   font-size: 9px;
-  /*position: absolute;*/
-  /*top: 50px;*/
-  /*left: 400px;*/
 }
 
 .detail-view {
   position: absolute;
   top: 50px;
   left: 50px;
+}
+
+.json-input {
+  float: left;
+  margin-top: $vis-margin-top;
+}
+
+.collapsible-tree {
+  margin: $vis-margin-top;
+  overflow: auto;
+  height: 300px;
+  width: 300px;
+  border: 1px solid;
+  float: left;
 }
