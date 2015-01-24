@@ -41,3 +41,21 @@ table.table {
   border: 1px solid;
   float: left;
 }
+
+.context-menu-container {
+  position: relative;
+}
+
+.context-menu {
+  display: none;
+  position: absolute;
+  top: 50px;
+  left: 50px;
+  background-color: #ff0000;
+  &.shown {
+    display: initial;
+    .dropdown-menu {
+      display: initial;
+    }
+  }
+}

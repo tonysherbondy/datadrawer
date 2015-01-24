@@ -1,6 +1,8 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
+  clickedNode: null,
+
   classNames: ['collapsible-tree'],
 
   _render: function() {
@@ -89,8 +91,7 @@ export default Ember.Component.extend({
       var nodeEnter = node.enter().append("g")
       .attr("class", "node")
       .attr("transform", function() { return "translate(" + source.y0 + "," + source.x0 + ")"; })
-      .on("click", click)
-      .on("mouseover", hover);
+      .on("click", click);
 
       nodeEnter.append("circle")
       .attr("r", 1e-6)
@@ -162,16 +163,27 @@ export default Ember.Component.extend({
 
     self.set('detailValue', 'hello');
     // Inspect value on double click
-    function hover(d) {
+    self.set('displayTable', function (d) {
       if (d.array && d.array.length > 0 && typeof(d.array[0]) === 'object') {
         self.set('tableModel', d.array);
       } else {
         self.set('detailValue', d.name + ": " + d.value);
       }
+    });
+
+    function click(d) {
+      self.set('clickedNode', d);
+
+      var contextMenu = self.$('.context-menu');
+      var container = d3.select('#' + self.get('elementId') + ' .context-menu-container')[0][0];
+      var coordinates = d3.mouse(container);
+
+      self.toggleContextMenu();
+      contextMenu.css({top: coordinates[1], left: coordinates[0]});
     }
 
-    // Toggle children on click.
-    function click(d) {
+    // Toggle children on click
+    self.set('toggleCollapse', function toggleCollapse(d) {
       if (d.children) {
         d._children = d.children;
         d.children = null;
@@ -179,12 +191,31 @@ export default Ember.Component.extend({
         d.children = d._children;
         d._children = null;
       }
+
       update(d);
-    }
+    });
   },
 
-  render: function() {
+  draw: function() {
     Ember.run.once(this, '_render');
-  }.observes('model').on('didInsertElement')
+  }.observes('model').on('didInsertElement'),
 
+  isContextMenuShown: false,
+
+  toggleContextMenu: function() {
+    this.toggleProperty('isContextMenuShown');
+  },
+
+  actions: {
+    toggleExpansion: function() {
+      var clickedNode = this.get('clickedNode');
+      (this.get('toggleCollapse'))(clickedNode);
+      this.toggleContextMenu();
+    },
+    showTable: function() {
+      var clickedNode = this.get('clickedNode');
+      (this.get('displayTable'))(clickedNode);
+      this.toggleContextMenu();
+    }
+  }
 });

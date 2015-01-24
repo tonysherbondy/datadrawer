@@ -1,2 +1,11 @@
-<svg>
-</svg>
+<div class="context-menu-container">
+  <svg>
+  </svg>
+  <div {{bind-attr class=":context-menu isContextMenuShown:shown"}}>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+      <li role="presentation"><a role="menuitem" {{action "toggleExpansion"}}>Expand/Collapse</a></li>
+      <li role="presentation"><a role="menuitem" {{action "showTable"}}>Table</a></li>
+    </ul>
+  </div>
+</div>
+
