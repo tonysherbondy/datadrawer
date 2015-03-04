@@ -9,6 +9,7 @@ Router.map(function() {
   this.route('shapes', { path: '/' });
   this.route('politicians');
   this.route('campaign');
+  this.route('proxy');
 });
 
 export default Router;
