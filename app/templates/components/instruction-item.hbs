@@ -1,0 +1,11 @@
+<span>
+  {{view 'select' content=operations value=selectedOperation}}
+
+  {{#if isDrawOp}}
+    a {{view "select" content=marks value=selectedMark}}.
+  {{else if isModifyOp}}
+    the {{view "select" content=properties value=selectedProperty}} to {{input value=selectedPropertyValue}}
+  {{else if isLoopOp}}
+    over {{input value=loopOver}}
+  {{/if}}
+</span>

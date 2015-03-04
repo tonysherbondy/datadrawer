@@ -10,15 +10,18 @@
 
 <div class="main-container">
   <ul class="nav nav-tabs">
-    {{#link-to 'shapes' tagName="li" href=false role="presentation"}}
-      <a {{bind-attr href="view.href"}}>Simple Shapes</a>
-    {{/link-to}}
-    {{#link-to 'politicians' tagName="li" href=false role="presentation"}}
-      <a {{bind-attr href="view.href"}}>Politicians</a>
+    {{#link-to 'four' tagName="li" href=false role="presentation"}}
+      <a {{bind-attr href="view.href"}}>Four</a>
     {{/link-to}}
     {{#link-to 'campaign' tagName="li" href=false role="presentation"}}
       <a {{bind-attr href="view.href"}}>PR Campaign</a>
     {{/link-to}}
+    {{!-- #link-to 'shapes' tagName="li" href=false role="presentation"}}
+      <a {{bind-attr href="view.href"}}>Simple Shapes</a>
+    {{/link-to}}
+    {{#link-to 'politicians' tagName="li" href=false role="presentation"}}
+      <a {{bind-attr href="view.href"}}>Politicians</a>
+    {{/link-to --}}
   </ul>
 
   {{outlet}}

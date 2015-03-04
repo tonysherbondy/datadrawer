@@ -10,6 +10,7 @@ Router.map(function() {
   this.route('politicians');
   this.route('campaign');
   this.route('proxy');
+  this.route('four');
 });
 
 export default Router;
