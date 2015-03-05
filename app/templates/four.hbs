@@ -1,5 +1,12 @@
-<div class="description-panel">
-  {{data-panel}}
-  {{instructions-panel instructions=model.instructions}}
+<div class="grid">
+  <div class="description-panel col-1-3">
+    {{data-panel}}
+    {{instructions-panel instructions=model.instructions}}
+  </div>
+
+  <div class="output-panel col-2-3">
+    {{draw-panel}}
+    {{d3-code-panel}}
+  </div>
 </div>
 

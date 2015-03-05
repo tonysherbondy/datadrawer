@@ -27,7 +27,7 @@ export default Ember.Component.extend({
     return `from ${this.get('loopStart')} to ${this.get('loopEnd')} by ${this.get('loopStep')}`;
   }.property('loopStart', 'loopEnd', 'loopStep'),
 
-  marks: ["rect", "circle"],
+  marks: ["rect", "circle", "line"],
   selectedMark: "rect",
 
   // TODO there needs to be a component for each mark responsible for this
