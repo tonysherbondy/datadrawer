@@ -1,12 +1,13 @@
-<div class="grid">
-  <div class="description-panel col-1-3">
-    {{data-panel}}
-    {{instructions-panel instructions=model.instructions}}
-  </div>
+{{#dynamic-drawing instructions=instructions as |d3CodeText|}}
+  <div class="grid">
+    <div class="description-panel col-1-3">
+      {{data-panel}}
+      {{instructions-panel instructions=instructions}}
+    </div>
 
-  <div class="output-panel col-2-3">
-    {{draw-panel d3Code=d3Code}}
-    {{d3-code-panel d3Code=d3Code}}
+    <div class="output-panel col-2-3">
+      {{draw-panel d3Code=d3CodeText}}
+      {{d3-code-panel code=d3CodeText}}
+    </div>
   </div>
-</div>
-
+{{/dynamic-drawing}}

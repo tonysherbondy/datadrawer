@@ -13,8 +13,9 @@ export default Ember.Component.extend({
 
   draw: function() {
     this.selectChart().remove();
-    d3.select("svg").append("g").attr("class", "chart");
 
+    var context = d3.select("svg").append("g").attr("class", "chart");
     eval(this.get("d3Code"));
+
   }.observes("d3Code")
 });

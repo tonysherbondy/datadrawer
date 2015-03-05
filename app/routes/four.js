@@ -4,7 +4,10 @@ export default Ember.Route.extend({
   model: function() {
     return {
       // Set of instructions to draw
-      instructions: []
+      instructions: [{
+        operation: "draw",
+        mark: "rect"
+      }]
     };
   }
 });
