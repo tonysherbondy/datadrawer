@@ -1,11 +1,23 @@
 import Ember from "ember";
 
 export default Ember.Component.extend({
+  tagName: 'li',
+  classNames: ['list-group-item'],
 
-  operations: ["draw", "modify", "loop"],
+  operations: [{
+    value: "draw",
+    label: "Draw"
+  }, {
+    value: "set",
+    label: "Set"
+  }, {
+    value: "loop",
+    label: "Loop"
+  }],
+
   selectedOperation: "loop",
   isDrawOp: Ember.computed.equal("selectedOperation", "draw"),
-  isModifyOp: Ember.computed.equal("selectedOperation", "modify"),
+  isModifyOp: Ember.computed.equal("selectedOperation", "set"),
   isLoopOp: Ember.computed.equal("selectedOperation", "loop"),
 
   loopStart: 1,

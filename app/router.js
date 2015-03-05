@@ -6,11 +6,11 @@ var Router = Ember.Router.extend({
 });
 
 Router.map(function() {
-  this.route('shapes', { path: '/' });
-  this.route('politicians');
+  this.route('four', {path: '/'});
   this.route('campaign');
+  this.route('shapes');
+  this.route('politicians');
   this.route('proxy');
-  this.route('four');
 });
 
 export default Router;
