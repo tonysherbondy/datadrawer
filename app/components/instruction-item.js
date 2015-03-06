@@ -15,7 +15,7 @@ export default Ember.Component.extend({
     label: "Loop"
   }],
 
-  selectedOperation: "loop",
+  selectedOperation: Ember.computed.alias("instruction.operation"),
   isDrawOp: Ember.computed.equal("selectedOperation", "draw"),
   isModifyOp: Ember.computed.equal("selectedOperation", "set"),
   isLoopOp: Ember.computed.equal("selectedOperation", "loop"),
@@ -28,11 +28,11 @@ export default Ember.Component.extend({
   }.property('loopStart', 'loopEnd', 'loopStep'),
 
   marks: ["rect", "circle", "line"],
-  selectedMark: "rect",
+  selectedMark: Ember.computed.alias("instruction.mark"),
 
   // TODO there needs to be a component for each mark responsible for this
   properties: ["width", "height", "top", "left", "fill"],
-  selectedProperty: "width",
-  selectedProeprtyValue: 0
+  selectedProperty: Ember.computed.alias("instruction.property"),
+  selectedProeprtyValue: Ember.computed.alias("instruction.value")
 
 });
