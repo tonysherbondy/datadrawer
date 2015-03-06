@@ -30,9 +30,9 @@ export default Ember.Component.extend({
   marks: ["rect", "circle", "line"],
   selectedMark: Ember.computed.alias("instruction.mark"),
 
-  // TODO there needs to be a component for each mark responsible for this
+  // TODO there needs to be an object for each
   properties: ["width", "height", "top", "left", "fill"],
   selectedProperty: Ember.computed.alias("instruction.property"),
-  selectedProeprtyValue: Ember.computed.alias("instruction.value")
+  selectedPropertyValue: Ember.computed.alias("instruction.propertyValue")
 
 });

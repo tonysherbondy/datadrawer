@@ -8,20 +8,23 @@ export default Ember.Component.extend({
     // For now assume we can compile each instruction independently
     var theCode = this.get('instructions').map( instruction => {
 
-      if (instruction.operation === 'draw') {
-        // assume context is the correct selection
-        var initAttrs = this.getDrawAttrs(instruction);
-        return `context.append('${instruction.mark}').attr(${initAttrs});`;
-      } else if (instruction.operation === 'set') {
-        return "";
-      } else {
-        console.log("Don't know this instruction");
-        return "";
+      switch (instruction.get("operation")) {
+        case "draw":
+          // assume context is the correct selection
+          var initAttrs = this.getDrawAttrs(instruction);
+          return `context = context.append('${instruction.get('mark')}').attr(${initAttrs});`;
+        case "set":
+          return `context.attr('${instruction.get('property')}', ${instruction.get('propertyValue')});`;
+        default:
+          console.log("Don't know this instruction");
+          return "";
       }
-    }).join('\n');
+
+    }).join("\n");
     return theCode;
 
-  }.property('instructions.[]', 'instructions.@each.mark'),
+  }.property('instructions.[]', 'instructions.@each.mark', 'instructions.@each.operation',
+            'instructions.@each.property', 'instructions.@each.propertyValue'),
 
   getDrawAttrs: function(instruction) {
     switch (instruction.mark) {
