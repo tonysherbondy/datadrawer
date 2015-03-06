@@ -2,17 +2,19 @@ import Ember from 'ember';
 
 export default Ember.Route.extend({
   model: function() {
-    var instructions = [{
+    var drawOp = Ember.Object.create({
         operation: "draw",
         mark: "rect"
-      }, {
+    });
+    var setOp = Ember.Object.create({
         operation: "set",
+        drawParent: drawOp,
         property: "height",
         propertyValue: 50
-      }].map(i => Ember.Object.create(i));
+    });
     return {
       // Set of instructions to draw
-      instructions: instructions
+      instructions: [drawOp, setOp]
     };
   }
 });

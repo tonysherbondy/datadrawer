@@ -8,7 +8,7 @@
   {{#if isDrawOp}}
     a {{view "select" content=marks value=selectedMark}}.
   {{else if isModifyOp}}
-    the {{view "select" content=properties value=selectedProperty}} to {{input value=selectedPropertyValue}}.
+    {{instruction-set-property instruction=instruction}}
   {{else if isLoopOp}}
     from {{input value=loopStart}} to {{input value=loopEnd}}.
   {{/if}}
