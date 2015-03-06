@@ -12,7 +12,7 @@ export default Ember.Component.extend({
         case "draw":
           // assume context is the correct selection
           var initAttrs = this.getDrawAttrs(instruction);
-          return `context = context.append('${instruction.get('mark')}').attr(${initAttrs});`;
+          return `context = this.selectChart().append('${instruction.get('mark')}').attr(${initAttrs});`;
         case "set":
           return `context.attr('${instruction.get('property')}', ${instruction.get('propertyValue')});`;
         default:
