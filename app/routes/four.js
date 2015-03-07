@@ -4,7 +4,8 @@ export default Ember.Route.extend({
   model: function() {
     var drawOp = Ember.Object.create({
         operation: "draw",
-        mark: "rect"
+        mark: "rect",
+        markId: 1
     });
     var setOp = Ember.Object.create({
         operation: "set",
@@ -14,7 +15,8 @@ export default Ember.Route.extend({
     });
     return {
       // Set of instructions to draw
-      instructions: [drawOp, setOp]
+      //instructions: [drawOp, setOp]
+      instructions: [drawOp]
     };
   }
 });
