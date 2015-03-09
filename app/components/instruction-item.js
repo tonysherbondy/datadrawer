@@ -2,7 +2,7 @@ import Ember from "ember";
 
 export default Ember.Component.extend({
   tagName: 'li',
-  classNames: ['list-group-item'],
+  classNames: ['list-group-item', 'instruction-item'],
 
   operations: [{
     value: "draw",

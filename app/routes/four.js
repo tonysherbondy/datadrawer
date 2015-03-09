@@ -13,9 +13,23 @@ export default Ember.Route.extend({
         property: "height",
         propertyValue: 50
     });
+
+    var scalarItem = Ember.Object.create({
+      name: "years",
+      type: "scalar",
+      value: 10
+    });
+
+    var vectorItem = Ember.Object.create({
+      name: "ages",
+      type: "vector",
+      value: [21, 14, 25, 17, 49, 30]
+    });
+
     return {
       // Set of instructions to draw
       //instructions: [drawOp, setOp]
+      dataItems: [scalarItem, vectorItem],
       instructions: [drawOp]
     };
   }

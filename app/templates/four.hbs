@@ -2,8 +2,8 @@
 {{#dynamic-drawing instructions=instructions as |d3CodeText controlPoints|}}
   <div class="grid">
     <div class="description-panel col-1-3">
-      {{data-panel}}
-      {{instructions-panel instructions=instructions}}
+      {{data-panel dataItems=dataItems}}
+      {{instructions-panel instructions=instructions dataItems=dataItems}}
     </div>
 
     <div class="output-panel col-2-3">
