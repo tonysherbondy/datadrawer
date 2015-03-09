@@ -84,7 +84,9 @@ export default Ember.Component.extend({
         }
         return prev.concat([points]);
       } else if (operation === "set" && lastMark) {
-        // Change lastMark's points
+        // TODO Change lastMark's points
+        // temporary placeholder so it doesn't crash
+        return prev;
       }
     },[]);
     return points;

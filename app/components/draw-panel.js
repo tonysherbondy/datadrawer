@@ -15,7 +15,12 @@ export default Ember.Component.extend({
     this.selectChart().remove();
 
     d3.select("svg").append("g").attr("class", "chart");
-    eval(this.get("d3Code"));
+
+    try {
+      eval(this.get("d3Code"));
+    } catch (error) {
+      console.log("D3 CODE EVAL ERROR: " + error);
+    }
 
     this.drawMarkControls();
 
