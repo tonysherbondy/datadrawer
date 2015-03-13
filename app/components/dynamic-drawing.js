@@ -2,6 +2,12 @@ import Ember from 'ember';
 
 export default Ember.Component.extend({
 
+  instructions: Ember.computed(function() {
+    return this.get("rootInstruction.flattenedList").filter(function(instruction) {
+      return instruction.get("operation") !== "root";
+    });
+  }).property("rootInstruction.flattenedList"),
+
   // Compiled d3 from instruction list
   d3Instructions: function() {
     // For now assume we can compile each instruction independently

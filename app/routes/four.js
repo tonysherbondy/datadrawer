@@ -1,13 +1,14 @@
 import Ember from 'ember';
+import Instruction from '../models/instruction';
 
 export default Ember.Route.extend({
   model: function() {
-    var drawOp = Ember.Object.create({
+    var drawOp = Instruction.create({
         operation: "draw",
         mark: "rect",
         markId: 1
     });
-    var setOp = Ember.Object.create({
+    var setOp = Instruction.create({
         operation: "set",
         drawParent: drawOp,
         property: "height",
@@ -30,7 +31,11 @@ export default Ember.Route.extend({
       // Set of instructions to draw
       //instructions: [drawOp, setOp]
       dataItems: [scalarItem, vectorItem],
-      instructions: [drawOp]
+      rootInstruction: Instruction.create({
+        operation: "root",
+        subInstructions: [drawOp, setOp]
+      }),
+      lastInstruction: setOp
     };
   }
 });
