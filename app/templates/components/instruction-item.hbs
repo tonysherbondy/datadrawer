@@ -11,8 +11,14 @@
     {{instruction-set-property
       instruction=instruction
       selectedPropertyValue=instruction.propertyValue
-      dataItems=dataItems}}
+      dataItems=dataItems
+    }}
   {{else if isLoopOp}}
-    from {{input value=loopStart}} to {{input value=loopEnd}}.
+    {{instruction-loop
+      instruction=instruction
+      selectedLoopData=instruction.loopData
+      loopVariable=loopVariable
+      dataItems=dataItems
+    }}
   {{/if}}
 </span>
