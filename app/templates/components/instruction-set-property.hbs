@@ -8,4 +8,7 @@ to
   value=selectedDataItem
   optionLabelPath="content.name"
 }}
-to {{input value=customDataValue}}
+
+{{#if isCustomValue}}
+  to {{input value=customDataValue}}
+{{/if}}

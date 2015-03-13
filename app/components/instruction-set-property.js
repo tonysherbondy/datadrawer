@@ -28,8 +28,14 @@ export default Ember.Component.extend({
   }.property("selectedDataItem.value", "customDataValue"),
 
   propertyValues: function() {
-    return this.get("dataItems").filterBy("type", "scalar");
-  }.property("dataItems")
+    var ret = this.get("dataItems").filterBy("type", "scalar");
+    ret.pushObject({
+      name: "custom value: ",
+      type: "custom"
+    });
+    return ret;
+  }.property("dataItems.[]"),
 
+  isCustomValue: Ember.computed.equal("selectedDataItem.type", "custom")
   //this.set("instruction.propertyValue", value);
 });
