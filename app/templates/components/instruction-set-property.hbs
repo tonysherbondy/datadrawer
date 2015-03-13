@@ -1,1 +1,11 @@
-the {{view "select" content=properties value=selectedProperty}} to {{input value=selectedPropertyValue}}.
+the
+{{view "select"
+  content=properties
+  value=selectedProperty}}
+to
+{{view "select"
+  content=propertyValues
+  value=selectedDataItem
+  optionLabelPath="content.name"
+}}
+to {{input value=customDataValue}}

@@ -31,6 +31,8 @@ export default Ember.Component.extend({
   }.property('instructions.[]', 'instructions.@each.mark', 'instructions.@each.operation',
              //'instructions.@each.{mark,property,propertyValue}'
             'instructions.@each.property', 'instructions.@each.propertyValue'),
+            //TODO: not sure about whether to fire on the name / type change also
+            //'dataItems.@each.value'),
 
   getDrawAttrs: function(instruction) {
     switch (instruction.mark) {

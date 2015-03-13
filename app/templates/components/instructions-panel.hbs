@@ -1,7 +1,7 @@
 {{#bs-panel title="Steps"}}
   {{#instructions-list}}
     {{#each instruction in instructions}}
-      {{instruction-item instruction=instruction}}
+      {{instruction-item instruction=instruction dataItems=dataItems}}
     {{/each}}
     <li class="add-instruction-item list-group-item" {{action 'addInstruction'}}>Add</li>
   {{/instructions-list}}
