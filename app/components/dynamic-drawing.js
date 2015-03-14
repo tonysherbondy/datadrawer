@@ -8,6 +8,12 @@ export default Ember.Component.extend({
     });
   }).property("rootInstruction.flattenedList"),
 
+
+  // draw
+  // - call d3.data on any data is refered to by set operations that are children of this draw
+  //    - get set operations that are descendants of this draw
+  //    - for each set operation if it refers to a loop var, get the vector
+
   // Compiled d3 from instruction list
   d3Instructions: function() {
     // For now assume we can compile each instruction independently
@@ -91,7 +97,7 @@ export default Ember.Component.extend({
             break;
         }
         return prev.concat([points]);
-      } else if (operation === "set" && lastMark) {
+      } else { // if (operation === "set" && lastMark) {
         // TODO Change lastMark's points
         // temporary placeholder so it doesn't crash
         return prev;

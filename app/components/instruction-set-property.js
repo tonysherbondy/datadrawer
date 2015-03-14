@@ -5,7 +5,7 @@ export default Ember.Component.extend({
 
   properties: function() {
     var commonAttrs = ["fill", "stroke", "stroke-width"];
-    switch(this.get("instruction.drawParent.mark")) {
+    switch(this.get("instruction.parentInstruction.mark")) {
       case "rect":
         return commonAttrs.concat(["width", "height", "x", "y"]);
       case "circle":
@@ -14,7 +14,7 @@ export default Ember.Component.extend({
         return commonAttrs.concat(["x1", "x2", "y1", "y2"]);
 
     }
-  }.property("instruction.drawParent.mark"),
+  }.property("instruction.parentInstruction.mark"),
 
   selectedProperty: Ember.computed.alias("instruction.property"),
   selectedPropertyValue: function(key, value, previousValue) {
@@ -29,10 +29,19 @@ export default Ember.Component.extend({
 
   propertyValues: function() {
     var ret = this.get("dataItems").filterBy("type", "scalar");
+
+    ret.pushObjects(this.get("instruction.availableLoopVariables").map(function(varName) {
+      return {
+        name: varName,
+        type: "loop variable"
+      }
+    }));
+
     ret.pushObject({
       name: "custom value: ",
       type: "custom"
     });
+
     return ret;
   }.property("dataItems.[]"),
 

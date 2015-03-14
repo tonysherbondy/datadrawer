@@ -9,20 +9,34 @@ export default Ember.Component.extend({
     });
   }).property("rootInstruction.flattenedList"),
 
+  printTree: function(root, indentLevel) {
+    var line = "";
+    for (var i = 0; i < indentLevel; ++i) {
+      line += "----";
+    }
+    line += root.operation;
+    console.log(line);
+
+    var self = this;
+    root.get("subInstructions").forEach(function(instruction) {
+      self.printTree(instruction, indentLevel + 1);
+    });
+  },
+
   actions: {
     addInstruction: function() {
-      // Find last draw
       var lastInstruction = this.get("lastInstruction");
       var lastOperation = lastInstruction.get("operation");
       var newInstruction;
+      var parentInstruction = lastInstruction;
+
       if (lastOperation === "draw") {
         newInstruction = Instruction.create({
-          drawParent: lastInstruction,
           operation: "set"
         });
       } else if (lastOperation === "set") {
+        parentInstruction = lastInstruction.get("parentInstruction");
         newInstruction = Instruction.create({
-          drawParent: lastInstruction.get("drawParent"),
           operation: "set"
         });
       } else if (lastOperation === "loop") {
@@ -31,7 +45,11 @@ export default Ember.Component.extend({
           mark: "rect"
         });
       }
-      lastInstruction.addSubInstruction(newInstruction);
+
+      parentInstruction.addSubInstruction(newInstruction);
+
+      this.set("lastInstruction", newInstruction);
+      this.printTree(this.get("rootInstruction"), 0);
     }
   }
 });
