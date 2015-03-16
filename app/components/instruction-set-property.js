@@ -17,15 +17,27 @@ export default Ember.Component.extend({
   }.property("instruction.parentInstruction.mark"),
 
   selectedProperty: Ember.computed.alias("instruction.property"),
-  selectedPropertyValue: function(key, value, previousValue) {
-    // TODO: setter might receive binding from instruction.propertyValue
-    // in instruction-item.hbs.  Behavior will be wrong in this case.
-    // getter
-    if (this.get("selectedDataItem.type") === "custom") {
-      return this.get("customDataValue");
+  selectedPropertyValue: function(key, value) {
+    var dataType = this.get("selectedDataItem.type");
+
+    //setter
+    if (arguments.length > 1) {
+      if (dataType === "custom") {
+        this.set("customDataValue", value);
+      } else if (!!this.get("selectedDataItem")) {
+        this.set("selectedDataItem.value", value);
+      }
+      return value;
     }
-    return this.get("selectedDataItem.value");
-  }.property("selectedDataItem.value", "customDataValue"),
+
+    // getter
+    if (dataType === "custom") {
+      return this.get("customDataValue");
+    } else {
+      return this.get("selectedDataItem.value");
+    }
+
+  }.property("selectedDataItem.{value,type}", "customDataValue"),
 
   propertyValues: function() {
     var ret = this.get("dataItems").filterBy("type", "scalar");
