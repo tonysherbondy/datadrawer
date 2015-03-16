@@ -9,15 +9,26 @@ export default Ember.Component.extend({
   dataTypes: ["scalar", "vector"],
   dataType: function(key, value, previousValue) {
     if (arguments.length > 1) {
-      if (this.get("dataItem.type") === "vector") {
-        if (!Ember.isArray(this.get("dataItem.value"))) {
-          this.set("dataItem.value", [this.get("dataItem.value")]);
-        }
-      }
+      this.set("dataItem.type", value);
+      this._convertDataItemValue(value);
+      return value;
+    } else {
+      return this.get("dataItem.type")
     }
-
-    return this.get("dataItem.type")
   }.property("dataItem.type"),
+
+  _convertDataItemValue: function(type) {
+      var value = this.get("dataItem.value");
+
+      if (type === "vector" && !Ember.isArray(value)) {
+        this.set("dataItem.value", [value]);
+      }
+
+      if (type === "scalar" && Ember.isArray(value)) {
+        var scalarValue = value.get("firstObject");
+        this.set("dataItem.value", scalarValue);
+      }
+  },
 
   textValue: function(key, value, previousValue) {
     // setter

@@ -5,5 +5,5 @@ export default Ember.Component.extend({
     return this.get("dataItems").filter(function(item) {
       return item.get("type") === "vector";
     });
-  }).property("dataItems"),
+  }).property("dataItems.[]", "dataItems.@each.type"),
 });
