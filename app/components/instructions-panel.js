@@ -3,25 +3,29 @@ import Instruction from '../models/instruction';
 
 export default Ember.Component.extend({
 
-  instructions: Ember.computed(function() {
+  instructions: function() {
     return this.get("rootInstruction.flattenedList").filter(function(instruction) {
       return instruction.get("operation") !== "root";
     });
-  }).property("rootInstruction.flattenedList"),
+  }.property("rootInstruction.flattenedList"),
 
-  printTree: function(root, indentLevel) {
+  printTree: function(root, indentLevel, index) {
     var line = "";
     for (var i = 0; i < indentLevel; ++i) {
-      line += "----";
+      line += '----';
     }
-    line += root.operation;
+    line += `${root.operation} ${index}`;
     console.log(line);
 
     var self = this;
-    root.get("subInstructions").forEach(function(instruction) {
-      self.printTree(instruction, indentLevel + 1);
+    root.get("subInstructions").forEach(function(instruction, index) {
+      self.printTree(instruction, indentLevel + 1, index);
     });
   },
+
+  lastInstruction: function() {
+    return this.get("instructions.lastObject");
+  }.property("instructions"),
 
   actions: {
     addInstruction: function() {
@@ -48,8 +52,7 @@ export default Ember.Component.extend({
 
       parentInstruction.addSubInstruction(newInstruction);
 
-      this.set("lastInstruction", newInstruction);
-      this.printTree(this.get("rootInstruction"), 0);
+      this.printTree(this.get("rootInstruction"), 0, 0);
     }
   }
 });

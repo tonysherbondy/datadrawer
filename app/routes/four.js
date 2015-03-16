@@ -38,8 +38,7 @@ export default Ember.Route.extend({
       // Set of instructions to draw
       //instructions: [drawOp, setOp]
       dataItems: [scalarItem, vectorItem],
-      rootInstruction: root,
-      lastInstruction: setOp
+      rootInstruction: root
     };
   }
 });
