@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import Instruction from '../models/instruction';
+import Instruction from 'tukey/models/instruction';
 
 export default Ember.Component.extend({
 

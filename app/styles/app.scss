@@ -100,7 +100,6 @@ table.table {
 
 $highlight-color: #f5f5f5;
 .description-panel {
-
   .add-instruction-item {
     padding: 0px;
     text-align: center;
@@ -112,6 +111,14 @@ $highlight-color: #f5f5f5;
 
   .instruction-item input {
     width: 50px;
+  }
+
+  .variable-name-input {
+    width: 50px;
+  }
+
+  .variable-value-input {
+    width: 150px;
   }
 }
 
