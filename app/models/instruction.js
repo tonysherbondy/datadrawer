@@ -4,7 +4,9 @@ export default Ember.Object.extend({
   operation: null,
 
   parentInstruction: null,
-  subInstructions: Ember.computed(function() { return []; }),
+  subInstructions: function() {
+    return [];
+  }.property(),
 
   addSubInstruction: function(instruction) {
     this.get("subInstructions").pushObject(instruction);
@@ -21,16 +23,21 @@ export default Ember.Object.extend({
   }.property('subInstructions.@each.flattenedList'),
 
   availableLoopVariables: function() {
-    if (this.get("operation") == "root") {
+    if (this.get("operation") === "root") {
       return [];
     }
 
-    var ret = this.get("parentInstruction.availableLoopVariables");
+    var ret = [];
+    ret.pushObjects(this.get("parentInstruction.availableLoopVariables"));
 
     if (this.get("operation") === "loop") {
       ret.pushObject(this.get("loopVariable"))
     }
 
     return ret;
-  }.property("parentInstruction.availableLoopVariables", "operation")
+  }.property("parentInstruction.availableLoopVariables", "operation", "loopVariable"),
+
+  loopVariable: function() {
+    return this.get("loopData.name");
+  }.property("loopData.name")
 });

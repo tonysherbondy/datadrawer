@@ -43,7 +43,7 @@ export default Ember.Component.extend({
     });
 
     return ret;
-  }.property("dataItems.[]"),
+  }.property("dataItems.[]", "instruction.availableLoopVariables.[]"),
 
   isCustomValue: Ember.computed.equal("selectedDataItem.type", "custom")
   //this.set("instruction.propertyValue", value);
