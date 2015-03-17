@@ -73,7 +73,6 @@ export default Ember.Component.extend({
     // returns a list of objects with markId, mark, & control points
 
     var points = this.get('instructions').reduce( (prev, instruction) => {
-      var lastMark = prev.get('lastObject');
       var operation = instruction.get('operation');
       if (operation === "draw") {
         var points = {

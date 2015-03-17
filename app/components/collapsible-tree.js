@@ -70,7 +70,9 @@ export default Ember.Component.extend({
       }
     }
 
-    root.children && root.children.forEach(collapse);
+    if (root.children) {
+      root.children.forEach(collapse);
+    }
     update(root);
 
     function update(source) {

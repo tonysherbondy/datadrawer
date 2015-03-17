@@ -52,7 +52,7 @@ export default Ember.Component.extend({
     }
 
     gLayer = this.selectChart().append('g').attr('class', 'control-layer');
-    let {topLeft, topRight, bottomLeft, bottomRight} = this.get('controlPoints')[0];
+    let {topLeft, bottomRight} = this.get('controlPoints')[0];
     gLayer.selectAll('.control-points').data([topLeft, bottomRight]).enter()
       .append('circle')
       .attr({

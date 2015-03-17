@@ -31,7 +31,7 @@ export default Ember.Object.extend({
     ret.pushObjects(this.get("parentInstruction.availableLoopVariables"));
 
     if (this.get("operation") === "loop") {
-      ret.pushObject(this.get("loopVariable"))
+      ret.pushObject(this.get("loopVariable"));
     }
 
     return ret;

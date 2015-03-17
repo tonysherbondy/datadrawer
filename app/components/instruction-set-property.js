@@ -46,7 +46,7 @@ export default Ember.Component.extend({
       return {
         name: varName,
         type: "loop variable"
-      }
+      };
     }));
 
     ret.pushObject({

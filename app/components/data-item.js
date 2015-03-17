@@ -7,13 +7,13 @@ export default Ember.Component.extend({
   name: Ember.computed.alias("dataItem.name"),
 
   dataTypes: ["scalar", "vector"],
-  dataType: function(key, value, previousValue) {
+  dataType: function(key, value) {
     if (arguments.length > 1) {
       this.set("dataItem.type", value);
       this._convertDataItemValue(value);
       return value;
     } else {
-      return this.get("dataItem.type")
+      return this.get("dataItem.type");
     }
   }.property("dataItem.type"),
 
@@ -30,7 +30,7 @@ export default Ember.Component.extend({
       }
   },
 
-  textValue: function(key, value, previousValue) {
+  textValue: function(key, value) {
     // setter
     if (arguments.length > 1) {
       if (this.get("dataType") === "scalar") {
