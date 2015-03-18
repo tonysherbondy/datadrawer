@@ -16,6 +16,11 @@ export default Ember.Component.extend({
 
     d3.select("svg").append("g").attr("class", "chart");
 
+    // Make table and scalar data available to the chart, these are used inside attr
+    // functions
+    var table = this.get("table.rows");
+    var scalars = this.get("scalars");
+
     try {
       eval(this.get("d3Code"));
     } catch (error) {
