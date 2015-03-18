@@ -1,0 +1,9 @@
+<div class="grid">
+  <div class="description-panel col-1-3">
+    {{mark-list marks=model.marks}}
+  </div>
+  <div class="output-panel col-2-3">
+    {{draw-panel d3Code=model.d3Code controlPoints=controlPoints}}
+    {{d3-code-panel code=model.d3Code}}
+  </div>
+</div>
