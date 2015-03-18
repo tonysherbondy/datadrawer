@@ -1,4 +1,38 @@
 import Ember from "ember";
+import { e, rectangleMark } from "tukey/routes/marks";
+// TODO: there is some issue with the ES6 transpiler import here
+
+var RectangleTool = Ember.Object.extend({
+  marks: Ember.required(),
+  mark: null,
+  click: function(event) {
+    if (!!this.get("mark")) {
+      this.set("mark", null);
+    } else {
+      var newMark = rectangleMark.create({
+        top: e(`${event.offsetY}`),
+        left: e(`${event.offsetX}`),
+        width: e('0'),
+        height: e('0')
+      });
+
+      this.set("mark", newMark);
+      this.get("marks").pushObject(newMark);
+    }
+  },
+
+  mouseMove: function(event) {
+    var mark = this.get("mark");
+    if (!!mark) {
+      // TODO: make mark have a way to evaluate itself instead of getting
+      // string representation
+      var width = event.offsetX - mark.get("left.stringRepresentation");
+      var height = event.offsetY - mark.get("top.stringRepresentation");
+      mark.set('width', e(`${width}`));
+      mark.set('height', e(`${height}`));
+    }
+  }
+});
 
 export default Ember.Component.extend({
   classNames: ["draw-panel"],
@@ -10,6 +44,15 @@ export default Ember.Component.extend({
   selectChart: function() {
     return d3.select(this.$(".chart")[0]);
   },
+
+  tools: function() {
+    var marks = this.get("marks");
+    return [RectangleTool.create({marks: marks})];
+  }.property(),
+
+  activeTool: function() {
+    return this.get("tools.firstObject");
+  }.property(),
 
   draw: function() {
     this.selectChart().remove();
@@ -73,5 +116,15 @@ export default Ember.Component.extend({
 
     console.log('selected', markId);
     console.log('points', this.get('controlPoints'));
-  }.observes('selectedMarkId')
+  }.observes('selectedMarkId'),
+
+  click: function(event) {
+    console.log("hello");
+    this.get("activeTool").click(event);
+  },
+
+  mouseMove: function(event) {
+    console.log("goodbye");
+    this.get("activeTool").mouseMove(event);
+  }
 });

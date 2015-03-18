@@ -3,7 +3,12 @@
     {{mark-list marks=model.marks}}
   </div>
   <div class="output-panel col-2-3">
-    {{draw-panel table=model.table scalars=model.scalars d3Code=model.d3Code controlPoints=controlPoints}}
+    {{draw-panel
+      table=model.table
+      scalars=model.scalars
+      d3Code=model.d3Code
+      marks=model.marks
+      controlPoints=controlPoints}}
     {{d3-code-panel code=model.d3Code}}
   </div>
 </div>

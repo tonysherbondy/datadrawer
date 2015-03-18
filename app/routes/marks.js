@@ -4,10 +4,17 @@ var Table = Ember.Object.extend({
   rows: Ember.required()
 });
 
+var markCounter = 0;
+
 var Mark = Ember.Object.extend({
+  name: function() {
+    return `mark${++markCounter}`;
+  }.property(),
+
   displayString: function() {
     return "Empty Mark";
   },
+
   getAttrFuncD3: function(attr) {
     if (!this.get(attr)) {
       return null;
@@ -16,11 +23,12 @@ var Mark = Ember.Object.extend({
   },
 
   getD3DrawPrefix: function(type) {
-    return `this.selectChart().selectAll('${type}').data(table).enter().append('${type}')`;
+    return `this.selectChart().selectAll('${type}').filter('.${this.get("name")}')` +
+      `.data(table).enter().append('${type}')`;
   },
 
   getD3Attrs: function(attrsMap) {
-    return "\n" + attrsMap.map((item) => {
+    return `\n.attr('class', '${this.get("name")}')\n` + attrsMap.map((item) => {
       let attrFunc = this.getAttrFuncD3(item.name);
       if (!attrFunc) {
         return "";
@@ -36,6 +44,7 @@ var Mark = Ember.Object.extend({
 
 });
 
+
 var Expression = Ember.Object.extend({
   stringRepresentation: Ember.required(),
 
@@ -45,7 +54,7 @@ var Expression = Ember.Object.extend({
   }
 });
 
-function e(stringRep) {
+export function e(stringRep) {
   return Expression.create({
     stringRepresentation: stringRep
   });
@@ -111,6 +120,7 @@ var CircleMark = Mark.extend({
 
 });
 
+export var rectangleMark = RectangleMark;
 
 // TODO: move this logic to a model class
 
@@ -118,7 +128,7 @@ var MarksToD3Compiler = Ember.Object.extend({
   marks: Ember.required(),
   d3Code: function() {
     return this.get("marks").getEach("d3Code").join("\n");
-  }.property("marks.[]")
+  }.property("marks.@each.d3Code")
 });
 
 export default Ember.Route.extend({
