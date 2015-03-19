@@ -74,7 +74,7 @@ export default Ember.Component.extend({
 
     this.drawMarkControls();
 
-  }.observes("d3Code"),
+  }.observes("d3Code", "table.columns", "scalars"),
 
   selectedMarkId: null,
 
@@ -121,12 +121,10 @@ export default Ember.Component.extend({
   }.observes('selectedMarkId'),
 
   click: function(event) {
-    console.log("hello");
     this.get("activeTool").click(event);
   },
 
   mouseMove: function(event) {
-    console.log("goodbye");
     this.get("activeTool").mouseMove(event);
   }
 });

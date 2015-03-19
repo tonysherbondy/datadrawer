@@ -9,18 +9,19 @@ var e = Expression.e;
 var MarksToD3Compiler = Ember.Object.extend({
   marks: Ember.required(),
   d3Code: function() {
-    return this.get("marks").getEach("d3Code").join("\n");
-  }.property("marks.@each.d3Code")
+    return this.get("marks").map((mark) => mark.getD3Code()).join("\n");
+  }.property("table.columns")
 });
 
 export default Ember.Route.extend({
   model: function() {
+    var columns = [
+        Ember.Object.create({name: "Nhan", age: 27, weight: 120}),
+        Ember.Object.create({name: "Zack", age: 30, weight: 160}),
+        Ember.Object.create({name: "Anthony", age: 37, weight: 180})
+    ];
     var table =  Table.create({
-      columns: [
-        {name: "Nhan", age: 27, weight: 120},
-        {name: "Zack", age: 30, weight: 160},
-        {name: "Anthony", age: 37, weight: 180}
-      ]
+      columns: columns
     });
 
     var rectMark = RectangleMark.create({

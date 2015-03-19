@@ -14,9 +14,9 @@ export default Ember.Component.extend({
     var names = this.get('rowNames');
     var columns = this.get('columns');
     return names.map((name) => {
-      return columns.reduce((prev, item) => {
-        return prev.concat(item[name]);
-      }, [name]);
+      return columns.reduce((prev, item, index) => {
+        return prev.concat({value: item[name], index: index});
+      }, [{value: name, index: 'property'}]);
     });
   }.property('rowNames', 'columns'),
 
@@ -27,6 +27,11 @@ export default Ember.Component.extend({
   }.property('columns'),
 
   actions: {
+    updateTable: function() {
+      this.get('table').notifyPropertyChange('columns');
+      return false;
+    },
+
     addScalar: function() {
       console.log('add scalar');
     },
