@@ -1,0 +1,33 @@
+*, *:after, *:before {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.grid {
+  width: 1000px;
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
+[class*='col-'] {
+  margin-top: 10px;
+  float: left;
+  // gutters
+  padding-right: 10px;
+  &:last-of-type {
+    padding-right: 0;
+  }
+}
+
+.col-1-3 {
+  width: 33%;
+}
+
+.col-2-3 {
+  width: 66%;
+}
+

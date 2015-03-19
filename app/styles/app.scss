@@ -1,8 +1,8 @@
 @import '_bootstrap';
 @import 'font-awesome';
-@import 'tree';
+@import 'grid';
 
-$vis-margin-top: 50px;
+$highlight-color: #f5f5f5;
 
 .header blockquote {
   max-width: 400px;
@@ -11,94 +11,8 @@ $vis-margin-top: 50px;
   right: 20px;
 }
 
-.main-container {
-}
-
-.pivot-table {
-  margin: $vis-margin-top;
-}
-
-table.table {
-  margin-top: $vis-margin-top;
-  font-size: 9px;
-}
-
-.detail-view {
-  position: absolute;
-  top: 50px;
-  left: 50px;
-}
-
-.json-input {
-  float: left;
-  margin-top: $vis-margin-top;
-}
-
-.collapsible-tree {
-  margin: $vis-margin-top;
-  overflow: auto;
-  height: 300px;
-  border: 1px solid;
-  float: left;
-}
-
-.context-menu-container {
-  position: relative;
-}
-
-.context-menu {
-  display: none;
-  position: absolute;
-  top: 50px;
-  left: 50px;
-  background-color: #ff0000;
-  &.shown {
-    display: initial;
-    .dropdown-menu {
-      display: initial;
-    }
-  }
-}
-
-
-// New Tukey shizz
-
 // Make it so when we set a width it stays that width
 // even if padding or border is applied.
-*, *:after, *:before {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-}
-
-.grid {
-  width: 1000px;
-  &:after {
-    content: "";
-    display: table;
-    clear: both;
-  }
-}
-
-[class*='col-'] {
-  margin-top: 10px;
-  float: left;
-  // gutters
-  padding-right: 10px;
-  &:last-of-type {
-    padding-right: 0;
-  }
-}
-
-.col-1-3 {
-  width: 33%;
-}
-
-.col-2-3 {
-  width: 66%;
-}
-
-$highlight-color: #f5f5f5;
 .description-panel {
   .add-instruction-item {
     padding: 0px;

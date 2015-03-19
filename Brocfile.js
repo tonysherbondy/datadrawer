@@ -22,9 +22,6 @@ var app = new EmberApp({
 // along with the exports of each module as its value.
 
 app.import('bower_components/jqueryui/jquery-ui.js');
-app.import('bower_components/pivottable/dist/pivot.js');
-app.import('bower_components/pivottable/dist/pivot.css');
-
 app.import('bower_components/d3/d3.js');
 
 module.exports = app.toTree();

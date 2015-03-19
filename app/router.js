@@ -7,13 +7,7 @@ var Router = Ember.Router.extend({
 
 Router.map(function() {
   this.route('four', {path: '/'});
-  this.route('campaign');
   this.route('marks');
-
-  // Old pivot table
-  this.route('shapes');
-  this.route('politicians');
-  this.route('proxy');
 });
 
 export default Router;
