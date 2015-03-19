@@ -1,5 +1,5 @@
-import Ember from 'ember';
-import Instruction from 'tukey/models/instruction';
+import Ember from "ember";
+import Instruction from "tukey/models/instruction";
 
 export default Ember.Route.extend({
   model: function() {

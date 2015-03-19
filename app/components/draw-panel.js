@@ -1,6 +1,8 @@
 import Ember from "ember";
-import { e, rectangleMark } from "tukey/routes/marks";
-// TODO: there is some issue with the ES6 transpiler import here
+import Expression from "tukey/models/expression";
+import RectangleMark from "tukey/models/mark/rectangle-mark";
+
+var e = Expression.e;
 
 var RectangleTool = Ember.Object.extend({
   marks: Ember.required(),
@@ -9,7 +11,7 @@ var RectangleTool = Ember.Object.extend({
     if (!!this.get("mark")) {
       this.set("mark", null);
     } else {
-      var newMark = rectangleMark.create({
+      var newMark = RectangleMark.create({
         top: e(`${event.offsetY}`),
         left: e(`${event.offsetX}`),
         width: e('0'),
