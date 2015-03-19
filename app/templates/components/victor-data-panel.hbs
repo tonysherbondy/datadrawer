@@ -1,0 +1,23 @@
+{{#bs-panel title="Data"}}
+  <h2>Scalars</h2>
+    <ul>
+      {{! item for every scalarList }}
+      <li class="add-instruction-item list-group-item" {{action 'addScalar'}}>Add</li>
+    </ul>
+  <h2>Table</h2>
+  <table class="table table-hover table-condensed">
+    <tr>
+      <th>Property</th>
+      <th>0</th>
+      <th>1</th>
+    </tr>
+    <tr>
+      <td>Name</td>
+      <td>Zack</td>
+      <td>Nhan</td>
+    </tr>
+    <tr>
+      <td colspan=3 class="add-table-row">Add row</td>
+    </tr>
+  </table>
+{{/bs-panel}}

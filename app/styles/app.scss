@@ -34,10 +34,24 @@ $highlight-color: #f5f5f5;
   .variable-value-input {
     width: 150px;
   }
+
+  .victor-data-panel {
+    h2 {
+      font-size: 17px;
+    }
+    td.add-table-row {
+      text-align: center;
+      &:hover {
+        background-color: $highlight-color;
+      }
+    }
+  }
 }
+
 
 .d3-code-panel textarea {
   width: 100%;
   max-width: 100%;
 }
+
 

@@ -3,16 +3,17 @@ import Ember from "ember";
 var Expression = Ember.Object.extend({
   stringRepresentation: Ember.required(),
 
-  //jshint unused:false
-  evaluate: function(scalars, table, element, index) {
+  evaluate: function(scalars, table, element, index) { // jshint ignore:line
     return eval(this.get("stringRepresentation"));
   }
 });
 
-Expression.e = function e(stringRep) {
-  return Expression.create({
-    stringRepresentation: stringRep
-  });
-};
+Expression.reopenClass({
+  e: function(stringRep) {
+    return Expression.create({
+      stringRepresentation: stringRep
+    });
+  }
+});
 
 export default Expression;
