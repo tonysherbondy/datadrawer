@@ -6,12 +6,6 @@ var app = new EmberApp({
   vendorFiles: {
     'handlebars.js': null
   },
-  sassOptions: {
-    includePaths: [
-      'bower_components/bootstrap-sass-official/assets/stylesheets/',
-      'bower_components/fontawesome/scss'
-    ]
-  }
 });
 
 // Use `app.import` to add additional libraries to the generated
