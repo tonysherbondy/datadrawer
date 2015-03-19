@@ -41,6 +41,7 @@ $highlight-color: #f5f5f5;
     }
     td.add-table-row {
       text-align: center;
+      cursor: pointer;
       &:hover {
         background-color: $highlight-color;
       }

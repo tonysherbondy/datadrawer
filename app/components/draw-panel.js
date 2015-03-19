@@ -63,7 +63,7 @@ export default Ember.Component.extend({
 
     // Make table and scalar data available to the chart, these are used inside attr
     // functions
-    var table = this.get("table.rows"); // jshint ignore:line
+    var table = this.get("table.columns"); // jshint ignore:line
     var scalars = this.get("scalars");  // jshint ignore:line
 
     try {

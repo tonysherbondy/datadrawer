@@ -16,7 +16,7 @@ var MarksToD3Compiler = Ember.Object.extend({
 export default Ember.Route.extend({
   model: function() {
     var table =  Table.create({
-      rows: [
+      columns: [
         {name: "Nhan", age: 27, weight: 120},
         {name: "Zack", age: 30, weight: 160},
         {name: "Anthony", age: 37, weight: 180}

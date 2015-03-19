@@ -19,12 +19,12 @@ export default Ember.Object.extend({
   },
 
   getD3DrawPrefix: function(type) {
-    return `this.selectChart().selectAll('${type}').filter('.${this.get("name")}')` +
-      `.data(table).enter().append('${type}')`;
+    return `this.selectChart().selectAll('${type} .${this.get("name")}')` +
+      `.data(table).enter().append('${type}').attr('class', '${this.get("name")}')`;
   },
 
   getD3Attrs: function(attrsMap) {
-    return `\n.attr('class', '${this.get("name")}')\n` + attrsMap.map((item) => {
+    return '\n' + attrsMap.map((item) => {
       let attrFunc = this.getAttrFuncD3(item.name);
       if (!attrFunc) {
         return "";
