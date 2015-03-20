@@ -7,10 +7,15 @@ var e = Expression.e;
 var RectangleTool = Ember.Object.extend({
   marks: Ember.required(),
   mark: null,
+  startingX: null,
+  startingY: null,
+
   click: function(event) {
     if (!!this.get("mark")) {
       this.set("mark", null);
     } else {
+      this.set("startingX", event.offsetX);
+      this.set("startingY", event.offsetY);
       var newMark = RectangleMark.create({
         top: e(`${event.offsetY}`),
         left: e(`${event.offsetX}`),
@@ -29,8 +34,18 @@ var RectangleTool = Ember.Object.extend({
     if (!!mark) {
       // TODO: make mark have a way to evaluate itself instead of getting
       // string representation
-      var width = event.offsetX - mark.get("left.stringRepresentation");
-      var height = event.offsetY - mark.get("top.stringRepresentation");
+      var startingX = this.get("startingX");
+      var startingY = this.get("startingY");
+      var width = event.offsetX - startingX;
+      var height = event.offsetY - startingY;
+      if (width < 0) {
+        width = -width;
+        mark.set("left", e(`${startingX - width}`));
+      }
+      if (height < 0) {
+        height = -height;
+        mark.set("top", e(`${startingY - height}`));
+      }
       mark.set('width', e(`${width}`));
       mark.set('height', e(`${height}`));
     }

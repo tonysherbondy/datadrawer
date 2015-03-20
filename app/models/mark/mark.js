@@ -52,13 +52,9 @@ export default Ember.Object.extend({
     }).join("\n");
   },
 
-  getD3Code: function() {
+  d3Code: function() {
     var attrsMap = this.get("attrsMap");
     return this.getD3DrawPrefix(this.get("type")) + this.getD3Attrs(attrsMap) + ";";
-  },
-
-  d3Code: function() {
-    return this.getD3Code();
   }.property()
 
 });
