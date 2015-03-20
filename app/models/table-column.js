@@ -13,7 +13,6 @@ export default Ember.Object.extend({
 
   columnHash: function(key, newHash) {
     if (arguments.length === 1) {
-      console.log('columnHash gettin');
       var hash = {};
       this.get('column').forEach((cell) => {
         hash[cell.get("name")] = cell.get("value");

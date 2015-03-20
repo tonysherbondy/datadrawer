@@ -7,6 +7,25 @@ export default Ember.Object.extend({
     return `mark${++markCounter}`;
   }.property(),
 
+  // TODO Need a way to have attrsMap be something that is an appendable property,
+  // i.e., subclassing adds to it rather than replaces, then we need to add observers
+  // dynamically
+  concatenatedProperties: ["attrsMap"],
+  attrsMap: [
+    {name: "fill", d3Name: "fill"},
+    {name: "opacity", d3Name: "opacity"}
+  ],
+
+  init: function() {
+    this.get("attrsMap").getEach("name").forEach((name) => {
+      this.addObserver(name, this.dirtyD3Code);
+    });
+  },
+
+  dirtyD3Code: function() {
+    this.notifyPropertyChange("d3Code");
+  },
+
   displayString: function() {
     return "Empty Mark";
   },
@@ -36,6 +55,10 @@ export default Ember.Object.extend({
   getD3Code: function() {
     var attrsMap = this.get("attrsMap");
     return this.getD3DrawPrefix(this.get("type")) + this.getD3Attrs(attrsMap) + ";";
-  }
+  },
+
+  d3Code: function() {
+    return this.getD3Code();
+  }.property()
 
 });

@@ -24,11 +24,6 @@ export default Mark.extend({
     {name: "width", d3Name: "width"},
     {name: "height", d3Name: "height"},
     {name: "left", d3Name: "x"},
-    {name: "top", d3Name: "y"},
-    {name: "fill", d3Name: "fill"}
-  ],
-
-  d3Code: function() {
-    return this.getD3Code();
-  }.property("width", "height", "top", "left", "fill")
+    {name: "top", d3Name: "y"}
+  ]
 });

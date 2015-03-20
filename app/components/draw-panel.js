@@ -15,7 +15,8 @@ var RectangleTool = Ember.Object.extend({
         top: e(`${event.offsetY}`),
         left: e(`${event.offsetX}`),
         width: e('0'),
-        height: e('0')
+        height: e('0'),
+        opacity: e("0.3")
       });
 
       this.set("mark", newMark);

@@ -19,12 +19,6 @@ export default Mark.extend({
   attrsMap: [
     {name: "radius", d3Name: "r"},
     {name: "cx", d3Name: "cx"},
-    {name: "cy", d3Name: "cy"},
-    {name: "fill", d3Name: "fill"}
-  ],
-
-  d3Code: function() {
-    return this.getD3Code();
-  }.property("radius", "cx", "cy", "fill")
-
+    {name: "cy", d3Name: "cy"}
+  ]
 });
