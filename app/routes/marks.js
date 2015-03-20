@@ -27,8 +27,8 @@ export default Ember.Route.extend({
     var rectMark = RectangleMark.create({
       width: e("1/table.length * scalars.canvasWidth"),
       height: e("element.age"),
-      top: e("120 - element.age"),
-      left: e("index * (1/table.length * scalars.canvasWidth + 3)")
+      top: e("scalars.canvasHeight - element.age"),
+      left: e("index * (1/table.length * scalars.canvasWidth + scalars.padding)")
     });
 
     var scatterMark = CircleMark.create({
