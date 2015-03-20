@@ -8,25 +8,25 @@ export default Ember.Component.extend({
 
   mouseDown: function(e) {
     console.log('starting value editing');
+    let startingValue = this.get('cellValue');
+    let editTable = this.curriedEditingFunc();
     this.valueSlider.set('editingFunc', (moveEvent) => {
       var distance = e.pageY - moveEvent.pageY;
-      this.set('cellValue', this.get('cellValue') + distance / 10);
+      var newValue = startingValue + distance / 10;
+      editTable(newValue);
     });
     e.preventDefault();
   },
 
-  cellValue: function(key, value) {
-    if (arguments.length === 1) {
-      return this.get('column.value');
-    } else {
-      console.log('setting');
-      let rowName = this.get('row.firstObject.value');
-      let columnIndex = this.get('column.index');
-      let columns = this.get('table.columns');
-      columns.objectAt(columnIndex).set(rowName, value);
-      this.get('table').notifyPropertyChange('columns');
-      return value;
-    }
-  }.property('column')
+  cellValue: Ember.computed.alias('column.value'),
 
+  curriedEditingFunc: function() {
+    let rowName = this.get('row.firstObject.value');
+    let columnIndex = this.get('column.index');
+    let table = this.get('table');
+    return function(value) {
+      table.get('columns').objectAt(columnIndex).set(rowName, value);
+      table.notifyPropertyChange('columns');
+    };
+  }
 });
