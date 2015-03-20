@@ -10,9 +10,9 @@ var e = Expression.e;
 var MarksToD3Compiler = Ember.Object.extend({
   marks: Ember.required(),
   d3Code: function() {
-    return this.get("marks").map((mark) => mark.getD3Code()).join("\n");
+    return this.get("marks").getEach("d3Code").join("\n");
     // TODO this probably should depend on mark attributes which should also be ember objects
-  }.property()
+  }.property("marks.[]", "marks.@each.d3Code")
 });
 
 export default Ember.Route.extend({
