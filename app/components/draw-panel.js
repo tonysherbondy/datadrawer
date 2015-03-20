@@ -63,13 +63,18 @@ export default Ember.Component.extend({
 
     // Make table and scalar data available to the chart, these are used inside attr
     // functions
-    var table = this.get("table.columns").map((column) => {  // jshint ignore:line
-      return column.get("columnHash");
-    });
+    var table = [];
+    if (!Ember.isEmpty(this.get("table.columns"))) {
+      table = this.get("table.columns").map((column) => {
+        return column.get("columnHash");
+      });
+    }
     var scalars = {};
-    this.get("scalars").forEach((scalar) => {
-      scalars[scalar.get("name")] = scalar.get("value");
-    });
+    if (!Ember.isEmpty(this.get("scalars"))) {
+      this.get("scalars").forEach((scalar) => {
+        scalars[scalar.get("name")] = scalar.get("value");
+      });
+    }
 
     try {
       eval(this.get("d3Code"));
