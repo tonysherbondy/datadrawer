@@ -19,13 +19,13 @@
     </tr>
     {{#each rows as |row|}}
       <tr>
-        {{#each row as |column|}}
+        {{#each row as |cell|}}
           {{#victor-data-panel-cell
-            column=column
+            cell=cell
             row=row
             table=table
-            as |cellValue isEditing|}}
-            {{cellValue}}
+            as |isEditing|}}
+            {{cell.value}}
           {{/victor-data-panel-cell}}
         {{/each}}
       </tr>

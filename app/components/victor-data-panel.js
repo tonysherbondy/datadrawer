@@ -5,26 +5,25 @@ export default Ember.Component.extend({
 
   columns: Ember.computed.alias('table.columns'),
   numberOfColumns: Ember.computed.alias('columns.length'),
-
-  rowNames: function() {
-    return Object.keys(this.get('columns.firstObject'));
-  }.property('columns.firstObject'),
-
-  rows: function() {
-    var names = this.get('rowNames');
-    var columns = this.get('columns');
-    return names.map((name) => {
-      return columns.reduce((prev, item, index) => {
-        return prev.concat({value: item[name], index: index});
-      }, [{value: name, index: 'property'}]);
-    });
-  }.property('rowNames', 'columns'),
-
-  numberOfHeaders: Ember.computed.alias('tableHeaders.length'),
   tableHeaders: function() {
     var headers = this.get('columns').map((col, index) => index);
     return ['Property'].concat(headers);
   }.property('columns'),
+  numberOfHeaders: Ember.computed.alias('tableHeaders.length'),
+
+  rowNames: function() {
+    return this.get('columns.firstObject.rowNames');
+  }.property('columns.firstObject.rowNames.[]'),
+
+  rows: function() {
+    var rows = this.get("table.rows");
+    return rows.map((row) => {
+      var name = row.get("firstObject.name");
+      var firstCell = {name: "Property", value: name};
+      return [firstCell].concat(row);
+    });
+  }.property("table.columns.@each.columnHash"),
+
 
   actions: {
     updateTable: function() {

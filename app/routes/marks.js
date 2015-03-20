@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import Table from 'tukey/models/table';
+import TableColumn from 'tukey/models/table-column';
 import Expression from 'tukey/models/expression';
 import RectangleMark from 'tukey/models/mark/rectangle-mark';
 import CircleMark from 'tukey/models/mark/circle-mark';
@@ -10,18 +11,22 @@ var MarksToD3Compiler = Ember.Object.extend({
   marks: Ember.required(),
   d3Code: function() {
     return this.get("marks").map((mark) => mark.getD3Code()).join("\n");
-  }.property("table.columns")
+    // TODO this probably should depend on mark attributes which should also be ember objects
+  }.property()
 });
 
 export default Ember.Route.extend({
   model: function() {
     var columns = [
-        Ember.Object.create({name: "Nhan", age: 27, weight: 120}),
-        Ember.Object.create({name: "Zack", age: 30, weight: 160}),
-        Ember.Object.create({name: "Anthony", age: 37, weight: 180})
+        {name: "Nhan", age: 27, weight: 120},
+        {name: "Zack", age: 30, weight: 160},
+        {name: "Anthony", age: 37, weight: 180}
     ];
+    var tableColumns = columns.map((hash) => {
+      return TableColumn.create().set("columnHash", hash);
+    });
     var table =  Table.create({
-      columns: columns
+      columns: tableColumns
     });
 
     var rectMark = RectangleMark.create({
