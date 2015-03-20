@@ -33,7 +33,8 @@ export default Ember.Route.extend({
       width: e("1/table.length * scalars.canvasWidth"),
       height: e("element.age"),
       top: e("scalars.canvasHeight - element.age"),
-      left: e("index * (1/table.length * scalars.canvasWidth + scalars.padding)")
+      left: e("index * (1/table.length * scalars.canvasWidth + scalars.padding)"),
+      fill: e("'gray'")
     });
 
     var scatterMark = CircleMark.create({
