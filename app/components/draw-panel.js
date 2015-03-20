@@ -64,7 +64,10 @@ export default Ember.Component.extend({
     // Make table and scalar data available to the chart, these are used inside attr
     // functions
     var table = this.get("table.columns"); // jshint ignore:line
-    var scalars = this.get("scalars");  // jshint ignore:line
+    var scalars = {};
+    this.get("scalars").forEach((scalar) => {
+      scalars[scalar.get("name")] = scalar.get("value");
+    });
 
     try {
       eval(this.get("d3Code"));
@@ -74,7 +77,7 @@ export default Ember.Component.extend({
 
     this.drawMarkControls();
 
-  }.observes("d3Code", "table.columns", "scalars"),
+  }.observes("d3Code", "table.columns", "scalars.@each.value", "scalars.@each.name"),
 
   selectedMarkId: null,
 

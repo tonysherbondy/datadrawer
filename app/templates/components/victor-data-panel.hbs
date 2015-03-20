@@ -1,6 +1,11 @@
 {{#bs-panel title="Data"}}
   <h2>Scalars</h2>
     <ul>
+      {{#each scalars as |scalar|}}
+        {{#victor-data-panel-scalar-item scalar=scalar}}
+          {{scalar.name}} is {{scalar.value}}
+        {{/victor-data-panel-scalar-item}}
+      {{/each}}
       {{! item for every scalarList }}
       <li class="add-instruction-item list-group-item" {{action 'addScalar'}}>Add</li>
     </ul>

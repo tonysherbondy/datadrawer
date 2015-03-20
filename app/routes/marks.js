@@ -25,10 +25,10 @@ export default Ember.Route.extend({
     });
 
     var rectMark = RectangleMark.create({
-      width: e("1/table.length * 200"),
+      width: e("1/table.length * scalars.canvasWidth"),
       height: e("element.age"),
       top: e("120 - element.age"),
-      left: e("index * (1/table.length * 200 + 3)")
+      left: e("index * (1/table.length * scalars.canvasWidth + 3)")
     });
 
     var scatterMark = CircleMark.create({
@@ -42,7 +42,11 @@ export default Ember.Route.extend({
     var compiler = MarksToD3Compiler.create({
       marks: [rectMark, scatterMark],
       table: table,
-      scalars: {}
+      scalars: [
+        Ember.Object.create({name: 'canvasHeight', value: 200}),
+        Ember.Object.create({name: 'canvasWidth', value: 200}),
+        Ember.Object.create({name: 'padding', value: 3})
+      ]
     });
 
     return compiler;
