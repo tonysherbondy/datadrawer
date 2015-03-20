@@ -15,8 +15,12 @@
     {{#each rows as |row|}}
       <tr>
         {{#each row as |column|}}
-          {{#victor-data-panel-cell column=column row=row table=table as |cellValue isEditing|}}
-            {{input value=cellValue}}
+          {{#victor-data-panel-cell
+            column=column
+            row=row
+            table=table
+            as |cellValue isEditing|}}
+            {{cellValue}}
           {{/victor-data-panel-cell}}
         {{/each}}
       </tr>

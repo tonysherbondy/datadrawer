@@ -37,6 +37,10 @@ export default Ember.Component.extend({
     },
     addTableRow: function() {
       console.log('add table row');
+    },
+    beginValueEditing: function() {
+      console.log('hello');
+      this.sendAction('beginValueEditing');
     }
   }
 });

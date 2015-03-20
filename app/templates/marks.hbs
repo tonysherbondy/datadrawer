@@ -1,17 +1,19 @@
-<div class="grid">
-  <div class="description-panel col-1-3">
-    {{victor-data-panel
-      scalars=model.scalars
-      table=model.table}}
-    {{mark-list marks=model.marks}}
+{{#dynamic-drawing-marks}}
+  <div class="grid">
+    <div class="description-panel col-1-3">
+      {{victor-data-panel
+        scalars=model.scalars
+        table=model.table}}
+      {{mark-list marks=model.marks}}
+    </div>
+    <div class="output-panel col-2-3">
+      {{draw-panel
+        table=model.table
+        scalars=model.scalars
+        d3Code=model.d3Code
+        marks=model.marks
+        controlPoints=controlPoints}}
+      {{d3-code-panel code=model.d3Code}}
+    </div>
   </div>
-  <div class="output-panel col-2-3">
-    {{draw-panel
-      table=model.table
-      scalars=model.scalars
-      d3Code=model.d3Code
-      marks=model.marks
-      controlPoints=controlPoints}}
-    {{d3-code-panel code=model.d3Code}}
-  </div>
-</div>
+{{/dynamic-drawing-marks}}
