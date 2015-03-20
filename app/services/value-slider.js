@@ -5,7 +5,7 @@ export default Ember.Service.extend({
     if (arguments.length === 1) {
       return this.get('editingFunc') !== null;
     } else {
-      console.log('isEditing set to', value);
+      this.set('editingFunc', null);
       return value;
     }
   }.property('editingFunc'),

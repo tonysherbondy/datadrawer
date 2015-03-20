@@ -7,12 +7,11 @@ export default Ember.Component.extend({
   valueSlider: Ember.inject.service('value-slider'),
 
   mouseDown: function(e) {
-    console.log('starting value editing');
     let startingValue = this.get('cellValue');
     let editTable = this.curriedEditingFunc();
     this.valueSlider.set('editingFunc', (moveEvent) => {
       var distance = e.pageY - moveEvent.pageY;
-      var newValue = startingValue + distance / 10;
+      var newValue = Math.round(100 * (startingValue + distance / 10)) / 100;
       editTable(newValue);
     });
     e.preventDefault();
