@@ -59,6 +59,12 @@ $highlight-color: #f5f5f5;
   }
 }
 
+.ro-instruction-list {
+  li.is-current {
+    background-color: $highlight-color;
+  }
+}
+
 svg {
   border: solid 1px rgb(232, 232, 232);
 }

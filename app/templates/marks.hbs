@@ -4,7 +4,15 @@
       {{victor-data-panel
         scalars=model.scalars
         table=model.table}}
-      {{mark-list marks=model.marks}}
+      <ul class="ro-instruction-list">
+        {{#each model.instructionTree.subInstructions as |instruction|}}
+          {{ro-instruction-list-item
+            instruction=instruction
+            currentInstruction=model.currentInstruction
+            setParentCurrentInstruction="setCurrentInstruction"
+          }}
+        {{/each}}
+      </ul>
     </div>
     <div class="output-panel col-5-8">
       {{draw-panel
@@ -12,6 +20,7 @@
         scalars=model.scalars
         d3Code=model.d3Code
         marks=model.marks
+        currentInstruction=model.currentInstruction
         controlPoints=controlPoints}}
       {{d3-code-panel code=model.d3Code}}
     </div>

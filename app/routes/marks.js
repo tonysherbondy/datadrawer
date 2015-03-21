@@ -107,6 +107,11 @@ function getInstructionTree() {
 }
 
 export default Ember.Route.extend({
+  actions: {
+    setCurrentInstruction: function(instruction) {
+      this.set("compiler.currentInstruction", instruction);
+    }
+  },
   model: function() {
 
     // The Data
@@ -127,9 +132,11 @@ export default Ember.Route.extend({
       marks: Ember.computed.alias("instructionTree.marks"),
     }).create({
       instructionTree: rootInstruction,
+      currentInstruction: null,
       table: table,
       scalars: scalars,
     });
+    this.set("compiler", compiler);
 
     return compiler;
   }

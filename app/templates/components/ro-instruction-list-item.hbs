@@ -1,0 +1,12 @@
+{{instruction.displayText}}
+{{#if hasSubInstructions}}
+  <ul>
+    {{#each instruction.subInstructions as |subInstruction|}}
+      {{ro-instruction-list-item
+        instruction=subInstruction
+        currentInstruction=currentInstruction
+        setParentCurrentInstruction="setCurrentInstruction"
+        }}
+    {{/each}}
+  </ul>
+{{/if}}
