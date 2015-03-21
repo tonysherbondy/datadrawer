@@ -55,7 +55,7 @@ function getData() {
 }
 
 function getInstructionTree() {
-  var drawOp = Instruction.create({
+  var singleDrawOp = Instruction.create({
       operation: "draw",
       mark: "rect",
       attrs: {
@@ -76,13 +76,9 @@ function getInstructionTree() {
       property: "height",
       propertyValue: 50
   });
-  drawOp.addSubInstruction(setOp);
+  singleDrawOp.addSubInstruction(setOp);
 
-  var root = Instruction.create({
-      operation: "root",
-  });
-  root.addSubInstruction(drawOp);
-  root.addSubInstruction(Instruction.create({
+  var loopedDrawOp = Instruction.create({
     operation: "draw",
     mark: "circle",
     attrs: {
@@ -93,7 +89,19 @@ function getInstructionTree() {
       fill: e("'#49B08D'")
     },
     markId: 2
-  }));
+  });
+
+  var loopOp = Instruction.create({
+    operation: "loop"
+  });
+  loopOp.addSubInstruction(loopedDrawOp);
+
+  var root = Instruction.create({
+      operation: "root",
+  });
+  root.addSubInstruction(singleDrawOp);
+  root.addSubInstruction(loopOp);
+
 
   return root;
 }

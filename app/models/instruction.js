@@ -49,6 +49,9 @@ export default Ember.Object.extend({
         console.log("Don't know mark", mark);
       }
       marks = [markClass.create(attrs)];
+      if (this.get("parentInstruction.operation") === "loop") {
+        marks.setEach("loopOver", "table");
+      }
     } else {
       console.log("should not be asked to mark this instruction");
       return [];
