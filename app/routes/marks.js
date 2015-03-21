@@ -78,6 +78,18 @@ function getInstructionTree() {
       operation: "root",
   });
   root.addSubInstruction(drawOp);
+  root.addSubInstruction(Instruction.create({
+    operation: "draw",
+    mark: "circle",
+    attrs: {
+      radius: e("5"),
+      cy: e("element.age"),
+      cx: e("element.weight"),
+      opacity: e("0.7"),
+      fill: e("'#49B08D'")
+    },
+    markId: 2
+  }));
 
   return root;
 }

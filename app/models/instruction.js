@@ -1,5 +1,6 @@
 import Ember from "ember";
 import RectangleMark from 'tukey/models/mark/rectangle-mark';
+import CircleMark from 'tukey/models/mark/circle-mark';
 
 export default Ember.Object.extend({
   operation: null,
@@ -34,7 +35,16 @@ export default Ember.Object.extend({
       marks = this.get("subInstructions").getEach("marks");
     } else if (operation === "draw") {
       var attrs = this.get("attrs");
-      marks = [RectangleMark.create(attrs)];
+      var mark = this.get("mark");
+      var markClass;
+      if (mark === "rect") {
+        markClass = RectangleMark;
+      } else if (mark === "circle") {
+        markClass = CircleMark;
+      } else {
+        console.log("Don't know mark", mark);
+      }
+      marks = [markClass.create(attrs)];
     } else {
       console.log("should not be asked to mark this instruction");
       return [];
