@@ -13,7 +13,7 @@ export default Mark.extend({
     var cy = this.get("cy.stringRepresentation");
     var cx = this.get("cx.stringRepresentation");
 
-    return `draw cirlce at [${cx}], [${cy}] with radius ${radius}`;
+    return `draw circle at [${cx}], [${cy}] with radius ${radius}`;
   }.property("radius", "cx", "cy"),
 
   attrsMap: [
