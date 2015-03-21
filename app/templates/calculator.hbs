@@ -1,0 +1,4 @@
+{{#each variable in model.environment.variableList}}
+  {{variable-definition variable=variable environment=environment}}<br>
+{{/each}}
+<button {{action 'addVariable'}}>add variable</button>

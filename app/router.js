@@ -7,6 +7,7 @@ var Router = Ember.Router.extend({
 
 Router.map(function() {
   this.route('marks', {path: '/'});
+  this.route('calculator');
 });
 
 export default Router;
