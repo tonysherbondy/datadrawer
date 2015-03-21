@@ -1,0 +1,15 @@
+{{#unless isRootOperation}}
+  {{instruction-item
+    instruction=rootInstruction
+    dataItems=dataItems
+  }}
+{{/unless}}
+{{#each subInstruction in rootInstruction.subInstructions}}
+  {{instructions-tree-panel
+    rootInstruction=subInstruction
+    dataItems=dataItems
+  }}
+{{/each}}
+{{#if canAddSubInstructions}}
+  <li class="add-instruction-item list-group-item" {{action 'addInstruction'}}>Add</li>
+{{/if}}
