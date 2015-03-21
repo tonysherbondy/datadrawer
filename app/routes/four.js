@@ -9,12 +9,22 @@ export default Ember.Route.extend({
       value: 10
     });
 
-    var vectorItem = Ember.Object.create({
+    var indicesVectorItem = Ember.Object.create({
+      name: "indices",
+      type: "vector",
+      value: [0, 60, 120, 180, 240, 300]
+    });
+
+    var agesVectorItem = Ember.Object.create({
       name: "ages",
       type: "vector",
       value: [21, 14, 25, 17, 49, 30]
     });
 
+    var loopOp = Instruction.create({
+        operation: "loop",
+        loopData: indicesVectorItem
+    });
     var drawOp = Instruction.create({
         operation: "draw",
         mark: "rect",
@@ -26,18 +36,17 @@ export default Ember.Route.extend({
         propertyValue: 50,
     });
 
+    loopOp.addSubInstruction(drawOp);
     drawOp.addSubInstruction(setOp);
 
     var root = Instruction.create({
         operation: "root",
     });
 
-    root.addSubInstruction(drawOp);
+    root.addSubInstruction(loopOp);
 
     return {
-      // Set of instructions to draw
-      //instructions: [drawOp, setOp]
-      dataItems: [scalarItem, vectorItem],
+      dataItems: [scalarItem, indicesVectorItem, agesVectorItem],
       rootInstruction: root
     };
   }
