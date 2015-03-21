@@ -50,21 +50,22 @@ export default Ember.Object.extend({
         console.log("Don't know mark", mark);
       }
       marks = [markClass.create(attrs)];
-      if (this.get("parentInstruction.operation") === "loop") {
-        marks.setEach("loopOver", "table");
-      }
     } else {
       console.log("should not be asked to mark this instruction");
       return [];
     }
     // Flatten the marks before returning
-    return marks.reduce((prev, item) => {
+    var flatMarks = marks.reduce((prev, item) => {
       if (Ember.isArray(item)) {
         return prev.concat(item);
       }
       return prev.concat([item]);
     }, []);
-  }.property(""),
+    if (operation === "loop") {
+      flatMarks.setEach("loopOver", "table");
+    }
+    return flatMarks;
+  }.property("").volatile(),
   //}.property("subInstrunctions.@each.marks"),
 
   // TODO(Tony) These should go away now because we just have one table

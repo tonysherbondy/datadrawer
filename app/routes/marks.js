@@ -9,7 +9,15 @@ import Instruction from "tukey/models/instruction";
 var e = Expression.e;
 
 var MarksToD3Compiler = Ember.Object.extend({
-  marks: Ember.required(),
+  instructionTree: Ember.required(),
+  currentInstruction: null,
+  marks: function() {
+    var currentInstruction = this.get("currentInstruction");
+    if (currentInstruction) {
+      return currentInstruction.get("marks");
+    }
+    return this.get("instructionTree.marks");
+  }.property("instructionTree.marks", "currentInstruction", "currentInstruction.marks"),
   d3Code: function() {
     return this.get("marks").getEach("d3Code").join("\n");
     // TODO this probably should depend on mark attributes which should also be ember objects
@@ -102,13 +110,16 @@ function getInstructionTree() {
   root.addSubInstruction(singleDrawOp);
   root.addSubInstruction(loopOp);
 
-
   return root;
 }
 
 export default Ember.Route.extend({
   actions: {
     setCurrentInstruction: function(instruction) {
+      var currentInstruction = this.get("compiler.currentInstruction");
+      if (currentInstruction === instruction) {
+        instruction = null;
+      }
       this.set("compiler.currentInstruction", instruction);
     }
   },
@@ -128,11 +139,8 @@ export default Ember.Route.extend({
 
     // The Marks Compiler
     // TODO: move this binding to component or controller
-    var compiler = MarksToD3Compiler.extend({
-      marks: Ember.computed.alias("instructionTree.marks"),
-    }).create({
+    var compiler = MarksToD3Compiler.create({
       instructionTree: rootInstruction,
-      currentInstruction: null,
       table: table,
       scalars: scalars,
     });
