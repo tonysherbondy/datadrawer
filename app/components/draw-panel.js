@@ -1,6 +1,7 @@
 import Ember from "ember";
 import Expression from "tukey/models/expression";
 import RectangleMark from "tukey/models/mark/rectangle-mark";
+import CircleMark from "tukey/models/mark/circle-mark";
 
 var e = Expression.e;
 
@@ -48,6 +49,45 @@ var RectangleTool = Ember.Object.extend({
       }
       mark.set('width', e(`${width}`));
       mark.set('height', e(`${height}`));
+    }
+  }
+});
+
+var CircleTool = Ember.Object.extend({
+  marks: Ember.required(),
+  mark: null,
+  startingX: null,
+  startingY: null,
+
+  click: function(event) {
+    if (!!this.get("mark")) {
+      this.set("mark", null);
+    } else {
+      this.set("startingX", event.offsetX);
+      this.set("startingY", event.offsetY);
+      var newMark = CircleMark.create({
+        cy: e(`${event.offsetY}`),
+        cx: e(`${event.offsetX}`),
+        radius: e("0"),
+        opacity: e("0.3")
+      });
+
+      this.set("mark", newMark);
+      this.get("marks").pushObject(newMark);
+    }
+  },
+
+  mouseMove: function(event) {
+    var mark = this.get("mark");
+    if (!!mark) {
+      // TODO: make mark have a way to evaluate itself instead of getting
+      // string representation
+      var startingX = this.get("startingX");
+      var startingY = this.get("startingY");
+      var x = event.offsetX - startingX;
+      var y = event.offsetY - startingY;
+      var distance = Math.sqrt(x*x + y*y);
+      mark.set("radius", e(`${distance}`));
     }
   }
 });
@@ -185,9 +225,8 @@ export default Ember.Component.extend({
       this.set("activeTool", RectangleTool.create({marks: marks}));
     },
     drawCircle: function() {
-      //var marks = this.get("marks");
-      console.log('set circle tool');
-      //this.set("activeTool", CircleTool.create({marks: marks}));
+      var marks = this.get("marks");
+      this.set("activeTool", CircleTool.create({marks: marks}));
     }
   }
 });
