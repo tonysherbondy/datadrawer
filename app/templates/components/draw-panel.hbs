@@ -1,5 +1,5 @@
 {{#bs-panel title="Draw"}}
-  <svg width="640" height="480">
-    <g class="chart"></g>
+<svg {{bind-attr width=svgWidth height=svgHeight}}>
+  <g class="chart" {{bind-attr width=chartWidth height=chartHeight}}></g>
   </svg>
 {{/bs-panel}}

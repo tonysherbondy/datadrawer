@@ -55,6 +55,9 @@ var RectangleTool = Ember.Object.extend({
 export default Ember.Component.extend({
   classNames: ["draw-panel"],
 
+  svgWidth: 640,
+  svgHeight: 480,
+
   didInsertElement: function() {
     this.draw();
   },
