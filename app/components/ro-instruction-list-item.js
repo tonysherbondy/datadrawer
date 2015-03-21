@@ -11,6 +11,7 @@ export default Ember.Component.extend({
   click: function(event) {
     this.sendAction("setParentCurrentInstruction", this.get("instruction"));
     event.preventDefault();
+    return false;
   },
 
   actions: {
