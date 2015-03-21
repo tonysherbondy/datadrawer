@@ -2,6 +2,7 @@ import Ember from "ember";
 import Expression from "tukey/models/expression";
 import RectangleMark from "tukey/models/mark/rectangle-mark";
 import CircleMark from "tukey/models/mark/circle-mark";
+import Instruction from "tukey/models/instruction";
 
 var e = Expression.e;
 
@@ -227,6 +228,27 @@ export default Ember.Component.extend({
     drawCircle: function() {
       var marks = this.get("marks");
       this.set("activeTool", CircleTool.create({marks: marks}));
+    },
+    flowLoop: function() {
+      var currentInstruction = this.get("currentInstruction");
+      if (currentInstruction &&
+          currentInstruction.get("operation") === "draw" &&
+          currentInstruction.get("parentInstruction.operation") !== "loop") {
+        var parentInstruction = currentInstruction.get("parentInstruction");
+        var indexOfStep = parentInstruction.get("subInstructions").indexOf(currentInstruction);
+        // remove instruction from the tree
+        currentInstruction.removeInstruction();
+        // add to the loop
+        var loopOp = Instruction.create({
+          operation: "loop"
+        });
+        loopOp.addSubInstruction(currentInstruction);
+        // add loop to parent
+        // TODO might want to add in the same place we removed rather than at the end
+        parentInstruction.addSubInstructionAtIndex(loopOp, indexOfStep);
+        this.set("currentInstruction", loopOp);
+        return false;
+      }
     }
   }
 });

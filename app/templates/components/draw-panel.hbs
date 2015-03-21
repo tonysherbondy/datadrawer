@@ -1,5 +1,9 @@
 {{#bs-panel title="Draw"}}
-<h2>{{currentInstruction.displayText}}</h2>
+{{#if currentInstruction.displayText}}
+  <h2>{{currentInstruction.displayText}}</h2>
+{{else}}
+  <h2>Draw Picture</h2>
+{{/if}}
 <svg {{bind-attr width=svgWidth height=svgHeight}}>
   <g class="chart" {{bind-attr width=chartWidth height=chartHeight}}></g>
   </svg>

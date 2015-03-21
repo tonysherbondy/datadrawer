@@ -15,6 +15,25 @@ export default Ember.Object.extend({
     instruction.set("parentInstruction", this);
   },
 
+  addSubInstructionAtIndex: function(instruction, index) {
+    var subInstructions = this.get("subInstructions");
+    var beforeIndex = subInstructions.slice(0, index);
+    var afterIndex = subInstructions.slice(index, subInstructions.get("length"));
+    this.set("subInstructions", beforeIndex.concat([instruction], afterIndex));
+    instruction.set("parentInstruction", this);
+  },
+
+  // TODO, cumbersome to have these multiple sources of topology truth
+  // Remove self from parent
+  removeInstruction: function() {
+    var parentInstruction = this.get("parentInstruction");
+    if (parentInstruction) {
+      var subInstructions = parentInstruction.get("subInstructions");
+      parentInstruction.set("subInstructions", subInstructions.reject((item) => item === this));
+    }
+    this.set("parentInstruction", null);
+  },
+
   // TODO probably don't need this anymore as we don't really want a flattened list
   flattenedList: function() {
     var ret = [];
