@@ -58,22 +58,38 @@ export default Ember.Component.extend({
   svgWidth: 640,
   svgHeight: 480,
 
+  charToActionMap: {
+    r: "drawRect",
+    x: "drawLine",
+    t: "drawText",
+    c: "drawCircle",
+    v: "adjustMove",
+    s: "adjustScale",
+    e: "adjustRotate",
+    i: "flowIf",
+    l: "flowLoop"
+  },
+
+  activeTool: null,
+
+  keyPress: function(event) {
+    var charPressed = String.fromCharCode(event.keyCode).toLowerCase();
+    var action = this.charToActionMap[charPressed];
+    if (!!action) {
+      this.send(action);
+    }
+  },
+
   didInsertElement: function() {
+    // TODO hacky bringing focus to this view to intercept keyboard
+    this.$().attr({ tabindex: 1 });
+    this.$().focus();
     this.draw();
   },
 
   selectChart: function() {
     return d3.select(this.$(".chart")[0]);
   },
-
-  tools: function() {
-    var marks = this.get("marks");
-    return [RectangleTool.create({marks: marks})];
-  }.property(),
-
-  activeTool: function() {
-    return this.get("tools.firstObject");
-  }.property(),
 
   draw: function() {
     this.selectChart().remove();
@@ -150,10 +166,28 @@ export default Ember.Component.extend({
   }.observes('selectedMarkId'),
 
   click: function(event) {
-    this.get("activeTool").click(event);
+    var tool = this.get("activeTool");
+    if (tool) {
+      tool.click(event);
+    }
   },
 
   mouseMove: function(event) {
-    this.get("activeTool").mouseMove(event);
+    var tool = this.get("activeTool");
+    if (tool) {
+      tool.mouseMove(event);
+    }
+  },
+
+  actions: {
+    drawRect: function() {
+      var marks = this.get("marks");
+      this.set("activeTool", RectangleTool.create({marks: marks}));
+    },
+    drawCircle: function() {
+      //var marks = this.get("marks");
+      console.log('set circle tool');
+      //this.set("activeTool", CircleTool.create({marks: marks}));
+    }
   }
 });
