@@ -26,15 +26,19 @@ export default Ember.Object.extend({
 
   // Any loop or draw instruction should be able to return
   // a list of marks
-  // TODO(Tony) not sure how we are going to handle adjust
-  // instructions
   marks: function() {
     var operation = this.get("operation");
     var marks;
+    var subInstructions = this.get("subInstructions");
     if (operation === "root" || operation === "loop") {
-      marks = this.get("subInstructions").getEach("marks");
+      marks = subInstructions.getEach("marks");
     } else if (operation === "draw") {
       var attrs = this.get("attrs");
+      // Get all subInstruction attrs as they are all sets
+      attrs = subInstructions.getEach("attrs").reduce((prev, item) => {
+        return Ember.merge(prev, item);
+      }, attrs);
+
       var mark = this.get("mark");
       var markClass;
       if (mark === "rect") {

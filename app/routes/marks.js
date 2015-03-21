@@ -69,8 +69,12 @@ function getInstructionTree() {
   });
   var setOp = Instruction.create({
       operation: "set",
+      // TODO - these are probably computed from something
+      attrs: {
+        height: e("50"),
+      },
       property: "height",
-      propertyValue: 50,
+      propertyValue: 50
   });
   drawOp.addSubInstruction(setOp);
 

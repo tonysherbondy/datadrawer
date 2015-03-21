@@ -37,9 +37,21 @@ export default Ember.Object.extend({
     return `function(element, index) { return ${this.get(attr + '.stringRepresentation')}; }`;
   },
 
+  // TODO need to support "table" and eventually some subsplicing of table
+  loopOver: null,
+
+  loopOverString: function() {
+    var loopOver = this.get("loopOver");
+    if (!loopOver) {
+      // TODO don't think we should have Ember up in here, but this is easiest null checking
+      return "[table.get('firstObject')]";
+    }
+    return "table";
+  }.property("loopOver"),
+
   getD3DrawPrefix: function(type) {
     return `this.selectChart().selectAll('${type} .${this.get("name")}')` +
-      `.data(table).enter().append('${type}').attr('class', '${this.get("name")}')`;
+      `.data(${this.get("loopOverString")}).enter().append('${type}').attr('class', '${this.get("name")}')`;
   },
 
   getD3Attrs: function(attrsMap) {
