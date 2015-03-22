@@ -12,7 +12,7 @@
 
 ### Instructions panel
 
-* Ability to modify parts of an instruction
+* Ability to edit an exisiting instruction, i.e., Scale height by 70%, changes to 80% or to point to a variable
 * Ability to delete an instruction
 
 ### Drawing tools panel
