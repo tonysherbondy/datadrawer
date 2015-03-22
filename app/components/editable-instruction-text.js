@@ -9,8 +9,8 @@ export default Ember.Component.extend({
   isDraw: Ember.computed.equal("operation", "draw"),
 
   displayableAttrs: function() {
-    // sometimes currentInstruction set to null and our component is still rendering??
-    if (!this.get("instruction")) {
+    // we won't have any attrs for loops or root
+    if (!this.get("instruction.attrs")) {
       return [];
     }
     // turn into array of name, stringRepresentation

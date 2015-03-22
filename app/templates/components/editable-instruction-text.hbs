@@ -3,7 +3,7 @@
 {{else if isDraw}}
   Draw a {{mark}} with
   {{#each displayableAttrs as |attr|}}
-    {{instruction-attr-item attr=attr}}
+    {{instruction-attr-item instruction=instruction attr=attr}}
   {{/each}}
 {{else}}
   Adjust {{attrsText}}
