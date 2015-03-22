@@ -11,6 +11,18 @@ var e = Expression.e;
 var MarksToD3Compiler = Ember.Object.extend({
   instructionTree: Ember.required(),
   currentInstruction: null,
+
+  // TODO Only need to do this right now because of the way that I am modifying
+  // the marks returned from the draw step in a loop step, if I just copied marks
+  // and modified those copies we'd be fine without
+  dirtyMarks: function() {
+    function notifyAllMarks(instruction) {
+      instruction.notifyPropertyChange("marks");
+      instruction.get("subInstructions").forEach(notifyAllMarks);
+    }
+    notifyAllMarks(this.get("instructionTree"));
+  }.observes("currentInstruction"),
+
   marks: function() {
     var currentInstruction = this.get("currentInstruction");
     if (currentInstruction) {
