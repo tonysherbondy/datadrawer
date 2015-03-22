@@ -1,6 +1,7 @@
 import Ember from "ember";
 import RectangleMark from 'tukey/models/mark/rectangle-mark';
 import CircleMark from 'tukey/models/mark/circle-mark';
+import LineMark from 'tukey/models/mark/line-mark';
 
 export default Ember.Object.extend({
   operation: null,
@@ -66,6 +67,8 @@ export default Ember.Object.extend({
         markClass = RectangleMark;
       } else if (mark === "circle") {
         markClass = CircleMark;
+      } else if (mark === "line") {
+        markClass = LineMark;
       } else {
         console.log("Don't know mark", mark);
       }

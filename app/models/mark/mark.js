@@ -13,7 +13,9 @@ export default Ember.Object.extend({
   concatenatedProperties: ["attrsMap"],
   attrsMap: [
     {name: "fill", d3Name: "fill"},
-    {name: "opacity", d3Name: "opacity"}
+    {name: "opacity", d3Name: "opacity"},
+    {name: "stroke", d3Name: "stroke"},
+    {name: "strokeWidth", d3Name: "stroke-width"},
   ],
 
   init: function() {
