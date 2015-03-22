@@ -5,7 +5,7 @@
 ### Data panel
 
 * Ability to add, delete, and modify the values of scalars
-* Ability to add new rows to the table and rename properties
+* Ability to add new rows to the table and rename them
 * Ability to delete rows from the table
 * Ability to add and delete columns from the table
 * Ability to edit the cell values in the table
