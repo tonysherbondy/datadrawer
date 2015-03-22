@@ -1,5 +1,4 @@
 import Ember from "ember";
-import TableColumn from "tukey/models/table-column";
 
 export default Ember.Object.extend({
   columns: Ember.required(),

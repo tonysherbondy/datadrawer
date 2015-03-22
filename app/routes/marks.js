@@ -2,8 +2,6 @@ import Ember from 'ember';
 import Table from 'tukey/models/table';
 import TableColumn from 'tukey/models/table-column';
 import Expression from 'tukey/models/expression';
-import RectangleMark from 'tukey/models/mark/rectangle-mark';
-import CircleMark from 'tukey/models/mark/circle-mark';
 import Instruction from "tukey/models/instruction";
 
 var e = Expression.e;
@@ -36,24 +34,6 @@ var MarksToD3Compiler = Ember.Object.extend({
     // TODO this probably should depend on mark attributes which should also be ember objects
   }.property("marks.[]", "marks.@each.d3Code")
 });
-
-function getMarks() {
-  var rectMark = RectangleMark.create({
-    width: e("1/table.length * scalars.canvasWidth"),
-    height: e("element.age"),
-    top: e("scalars.canvasHeight - element.age"),
-    left: e("index * (1/table.length * scalars.canvasWidth + scalars.padding)"),
-    opacity: e("0.3")
-  });
-
-  var scatterMark = CircleMark.create({
-    radius: e("5"),
-    cy: e("element.age"),
-    cx: e("element.weight"),
-    fill: e("'#49B08D'")
-  });
-  return [rectMark, scatterMark];
-}
 
 function getData() {
   var scalars = [
@@ -143,12 +123,6 @@ export default Ember.Route.extend({
 
     // The Instructions
     var rootInstruction = getInstructionTree();
-
-    // The Marks
-    var marks = getMarks();
-
-    // TODO remove once instructions can calculate marks
-    //rootInstruction.set("marks", marks);
 
     // The Marks Compiler
     // TODO: move this binding to component or controller
