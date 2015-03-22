@@ -10,10 +10,18 @@ export default Ember.Component.extend({
 
   isRootOperation: Ember.computed.equal("rootInstruction.operation", "root"),
 
-  canAddSubInstructions: Ember.computed(function() {
-    var operation = this.get("rootInstruction.operation");
-    return operation !== "set";
-  }),
+  newInstructionString: Ember.computed(function() {
+    var rootOperation = this.get("rootInstruction.operation");
+    if (rootOperation === "draw") {
+      return "Attribute";
+    } else if (rootOperation === "root") {
+      return "Shape";
+    } else if (rootOperation === "loop") {
+      return "Shape in Loop";
+    } else {
+      return null;
+    }
+  }).property("rootInstruction.operation"),
 
   actions: {
     addInstruction: function() {

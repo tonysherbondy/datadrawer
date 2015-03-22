@@ -10,6 +10,6 @@
     dataItems=dataItems
   }}
 {{/each}}
-{{#if canAddSubInstructions}}
-  <li class="add-instruction-item list-group-item" {{action 'addInstruction'}}>Add</li>
+{{#if newInstructionString}}
+<li class="add-instruction-item list-group-item" {{action 'addInstruction'}}>Add {{newInstructionString}}</li>
 {{/if}}
