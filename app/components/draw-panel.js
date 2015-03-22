@@ -1,7 +1,6 @@
 import Ember from "ember";
 import Expression from "tukey/models/expression";
 import RectangleMark from "tukey/models/mark/rectangle-mark";
-import CircleMark from "tukey/models/mark/circle-mark";
 import Instruction from "tukey/models/instruction";
 
 var e = Expression.e;
@@ -55,40 +54,45 @@ var RectangleTool = Ember.Object.extend({
 });
 
 var CircleTool = Ember.Object.extend({
-  marks: Ember.required(),
-  mark: null,
+  instructionTree: Ember.required(),
+  instruction: null,
   startingX: null,
   startingY: null,
 
   click: function(event) {
-    if (!!this.get("mark")) {
-      this.set("mark", null);
+    if (!!this.get("instruction")) {
+      this.set("instruction", null);
     } else {
       this.set("startingX", event.offsetX);
       this.set("startingY", event.offsetY);
-      var newMark = CircleMark.create({
-        cy: e(`${event.offsetY}`),
-        cx: e(`${event.offsetX}`),
-        radius: e("0"),
-        opacity: e("0.3")
+      var instruction = Instruction.create({
+        operation: "draw",
+        mark: "circle",
+        attrs: {
+          cy: e(`${event.offsetY}`),
+          cx: e(`${event.offsetX}`),
+          radius: e("10"),
+          opacity: e("0.3")
+        }
       });
-
-      this.set("mark", newMark);
-      this.get("marks").pushObject(newMark);
+      this.get("instructionTree").addSubInstruction(instruction);
+      this.set("instruction", instruction);
     }
   },
 
   mouseMove: function(event) {
-    var mark = this.get("mark");
-    if (!!mark) {
-      // TODO: make mark have a way to evaluate itself instead of getting
+    var instruction = this.get("instruction");
+    if (!!instruction) {
+      // TODO: make instruction have a way to evaluate itself instead of getting
       // string representation
       var startingX = this.get("startingX");
       var startingY = this.get("startingY");
       var x = event.offsetX - startingX;
       var y = event.offsetY - startingY;
       var distance = Math.sqrt(x*x + y*y);
-      mark.set("radius", e(`${distance}`));
+
+      var attrs = Ember.merge({}, instruction.get("attrs"));
+      instruction.set("attrs", Ember.merge(attrs, {radius: e(`${distance}`)}));
     }
   }
 });
@@ -222,12 +226,12 @@ export default Ember.Component.extend({
 
   actions: {
     drawRect: function() {
-      var marks = this.get("marks");
-      this.set("activeTool", RectangleTool.create({marks: marks}));
+      var instructionTree = this.get("instructionTree");
+      this.set("activeTool", RectangleTool.create({instructionTree: instructionTree}));
     },
     drawCircle: function() {
-      var marks = this.get("marks");
-      this.set("activeTool", CircleTool.create({marks: marks}));
+      var instructionTree = this.get("instructionTree");
+      this.set("activeTool", CircleTool.create({instructionTree: instructionTree}));
     },
     flowLoop: function() {
       var currentInstruction = this.get("currentInstruction");

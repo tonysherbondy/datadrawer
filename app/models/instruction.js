@@ -50,10 +50,11 @@ export default Ember.Object.extend({
     var operation = this.get("operation");
     var marks;
     var subInstructions = this.get("subInstructions");
+
     if (operation === "root" || operation === "loop") {
       marks = subInstructions.getEach("marks");
     } else if (operation === "draw") {
-      var attrs = this.get("attrs");
+      var attrs = Ember.merge({}, this.get("attrs"));
       // Get all subInstruction attrs as they are all sets
       attrs = subInstructions.getEach("attrs").reduce((prev, item) => {
         return Ember.merge(prev, item);
@@ -84,8 +85,7 @@ export default Ember.Object.extend({
       flatMarks.setEach("loopOver", "table");
     }
     return flatMarks;
-  }.property("").volatile(),
-  //}.property("subInstrunctions.@each.marks"),
+  }.property("attrs", "operation", "mark", "subInstructions.[]", "subInstructions.@each.attrs"),
 
   // TODO(Tony) These should go away now because we just have one table
   availableLoopVariables: function() {

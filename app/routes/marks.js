@@ -18,6 +18,7 @@ var MarksToD3Compiler = Ember.Object.extend({
     }
     return this.get("instructionTree.marks");
   }.property("instructionTree.marks", "currentInstruction", "currentInstruction.marks"),
+
   d3Code: function() {
     return this.get("marks").getEach("d3Code").join("\n");
     // TODO this probably should depend on mark attributes which should also be ember objects
