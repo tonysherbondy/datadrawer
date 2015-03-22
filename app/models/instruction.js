@@ -109,16 +109,6 @@ export default Ember.Object.extend({
   // TODO(Tony) These should go away now because we just have one table
   loopVariable: function() {
     return this.get("loopData.name");
-  }.property("loopData.name"),
+  }.property("loopData.name")
 
-  displayText: function() {
-    var operation = this.get("operation");
-    if (operation === "loop") {
-      return "Loop over table";
-    } else if (operation === "draw") {
-      return `Draw a ${this.get("mark")}`;
-    } else {
-      return "Adjust";
-    }
-  }.property()
 });
