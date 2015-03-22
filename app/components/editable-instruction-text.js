@@ -5,18 +5,14 @@ export default Ember.Component.extend({
   mark: Ember.computed.alias("instruction.mark"),
   attrs: Ember.computed.alias("instruction.attrs"),
 
-  displayText: function() {
-    var operation = this.get("operation");
-    if (operation === "loop") {
-      return "Loop over table";
-    } else if (operation === "draw") {
-      return `Draw a ${this.get("mark")} with ${this.get('attrsText')}`;
-    } else {
-      return `Adjust ${this.get("attrsText")}`;
-    }
-  }.property("operation", "mark"),
+  isLoop: Ember.computed.equal("operation", "loop"),
+  isDraw: Ember.computed.equal("operation", "draw"),
 
   displayableAttrs: function() {
+    // sometimes currentInstruction set to null and our component is still rendering??
+    if (!this.get("instruction")) {
+      return [];
+    }
     // turn into array of name, stringRepresentation
     var attrs = this.get("attrs");
     var names = Object.keys(attrs);
@@ -27,10 +23,6 @@ export default Ember.Component.extend({
   }.property("attrs"),
 
   attrsText: function() {
-    // sometimes currentInstruction set to null and our component is still rendering??
-    if (!this.get("instruction")) {
-      return "";
-    }
     return this.get("displayableAttrs").map((attr) => {
       return `${attr.get("name")}: ${attr.get("stringRepresentation")}`;
     }).join(", ");
