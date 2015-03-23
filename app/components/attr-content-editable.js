@@ -36,6 +36,11 @@ export default Ember.Component.extend({
 		return this.setContent();
 	},
 
+  click: function(event) {
+    event.stopPropagation();
+    return false;
+  },
+
   focusIn: function() {
     this.keyboardManager.set("componentHoldingKeyboard", this);
   },
