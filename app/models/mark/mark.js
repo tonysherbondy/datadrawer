@@ -52,27 +52,32 @@ export default Ember.Object.extend({
   }.property("loopOver"),
 
   getD3DrawPrefix: function(type) {
-    return `this.selectChart().selectAll('${type} .${this.get("name")}')` +
-      `.data(${this.get("loopOverString")}).enter().append('${type}').attr('class', '${this.get("name")}')`;
+    return ["this.selectChart()",
+      `  .selectAll('${type}.${this.get("name")}')`,
+      `    .data(${this.get("loopOverString")})`,
+      `  .enter().append('${type}')`,
+      `    .attr('class', '${this.get("name")}')`].join('\n');
   },
 
   getD3Attrs: function(attrsMap) {
-    return '\n' + attrsMap.map((item) => {
+    return attrsMap.map((item) => {
       let attrFunc = this.getAttrFuncD3(item.name);
       if (!attrFunc) {
         return "";
       }
       if (item.name === "text") {
-        return `.text(${attrFunc})`;
+        return `    .text(${attrFunc})`;
       } else {
-        return `.attr('${item.d3Name}', ${attrFunc})`;
+        return `    .attr('${item.d3Name}', ${attrFunc})`;
       }
-    }).join("\n");
+    }).filter((item) => {
+      return item != null && item.length > 0;
+    }).join('\n');
   },
 
   d3Code: function() {
     var attrsMap = this.get("attrsMap");
-    return this.getD3DrawPrefix(this.get("type")) + this.getD3Attrs(attrsMap) + ";";
+    return this.getD3DrawPrefix(this.get("type")) + '\n' + this.getD3Attrs(attrsMap) + ";";
   }.property()
 
 });
