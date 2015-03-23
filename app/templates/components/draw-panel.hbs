@@ -1,9 +1,11 @@
 {{#bs-panel title="Draw"}}
-{{#if currentInstruction}}
-  <h2>{{editable-instruction-text instruction=currentInstruction}}</h2>
-{{else}}
-  <h2>Draw Picture</h2>
-{{/if}}
+<div class="current-instruction-header">
+  {{#if currentInstruction}}
+    <h2>{{editable-instruction-text instruction=currentInstruction}}</h2>
+  {{else}}
+    <h2>Draw Picture</h2>
+  {{/if}}
+</div>
 <svg {{bind-attr width=svgWidth height=svgHeight}}>
   <g class="chart" {{bind-attr width=chartWidth height=chartHeight}}></g>
   </svg>

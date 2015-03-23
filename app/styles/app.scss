@@ -16,6 +16,10 @@ h2 {
   font-size: 17px;
 }
 
+ul {
+  list-style-type: none;
+}
+
 // Make it so when we set a width it stays that width
 // even if padding or border is applied.
 .description-panel {
@@ -61,11 +65,25 @@ h2 {
   }
 }
 
+// This is so that very long instructions don't
+// reflow the drawing panel
+.current-instruction-header {
+  max-width: 640px;
+}
+
+.drawing-tools-panel {
+  li {
+    margin-right: 30px;
+    text-align: right;
+  }
+}
+
 .ro-instruction-list {
   li.is-current {
     background-color: $highlight-color;
   }
 }
+
 .instruction-attr {
   background-color: #B5ECB1;
   margin-right: 4px;
