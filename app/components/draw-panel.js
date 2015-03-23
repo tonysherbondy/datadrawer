@@ -50,18 +50,23 @@ export default Ember.Component.extend({
     return d3.select(this.$(".chart")[0]);
   },
 
+  getMousePos: function() {
+    var mousePos = d3.mouse(this.$('svg')[0]);
+    return mousePos.map(Math.round);
+  },
+
   setupSVGListeners: function() {
     d3.select("svg")
       .on("click", () => {
         var tool = this.get("activeTool");
         if (tool) {
-          tool.click(d3.mouse(this.$('svg')[0]));
+          tool.click(this.getMousePos());
         }
       })
       .on("mousemove", () => {
         var tool = this.get("activeTool");
         if (tool) {
-          tool.mouseMove(d3.mouse(this.$('svg')[0]));
+          tool.mouseMove(this.getMousePos());
         }
       });
   },

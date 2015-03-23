@@ -11,7 +11,7 @@ export default MarkTool.extend({
     return {
       cx: e(`${mousePos[0]}`),
       cy: e(`${mousePos[1]}`),
-      radius: e("10"),
+      radius: e("1"),
       opacity: e("0.3")
     };
   },
@@ -21,7 +21,7 @@ export default MarkTool.extend({
     var startingY = this.get("startingY");
     var x = mousePos[0] - startingX;
     var y = mousePos[1] - startingY;
-    var distance = Math.sqrt(x*x + y*y);
+    var distance = Math.round(Math.sqrt(x*x + y*y));
     return {
       radius: e(`${distance}`)
     };
