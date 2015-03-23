@@ -36,11 +36,25 @@ export default Ember.Component.extend({
 		return this.setContent();
 	},
 
+  focusIn: function() {
+    this.keyboardManager.set("componentHoldingKeyboard", this);
+  },
+
 	focusOut: function() {
+    this.keyboardManager.set("componentHoldingKeyboard", null);
     // TODO hacky api to tell upstream to actually edit value of attr
     this.sendAction("editUpstreamValue", this.get("value"));
 		return this.set('isUserTyping', false);
 	},
+
+  keyPress: function(event) {
+    // Allow user to focus out on enter key
+    if (event.keyCode === 13) {
+      this.$().trigger("focusout");
+      event.stopPropagation();
+      return false;
+    }
+  },
 
 	keyDown: function(event) {
 		if (!event.metaKey) {

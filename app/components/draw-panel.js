@@ -25,6 +25,11 @@ export default Ember.Component.extend({
   activeTool: null,
 
   keyPress: function(event) {
+    // TODO so HACKY, but if another component is viewing the keyboard I don't
+    // want this component to be changing the tool
+    if (this.keyboardManager.get("isKeyboardHeld")) {
+      return;
+    }
     var charPressed = String.fromCharCode(event.keyCode).toLowerCase();
     var action = this.charToActionMap[charPressed];
     if (!!action) {
@@ -112,7 +117,6 @@ export default Ember.Component.extend({
         cy: (d) => d[1]
       });
 
-
     console.log('selected', markId);
     console.log('points', this.get('controlPoints'));
   }.observes('selectedMarkId'),
@@ -143,6 +147,21 @@ export default Ember.Component.extend({
     drawLine: function() {
       var instructionTree = this.get("instructionTree");
       this.set("activeTool", LineTool.create({instructionTree: instructionTree}));
+    },
+    drawText: function() {
+      console.log('trying to draw text');
+    },
+    adjustMove: function() {
+      console.log('trying to adjust position');
+    },
+    adjustScale: function() {
+      console.log('trying to adjust scale');
+    },
+    adjustRotate: function() {
+      console.log('trying to adjust rotation');
+    },
+    flowIf: function() {
+      console.log('trying to add conditional');
     },
     flowLoop: function() {
       var currentInstruction = this.get("currentInstruction");
