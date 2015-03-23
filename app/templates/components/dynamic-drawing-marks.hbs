@@ -1,1 +1,37 @@
-{{yield currentInstruction}}
+<div class="grid">
+  <div class="description-panel col-1-4">
+    {{victor-data-panel
+      scalars=model.scalars
+      table=model.table}}
+    <ul class="ro-instruction-list">
+      {{#each model.instructionTree.subInstructions as |instruction|}}
+        {{ro-instruction-list-item
+          instruction=instruction
+          currentInstruction=model.currentInstruction
+          setParentCurrentInstruction="setCurrentInstruction"
+        }}
+      {{/each}}
+    </ul>
+  </div>
+  <div class="output-panel col-5-8">
+    {{draw-panel
+      table=model.table
+      scalars=model.scalars
+      d3Code=model.d3Code
+      marks=model.marks
+
+      charToModeMap=charToModeMap
+      modeList=modeList
+      activeDrawingMode=activeDrawingMode
+
+      currentInstruction=model.currentInstruction
+      instructionTree=model.instructionTree
+      controlPoints=controlPoints}}
+    {{d3-code-panel code=model.d3Code}}
+  </div>
+  <div class="drawing-tools-panel col-1">
+    {{drawing-tools-panel
+      modeList=modeList
+      activeDrawingMode=activeDrawingMode}}
+  </div>
+</div>

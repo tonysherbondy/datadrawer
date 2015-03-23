@@ -11,19 +11,6 @@ export default Ember.Component.extend({
   svgWidth: 640,
   svgHeight: 480,
 
-  charToModeMap: {
-    r: "drawRect",
-    x: "drawLine",
-    t: "drawText",
-    c: "drawCircle",
-    v: "adjustMove",
-    s: "adjustScale",
-    e: "adjustRotate",
-    i: "flowIf",
-    l: "flowLoop"
-  },
-
-  activeDrawingMode: null,
   activeTool: function() {
     var instructionTree = this.get("instructionTree");
     var activeDrawingMode = this.get("activeDrawingMode");
@@ -63,6 +50,7 @@ export default Ember.Component.extend({
     }
     var charPressed = String.fromCharCode(event.keyCode).toLowerCase();
     var mode = this.charToModeMap[charPressed];
+    mode = mode ? mode.modeName : null;
     if (mode) {
       if (mode.match(/flow/)) {
         // All flow tools are simply actions to take

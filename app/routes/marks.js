@@ -107,15 +107,6 @@ function getInstructionTree() {
 }
 
 export default Ember.Route.extend({
-  actions: {
-    setCurrentInstruction: function(instruction) {
-      var currentInstruction = this.get("compiler.currentInstruction");
-      if (currentInstruction === instruction) {
-        instruction = null;
-      }
-      this.set("compiler.currentInstruction", instruction);
-    }
-  },
   model: function() {
 
     // The Data

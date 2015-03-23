@@ -1,20 +1,20 @@
 {{#bs-panel title="Drawing Tools"}}
   <h2>Draw</h2>
     <ul>
-      <li>line <strong>x</strong></li>
-      <li>rect <strong>r</strong></li>
-      <li>circle <strong>c</strong></li>
-      <li>text <strong>t</strong></li>
+      {{#each drawingModes as |mode|}}
+        <li>{{mode.name}} <strong>{{mode.key}}</strong></li>
+      {{/each}}
     </ul>
   <h2>Adjust</h2>
     <ul>
-      <li>move <strong>v</strong></li>
-      <li>scale <strong>s</strong></li>
-      <li>rotate <strong>e</strong></li>
+      {{#each adjustModes as |mode|}}
+        <li>{{mode.name}} <strong>{{mode.key}}</strong></li>
+      {{/each}}
     </ul>
   <h2>Flow</h2>
     <ul>
-      <li>if <strong>i</strong></li>
-      <li>loop <strong>l</strong></li>
+      {{#each flowModes as |mode|}}
+        <li>{{mode.name}} <strong>{{mode.key}}</strong></li>
+      {{/each}}
     </ul>
 {{/bs-panel}}
