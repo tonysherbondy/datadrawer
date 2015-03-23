@@ -53,10 +53,10 @@ export default Ember.Object.extend({
 
   getD3DrawPrefix: function(type) {
     return ["this.selectChart()",
-      `  .selectAll('${type}.${this.get("name")}')`,
+      `  .selectAll('${type}.${this.get("name")}.selectable-mark')`,
       `    .data(${this.get("loopOverString")})`,
       `  .enter().append('${type}')`,
-      `    .attr('class', '${this.get("name")}')`].join('\n');
+      `    .attr('class', '${this.get("name")} selectable-mark')`].join('\n');
   },
 
   getD3Attrs: function(attrsMap) {

@@ -66,6 +66,13 @@ export default Ember.Component.extend({
       });
   },
 
+  setupAdjustListeners: function() {
+    d3.selectAll(".selectable-mark")
+      .on("click", function (d) {
+        console.log("you just clicked", this);
+      });
+  },
+
   draw: function() {
     this.selectChart().remove();
 
@@ -92,7 +99,7 @@ export default Ember.Component.extend({
       console.log("D3 CODE EVAL ERROR: " + error);
     }
 
-    this.drawMarkControls();
+    this.setupAdjustListeners();
 
   }.observes("d3Code", "table.columns.@each.columnHash", "scalars.@each.value", "scalars.@each.name"),
 
@@ -138,16 +145,6 @@ export default Ember.Component.extend({
     console.log('selected', markId);
     console.log('points', this.get('controlPoints'));
   }.observes('selectedMarkId'),
-
-  //click: function(event) {
-    //var tool = this.get("activeTool");
-    //if (tool) {
-      //tool.click(event);
-    //}
-  //},
-
-  //mouseMove: function(event) {
-  //},
 
   actions: {
     drawRect: function() {
