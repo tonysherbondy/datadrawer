@@ -2,19 +2,19 @@
   <h2>Draw</h2>
     <ul>
       {{#each drawingModes as |mode|}}
-        <li>{{mode.name}} <strong>{{mode.key}}</strong></li>
+        {{drawing-tool-list-item mode=mode activeDrawingMode=activeDrawingMode}}
       {{/each}}
     </ul>
   <h2>Adjust</h2>
     <ul>
       {{#each adjustModes as |mode|}}
-        <li>{{mode.name}} <strong>{{mode.key}}</strong></li>
+        {{drawing-tool-list-item mode=mode activeDrawingMode=activeDrawingMode}}
       {{/each}}
     </ul>
   <h2>Flow</h2>
     <ul>
       {{#each flowModes as |mode|}}
-        <li>{{mode.name}} <strong>{{mode.key}}</strong></li>
+        {{drawing-tool-list-item mode=mode activeDrawingMode=activeDrawingMode}}
       {{/each}}
     </ul>
 {{/bs-panel}}
