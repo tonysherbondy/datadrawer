@@ -7,20 +7,20 @@ export default MarkTool.extend({
   operation: "draw",
   markType: "circle",
 
-  getAttrs: function(event) {
+  getAttrs: function(mousePos) {
     return {
-      cy: e(`${event.offsetY}`),
-      cx: e(`${event.offsetX}`),
+      cx: e(`${mousePos[0]}`),
+      cy: e(`${mousePos[1]}`),
       radius: e("10"),
       opacity: e("0.3")
     };
   },
 
-  getEndingAttrs: function(event) {
+  getEndingAttrs: function(mousePos) {
     var startingX = this.get("startingX");
     var startingY = this.get("startingY");
-    var x = event.offsetX - startingX;
-    var y = event.offsetY - startingY;
+    var x = mousePos[0] - startingX;
+    var y = mousePos[1] - startingY;
     var distance = Math.sqrt(x*x + y*y);
     return {
       radius: e(`${distance}`)

@@ -7,22 +7,22 @@ export default MarkTool.extend({
   operation: "draw",
   markType: "line",
 
-  getAttrs: function(event) {
+  getAttrs: function(mousePos) {
     return {
-      x1: e(`${event.offsetX}`),
-      y1: e(`${event.offsetY}`),
-      x2: e(`${event.offsetX}`),
-      y2: e(`${event.offsetY}`),
+      x1: e(`${mousePos[0]}`),
+      y1: e(`${mousePos[1]}`),
+      x2: e(`${mousePos[0]}`),
+      y2: e(`${mousePos[1]}`),
       opacity: e("0.3"),
       stroke: e("'blue'"),
       strokeWidth: e("5")
     };
   },
 
-  getEndingAttrs: function(event) {
+  getEndingAttrs: function(mousePos) {
     return {
-      x2: e(`${event.offsetX}`),
-      y2: e(`${event.offsetY}`)
+      x2: e(`${mousePos[0]}`),
+      y2: e(`${mousePos[1]}`)
     };
   }
 });

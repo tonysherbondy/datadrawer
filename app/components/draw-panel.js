@@ -42,11 +42,28 @@ export default Ember.Component.extend({
     // TODO hacky bringing focus to this view to intercept keyboard
     this.$().attr({ tabindex: 1 });
     this.$().focus();
+    this.setupSVGListeners();
     this.draw();
   },
 
   selectChart: function() {
     return d3.select(this.$(".chart")[0]);
+  },
+
+  setupSVGListeners: function() {
+    d3.select("svg")
+      .on("click", () => {
+        var tool = this.get("activeTool");
+        if (tool) {
+          tool.click(d3.mouse(this.$('svg')[0]));
+        }
+      })
+      .on("mousemove", () => {
+        var tool = this.get("activeTool");
+        if (tool) {
+          tool.mouseMove(d3.mouse(this.$('svg')[0]));
+        }
+      });
   },
 
   draw: function() {
@@ -122,19 +139,15 @@ export default Ember.Component.extend({
     console.log('points', this.get('controlPoints'));
   }.observes('selectedMarkId'),
 
-  click: function(event) {
-    var tool = this.get("activeTool");
-    if (tool) {
-      tool.click(event);
-    }
-  },
+  //click: function(event) {
+    //var tool = this.get("activeTool");
+    //if (tool) {
+      //tool.click(event);
+    //}
+  //},
 
-  mouseMove: function(event) {
-    var tool = this.get("activeTool");
-    if (tool) {
-      tool.mouseMove(event);
-    }
-  },
+  //mouseMove: function(event) {
+  //},
 
   actions: {
     drawRect: function() {

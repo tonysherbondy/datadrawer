@@ -7,10 +7,10 @@ export default MarkTool.extend({
   operation: "draw",
   markType: "text",
 
-  getAttrs: function(event) {
+  getAttrs: function(mousePos) {
     return {
-      x: e(`${event.offsetX}`),
-      y: e(`${event.offsetY}`),
+      x: e(`${mousePos[0]}`),
+      y: e(`${mousePos[1]}`),
       fontFamily: e('"sans-serif"'),
       fontSize: e('20'),
       fill: e('"red"'),
@@ -18,10 +18,10 @@ export default MarkTool.extend({
     };
   },
 
-  getEndingAttrs: function(event) {
+  getEndingAttrs: function(mousePos) {
     return {
-      x: e(`${event.offsetX}`),
-      y: e(`${event.offsetY}`)
+      x: e(`${mousePos[0]}`),
+      y: e(`${mousePos[1]}`)
     };
   }
 });

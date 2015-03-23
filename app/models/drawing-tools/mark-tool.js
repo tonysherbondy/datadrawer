@@ -7,15 +7,15 @@ export default Ember.Object.extend({
   startingX: null,
   startingY: null,
 
-  click: function(event) {
+  click: function(mousePos) {
     if (!!this.get("instruction")) {
       this.set("instruction", null);
     } else {
-      this.set("startingX", event.offsetX);
-      this.set("startingY", event.offsetY);
+      this.set("startingX", mousePos[0]);
+      this.set("startingY", mousePos[1]);
       var operation = this.get("operation");
       var mark = this.get("markType");
-      var attrs = this.getAttrs(event);
+      var attrs = this.getAttrs(mousePos);
       var instruction = Instruction.create({
         operation: operation,
         mark: mark,
@@ -26,12 +26,12 @@ export default Ember.Object.extend({
     }
   },
 
-  mouseMove: function(event) {
+  mouseMove: function(mousePos) {
     var instruction = this.get("instruction");
     if (!!instruction) {
       // TODO: make instruction have a way to evaluate itself instead of getting
       // string representation
-      var endingAttrs = this.getEndingAttrs(event);
+      var endingAttrs = this.getEndingAttrs(mousePos);
       var attrs = Ember.merge({}, instruction.get("attrs"));
       instruction.set("attrs", Ember.merge(attrs, endingAttrs));
     }

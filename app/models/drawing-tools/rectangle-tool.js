@@ -7,21 +7,21 @@ export default MarkTool.extend({
   operation: "draw",
   markType: "rect",
 
-  getAttrs: function(event) {
+  getAttrs: function(mousePos) {
     return {
-      top: e(`${event.offsetY}`),
-      left: e(`${event.offsetX}`),
+      top: e(`${mousePos[1]}`),
+      left: e(`${mousePos[0]}`),
       width: e('0'),
       height: e('0'),
       opacity: e("0.3")
     };
   },
 
-  getEndingAttrs: function(event) {
+  getEndingAttrs: function(mousePos) {
     var startingX = this.get("startingX");
     var startingY = this.get("startingY");
-    var width = event.offsetX - startingX;
-    var height = event.offsetY - startingY;
+    var width = mousePos[0] - startingX;
+    var height = mousePos[1] - startingY;
     var newAttrs = {};
     if (width < 0) {
       width = -width;
