@@ -6,8 +6,7 @@ var Router = Ember.Router.extend({
 });
 
 Router.map(function() {
-  this.route('four', {path: '/'});
-  this.route('marks');
+  this.route('marks', {path: '/'});
 });
 
 export default Router;
