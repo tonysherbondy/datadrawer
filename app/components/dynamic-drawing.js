@@ -54,6 +54,8 @@ export default Ember.Component.extend({
         return {cx: 50, cy: 50, r: 50, opacity: 0.3};
       case "line":
         return {x1: 0, y1: 0, x2: 100, y2: 100, opacity: 0.3, stroke: 'black', 'stroke-width': 2};
+      case "text":
+        return {x: 0, y: 0, fontFamily: 'sans-serif', fontSize: 20, fill: 'red', text: 'Mexico'};
       default:
         return "";
     }

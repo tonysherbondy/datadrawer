@@ -3,6 +3,7 @@ import Instruction from "tukey/models/instruction";
 import RectangleTool from "tukey/models/drawing-tools/rectangle-tool";
 import CircleTool from "tukey/models/drawing-tools/circle-tool";
 import LineTool from "tukey/models/drawing-tools/line-tool";
+import TextTool from "tukey/models/drawing-tools/text-tool";
 
 export default Ember.Component.extend({
   classNames: ["draw-panel"],
@@ -149,7 +150,8 @@ export default Ember.Component.extend({
       this.set("activeTool", LineTool.create({instructionTree: instructionTree}));
     },
     drawText: function() {
-      console.log('trying to draw text');
+      var instructionTree = this.get("instructionTree");
+      this.set("activeTool", TextTool.create({instructionTree: instructionTree}));
     },
     adjustMove: function() {
       console.log('trying to adjust position');

@@ -62,7 +62,11 @@ export default Ember.Object.extend({
       if (!attrFunc) {
         return "";
       }
-      return `.attr('${item.d3Name}', ${attrFunc})`;
+      if (item.name === "text") {
+        return `.text(${attrFunc})`;
+      } else {
+        return `.attr('${item.d3Name}', ${attrFunc})`;
+      }
     }).join("\n");
   },
 
