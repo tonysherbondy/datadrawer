@@ -36,16 +36,6 @@ export default Ember.Object.extend({
     this.set("parentInstruction", null);
   },
 
-  // TODO probably don't need this anymore as we don't really want a flattened list
-  flattenedList: function() {
-    var ret = [];
-    ret.pushObject(this);
-    this.get('subInstructions').mapBy('flattenedList').forEach(function (instructionList) {
-      ret.pushObjects(instructionList);
-    });
-    return ret;
-  }.property('subInstructions.@each.flattenedList'),
-
   // Any loop or draw instruction should be able to return
   // a list of marks
   marks: function() {
@@ -91,27 +81,6 @@ export default Ember.Object.extend({
       flatMarks.setEach("loopOver", "table");
     }
     return flatMarks;
-  }.property("attrs", "operation", "mark", "subInstructions.[]", "subInstructions.@each.{attrs,marks}"),
-
-  // TODO(Tony) These should go away now because we just have one table
-  availableLoopVariables: function() {
-    if (this.get("operation") === "root") {
-      return [];
-    }
-
-    var ret = [];
-    ret.pushObjects(this.get("parentInstruction.availableLoopVariables"));
-
-    if (this.get("operation") === "loop") {
-      ret.pushObject(this.get("loopVariable"));
-    }
-
-    return ret;
-  }.property("parentInstruction.availableLoopVariables", "operation", "loopVariable"),
-
-  // TODO(Tony) These should go away now because we just have one table
-  loopVariable: function() {
-    return this.get("loopData.name");
-  }.property("loopData.name")
+  }.property("attrs", "operation", "mark", "subInstructions.[]", "subInstructions.@each.{attrs,marks}")
 
 });
