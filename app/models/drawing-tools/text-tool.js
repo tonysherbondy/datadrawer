@@ -19,7 +19,6 @@ export default MarkTool.extend({
   },
 
   getEndingAttrs: function(event) {
-    console.log(event);
     return {
       x: e(`${event.offsetX}`),
       y: e(`${event.offsetY}`)

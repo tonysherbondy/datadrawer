@@ -19,6 +19,8 @@ export default Mark.extend({
   attrsMap: [
     {name: "x", d3Name: "x"},
     {name: "y", d3Name: "y"},
-    {name: "text", d3Name: "text"}
+    {name: "text", d3Name: "text"},
+    {name: "fontSize", d3Name: "font-size"},
+    {name: "fontFamily", d3Name: "font-family"}
   ]
 });
