@@ -19,23 +19,24 @@ export default Ember.Component.extend({
     if (!activeDrawingMode) {
       return null;
     }
+    var store = this.get("store");
 
     switch(activeDrawingMode) {
       case "drawRect":
-        return RectangleTool.create({instructionTree: instructionTree});
+        return RectangleTool.create({instructionTree: instructionTree, store: store});
       case "drawCircle":
-        return CircleTool.create({instructionTree: instructionTree});
+        return CircleTool.create({instructionTree: instructionTree, store: store});
       case "drawLine":
-        return LineTool.create({instructionTree: instructionTree});
+        return LineTool.create({instructionTree: instructionTree, store: store});
       case "drawText":
-        return TextTool.create({instructionTree: instructionTree});
+        return TextTool.create({instructionTree: instructionTree, store: store});
       case "adjustMove":
-        return AdjustMoveTool.create();
+        return AdjustMoveTool.create({store: store});
       case "adjustScale":
         console.log('trying to adjust scale');
         return null;
       case "adjustRotate":
-        return AdjustRotateTool.create();
+        return AdjustRotateTool.create({store: store});
       default:
         console.log("don't know mode");
         return null;

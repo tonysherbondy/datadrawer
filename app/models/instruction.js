@@ -1,21 +1,21 @@
 import Ember from "ember";
+import DS from 'ember-data';
 import RectangleMark from 'tukey/models/mark/rectangle-mark';
 import CircleMark from 'tukey/models/mark/circle-mark';
 import LineMark from 'tukey/models/mark/line-mark';
 import TextMark from 'tukey/models/mark/text-mark';
 
 var markCounter = 0;
-export default Ember.Object.extend({
-  operation: null,
+export default DS.Model.extend({
+  operation: DS.attr('string'),
+  mark: DS.attr('string'),
+
+  parentInstruction: DS.belongsTo('instruction', {inverse: 'subInstructions'}),
+  subInstructions: DS.hasMany('instruction', {embedded: true}),
 
   markName: function() {
     return `mark${++markCounter}`;
   }.property("operation"),
-
-  parentInstruction: null,
-  subInstructions: function() {
-    return [];
-  }.property(),
 
   addSubInstruction: function(instruction) {
     this.get("subInstructions").pushObject(instruction);

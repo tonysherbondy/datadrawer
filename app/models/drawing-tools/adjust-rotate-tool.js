@@ -1,5 +1,4 @@
 import MarkTool from "tukey/models/drawing-tools/mark-tool";
-import Instruction from "tukey/models/instruction";
 
 export default MarkTool.extend({
   operation: "adjust",
@@ -35,7 +34,7 @@ export default MarkTool.extend({
       this.set("startingRotation", startingRotation);
       this.set("startingMousePos", mousePos);
       var attrs = mark.getTransformFromRotation(startingRotation);
-      var instruction = Instruction.create({
+      var instruction = this.get("store").createRecord("instruction", {
         operation: this.get("operation"),
         attrs: attrs
       });

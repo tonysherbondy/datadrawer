@@ -1,7 +1,7 @@
-import Ember from "ember";
+import DS from 'ember-data';
 
-export default Ember.Object.extend({
-  columns: Ember.required(),
+export default DS.Model.extend({
+  columns: DS.hasMany('tableColumn'),
 
   rows: function() {
     var columns = this.get("columns");

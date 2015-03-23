@@ -1,6 +1,5 @@
 import Ember from "ember";
 import MarkTool from "tukey/models/drawing-tools/mark-tool";
-import Instruction from "tukey/models/instruction";
 
 export default MarkTool.extend({
   operation: "adjust",
@@ -33,7 +32,7 @@ export default MarkTool.extend({
     this.set("controlPoint", controlPoint);
     if (!this.get("hasStarted")) {
       var attrs = mark.getAttrsForControlPoint(controlPoint);
-      var instruction = Instruction.create({
+      var instruction = this.get("store").createRecord('instruction', {
         operation: this.get("operation"),
         attrs: attrs
       });

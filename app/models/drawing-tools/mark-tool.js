@@ -1,11 +1,11 @@
 import Ember from "ember";
-import Instruction from "tukey/models/instruction";
 
 export default Ember.Object.extend({
   instructionTree: Ember.required(),
   instruction: null,
   startingX: null,
   startingY: null,
+  store: null, // Ember Data store
 
   hasStarted: Ember.computed.notEmpty("instruction"),
 
@@ -18,12 +18,14 @@ export default Ember.Object.extend({
       var operation = this.get("operation");
       var mark = this.get("markType");
       var attrs = this.getAttrs(mousePos);
-      var instruction = Instruction.create({
+      var instruction = this.get("store").createRecord("instruction", {
         operation: operation,
         mark: mark,
         attrs: attrs
       });
-      this.get("instructionTree").addSubInstruction(instruction);
+      this.get("instructionTree").then(function(tree) {
+        tree.addSubInstruction(instruction);
+      });
       this.set("instruction", instruction);
     }
   },

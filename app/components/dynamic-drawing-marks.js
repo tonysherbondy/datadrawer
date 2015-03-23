@@ -42,6 +42,31 @@ export default Ember.Component.extend({
         instruction = null;
       }
       this.set("model.currentInstruction", instruction);
+    },
+
+    savePicture: function() {
+      Ember.RSVP.all([
+        this.get("model").save(),
+        this.get("model.instructionTree").then(function(tree) {
+          return tree.save();
+        }),
+        Ember.RSVP.all(this.get("model.scalars").map(function(scalar) {
+          return scalar.save();
+        })),
+        this.get("model.table").then(function(table) {
+          return Ember.RSVP.all([
+            table.save(),
+            Ember.RSVP.all(table.get("columns").map(function(column) {
+              column.save(),
+              Ember.RSVP.all(column.get("cells").map(function(cell) {
+                return cell.save();
+              }))
+            }))
+          ]);
+        }),
+      ]).then(function() {
+        console.log("saved the picture!");
+      });
     }
   },
 

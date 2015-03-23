@@ -1,32 +1,23 @@
 import Ember from "ember";
+import DS from 'ember-data';
 
-export default Ember.Object.extend({
-  column: null,
+export default DS.Model.extend({
+  table: DS.belongsTo('table', {inverse: 'columns'}),
+  cells: DS.hasMany('tableCell'),
 
   cellByName: function(name) {
-    return this.get("column").findBy("name", name);
+    return this.get("cells").findBy("name", name);
   },
 
   rowNames: function() {
-    return this.get("column").getEach("name");
-  }.property('column.@each.{name}'),
+    return this.get("cells").getEach("name");
+  }.property('cells.@each.{name}'),
 
-  columnHash: function(key, newHash) {
-    if (arguments.length === 1) {
-      var hash = {};
-      this.get('column').forEach((cell) => {
-        hash[cell.get("name")] = cell.get("value");
-      });
-      return hash;
-    } else {
-        var column = Object.keys(newHash).map((key) => {
-          return Ember.Object.create({
-            name: key,
-            value: newHash[key]
-          });
-        });
-        this.set("column", column);
-      return newHash;
-    }
-  }.property("column.@each.{value,name}")
+  columnHash: function() {
+    var hash = {};
+    this.get('cells').forEach((cell) => {
+      hash[cell.get("name")] = cell.get("value");
+    });
+    return hash;
+  }.property("cells.@each.{value,name}")
 });
