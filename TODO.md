@@ -17,8 +17,6 @@
 
 ### Drawing tools panel
 
-* Implement drawLine
-* Implement drawText
 * Implement adjustMove
 * Implement adjustScale
 * Implement adjustRotate
