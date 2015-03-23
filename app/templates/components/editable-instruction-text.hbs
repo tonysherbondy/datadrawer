@@ -1,10 +1,13 @@
 {{#if isLoop}}
   Loop over table
 {{else if isDraw}}
-  Draw a {{mark}} with
+  Draw {{mark}} with
   {{#each displayableAttrs as |attr|}}
     {{instruction-attr-item instruction=instruction attr=attr}}
   {{/each}}
 {{else}}
-  Adjust {{attrsText}}
+  Adjust
+  {{#each displayableAttrs as |attr|}}
+    {{instruction-attr-item instruction=instruction attr=attr}}
+  {{/each}}
 {{/if}}
