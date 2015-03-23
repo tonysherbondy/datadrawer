@@ -11,7 +11,7 @@ export default Ember.Component.extend({
   svgWidth: 640,
   svgHeight: 480,
 
-  charToActionMap: {
+  charToModeMap: {
     r: "drawRect",
     x: "drawLine",
     t: "drawText",
@@ -23,7 +23,37 @@ export default Ember.Component.extend({
     l: "flowLoop"
   },
 
-  activeTool: null,
+  activeDrawingMode: null,
+  activeTool: function() {
+    var instructionTree = this.get("instructionTree");
+    var activeDrawingMode = this.get("activeDrawingMode");
+    if (!activeDrawingMode) {
+      return null;
+    }
+
+    switch(activeDrawingMode) {
+      case "drawRect":
+        return RectangleTool.create({instructionTree: instructionTree});
+      case "drawCircle":
+        return CircleTool.create({instructionTree: instructionTree});
+      case "drawLine":
+        return LineTool.create({instructionTree: instructionTree});
+      case "drawText":
+        return TextTool.create({instructionTree: instructionTree});
+      case "adjustMove":
+        console.log('trying to adjust position');
+        return null;
+      case "adjustScale":
+        console.log('trying to adjust scale');
+        return null;
+      case "adjustRotate":
+        console.log('trying to adjust rotation');
+        return null;
+      default:
+        console.log("don't know mode");
+        return null;
+    }
+  }.property("activeDrawingMode"),
 
   keyPress: function(event) {
     // TODO so HACKY, but if another component is viewing the keyboard I don't
@@ -32,9 +62,18 @@ export default Ember.Component.extend({
       return;
     }
     var charPressed = String.fromCharCode(event.keyCode).toLowerCase();
-    var action = this.charToActionMap[charPressed];
-    if (!!action) {
-      this.send(action);
+    var mode = this.charToModeMap[charPressed];
+    if (mode) {
+      if (mode.match(/flow/)) {
+        // All flow tools are simply actions to take
+        this.send(mode);
+      } else {
+        if (this.get("activeDrawingMode") === mode) {
+          this.set("activeDrawingMode", null);
+        } else {
+          this.set("activeDrawingMode", mode);
+        }
+      }
     }
   },
 
@@ -74,7 +113,7 @@ export default Ember.Component.extend({
   setupAdjustListeners: function() {
     d3.selectAll(".selectable-mark")
       .on("click", function (d) {
-        console.log("you just clicked", this);
+        console.log("you just clicked", this, d);
       });
   },
 
@@ -152,31 +191,6 @@ export default Ember.Component.extend({
   }.observes('selectedMarkId'),
 
   actions: {
-    drawRect: function() {
-      var instructionTree = this.get("instructionTree");
-      this.set("activeTool", RectangleTool.create({instructionTree: instructionTree}));
-    },
-    drawCircle: function() {
-      var instructionTree = this.get("instructionTree");
-      this.set("activeTool", CircleTool.create({instructionTree: instructionTree}));
-    },
-    drawLine: function() {
-      var instructionTree = this.get("instructionTree");
-      this.set("activeTool", LineTool.create({instructionTree: instructionTree}));
-    },
-    drawText: function() {
-      var instructionTree = this.get("instructionTree");
-      this.set("activeTool", TextTool.create({instructionTree: instructionTree}));
-    },
-    adjustMove: function() {
-      console.log('trying to adjust position');
-    },
-    adjustScale: function() {
-      console.log('trying to adjust scale');
-    },
-    adjustRotate: function() {
-      console.log('trying to adjust rotation');
-    },
     flowIf: function() {
       console.log('trying to add conditional');
     },
