@@ -28,10 +28,6 @@ export default Ember.Object.extend({
     this.notifyPropertyChange("d3Code");
   },
 
-  displayString: function() {
-    return "Empty Mark";
-  },
-
   getAttrFuncD3: function(attr) {
     if (!this.get(attr)) {
       return null;

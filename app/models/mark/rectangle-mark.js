@@ -9,17 +9,6 @@ export default Mark.extend({
   top: Ember.required(),
   left: Ember.required(),
 
-  displayString: function() {
-    var left = this.get("left.stringRepresentation");
-    var top = this.get("top.stringRepresentation");
-    var width = this.get("width.stringRepresentation");
-    var height = this.get("height.stringRepresentation");
-
-    return `draw rectangle from [${left}], [${top}]` +
-      ` with width: [${width}], and height: [${height}]`;
-
-  }.property("width", "height", "top", "left"),
-
   attrsMap: [
     {name: "width", d3Name: "width"},
     {name: "height", d3Name: "height"},
