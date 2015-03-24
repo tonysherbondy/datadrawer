@@ -1,5 +1,7 @@
 import Ember from "ember";
 import Mark from "tukey/models/mark/mark";
+import Expression from 'tukey/models/expression';
+var e = Expression.e;
 
 export default Mark.extend({
   type: "rect",
@@ -19,6 +21,21 @@ export default Mark.extend({
       {name: "bottom-right", position: [left+width, top+height]}
     ];
   },
+
+  getAttrsForControlPoint: function(point) {
+    var attrs = {};
+    if (point.name === "top-left") {
+      attrs.left = e(""+point.position[0]);
+      attrs.top = e(""+point.position[1]);
+    } else if (point.name === "bottom-right") {
+      var width = this.get("width").cheapoEval();
+      var height = this.get("height").cheapoEval();
+      attrs.left = e(""+ (point.position[0] - width));
+      attrs.top = e(""+ (point.position[1] - height));
+    }
+    return attrs;
+  },
+
 
   attrsMap: [
     {name: "width", d3Name: "width"},

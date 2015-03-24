@@ -86,9 +86,20 @@ export default Ember.Component.extend({
     d3.select("svg")
       .on("click", () => {
         var tool = this.get("activeTool");
-        if (tool && tool.click) {
-          tool.click(this.getMousePos());
+        if (tool) {
+          var operation = tool.get("operation");
+          if (operation === "draw") {
+            tool.click(this.getMousePos());
+          } else if (operation === "adjust") {
+            var isControlPoint = d3.select(d3.event.target).classed("control-point");
+            if (tool.get("hasStarted")) {
+              tool.click(this.getMousePos());
+            } else if (isControlPoint) {
+              tool.startAdjust(d3.event.target.__data__, this.get("selectedMark"));
+            }
+          }
         }
+        d3.event.stopPropagation();
       })
       .on("mousemove", () => {
         var tool = this.get("activeTool");
@@ -114,7 +125,8 @@ export default Ember.Component.extend({
           }
         }
         Ember.assert("selected a mark id", markID);
-        self.selectMark(markID);
+        self.selectMarkById(markID);
+        d3.event.stopPropagation();
       });
   },
 
@@ -145,12 +157,16 @@ export default Ember.Component.extend({
     }
 
     this.setupAdjustListeners();
+    this.drawMarkControls();
 
   }.observes("d3Code", "table.columns.@each.columnHash", "scalars.@each.value", "scalars.@each.name"),
 
   selectedMarkId: null,
+  selectedMark: function() {
+    return this.get("marks").findBy("name", this.get("selectedMarkId"));
+  }.property("marks.@each.name", "selectedMarkId"),
 
-  selectMark: function(id) {
+  selectMarkById: function(id) {
     if (this.get('selectedMarkId') === id) {
       this.set('selectedMarkId', null);
     } else {
@@ -163,14 +179,12 @@ export default Ember.Component.extend({
     // dots for things we can do to the mark,e.g.,
     // move, size, etc.
 
-    console.log("drawMarkControls");
     // Clear previous overlay
     var gLayer = this.selectChart().select('g.control-layer');
     if (gLayer) {
       gLayer.remove();
     }
-    var markId = this.get("selectedMarkId");
-    var mark = this.get("marks").findBy("name", markId);
+    var mark = this.get("selectedMark");
     if (!mark) {
       return;
     }
@@ -179,6 +193,7 @@ export default Ember.Component.extend({
     var controlPoints = mark.getControlPoints();
     gLayer.selectAll('.control-points').data(controlPoints).enter()
       .append('circle')
+      .classed("control-point", true)
       .attr({
         r: 5,
         opacity: 0.5,
@@ -187,15 +202,8 @@ export default Ember.Component.extend({
         'stroke-width': 1,
         cx: (d) => d.position[0],
         cy: (d) => d.position[1]
-      }).on("click", (d) => {
-        var tool = this.get("activeTool");
-        if (tool && tool.get("operation") === "adjust") {
-          tool.startAdjust(d, markId, mark.get("drawInstruction"));
-        }
       });
 
-    console.log('selected', mark);
-    console.log('points', controlPoints);
   }.observes('selectedMarkId'),
 
   actions: {

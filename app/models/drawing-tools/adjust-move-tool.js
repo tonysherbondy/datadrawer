@@ -1,8 +1,6 @@
+import Ember from "ember";
 import MarkTool from "tukey/models/drawing-tools/mark-tool";
-import Expression from "tukey/models/expression";
 import Instruction from "tukey/models/instruction";
-
-var e = Expression.e;
 
 export default MarkTool.extend({
   operation: "adjust",
@@ -15,35 +13,49 @@ export default MarkTool.extend({
   controlPoint: null,
   markId: null,
 
-  getMark: function() {
-    return this.get("drawInstruction.marks").findBy("name", this.get("markId"));
-  },
+  mark: function(key, value) {
+    if (arguments.length === 1) {
+      return this.get("drawInstruction.marks").findBy("name", this.get("markId"));
+    } else {
+      if (value) {
+        this.set("drawInstruction", value.get("drawInstruction"));
+        this.set("markId", value.get("name"));
+      } else {
+        this.set("drawInstruction", null);
+        this.set("markId", null);
+      }
+      return value;
+    }
+  }.property("drawInstruction.marks.@each.name", "markId"),
 
-  startAdjust: function(controlPoint, markId, drawInstruction) {
-    this.set("markId", markId);
-    this.set("drawInstruction", drawInstruction);
+  startAdjust: function(controlPoint, mark) {
+    this.set("mark", mark);
     this.set("controlPoint", controlPoint);
-    var mark = this.getMark();
-    if (!this.get("instruction")) {
+    if (!this.get("hasStarted")) {
       var attrs = mark.getAttrsForControlPoint(controlPoint);
       var instruction = Instruction.create({
         operation: this.get("operation"),
         attrs: attrs
       });
-      drawInstruction.addSubInstruction(instruction);
+      this.get("drawInstruction").addSubInstruction(instruction);
       this.set("instruction", instruction);
     }
   },
 
-  //mouseMove: function(mousePos) {
-    //var instruction = this.get("instruction");
-    //if (!!instruction) {
-      //// TODO: make instruction have a way to evaluate itself instead of getting
-      //// string representation
-      //var endingAttrs = this.getEndingAttrs(mousePos);
-      //var attrs = Ember.merge({}, instruction.get("attrs"));
-      //instruction.set("attrs", Ember.merge(attrs, endingAttrs));
-    //}
-  //}
+  click: function(mousePos) {
+    if (this.get("hasStarted")) {
+      this.mouseMove(mousePos);
+      this.set("instruction", null);
+    }
+  },
+
+  mouseMove: function(mousePos) {
+    if (this.get("hasStarted")) {
+      var controlPoint = Ember.merge({}, this.get("controlPoint"));
+      controlPoint.position = mousePos;
+      var attrs = this.get("mark").getAttrsForControlPoint(controlPoint);
+      this.set("instruction.attrs", attrs);
+    }
+  }
 
 });

@@ -4,8 +4,13 @@ import CircleMark from 'tukey/models/mark/circle-mark';
 import LineMark from 'tukey/models/mark/line-mark';
 import TextMark from 'tukey/models/mark/text-mark';
 
+var markCounter = 0;
 export default Ember.Object.extend({
   operation: null,
+
+  markName: function() {
+    return `mark${++markCounter}`;
+  }.property("operation"),
 
   parentInstruction: null,
   subInstructions: function() {
@@ -46,7 +51,7 @@ export default Ember.Object.extend({
     if (operation === "root" || operation === "loop") {
       marks = subInstructions.getEach("marks");
     } else if (operation === "draw") {
-      var attrs = Ember.merge({drawInstruction: this}, this.get("attrs"));
+      var attrs = Ember.merge({}, this.get("attrs"));
       // Get all subInstruction attrs as they are all sets
       attrs = subInstructions.getEach("attrs").reduce((prev, item) => {
         return Ember.merge(prev, item);
@@ -65,7 +70,9 @@ export default Ember.Object.extend({
       } else {
         console.log("Don't know mark", mark);
       }
-      marks = [markClass.create(attrs)];
+      marks = [markClass.create(Ember.merge(
+        {drawInstruction: this, name: this.get("markName")},
+        attrs))];
     } else {
       console.log("should not be asked to mark this instruction");
       return [];

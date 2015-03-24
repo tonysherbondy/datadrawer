@@ -7,8 +7,10 @@ export default Ember.Object.extend({
   startingX: null,
   startingY: null,
 
+  hasStarted: Ember.computed.notEmpty("instruction"),
+
   click: function(mousePos) {
-    if (!!this.get("instruction")) {
+    if (this.get("hasStarted")) {
       this.set("instruction", null);
     } else {
       this.set("startingX", mousePos[0]);
@@ -27,13 +29,12 @@ export default Ember.Object.extend({
   },
 
   mouseMove: function(mousePos) {
-    var instruction = this.get("instruction");
-    if (!!instruction) {
+    if (this.get("hasStarted")) {
       // TODO: make instruction have a way to evaluate itself instead of getting
       // string representation
       var endingAttrs = this.getEndingAttrs(mousePos);
-      var attrs = Ember.merge({}, instruction.get("attrs"));
-      instruction.set("attrs", Ember.merge(attrs, endingAttrs));
+      var attrs = Ember.merge({}, this.get("instruction.attrs"));
+      this.set("instruction.attrs", Ember.merge(attrs, endingAttrs));
     }
   }
 });

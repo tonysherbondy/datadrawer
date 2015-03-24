@@ -1,11 +1,9 @@
 import Ember from "ember";
 
-var markCounter = 0;
 
 export default Ember.Object.extend({
-  name: function() {
-    return `mark${++markCounter}`;
-  }.property(),
+  // Whoever creates mark must give it unique name
+  name: Ember.required(),
 
   // Assume that the draw instruction that creates this mark will set itself
   drawInstruction: null,
