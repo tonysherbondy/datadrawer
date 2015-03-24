@@ -46,7 +46,7 @@ export default Ember.Object.extend({
     if (operation === "root" || operation === "loop") {
       marks = subInstructions.getEach("marks");
     } else if (operation === "draw") {
-      var attrs = Ember.merge({}, this.get("attrs"));
+      var attrs = Ember.merge({drawInstruction: this}, this.get("attrs"));
       // Get all subInstruction attrs as they are all sets
       attrs = subInstructions.getEach("attrs").reduce((prev, item) => {
         return Ember.merge(prev, item);

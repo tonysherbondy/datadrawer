@@ -4,6 +4,7 @@ import RectangleTool from "tukey/models/drawing-tools/rectangle-tool";
 import CircleTool from "tukey/models/drawing-tools/circle-tool";
 import LineTool from "tukey/models/drawing-tools/line-tool";
 import TextTool from "tukey/models/drawing-tools/text-tool";
+import AdjustMoveTool from "tukey/models/drawing-tools/adjust-move-tool";
 
 export default Ember.Component.extend({
   classNames: ["draw-panel"],
@@ -28,8 +29,7 @@ export default Ember.Component.extend({
       case "drawText":
         return TextTool.create({instructionTree: instructionTree});
       case "adjustMove":
-        console.log('trying to adjust position');
-        return null;
+        return AdjustMoveTool.create();
       case "adjustScale":
         console.log('trying to adjust scale');
         return null;
@@ -86,13 +86,13 @@ export default Ember.Component.extend({
     d3.select("svg")
       .on("click", () => {
         var tool = this.get("activeTool");
-        if (tool) {
+        if (tool && tool.click) {
           tool.click(this.getMousePos());
         }
       })
       .on("mousemove", () => {
         var tool = this.get("activeTool");
-        if (tool) {
+        if (tool && tool.mouseMove) {
           tool.mouseMove(this.getMousePos());
         }
       });
@@ -169,7 +169,8 @@ export default Ember.Component.extend({
     if (gLayer) {
       gLayer.remove();
     }
-    var mark = this.get("marks").findBy("name", this.get("selectedMarkId"));
+    var markId = this.get("selectedMarkId");
+    var mark = this.get("marks").findBy("name", markId);
     if (!mark) {
       return;
     }
@@ -186,6 +187,11 @@ export default Ember.Component.extend({
         'stroke-width': 1,
         cx: (d) => d.position[0],
         cy: (d) => d.position[1]
+      }).on("click", (d) => {
+        var tool = this.get("activeTool");
+        if (tool && tool.get("operation") === "adjust") {
+          tool.startAdjust(d, markId, mark.get("drawInstruction"));
+        }
       });
 
     console.log('selected', mark);

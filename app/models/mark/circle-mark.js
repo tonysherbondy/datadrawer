@@ -1,5 +1,7 @@
 import Ember from 'ember';
 import Mark from 'tukey/models/mark/mark';
+import Expression from 'tukey/models/expression';
+var e = Expression.e;
 
 export default Mark.extend({
   type: "circle",
@@ -14,6 +16,15 @@ export default Mark.extend({
     return [
       {name: "center", position: [cx, cy]}
     ];
+  },
+
+  getAttrsForControlPoint: function(point) {
+    var attrs = {};
+    if (point.name === "center") {
+      attrs.cx = e(""+point.position[0]);
+      attrs.cy = e(""+point.position[1]);
+    }
+    return attrs;
   },
 
   attrsMap: [

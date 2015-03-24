@@ -7,6 +7,9 @@ export default Ember.Object.extend({
     return `mark${++markCounter}`;
   }.property(),
 
+  // Assume that the draw instruction that creates this mark will set itself
+  drawInstruction: null,
+
   // TODO Need a way to have attrsMap be something that is an appendable property,
   // i.e., subclassing adds to it rather than replaces, then we need to add observers
   // dynamically
