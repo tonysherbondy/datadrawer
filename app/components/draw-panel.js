@@ -99,9 +99,22 @@ export default Ember.Component.extend({
   },
 
   setupAdjustListeners: function() {
+    var self = this;
     d3.selectAll(".selectable-mark")
-      .on("click", function (d) {
-        console.log("you just clicked", this, d);
+      .on("click", function() {
+        // Ignore if activeTool is a drawing
+        if (self.get("activeTool.operation") === "draw") {
+          return;
+        }
+        let markID;
+        for (let cc=0; cc<this.classList.length; cc++) {
+          let className = this.classList[cc];
+          if (className.match(/^mark/)) {
+            markID = className;
+          }
+        }
+        Ember.assert("selected a mark id", markID);
+        self.selectMark(markID);
       });
   },
 
@@ -150,19 +163,20 @@ export default Ember.Component.extend({
     // dots for things we can do to the mark,e.g.,
     // move, size, etc.
 
+    console.log("drawMarkControls");
     // Clear previous overlay
     var gLayer = this.selectChart().select('g.control-layer');
     if (gLayer) {
       gLayer.remove();
     }
-    var markId = this.get('selectedMarkId');
-    if (!markId) {
+    var mark = this.get("marks").findBy("name", this.get("selectedMarkId"));
+    if (!mark) {
       return;
     }
 
     gLayer = this.selectChart().append('g').attr('class', 'control-layer');
-    let {topLeft, bottomRight} = this.get('controlPoints')[0];
-    gLayer.selectAll('.control-points').data([topLeft, bottomRight]).enter()
+    var controlPoints = mark.getControlPoints();
+    gLayer.selectAll('.control-points').data(controlPoints).enter()
       .append('circle')
       .attr({
         r: 5,
@@ -170,12 +184,12 @@ export default Ember.Component.extend({
         fill: 'blue',
         stroke: 'black',
         'stroke-width': 1,
-        cx: (d) => d[0],
-        cy: (d) => d[1]
+        cx: (d) => d.position[0],
+        cy: (d) => d.position[1]
       });
 
-    console.log('selected', markId);
-    console.log('points', this.get('controlPoints'));
+    console.log('selected', mark);
+    console.log('points', controlPoints);
   }.observes('selectedMarkId'),
 
   actions: {

@@ -8,6 +8,14 @@ export default Mark.extend({
   cx: Ember.required(),
   cy: Ember.required(),
 
+  getControlPoints: function() {
+    var cx = this.get("cx").cheapoEval();
+    var cy = this.get("cy").cheapoEval();
+    return [
+      {name: "center", position: [cx, cy]}
+    ];
+  },
+
   attrsMap: [
     {name: "radius", d3Name: "r"},
     {name: "cx", d3Name: "cx"},

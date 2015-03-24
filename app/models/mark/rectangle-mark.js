@@ -9,6 +9,17 @@ export default Mark.extend({
   top: Ember.required(),
   left: Ember.required(),
 
+  getControlPoints: function() {
+    var top = this.get("top").cheapoEval();
+    var left = this.get("left").cheapoEval();
+    var width = this.get("width").cheapoEval();
+    var height = this.get("height").cheapoEval();
+    return [
+      {name: "top-left", position: [left, top]},
+      {name: "bottom-right", position: [left+width, top+height]}
+    ];
+  },
+
   attrsMap: [
     {name: "width", d3Name: "width"},
     {name: "height", d3Name: "height"},
