@@ -13,6 +13,7 @@ export default MarkTool.extend({
       y: e(`${mousePos[1]}`),
       fontFamily: e('"sans-serif"'),
       fontSize: e('20'),
+      textAnchor: e('"start"'),
       fill: e('"red"'),
       text: e('"Mexico"')
     };
