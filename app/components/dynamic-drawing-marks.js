@@ -45,26 +45,31 @@ export default Ember.Component.extend({
     },
 
     savePicture: function() {
+      var picture = this.get("model");
+      var recordsToSave = [picture];
+      recordsToSave.pushObjects(picture.get("scalars").toArray());
+      recordsToSave.pushObjects(picture.get("table.columns").toArray());
+      picture.get("table.columns").forEach(function(column) {
+        recordsToSave.pushObjects(column.get("cells").toArray());
+      });
+      var instructionsToSave = [picture.get("instructionTree")];
+      while (instructionsToSave.length > 0) {
+        var currentInstruction = instructionsToSave.pop();
+        recordsToSave.pushObjects(currentInstruction.get("attrItems").toArray());
+        instructionsToSave.pushObjects(currentInstruction.get("subInstructions").toArray());
+      }
       Ember.RSVP.all([
-        this.get("model").save(),
-        this.get("model.instructionTree").then(function(tree) {
-          return tree.save();
+        picture.get("instructionTree").then(function(tree) {
+          recordsToSave.push(tree);
         }),
-        Ember.RSVP.all(this.get("model.scalars").map(function(scalar) {
-          return scalar.save();
-        })),
-        this.get("model.table").then(function(table) {
-          return Ember.RSVP.all([
-            table.save(),
-            Ember.RSVP.all(table.get("columns").map(function(column) {
-              column.save(),
-              Ember.RSVP.all(column.get("cells").map(function(cell) {
-                return cell.save();
-              }))
-            }))
-          ]);
-        }),
+        picture.get("table").then(function(table) {
+          recordsToSave.push(table);
+        })
       ]).then(function() {
+        Ember.RSVP.all(recordsToSave.map(function(record) {
+          return record.save();
+        }));
+      }).then(function() {
         console.log("saved the picture!");
       });
     }

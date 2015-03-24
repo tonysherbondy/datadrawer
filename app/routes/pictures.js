@@ -9,6 +9,7 @@ export default Ember.Route.extend({
     var store = this.get("store");
     return Ember.RSVP.all([
       store.find("instruction"),
+      store.find("instructionAttr"),
       store.find("table"),
       store.find("tableColumn"),
       store.find("tableCell")

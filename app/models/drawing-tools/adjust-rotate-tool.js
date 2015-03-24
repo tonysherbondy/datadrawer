@@ -36,8 +36,8 @@ export default MarkTool.extend({
       var attrs = mark.getTransformFromRotation(startingRotation);
       var instruction = this.get("store").createRecord("instruction", {
         operation: this.get("operation"),
-        attrs: attrs
       });
+      instruction.set("attrs", attrs);
       this.get("drawInstruction").addSubInstruction(instruction);
       this.set("instruction", instruction);
     }

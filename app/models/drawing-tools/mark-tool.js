@@ -20,9 +20,9 @@ export default Ember.Object.extend({
       var attrs = this.getAttrs(mousePos);
       var instruction = this.get("store").createRecord("instruction", {
         operation: operation,
-        mark: mark,
-        attrs: attrs
+        mark: mark
       });
+      instruction.set("attrs", attrs);
       this.get("instructionTree").then(function(tree) {
         tree.addSubInstruction(instruction);
       });

@@ -34,8 +34,8 @@ export default MarkTool.extend({
       var attrs = mark.getAttrsForControlPoint(controlPoint);
       var instruction = this.get("store").createRecord('instruction', {
         operation: this.get("operation"),
-        attrs: attrs
       });
+      instruction.set("attrs", attrs);
       this.get("drawInstruction").addSubInstruction(instruction);
       this.set("instruction", instruction);
     }

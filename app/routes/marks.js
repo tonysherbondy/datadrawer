@@ -47,37 +47,37 @@ export default Ember.Route.extend({
     var singleDrawOp = this.get("store").createRecord('instruction', {
         operation: "draw",
         mark: "rect",
-        attrs: {
-          top: e("10"),
-          left: e("10"),
-          width: e("100"),
-          height: e("100"),
-          opacity: e("0.3")
-        },
         markId: 1
+    });
+    singleDrawOp.set("attrs", {
+      top: e("10"),
+      left: e("10"),
+      width: e("100"),
+      height: e("100"),
+      opacity: e("0.3")
     });
     var setOp = this.get("store").createRecord('instruction', {
         operation: "set",
-        // TODO - these are probably computed from something
-        attrs: {
-          height: e("50"),
-        },
         property: "height",
         propertyValue: 50
+    });
+    setOp.set("attrs", {
+      // TODO - these are probably computed from something
+      height: e("50")
     });
     singleDrawOp.addSubInstruction(setOp);
 
     var loopedDrawOp = this.get("store").createRecord('instruction', {
       operation: "draw",
       mark: "circle",
-      attrs: {
-        radius: e("5"),
-        cy: e("element.age"),
-        cx: e("element.weight"),
-        opacity: e("0.7"),
-        fill: e("'#49B08D'")
-      },
       markId: 2
+    });
+    loopedDrawOp.set("attrs", {
+      radius: e("5"),
+      cy: e("element.age"),
+      cx: e("element.weight"),
+      opacity: e("0.7"),
+      fill: e("'#49B08D'")
     });
 
     var loopOp = this.get("store").createRecord('instruction', {

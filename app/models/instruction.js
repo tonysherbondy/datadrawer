@@ -4,12 +4,15 @@ import RectangleMark from 'tukey/models/mark/rectangle-mark';
 import CircleMark from 'tukey/models/mark/circle-mark';
 import LineMark from 'tukey/models/mark/line-mark';
 import TextMark from 'tukey/models/mark/text-mark';
+import Expression from 'tukey/models/expression';
+
+var e = Expression.e;
 
 var markCounter = 0;
 export default DS.Model.extend({
   operation: DS.attr('string'),
   mark: DS.attr('string'),
-
+  attrItems: DS.hasMany('instructionAttr'),
   parentInstruction: DS.belongsTo('instruction', {inverse: 'subInstructions'}),
   subInstructions: DS.hasMany('instruction', {embedded: true}),
 
@@ -39,6 +42,28 @@ export default DS.Model.extend({
       parentInstruction.set("subInstructions", subInstructions.reject((item) => item === this));
     }
     this.set("parentInstruction", null);
+  },
+
+  attrs: function(key, value) {
+    if (arguments.length > 1) {
+      this.get("attrItems").clear();
+      this.get("attrItems").pushObjects(this.getAttrListFromHash(value));
+    }
+    var attrs = {};
+    this.get("attrItems").forEach(function(attrItem) {
+      attrs[attrItem.get("name")] = e(attrItem.get("value"));
+    });
+    return attrs;
+  }.property("attrItems.[]"),
+
+  getAttrListFromHash: function(attrHash) {
+    var store = this.get("store");
+    return Object.keys(attrHash).map(function(key) {
+      return store.createRecord("instructionAttr", {
+        name: key,
+        value: attrHash[key].get("stringRepresentation")
+      });
+    });
   },
 
   // Any loop or draw instruction should be able to return
