@@ -82,8 +82,21 @@ ul {
 }
 
 .ro-instruction-list {
-  li.is-current {
-    background-color: $highlight-color;
+  li {
+    position: relative;
+    padding-right: 20px;
+    &.is-current {
+      background-color: $highlight-color;
+    }
+    button.close {
+      position: absolute;
+      top: -6px;
+      right: 0;
+      opacity: 0;
+    }
+    &:hover > button.close {
+      opacity: 0.4;
+    }
   }
 }
 
