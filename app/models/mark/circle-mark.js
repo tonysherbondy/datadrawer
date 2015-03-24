@@ -1,30 +1,29 @@
-import Ember from 'ember';
 import Mark from 'tukey/models/mark/mark';
-import Expression from 'tukey/models/expression';
-var e = Expression.e;
+import {Environment} from 'tukey/objects/variable';
+import Attribute from 'tukey/objects/attribute';
+var v = Environment.v;
 
 export default Mark.extend({
   type: "circle",
 
-  radius: Ember.required(),
-  cx: Ember.required(),
-  cy: Ember.required(),
-
   getControlPoints: function() {
-    var cx = this.get("cx").cheapoEval();
-    var cy = this.get("cy").cheapoEval();
+    var cx = this.getAttrByName('cx').get('value');
+    var cy = this.getAttrByName('cy').get('value');
     return [
       {name: "center", position: [cx, cy]}
     ];
   },
 
   getAttrsForControlPoint: function(point) {
-    var attrs = {};
-    if (point.name === "center") {
-      attrs.cx = e(""+point.position[0]);
-      attrs.cy = e(""+point.position[1]);
-    }
-    return attrs;
+    return Attribute.attributesFromHash({
+      cx: v('cx', point.position[0]),
+      cy: v('cy', point.position[1])
+    });
+  },
+
+  updateAttrsWithControlPoint: function(point) {
+    this.getAttrByName('cx').set('variable.definition', point.position[0]);
+    this.getAttrByName('cy').set('variable.definition', point.position[1]);
   },
 
   attrsMap: [

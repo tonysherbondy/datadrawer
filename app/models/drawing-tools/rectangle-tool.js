@@ -1,39 +1,42 @@
 import MarkTool from "tukey/models/drawing-tools/mark-tool";
-import Expression from "tukey/models/expression";
-
-var e = Expression.e;
+import Attribute from 'tukey/objects/attribute';
+import {Environment} from "tukey/objects/variable";
+var v = Environment.v;
 
 export default MarkTool.extend({
   operation: "draw",
   markType: "rect",
 
   getAttrs: function(mousePos) {
-    return {
-      top: e(`${mousePos[1]}`),
-      left: e(`${mousePos[0]}`),
-      width: e('0'),
-      height: e('0'),
-      opacity: e("0.3")
-    };
+    return Attribute.attributesFromHash({
+      top: v('top', mousePos[1]),
+      left: v('left', mousePos[0]),
+      width: v('width', 0),
+      height: v('height', 0),
+      opacity: v('opacity', 0.3)
+    });
   },
 
-  getEndingAttrs: function(mousePos) {
+  updateAttrs: function(mousePos) {
     var startingX = this.get("startingX");
     var startingY = this.get("startingY");
     var width = mousePos[0] - startingX;
     var height = mousePos[1] - startingY;
-    var newAttrs = {};
+    var attrs = this.get('instruction.attrs');
+
     if (width < 0) {
       width = -width;
-      newAttrs.left = e(`${startingX - width}`);
+      attrs.findBy('name', 'left').set('variable.definition',
+                                       startingX - width);
     }
+
     if (height < 0) {
       height = -height;
-      newAttrs.top = e(`${startingY - height}`);
+      attrs.findBy('name', 'top').set('variable.definition',
+                                       startingY - height);
     }
-    newAttrs.width = e(`${width}`);
-    newAttrs.height = e(`${height}`);
 
-    return newAttrs;
+    attrs.findBy('name', 'width').set('variable.definition', width);
+    attrs.findBy('name', 'height').set('variable.definition', height);
   }
 });

@@ -41,7 +41,7 @@ export default MarkTool.extend({
     }
   },
 
-  click: function(mousePos) {
+  endAdjust: function(mousePos) {
     if (this.get("hasStarted")) {
       this.mouseMove(mousePos);
       this.set("instruction", null);
@@ -52,8 +52,7 @@ export default MarkTool.extend({
     if (this.get("hasStarted")) {
       var controlPoint = Ember.merge({}, this.get("controlPoint"));
       controlPoint.position = mousePos;
-      var attrs = this.get("mark").getAttrsForControlPoint(controlPoint);
-      this.set("instruction.attrs", attrs);
+      this.get("mark").updateAttrsWithControlPoint(controlPoint);
     }
   }
 

@@ -43,7 +43,7 @@ export default MarkTool.extend({
     }
   },
 
-  click: function(mousePos) {
+  endAdjust: function(mousePos) {
     if (this.get("hasStarted")) {
       this.mouseMove(mousePos);
       this.set("instruction", null);

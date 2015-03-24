@@ -20,6 +20,10 @@ export default Ember.Object.extend({
     {name: "strokeWidth", d3Name: "stroke-width"},
   ],
 
+  getAttrByName: function(name) {
+    return this.get('attrs').findBy('name', name);
+  },
+
   rotation: function() {
     var transform = this.get("transform");
     if (Ember.isEmpty(transform)) {
@@ -42,11 +46,17 @@ export default Ember.Object.extend({
     this.notifyPropertyChange("d3Code");
   },
 
-  getAttrFuncD3: function(attr) {
-    if (!this.get(attr)) {
+  getAttrFuncD3: function(attrName) {
+    var attribute = this.get('attrs').findBy('name', attrName);
+
+    if (!attribute) {
       return null;
     }
-    return `function(element, index) { return ${this.get(attr + '.stringRepresentation')}; }`;
+
+    //TODO (nhan): reconsider the way we're getting the value of these expressions
+    //perhaps the outputted d3 code should refer to variables that are initialized
+    //earlier in the code
+    return `function(element, index) { return ${attribute.get('variable.jsCode')}; }`;
   },
 
   // TODO need to support "table" and eventually some subsplicing of table

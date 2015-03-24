@@ -1,10 +1,6 @@
 import Ember from 'ember';
-import Expression from 'tukey/models/expression';
-
-var e = Expression.e;
 
 export default Ember.Route.extend({
-
   getTable: function() {
     var columns = [
         {name: "Nhan", age: 27, weight: 120},
@@ -44,53 +40,53 @@ export default Ember.Route.extend({
   },
 
   getInstructionTree: function() {
-    var singleDrawOp = this.get("store").createRecord('instruction', {
-        operation: "draw",
-        mark: "rect",
-        markId: 1
-    });
-    singleDrawOp.set("attrs", {
-      top: e("10"),
-      left: e("10"),
-      width: e("100"),
-      height: e("100"),
-      opacity: e("0.3")
-    });
-    var setOp = this.get("store").createRecord('instruction', {
-        operation: "set",
-        property: "height",
-        propertyValue: 50
-    });
-    setOp.set("attrs", {
-      // TODO - these are probably computed from something
-      height: e("50")
-    });
-    singleDrawOp.addSubInstruction(setOp);
+    //var singleDrawOp = this.get("store").createRecord('instruction', {
+        //operation: "draw",
+        //mark: "rect",
+        //markId: 1
+    //});
 
-    var loopedDrawOp = this.get("store").createRecord('instruction', {
-      operation: "draw",
-      mark: "circle",
-      markId: 2
-    });
-    loopedDrawOp.set("attrs", {
-      radius: e("5"),
-      cy: e("element.age"),
-      cx: e("element.weight"),
-      opacity: e("0.7"),
-      fill: e("'#49B08D'")
-    });
+    //singleDrawOp.set("attrs", {
+      //top: e("10"),
+      //left: e("10"),
+      //width: e("100"),
+      //height: e("100"),
+      //opacity: e("0.3")
+    //});
+    //var setOp = this.get("store").createRecord('instruction', {
+        //operation: "set",
+        //property: "height",
+        //propertyValue: 50
+    //});
+    //setOp.set("attrs", {
+      //// TODO - these are probably computed from something
+      //height: e("50")
+    //});
+    //singleDrawOp.addSubInstruction(setOp);
 
-    var loopOp = this.get("store").createRecord('instruction', {
-      operation: "loop"
-    });
-    loopOp.addSubInstruction(loopedDrawOp);
+    //var loopedDrawOp = this.get("store").createRecord('instruction', {
+      //operation: "draw",
+      //mark: "circle",
+      //markId: 2
+    //});
+    //loopedDrawOp.set("attrs", {
+      //radius: e("5"),
+      //cy: e("element.age"),
+      //cx: e("element.weight"),
+      //opacity: e("0.7"),
+      //fill: e("'#49B08D'")
+    //});
+
+    //var loopOp = this.get("store").createRecord('instruction', {
+      //operation: "loop"
+    //});
+    //loopOp.addSubInstruction(loopedDrawOp);
 
     var root = this.get("store").createRecord('instruction', {
         operation: "root",
     });
-    root.addSubInstruction(singleDrawOp);
-    root.addSubInstruction(loopOp);
-
+    //root.addSubInstruction(singleDrawOp);
+    //root.addSubInstruction(loopOp);
     return root;
   },
 
@@ -99,6 +95,7 @@ export default Ember.Route.extend({
       instructionTree: this.getInstructionTree(),
       table: this.getTable()
     });
+
     picture.get("scalars").pushObjects(this.getScalars());
     return picture;
   }

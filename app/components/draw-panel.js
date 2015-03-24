@@ -94,9 +94,11 @@ export default Ember.Component.extend({
           } else if (operation === "adjust") {
             var isControlPoint = d3.select(d3.event.target).classed("control-point");
             if (tool.get("hasStarted")) {
-              tool.click(this.getMousePos());
+              tool.endAdjust(this.getMousePos());
             } else if (isControlPoint) {
-              tool.startAdjust(this.getMousePos(), d3.event.target.__data__, this.get("selectedMark"));
+              tool.startAdjust(this.getMousePos(),
+                               d3.event.target.__data__,
+                               this.get("selectedMark"));
             }
           }
         }
@@ -193,9 +195,9 @@ export default Ember.Component.extend({
     gLayer = this.selectChart().append('g')
       .attr('class', 'control-layer')
       .attr('transform', () => {
-        var transform = mark.get("transform");
+        var transform = mark.getAttrByName('transform');
         if (transform) {
-          return transform.evaluate();
+          return transform.get('value');
         }
         return "";
       });

@@ -1,6 +1,16 @@
 import Ember from 'ember';
 import {guid, isString} from 'tukey/utils/common';
 
+function jsCodeFromValue(value) {
+  if (Ember.isArray(value)) {
+    return `[${value}]`;
+  } else if (isString(value)) {
+    return `'${value}'`;
+  } else {
+    return `${value}`;
+  }
+}
+
 
 var Variable = Ember.Object.extend({
   id: function() {
@@ -16,8 +26,16 @@ var Variable = Ember.Object.extend({
   // name defined and seen by the user in the UI
   name: Ember.required(),
 
-  definition: function() {
-    return Expression.constant(0);
+  definition: function(key, value) {
+    if (arguments.length === 1) {
+      return Expression.constant(0);
+    } else {
+      if (value instanceof Expression) {
+        return value;
+      } else {
+        return Expression.constant(jsCodeFromValue(value));
+      }
+    }
   }.property(),
 
   // TODO: add checking to warn people about this directly
@@ -50,7 +68,11 @@ var Variable = Ember.Object.extend({
   }.property('definition.isConstant',
              'definition.fragments.[]',
              'definition.variables.@each.value',
-             'environment')
+             'environment'),
+
+  jsCode: function() {
+    return jsCodeFromValue(this.get('value'));
+  }.property('value')
 });
 
 var Expression = Ember.Object.extend({
@@ -167,6 +189,15 @@ var Environment = Ember.Object.extend({
     } else {
       return `${value}`;
     }
+  }
+});
+
+Environment.reopenClass({
+  defaultEnvironment: Environment.create(),
+  v: function(varName, value) {
+    var fragment = Environment.defaultEnvironment._codeRepresentation(value);
+    var expression = Expression.create({fragments: [fragment]});
+    return Environment.defaultEnvironment.addVariable(varName, expression);
   }
 });
 

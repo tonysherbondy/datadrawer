@@ -4,11 +4,9 @@ import RectangleMark from 'tukey/models/mark/rectangle-mark';
 import CircleMark from 'tukey/models/mark/circle-mark';
 import LineMark from 'tukey/models/mark/line-mark';
 import TextMark from 'tukey/models/mark/text-mark';
-import Expression from 'tukey/models/expression';
-
-var e = Expression.e;
 
 var markCounter = 0;
+
 export default DS.Model.extend({
   operation: DS.attr('string'),
   mark: DS.attr('string'),
@@ -44,43 +42,41 @@ export default DS.Model.extend({
     this.set("parentInstruction", null);
   },
 
-  attrs: function(key, value) {
-    if (arguments.length > 1) {
-      this.get("attrItems").clear();
-      this.get("attrItems").pushObjects(this.getAttrListFromHash(value));
-    }
-    var attrs = {};
-    this.get("attrItems").forEach(function(attrItem) {
-      attrs[attrItem.get("name")] = e(attrItem.get("value"));
+  attrs: function() {
+    return [];
+  }.property(),
+
+  getAttrByName: function(name) {
+    return this.get('attrs').findBy('name', name);
+  },
+
+  _mergeAttributes: function(attributes1, attributes2) {
+    var attrs = attributes1.map((x) => x);
+
+    attributes2.forEach((attribute) => {
+      var index = attrs.getEach('name').indexOf(attribute.get('name'));
+      if (index >= 0) {
+        attrs.replace(index, 1, attribute);
+      } else {
+        attrs.pushObject(attribute);
+      }
     });
     return attrs;
-  }.property("attrItems.[]"),
-
-  getAttrListFromHash: function(attrHash) {
-    var store = this.get("store");
-    return Object.keys(attrHash).map(function(key) {
-      return store.createRecord("instructionAttr", {
-        name: key,
-        value: attrHash[key].get("stringRepresentation")
-      });
-    });
   },
 
   // Any loop or draw instruction should be able to return
   // a list of marks
   marks: function() {
+    this.get('subInstructions').getEach('attrValues');
     var operation = this.get("operation");
     var marks;
     var subInstructions = this.get("subInstructions");
 
+
     if (operation === "root" || operation === "loop") {
       marks = subInstructions.getEach("marks");
     } else if (operation === "draw") {
-      var attrs = Ember.merge({}, this.get("attrs"));
-      // Get all subInstruction attrs as they are all sets
-      attrs = subInstructions.getEach("attrs").reduce((prev, item) => {
-        return Ember.merge(prev, item);
-      }, attrs);
+
 
       var mark = this.get("mark");
       var markClass;
@@ -95,9 +91,18 @@ export default DS.Model.extend({
       } else {
         console.log("Don't know mark", mark);
       }
-      marks = [markClass.create(Ember.merge(
-        {drawInstruction: this, name: this.get("markName")},
-        attrs))];
+
+      var attrs = subInstructions.getEach('attrs')
+        .reduce(this._mergeAttributes, this.get('attrs'));
+
+
+      var markObject = markClass.create({
+        drawInstruction: this,
+        name: this.get('markName'),
+        attrs: attrs
+      });
+
+      marks = [markObject];
     } else {
       console.log("should not be asked to mark this instruction");
       return [];
@@ -113,6 +118,10 @@ export default DS.Model.extend({
       flatMarks.setEach("loopOver", "table");
     }
     return flatMarks;
-  }.property("attrs", "operation", "mark", "subInstructions.[]", "subInstructions.@each.{attrs,marks}")
+  }.property("attrs.@each.value", "operation", "mark",
+             "subInstructions.@each.{marks,attrValues}"),
 
+  attrValues: function() {
+    return Math.random();
+  }.property('attrs.@each.value'),
 });

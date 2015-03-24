@@ -1,21 +1,17 @@
-import Ember from 'ember';
 import Mark from 'tukey/models/mark/mark';
-import Expression from 'tukey/models/expression';
-var e = Expression.e;
+import {Environment} from 'tukey/objects/variable';
+import Attribute from 'tukey/objects/attribute';
+var v = Environment.v;
 
 export default Mark.extend({
   type: "line",
 
-  x1: Ember.required(),
-  y1: Ember.required(),
-  x2: Ember.required(),
-  y2: Ember.required(),
-
   getControlPoints: function() {
-    var x1 = this.get("x1").cheapoEval();
-    var y1 = this.get("y1").cheapoEval();
-    var x2 = this.get("x2").cheapoEval();
-    var y2 = this.get("y2").cheapoEval();
+    var x1 = this.getAttrByName("x1").get('value');
+    var y1 = this.getAttrByName("y1").get('value');
+    var x2 = this.getAttrByName("x2").get('value');
+    var y2 = this.getAttrByName("y2").get('value');
+
     return [
       {name: "first", position: [x1, y1]},
       {name: "second", position: [x2, y2]}
@@ -24,18 +20,35 @@ export default Mark.extend({
 
   getAttrsForControlPoint: function(point) {
     var attrs = {};
-    var x = e(""+point.position[0]);
-    var y = e(""+point.position[1]);
+
+    var x = point.position[0];
+    var y = point.position[1];
+
     if (point.name === "first") {
-      attrs.x1 = x;
-      attrs.y1 = y;
+      attrs.x1 = v('x1', x);
+      attrs.y1 = v('y1', y);
     } else if (point.name === "second") {
-      attrs.x2 = x;
-      attrs.y2 = y;
+      attrs.x2 = v('x2', x);
+      attrs.y2 = v('y2', y);
     }
-    return attrs;
+
+    return Attribute.attributesFromHash(attrs);
   },
 
+  updateAttrsWithControlPoint: function(point) {
+
+    var xName, yName;
+    if (point.name === "first") {
+      xName = 'x1';
+      yName = 'y1';
+    } else if (point.name === "second") {
+      xName = 'x2';
+      yName = 'y2';
+    }
+
+    this.getAttrByName(xName).set('variable.definition', point.position[0]);
+    this.getAttrByName(yName).set('variable.definition', point.position[1]);
+  },
 
   attrsMap: [
     {name: "x1", d3Name: "x1"},

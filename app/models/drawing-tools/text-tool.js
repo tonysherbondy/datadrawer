@@ -1,28 +1,28 @@
 import MarkTool from "tukey/models/drawing-tools/mark-tool";
-import Expression from "tukey/models/expression";
-
-var e = Expression.e;
+import Attribute from 'tukey/objects/attribute';
+import {Environment} from "tukey/objects/variable";
+var v = Environment.v;
 
 export default MarkTool.extend({
   operation: "draw",
   markType: "text",
 
   getAttrs: function(mousePos) {
-    return {
-      x: e(`${mousePos[0]}`),
-      y: e(`${mousePos[1]}`),
-      fontFamily: e('"sans-serif"'),
-      fontSize: e('20'),
-      textAnchor: e('"start"'),
-      fill: e('"red"'),
-      text: e('"Mexico"')
-    };
+    return Attribute.attributesFromHash({
+      x: v('x', mousePos[0]),
+      y: v('y', mousePos[1]),
+      fontFamily: v('fontFamily', 'sans-serif'),
+      fontSize: v('fontSize', 20),
+      textAnchor: v('textAnchor', 'start'),
+      fill: v('fill', 'red'),
+      text: v('text', 'Mexico')
+    });
   },
 
-  getEndingAttrs: function(mousePos) {
-    return {
-      x: e(`${mousePos[0]}`),
-      y: e(`${mousePos[1]}`)
-    };
+  updateAttrs: function(mousePos) {
+    this.get('instruction.attrs').findBy('name', 'x')
+      .set('variable.definition', mousePos[0]);
+    this.get('instruction.attrs').findBy('name', 'y')
+      .set('variable.definition', mousePos[1]);
   }
 });

@@ -1,7 +1,8 @@
 import Ember from 'ember';
 import Mark from 'tukey/models/mark/mark';
-import Expression from 'tukey/models/expression';
-var e = Expression.e;
+import {Environment} from 'tukey/objects/variable';
+import Attribute from 'tukey/objects/attribute';
+var v = Environment.v;
 
 export default Mark.extend({
   type: "text",
@@ -11,26 +12,31 @@ export default Mark.extend({
   text: Ember.required(),
 
   getTransformFromRotation: function(rotation) {
-    var x = this.get("x").cheapoEval();
-    var y = this.get("y").cheapoEval();
-    return {
-      transform: e(`"translate(${x},${y}) rotate(${rotation}) translate(${-x},${-y})"`)
-    };
+    var x = this.getAttrByName('x').get('value');
+    var y = this.getAttrByName('y').get('value');
+    return Attribute.attributesFromHash({
+      transform: v('transform', `translate(${x},${y}) rotate(${rotation}) translate(${-x},${-y})`)
+    });
   },
 
   getControlPoints: function() {
-    var x = this.get("x").cheapoEval();
-    var y = this.get("y").cheapoEval();
+    var x = this.getAttrByName('x').get('value');
+    var y = this.getAttrByName('y').get('value');
     return [
       {name: "point", position: [x, y]}
     ];
   },
 
   getAttrsForControlPoint: function(point) {
-    return {
-      x: e(""+point.position[0]),
-      y: e(""+point.position[1])
-    };
+    return Attribute.attributesFromHash({
+      x: v('x', point.position[0]),
+      y: v('y', point.position[1])
+    });
+  },
+
+  updateAttrsWithControlPoint: function(point) {
+    this.getAttrByName('x').set('variable.definition', point.position[0]);
+    this.getAttrByName('y').set('variable.definition', point.position[1]);
   },
 
   attrsMap: [

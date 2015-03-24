@@ -1,28 +1,28 @@
-import Expression from "tukey/models/expression";
 import MarkTool from "tukey/models/drawing-tools/mark-tool";
-
-var e = Expression.e;
+import Attribute from 'tukey/objects/attribute';
+import {Environment} from "tukey/objects/variable";
+var v = Environment.v;
 
 export default MarkTool.extend({
   operation: "draw",
   markType: "line",
 
   getAttrs: function(mousePos) {
-    return {
-      x1: e(`${mousePos[0]}`),
-      y1: e(`${mousePos[1]}`),
-      x2: e(`${mousePos[0]}`),
-      y2: e(`${mousePos[1]}`),
-      opacity: e("0.3"),
-      stroke: e("'blue'"),
-      strokeWidth: e("5")
-    };
+    return Attribute.attributesFromHash({
+      x1: v('x1', mousePos[0]),
+      y1: v('y1', mousePos[1]),
+      x2: v('x2', mousePos[0]),
+      y2: v('y2', mousePos[1]),
+      opacity: v('opacity', 0.3),
+      stroke: v('stroke', 'blue'),
+      strokeWidth: v('strokeWidth', 5)
+    });
   },
 
-  getEndingAttrs: function(mousePos) {
-    return {
-      x2: e(`${mousePos[0]}`),
-      y2: e(`${mousePos[1]}`)
-    };
+  updateAttrs: function(mousePos) {
+    this.get('instruction').getAttrByName('x2')
+      .set('variable.definition', mousePos[0]);
+    this.get('instruction').getAttrByName('y2')
+      .set('variable.definition', mousePos[1]);
   }
 });

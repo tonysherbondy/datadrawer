@@ -1,7 +1,8 @@
 import Ember from "ember";
 import Mark from "tukey/models/mark/mark";
-import Expression from 'tukey/models/expression';
-var e = Expression.e;
+import {Environment} from 'tukey/objects/variable';
+import Attribute from 'tukey/objects/attribute';
+var v = Environment.v;
 
 export default Mark.extend({
   type: "rect",
@@ -12,22 +13,22 @@ export default Mark.extend({
   left: Ember.required(),
 
   getTransformFromRotation: function(rotation) {
-    var top = this.get("top").cheapoEval();
-    var left = this.get("left").cheapoEval();
-    var width = this.get("width").cheapoEval();
-    var height = this.get("height").cheapoEval();
+    var top = this.getAttrByName("top").get('value');
+    var left = this.getAttrByName("left").get('value');
+    var width = this.getAttrByName("width").get('value');
+    var height = this.getAttrByName("height").get('value');
     var x = left + width/2;
     var y = top + height/2;
-    return {
-      transform: e(`"translate(${x},${y}) rotate(${rotation}) translate(${-x},${-y})"`)
-    };
+    return Attribute.attributesFromHash({
+      transform: v('transform', `translate(${x},${y}) rotate(${rotation}) translate(${-x},${-y})`)
+    });
   },
 
   getControlPoints: function() {
-    var top = this.get("top").cheapoEval();
-    var left = this.get("left").cheapoEval();
-    var width = this.get("width").cheapoEval();
-    var height = this.get("height").cheapoEval();
+    var top = this.getAttrByName("top").get('value');
+    var left = this.getAttrByName("left").get('value');
+    var width = this.getAttrByName("width").get('value');
+    var height = this.getAttrByName("height").get('value');
     return [
       {name: "top-left", position: [left, top]},
       {name: "bottom-right", position: [left+width, top+height]}
@@ -36,18 +37,36 @@ export default Mark.extend({
 
   getAttrsForControlPoint: function(point) {
     var attrs = {};
+
     if (point.name === "top-left") {
-      attrs.left = e(""+point.position[0]);
-      attrs.top = e(""+point.position[1]);
+      attrs.left = v('left', point.position[0]);
+      attrs.top = v('top', point.position[1]);
     } else if (point.name === "bottom-right") {
-      var width = this.get("width").cheapoEval();
-      var height = this.get("height").cheapoEval();
-      attrs.left = e(""+ (point.position[0] - width));
-      attrs.top = e(""+ (point.position[1] - height));
+      var width = this.getAttrByName("width").get('value');
+      var height = this.getAttrByName("height").get('value');
+
+      attrs.left = v('left', point.position[0] - width);
+      attrs.top = v('top', point.position[1] - height);
     }
-    return attrs;
+
+    return Attribute.attributesFromHash(attrs);
   },
 
+  updateAttrsWithControlPoint: function(point) {
+    var leftAttr = this.getAttrByName('left');
+    var topAttr = this.getAttrByName('top');
+
+    if (point.name === "top-left") {
+      leftAttr.set('variable.definition', point.position[0]);
+      topAttr.set('variable.definition', point.position[1]);
+    } else if (point.name === "bottom-right") {
+      var width = this.getAttrByName("width").get('value');
+      var height = this.getAttrByName("height").get('value');
+
+      leftAttr.set('variable.definition', point.position[0] - width);
+      topAttr.set('variable.definition', point.position[1] - height);
+    }
+  },
 
   attrsMap: [
     {name: "width", d3Name: "width"},

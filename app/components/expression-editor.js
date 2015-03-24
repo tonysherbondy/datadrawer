@@ -161,7 +161,6 @@ export default Ember.Component.extend({
   },
 
   renderExpression: function() {
-    console.log('rerendering');
     var fragments = this.get('expression.fragments');
     var htmlString = '';
 

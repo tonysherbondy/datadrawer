@@ -13,13 +13,11 @@ export default Ember.Component.extend({
     if (!this.get("instruction.attrs")) {
       return [];
     }
-    // turn into array of name, stringRepresentation
-    var attrs = this.get("attrs");
-    var names = Object.keys(attrs);
-    return names.map((name) => {
-      let stringRepresentation = attrs[name].get("stringRepresentation");
-      return Ember.Object.create({name, stringRepresentation});
-    });
+
+    // TODO: we may will want to do filter out some of these
+    // probably want to move this 'displayable attrs' thing to
+    // the instruction level
+    return this.get('attrs').getEach('variable');
   }.property("attrs"),
 
   attrsText: function() {
