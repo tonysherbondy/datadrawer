@@ -1,4 +1,3 @@
-import Ember from "ember";
 import MarkTool from "tukey/models/drawing-tools/mark-tool";
 import Instruction from "tukey/models/instruction";
 
@@ -12,6 +11,7 @@ export default MarkTool.extend({
   drawInstruction: null,
   controlPoint: null,
   markId: null,
+  startingRotation: 0,
 
   mark: function(key, value) {
     if (arguments.length === 1) {
@@ -30,9 +30,11 @@ export default MarkTool.extend({
 
   startAdjust: function(mousePos, controlPoint, mark) {
     this.set("mark", mark);
-    this.set("controlPoint", controlPoint);
     if (!this.get("hasStarted")) {
-      var attrs = mark.getAttrsForControlPoint(controlPoint);
+      var startingRotation = mark.get("rotation");
+      this.set("startingRotation", startingRotation);
+      this.set("startingMousePos", mousePos);
+      var attrs = mark.getTransformFromRotation(startingRotation);
       var instruction = Instruction.create({
         operation: this.get("operation"),
         attrs: attrs
@@ -51,9 +53,10 @@ export default MarkTool.extend({
 
   mouseMove: function(mousePos) {
     if (this.get("hasStarted")) {
-      var controlPoint = Ember.merge({}, this.get("controlPoint"));
-      controlPoint.position = mousePos;
-      var attrs = this.get("mark").getAttrsForControlPoint(controlPoint);
+      var startingMousePos = this.get("startingMousePos");
+      var startingRotation = this.get("startingRotation");
+      var rotation = Math.round(startingRotation + (mousePos[0] - startingMousePos[0]));
+      var attrs = this.get("mark").getTransformFromRotation(rotation);
       this.set("instruction.attrs", attrs);
     }
   }

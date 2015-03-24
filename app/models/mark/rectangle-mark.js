@@ -11,6 +11,18 @@ export default Mark.extend({
   top: Ember.required(),
   left: Ember.required(),
 
+  getTransformFromRotation: function(rotation) {
+    var top = this.get("top").cheapoEval();
+    var left = this.get("left").cheapoEval();
+    var width = this.get("width").cheapoEval();
+    var height = this.get("height").cheapoEval();
+    var x = left + width/2;
+    var y = top + height/2;
+    return {
+      transform: e(`"translate(${x},${y}) rotate(${rotation}) translate(${-x},${-y})"`)
+    };
+  },
+
   getControlPoints: function() {
     var top = this.get("top").cheapoEval();
     var left = this.get("left").cheapoEval();

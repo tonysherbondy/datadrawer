@@ -5,6 +5,7 @@ import CircleTool from "tukey/models/drawing-tools/circle-tool";
 import LineTool from "tukey/models/drawing-tools/line-tool";
 import TextTool from "tukey/models/drawing-tools/text-tool";
 import AdjustMoveTool from "tukey/models/drawing-tools/adjust-move-tool";
+import AdjustRotateTool from "tukey/models/drawing-tools/adjust-rotate-tool";
 
 export default Ember.Component.extend({
   classNames: ["draw-panel"],
@@ -34,8 +35,7 @@ export default Ember.Component.extend({
         console.log('trying to adjust scale');
         return null;
       case "adjustRotate":
-        console.log('trying to adjust rotation');
-        return null;
+        return AdjustRotateTool.create();
       default:
         console.log("don't know mode");
         return null;
@@ -95,7 +95,7 @@ export default Ember.Component.extend({
             if (tool.get("hasStarted")) {
               tool.click(this.getMousePos());
             } else if (isControlPoint) {
-              tool.startAdjust(d3.event.target.__data__, this.get("selectedMark"));
+              tool.startAdjust(this.getMousePos(), d3.event.target.__data__, this.get("selectedMark"));
             }
           }
         }
@@ -189,7 +189,15 @@ export default Ember.Component.extend({
       return;
     }
 
-    gLayer = this.selectChart().append('g').attr('class', 'control-layer');
+    gLayer = this.selectChart().append('g')
+      .attr('class', 'control-layer')
+      .attr('transform', () => {
+        var transform = mark.get("transform");
+        if (transform) {
+          return transform.evaluate();
+        }
+        return "";
+      });
     var controlPoints = mark.getControlPoints();
     gLayer.selectAll('.control-points').data(controlPoints).enter()
       .append('circle')

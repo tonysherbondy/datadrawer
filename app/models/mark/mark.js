@@ -16,8 +16,21 @@ export default Ember.Object.extend({
     {name: "fill", d3Name: "fill"},
     {name: "opacity", d3Name: "opacity"},
     {name: "stroke", d3Name: "stroke"},
+    {name: "transform", d3Name: "transform"},
     {name: "strokeWidth", d3Name: "stroke-width"},
   ],
+
+  rotation: function() {
+    var transform = this.get("transform");
+    if (Ember.isEmpty(transform)) {
+      return 0;
+    }
+    // assume the transform is format "translate rotate
+    transform = transform.evaluate();
+    var rotate = transform.split(' ')[1];
+    var rotateNum = rotate.split('(')[1].split(')')[0];
+    return parseFloat(rotateNum);
+  }.property("attrs.transform"),
 
   init: function() {
     this.get("attrsMap").getEach("name").forEach((name) => {
