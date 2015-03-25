@@ -1,5 +1,0 @@
-{{#each picture in savedPictures}}
-  {{#link-to 'picture' picture tagName="li" href=false role="presentation"}}
-  <a {{bind-attr href="view.href"}}>Picture ID: {{picture.id}}</a>
-  {{/link-to}}
-{{/each}}

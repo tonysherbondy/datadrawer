@@ -1,0 +1,11 @@
+<div class="picture-chooser">
+  <div class="row">
+    {{#each picture in pictures}}
+      <div class="col-xs-6 col-md-3">
+        {{#link-to 'picture' picture class="thumbnail"}}
+          {{picture-thumbnail picture=picture}}
+        {{/link-to}}
+      </div>
+    {{/each}}
+  </div>
+</div>

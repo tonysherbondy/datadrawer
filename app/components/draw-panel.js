@@ -79,12 +79,12 @@ export default Ember.Component.extend({
   },
 
   getMousePos: function() {
-    var mousePos = d3.mouse(this.$('svg')[0]);
+    var mousePos = d3.mouse(this.$('svg.draw-panel')[0]);
     return mousePos.map(Math.round);
   },
 
   setupSVGListeners: function() {
-    d3.select("svg")
+    d3.select("svg.draw-panel")
       .on("click", () => {
         var tool = this.get("activeTool");
         if (tool) {
@@ -134,7 +134,7 @@ export default Ember.Component.extend({
   draw: function() {
     this.selectChart().remove();
 
-    d3.select("svg").append("g").attr("class", "chart");
+    d3.select("svg.draw-panel").append("g").attr("class", "chart");
 
     // Make table and scalar data available to the chart, these are used inside attr
     // functions

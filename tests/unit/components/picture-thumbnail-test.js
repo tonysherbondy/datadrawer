@@ -3,7 +3,7 @@ import {
   test
 } from 'ember-qunit';
 
-moduleForComponent('picture-list', {
+moduleForComponent('picture-thumbnail', {
   // specify the other units that are required for this test
   // needs: ['component:foo', 'helper:bar']
 });
