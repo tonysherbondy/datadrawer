@@ -1,6 +1,3 @@
-Picture ID: {{picture.id}}
-<svg {{bind-attr width=svgWidth height=svgHeight}} class="noselect">
+<svg {{bind-attr width=svgWidth height=svgHeight viewBox=viewBox class=wholeClass}}>
   <g {{bind-attr width=chartWidth height=chartHeight}}></g>
 </svg>
-
-{{yield}}
