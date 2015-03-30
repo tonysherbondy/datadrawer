@@ -75,8 +75,8 @@ export default DS.Model.extend({
     // attrValues is created only for the purpose of working around listening to
     // nested structures within arrays, so we have to access it to start the
     // observing process
-    this.get('subInstructions').getEach('attrValues');
     this.get('attrValues');
+    this.get('subInstructions').getEach('attrValues');
 
     var operation = this.get("operation");
     var marks;
@@ -130,6 +130,13 @@ export default DS.Model.extend({
     return flatMarks;
   }.property("attrValues", "operation", "mark",
              "subInstructions.@each.{marks,attrValues}"),
+
+  subValuesDidChange: function() {
+    // TODO(Tony) Without this empty observer, when we load a picture from
+    // storage, we will not be able to listen to subInstruction attribute
+    // changes. Note that this observer is not necessary if the instructions
+    // are not loaded from persistence. FUBAR
+  }.observes('subInstructions.@each.attrValues'),
 
   attributesFromHash: function(attrsHash) {
     return Object.keys(attrsHash).map((attrName) => {
