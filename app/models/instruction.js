@@ -62,10 +62,21 @@ export default DS.Model.extend({
     return attrs;
   },
 
+  attrValues: function() {
+    // return a hash of values so that anytime a value changes on the attr the hash changes
+    // Only have to do this because Ember can't listen to nested properties after @each
+    var xform = (attr) => `${attr.get('name')}: ${attr.get('value')}`;
+    return this.get('attrs').map(xform).join(', ');
+  }.property('attrs.@each.value'),
+
   // Any loop or draw instruction should be able to return
   // a list of marks
   marks: function() {
+    // attrValues is created only for the purpose of working around listening to
+    // nested structures within arrays, so we have to access it to start the
+    // observing process
     this.get('subInstructions').getEach('attrValues');
+
     var operation = this.get("operation");
     var marks;
     var subInstructions = this.get("subInstructions");
@@ -116,12 +127,8 @@ export default DS.Model.extend({
       flatMarks.setEach("loopOver", "table");
     }
     return flatMarks;
-  }.property("attrs.@each.value", "operation", "mark",
+  }.property("attrValues", "operation", "mark",
              "subInstructions.@each.{marks,attrValues}"),
-
-  attrValues: function() {
-    return Math.random();
-  }.property('attrs.@each.value'),
 
   attributesFromHash: function(attrsHash) {
     return Object.keys(attrsHash).map((attrName) => {
