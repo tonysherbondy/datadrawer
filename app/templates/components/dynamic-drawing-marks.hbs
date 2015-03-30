@@ -1,8 +1,7 @@
 <div class="grid">
   <div class="description-panel col-1-4">
     {{victor-data-panel
-      scalars=model.scalars
-      table=model.table}}
+      model=model}}
     <ul class="ro-instruction-list">
       {{#each model.instructionTree.subInstructions as |instruction|}}
         {{ro-instruction-list-item
