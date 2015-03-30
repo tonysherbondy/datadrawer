@@ -12,6 +12,7 @@ export default DS.Model.extend({
   // the marks returned from the draw step in a loop step, if I just copied marks
   // and modified those copies we'd be fine without
   dirtyMarks: function() {
+    console.log('dirty marks');
     function notifyAllMarks(instruction) {
       instruction.notifyPropertyChange("marks");
       instruction.get("subInstructions").forEach(notifyAllMarks);
@@ -20,6 +21,7 @@ export default DS.Model.extend({
   }.observes("currentInstruction"),
 
   marks: function() {
+    console.log('marks');
     var currentInstruction = this.get("currentInstruction");
     if (currentInstruction) {
       return currentInstruction.get("marks");

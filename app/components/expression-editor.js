@@ -120,11 +120,6 @@ export default Ember.Component.extend({
       newFragments.push(' ');
     }
 
-
-    console.log(newFragments);
-    console.log(`cursorFragmentIndex ${cursorFragmentIndex}`);
-    console.log(`cursorOffset ${cursorOffset}`);
-
     this.set('cursorFragmentIndex', cursorFragmentIndex);
     this.set('cursorOffset', cursorOffset);
     this.set('expression.fragments', newFragments);
@@ -146,7 +141,6 @@ export default Ember.Component.extend({
   updateCursorLocation: function() {
     var cursorLocationMarker = this.$(`#${VariablePill.cursorLocationId}`);
     if (!Ember.isEmpty(cursorLocationMarker)) {
-      console.log('updating cursor location');
       this.moveCursorToBefore(cursorLocationMarker.get(0));
       cursorLocationMarker.remove();
     }

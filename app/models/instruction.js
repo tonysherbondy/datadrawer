@@ -76,6 +76,7 @@ export default DS.Model.extend({
     // nested structures within arrays, so we have to access it to start the
     // observing process
     this.get('subInstructions').getEach('attrValues');
+    this.get('attrValues');
 
     var operation = this.get("operation");
     var marks;
