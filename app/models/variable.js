@@ -1,5 +1,6 @@
 import Ember from 'ember';
-import {guid, isString} from 'tukey/utils/common';
+import DS from 'ember-data';
+import {isString} from 'tukey/utils/common';
 import Expression from 'tukey/models/expression.js';
 import Environment from 'tukey/models/environment.js';
 
@@ -14,31 +15,29 @@ function jsCodeFromValue(value) {
 }
 
 
-var Variable = Ember.Object.extend({
-  id: function() {
-    return guid();
-  }.property(),
+var Variable = DS.Model.extend({
+  // name defined and seen by the user in the UI
+  name: DS.attr('string'),
+  expression: DS.belongsTo('expression'),
 
   // named used when setting by an environment when setting up an eval context
-  _internalName: function() {
-    var underscoreId = this.get('id').underscore();
-    return `_${underscoreId}`;
-  }.property('id'),
+  _internalName: Ember.computed.alias('id'),
 
-  // name defined and seen by the user in the UI
-  name: Ember.required(),
 
   definition: function(key, value) {
     if (arguments.length === 1) {
-      return Expression.constant(0);
+      return this.get('expression');
     } else {
       if (value instanceof Expression) {
+        this.set('expression', value);
         return value;
       } else {
-        return Expression.constant(jsCodeFromValue(value));
+        var expression = Expression.constant(jsCodeFromValue(value));
+        this.set('expression', expression);
+        return expression;
       }
     }
-  }.property(),
+  }.property('expression'),
 
   // TODO: add checking to warn people about this directly
   // use environment.addVariable(..) instead

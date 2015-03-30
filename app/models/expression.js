@@ -1,8 +1,9 @@
 import Ember from 'ember';
+import DS from 'ember-data';
 import Variable from 'tukey/models/variable';
 import {isString} from 'tukey/utils/common';
 
-var Expression = Ember.Object.extend({
+var Expression = DS.Model.extend({
   fragments: function() {
     return [];
   }.property(),
