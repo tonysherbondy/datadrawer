@@ -36,15 +36,7 @@ export default Ember.Route.extend({
       {name: 'canvasHeight', value: 200},
       {name: 'canvasWidth', value: 200},
       {name: 'padding', value: 3}
-    ].map((hash) => {
-      // create variable
-      let variable = v(hash.name, hash.value);
-      // create scalar
-      return this.store.createRecord('scalar', {
-        name: hash.name,
-        variable: variable
-      });
-    });
+    ].map((hash) => v(hash.name, hash.value));
   },
 
   getInstructionTree: function() {

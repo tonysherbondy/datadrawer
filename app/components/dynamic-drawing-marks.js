@@ -48,20 +48,29 @@ export default Ember.Component.extend({
     savePicture: function() {
       var picture = this.get("model");
       var recordsToSave = [picture];
-      recordsToSave.pushObjects(picture.get("scalars").toArray());
+
+      function addAttrToRecords(attr) {
+        var variable = attr.get('variable');
+        recordsToSave.pushObject(attr);
+        addVariableToRecords(variable);
+      }
+
+      function addVariableToRecords(variable) {
+        var expression = variable.get('expression');
+        recordsToSave.pushObject(variable);
+        recordsToSave.pushObject(expression);
+        recordsToSave.pushObjects(expression.get('persistedFragments').toArray());
+      }
+
+      // Save all scalars
+      (picture.get('scalars') || []).forEach(addVariableToRecords);
+
+      // Save table
       recordsToSave.pushObjects(picture.get("table.columns").toArray());
       picture.get("table.columns").forEach(function(column) {
         recordsToSave.pushObjects(column.get("cells").toArray());
       });
 
-      function addAttrToRecords(attr) {
-        var variable = attr.get('variable');
-        var expression = variable.get('expression');
-        recordsToSave.pushObject(attr);
-        recordsToSave.pushObject(variable);
-        recordsToSave.pushObject(expression);
-        recordsToSave.pushObjects(expression.get('persistedFragments').toArray());
-      }
 
       var instructionsToSave = [picture.get("instructionTree")];
       while (instructionsToSave.length > 0) {

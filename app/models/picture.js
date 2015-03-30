@@ -3,7 +3,7 @@ import DS from 'ember-data';
 export default DS.Model.extend({
 
   instructionTree: DS.belongsTo('instruction', {async: true}),
-  scalars: DS.hasMany('scalar', {async: true}),
+  scalars: DS.hasMany('variable', {async: true}),
   table: DS.belongsTo('table', {async: true}),
 
   currentInstruction: null,
