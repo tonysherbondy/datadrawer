@@ -1,5 +1,4 @@
 import Mark from 'tukey/models/mark/mark';
-import Attribute from 'tukey/models/attribute';
 import Environment from 'tukey/models/environment';
 var v = Environment.v;
 
@@ -15,7 +14,7 @@ export default Mark.extend({
   },
 
   getAttrsForControlPoint: function(point) {
-    return Attribute.attributesFromHash({
+    return this.get('drawInstruction').attributesFromHash({
       cx: v('cx', point.position[0]),
       cy: v('cy', point.position[1])
     });

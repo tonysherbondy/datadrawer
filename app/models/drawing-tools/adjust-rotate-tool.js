@@ -37,7 +37,8 @@ export default MarkTool.extend({
       var instruction = this.get("store").createRecord("instruction", {
         operation: this.get("operation"),
       });
-      instruction.set("attrs", attrs);
+      instruction.get('attrs').clear();
+      instruction.get('attrs').pushObjects(attrs);
       this.get("drawInstruction").addSubInstruction(instruction);
       this.set("instruction", instruction);
     }
@@ -56,7 +57,8 @@ export default MarkTool.extend({
       var startingRotation = this.get("startingRotation");
       var rotation = Math.round(startingRotation + (mousePos[0] - startingMousePos[0]));
       var attrs = this.get("mark").getTransformFromRotation(rotation);
-      this.set("instruction.attrs", attrs);
+      this.get('instruction.attrs').clear();
+      this.get('instruction.attrs').pushObjects(attrs);
     }
   }
 

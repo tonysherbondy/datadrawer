@@ -1,5 +1,4 @@
 import MarkTool from "tukey/models/drawing-tools/mark-tool";
-import Attribute from 'tukey/models/attribute';
 import Environment from 'tukey/models/environment';
 var v = Environment.v;
 
@@ -8,7 +7,7 @@ export default MarkTool.extend({
   markType: "line",
 
   getAttrs: function(mousePos) {
-    return Attribute.attributesFromHash({
+    return this.get('instruction').attributesFromHash({
       x1: v('x1', mousePos[0]),
       y1: v('y1', mousePos[1]),
       x2: v('x2', mousePos[0]),

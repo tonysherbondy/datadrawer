@@ -1,5 +1,4 @@
 import MarkTool from "tukey/models/drawing-tools/mark-tool";
-import Attribute from 'tukey/models/attribute';
 import Environment from 'tukey/models/environment';
 var v = Environment.v;
 
@@ -8,7 +7,7 @@ export default MarkTool.extend({
   markType: "circle",
 
   getAttrs: function(mousePos) {
-    return Attribute.attributesFromHash({
+    return this.get('instruction').attributesFromHash({
       cx: v('cx', mousePos[0]),
       cy: v('cy', mousePos[1]),
       radius: v('radius', 1),

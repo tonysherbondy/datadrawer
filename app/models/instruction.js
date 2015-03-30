@@ -10,7 +10,7 @@ var markCounter = 0;
 export default DS.Model.extend({
   operation: DS.attr('string'),
   mark: DS.attr('string'),
-  attrItems: DS.hasMany('instructionAttr'),
+  attrs: DS.hasMany('attribute'),
   parentInstruction: DS.belongsTo('instruction', {inverse: 'subInstructions'}),
   subInstructions: DS.hasMany('instruction', {embedded: true}),
 
@@ -41,10 +41,6 @@ export default DS.Model.extend({
     }
     this.set("parentInstruction", null);
   },
-
-  attrs: function() {
-    return [];
-  }.property(),
 
   getAttrByName: function(name) {
     return this.get('attrs').findBy('name', name);
@@ -124,4 +120,14 @@ export default DS.Model.extend({
   attrValues: function() {
     return Math.random();
   }.property('attrs.@each.value'),
+
+  attributesFromHash: function(attrsHash) {
+    return Object.keys(attrsHash).map((attrName) => {
+      return this.store.createRecord('attribute', {
+        name: attrName,
+        variable: attrsHash[attrName]
+      });
+    });
+  }
+
 });

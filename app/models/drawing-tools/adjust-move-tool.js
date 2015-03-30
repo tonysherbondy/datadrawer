@@ -31,13 +31,16 @@ export default MarkTool.extend({
     this.set("mark", mark);
     this.set("controlPoint", controlPoint);
     if (!this.get("hasStarted")) {
-      var attrs = mark.getAttrsForControlPoint(controlPoint);
       var instruction = this.get("store").createRecord('instruction', {
         operation: this.get("operation"),
       });
-      instruction.set("attrs", attrs);
-      this.get("drawInstruction").addSubInstruction(instruction);
       this.set("instruction", instruction);
+
+      var attrs = mark.getAttrsForControlPoint(controlPoint);
+      instruction.get('attrs').clear();
+      instruction.get('attrs').pushObjects(attrs);
+
+      this.get("drawInstruction").addSubInstruction(instruction);
     }
   },
 

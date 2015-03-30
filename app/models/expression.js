@@ -16,7 +16,8 @@ var Expression = DS.Model.extend({
           variableFragment: variableFragment
         });
       });
-      this.set('persistedFragments', fragments2);
+      this.get('persistedFragments').clear();
+      this.get('persistedFragments').pushObjects(fragments2);
       return value;
     }
     return this.get('persistedFragments').getEach('payload');

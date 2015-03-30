@@ -52,10 +52,20 @@ export default Ember.Component.extend({
       picture.get("table.columns").forEach(function(column) {
         recordsToSave.pushObjects(column.get("cells").toArray());
       });
+
+      function addAttrToRecords(attr) {
+        var variable = attr.get('variable');
+        var expression = variable.get('expression');
+        recordsToSave.pushObject(attr);
+        recordsToSave.pushObject(variable);
+        recordsToSave.pushObject(expression);
+        recordsToSave.pushObjects(expression.get('persistedFragments').toArray());
+      }
+
       var instructionsToSave = [picture.get("instructionTree")];
       while (instructionsToSave.length > 0) {
         var currentInstruction = instructionsToSave.pop();
-        recordsToSave.pushObjects(currentInstruction.get("attrItems").toArray());
+        (currentInstruction.get('attrs') || []).forEach(addAttrToRecords);
         instructionsToSave.pushObjects(currentInstruction.get("subInstructions").toArray());
       }
       Ember.RSVP.all([

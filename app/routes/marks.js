@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import Environment from 'tukey/models/environment';
 
 export default Ember.Route.extend({
   getTable: function() {
@@ -91,6 +92,8 @@ export default Ember.Route.extend({
   },
 
   model: function() {
+    // setup the environment
+    Environment.defaultEnvironment.set('store', this.store);
     var picture = this.get("store").createRecord("picture", {
       instructionTree: this.getInstructionTree(),
       table: this.getTable()

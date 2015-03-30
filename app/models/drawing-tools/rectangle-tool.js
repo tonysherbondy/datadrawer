@@ -1,5 +1,4 @@
 import MarkTool from "tukey/models/drawing-tools/mark-tool";
-import Attribute from 'tukey/models/attribute';
 import Environment from 'tukey/models/environment';
 var v = Environment.v;
 
@@ -8,7 +7,7 @@ export default MarkTool.extend({
   markType: "rect",
 
   getAttrs: function(mousePos) {
-    return Attribute.attributesFromHash({
+    return this.get('instruction').attributesFromHash({
       top: v('top', mousePos[1]),
       left: v('left', mousePos[0]),
       width: v('width', 0),

@@ -8,6 +8,11 @@ import {isString} from 'tukey/utils/common';
 // but we want to have a backing hash as well to ensure that each variable is
 // only added one time
 var Environment = Ember.Object.extend({
+
+  store: function() {
+    return this.container.lookup('store:main');
+  }.property(),
+
   variableList: function() {
     return [];
   }.property(),

@@ -11,7 +11,8 @@ export default Ember.Component.extend({
     var attrs = Ember.merge({}, instruction.get("attrs"));
     // Update attrs with new value
     attrs[this.get("attr.name")] = e(value);
-    this.set("instruction.attrs", attrs);
+    instruction.get('attrs').clear();
+    instruction.get('attrs').pushObjects(attrs);
   },
 
   actions: {

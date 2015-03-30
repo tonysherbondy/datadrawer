@@ -1,6 +1,5 @@
 import Ember from "ember";
 import Mark from "tukey/models/mark/mark";
-import Attribute from 'tukey/models/attribute';
 import Environment from 'tukey/models/environment';
 var v = Environment.v;
 
@@ -19,7 +18,7 @@ export default Mark.extend({
     var height = this.getAttrByName("height").get('value');
     var x = left + width/2;
     var y = top + height/2;
-    return Attribute.attributesFromHash({
+    return this.get('drawInstruction').attributesFromHash({
       transform: v('transform', `translate(${x},${y}) rotate(${rotation}) translate(${-x},${-y})`)
     });
   },
@@ -49,7 +48,7 @@ export default Mark.extend({
       attrs.top = v('top', point.position[1] - height);
     }
 
-    return Attribute.attributesFromHash(attrs);
+    return this.get('drawInstruction').attributesFromHash(attrs);
   },
 
   updateAttrsWithControlPoint: function(point) {

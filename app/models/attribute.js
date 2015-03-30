@@ -1,20 +1,9 @@
 import Ember from 'ember';
+import DS from 'ember-data';
 
-var Attribute = Ember.Object.extend({
-  name: Ember.required(),
-  variable: Ember.required(),
+var Attribute = DS.Model.extend({
+  name: DS.attr('string'),
+  variable: DS.belongsTo('variable'),
   value: Ember.computed.alias('variable.value')
 });
-
-Attribute.reopenClass({
-  attributesFromHash: function(attrsHash) {
-    return Object.keys(attrsHash).map((attrName) => {
-      return Attribute.create({
-        name: attrName,
-        variable: attrsHash[attrName]
-      });
-    });
-  }
-});
-
 export default Attribute;
