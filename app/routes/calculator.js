@@ -1,5 +1,6 @@
 import Ember from 'ember';
-import {Expression, Environment} from 'tukey/objects/variable';
+import Environment from 'tukey/models/environment';
+import Expression from 'tukey/models/expression';
 
 var environment = Environment.create();
 environment.addVariable('foo', Expression.constant('10'));

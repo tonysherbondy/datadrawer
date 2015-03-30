@@ -1,6 +1,6 @@
 import MarkTool from "tukey/models/drawing-tools/mark-tool";
-import Attribute from 'tukey/objects/attribute';
-import {Environment} from "tukey/objects/variable";
+import Attribute from 'tukey/models/attribute';
+import Environment from 'tukey/models/environment';
 var v = Environment.v;
 
 export default MarkTool.extend({

@@ -1,31 +1,40 @@
-import Ember from "ember";
+import Ember from 'ember';
+import Variable from 'tukey/models/variable';
+import {isString} from 'tukey/utils/common';
 
 var Expression = Ember.Object.extend({
-  stringRepresentation: Ember.required(),
+  fragments: function() {
+    return [];
+  }.property(),
 
-  evaluate: function(scalars, table, element, index) { // jshint ignore:line
-    return eval(this.get("stringRepresentation"));
-  },
+  variables: function() {
+    return this.get('fragments').filter(function(fragment) {
+      return fragment instanceof Variable;
+    });
+  }.property('fragments.[]'),
 
-  cheapoEval: function() {
-    var value;
-    try {
-      value = parseFloat(this.evaluate());
-    } catch (error) {
-      console.log("D3 CODE EVAL ERROR: " + error);
-    }
-    if (isFinite(value)) {
-      return value;
-    } else {
-      return 0;
-    }
-  }
+  jsString: function() {
+    var stringFragments = this.get('fragments').map(function(fragment) {
+      if (fragment instanceof Variable) {
+        return fragment.get('_internalName');
+      } else if (isString(fragment)) {
+        return fragment;
+      }
+    });
+
+    return stringFragments.join('');
+  }.property('fragments.[]', 'variables.@each._internalName'),
+
+  isConstant: function() {
+    var fragments = this.get('fragments');
+    return fragments.length === 1 && isString(fragments[0]);
+  }.property('fragments.[]')
 });
 
 Expression.reopenClass({
-  e: function(stringRep) {
+  constant: function(value) {
     return Expression.create({
-      stringRepresentation: stringRep
+      fragments: [`${value}`],
     });
   }
 });

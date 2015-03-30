@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import Mark from 'tukey/models/mark/mark';
-import {Environment} from 'tukey/objects/variable';
-import Attribute from 'tukey/objects/attribute';
+import Attribute from 'tukey/models/attribute';
+import Environment from 'tukey/models/environment';
 var v = Environment.v;
 
 export default Mark.extend({
