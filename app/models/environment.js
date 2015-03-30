@@ -36,7 +36,7 @@ var Environment = Ember.Object.extend({
       }
     } else if (isString(variable) && definition instanceof Expression) {
       var name = variable;
-      var newVariable = Variable.create({
+      var newVariable = this.get('store').createRecord('variable', {
         name: name,
         definition: definition,
       });
@@ -86,9 +86,12 @@ var Environment = Ember.Object.extend({
 Environment.reopenClass({
   defaultEnvironment: Environment.create(),
   v: function(varName, value) {
-    var fragment = Environment.defaultEnvironment._codeRepresentation(value);
-    var expression = Expression.create({fragments: [fragment]});
-    return Environment.defaultEnvironment.addVariable(varName, expression);
+    var environment = Environment.defaultEnvironment;
+    var fragment = environment._codeRepresentation(value);
+    var store = environment.get('store');
+    var expression = store.createRecord('expression');
+    expression.set('fragments', [fragment]);
+    return environment.addVariable(varName, expression);
   }
 });
 

@@ -1,5 +1,4 @@
 import Ember from "ember";
-import Instruction from "tukey/models/instruction";
 import RectangleTool from "tukey/models/drawing-tools/rectangle-tool";
 import CircleTool from "tukey/models/drawing-tools/circle-tool";
 import LineTool from "tukey/models/drawing-tools/line-tool";
@@ -231,7 +230,7 @@ export default Ember.Component.extend({
         // remove instruction from the tree
         currentInstruction.removeInstruction();
         // add to the loop
-        var loopOp = Instruction.create({
+        var loopOp = this.get('store').createRecord('instruction', {
           operation: "loop"
         });
         loopOp.addSubInstruction(currentInstruction);
