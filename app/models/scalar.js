@@ -1,8 +1,2 @@
-import DS from 'ember-data';
-
-export default DS.Model.extend({
-
-  name: DS.attr('string'),
-  value: DS.attr('number')
-
-});
+import Attribute from 'tukey/models/attribute';
+export default Attribute;

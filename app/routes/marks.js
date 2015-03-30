@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import Environment from 'tukey/models/environment';
+var v = Environment.v;
 
 export default Ember.Route.extend({
   getTable: function() {
@@ -36,7 +37,13 @@ export default Ember.Route.extend({
       {name: 'canvasWidth', value: 200},
       {name: 'padding', value: 3}
     ].map((hash) => {
-      return this.get("store").createRecord('scalar', hash);
+      // create variable
+      let variable = v(hash.name, hash.value);
+      // create scalar
+      return this.store.createRecord('scalar', {
+        name: hash.name,
+        variable: variable
+      });
     });
   },
 

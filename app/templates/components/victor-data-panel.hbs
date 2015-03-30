@@ -3,7 +3,7 @@
     <ul>
       {{#each scalars as |scalar|}}
         {{#victor-data-panel-scalar-item scalar=scalar}}
-          {{scalar.name}} is {{scalar.value}}
+          {{variable-definition variable=scalar.variable}}
         {{/victor-data-panel-scalar-item}}
       {{/each}}
       {{! item for every scalarList }}
