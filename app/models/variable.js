@@ -21,8 +21,9 @@ var Variable = DS.Model.extend({
   expression: DS.belongsTo('expression'),
 
   // named used when setting by an environment when setting up an eval context
-  _internalName: Ember.computed.alias('id'),
-
+  _internalName: function() {
+    return 'var_' + this.get('id');
+  }.property('id'),
 
   definition: function(key, value) {
     if (arguments.length === 1) {
