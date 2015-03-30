@@ -117,11 +117,7 @@ export default DS.Model.extend({
     }
     return flatMarks;
   }.property("attrs.@each.value", "operation", "mark",
-             "subInstructions.@each.{marks,attrValues}"),
-
-  attrValues: function() {
-    return Math.random();
-  }.property('attrs.@each.value'),
+             "subInstructions.@each.marks"),
 
   attributesFromHash: function(attrsHash) {
     return Object.keys(attrsHash).map((attrName) => {
