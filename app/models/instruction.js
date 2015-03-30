@@ -27,7 +27,8 @@ export default DS.Model.extend({
     var subInstructions = this.get("subInstructions");
     var beforeIndex = subInstructions.slice(0, index);
     var afterIndex = subInstructions.slice(index, subInstructions.get("length"));
-    this.set("subInstructions", beforeIndex.concat([instruction], afterIndex));
+    subInstructions.clear();
+    subInstructions.pushObjects(beforeIndex.concat([instruction], afterIndex));
     instruction.set("parentInstruction", this);
   },
 
@@ -37,7 +38,8 @@ export default DS.Model.extend({
     var parentInstruction = this.get("parentInstruction");
     if (parentInstruction) {
       var subInstructions = parentInstruction.get("subInstructions");
-      parentInstruction.set("subInstructions", subInstructions.reject((item) => item === this));
+      var instructionsToRemove = subInstructions.filter((item) => item === this);
+      subInstructions.removeObjects(instructionsToRemove);
     }
     this.set("parentInstruction", null);
   },
