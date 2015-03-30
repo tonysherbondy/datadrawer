@@ -25,15 +25,16 @@ export default Ember.Component.extend({
   // Value sliding
   valueSlider: Ember.inject.service('value-slider'),
 
-  mouseUp: function() {
-    this.valueSlider.set('isEditingValue', false);
-  },
+  // TODO(Tony) Bring back value sliders but for variables
+  //mouseUp: function() {
+    //this.valueSlider.set('isEditingValue', false);
+  //},
 
-  mouseMove: function(e) {
-    if (this.valueSlider.get('isEditingValue')) {
-      this.valueSlider.get('editingFunc')(e);
-    }
-  },
+  //mouseMove: function(e) {
+    //if (this.valueSlider.get('isEditingValue')) {
+      //this.valueSlider.get('editingFunc')(e);
+    //}
+  //},
 
   actions: {
     setCurrentInstruction: function(instruction) {
