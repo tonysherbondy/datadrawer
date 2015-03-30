@@ -24,23 +24,14 @@ var Expression = DS.Model.extend({
   }.property('persistedFragments'),
 
   variables: function() {
-    return this.get('fragments').filter(function(fragment) {
-      return fragment.get('payload') instanceof Variable;
-    });
+    var isVar = (fragment) => fragment instanceof Variable;
+    return this.get('fragments').filter(isVar);
   }.property('fragments.[]'),
 
   jsString: function() {
-    var stringFragments = this.get('fragments').map(function(fragment) {
-      var payload = fragment.get('payload');
-      if (payload instanceof Variable) {
-        return payload.get('_internalName');
-      } else if (isString(payload)) {
-        return payload;
-      }
-    });
-
-    return stringFragments.join('');
-  }.property('fragments.@each.payload', 'variables.@each._internalName'),
+    var xform = (f) => isString(f) ? f : f.get('_internalName');
+    return this.get('fragments').map(xform).join('');
+  }.property('fragments', 'variables.@each._internalName'),
 
   isConstant: function() {
     var fragments = this.get('fragments');
