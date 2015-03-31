@@ -9,18 +9,48 @@ var markCounter = 0;
 
 export default DS.Model.extend({
   operation: DS.attr('string'),
+  // Need to change this to markType
   mark: DS.attr('string'),
   attrs: DS.hasMany('attribute'),
   parentInstruction: DS.belongsTo('instruction', {inverse: 'subInstructions'}),
   subInstructions: DS.hasMany('instruction', {embedded: true}),
+  _markVariables: DS.hasMany('variable', {embedded: true}),
 
   markName: function() {
     return `mark${++markCounter}`;
   }.property("operation"),
 
+  markVariables: function() {
+    // TODO(Tony) this is odd to depend on operation change, I think we need to have
+    // instructions sub-classed so that this is only available on draw instructions
+    if (this.get('operation') !== 'draw') {
+      return null;
+    }
+    var variables = this.get('_markVariables');
+    var variablesHash = this.get('drawnMark.externalVariablesHash');
+    if (!variables) {
+      // initialize, but don't depend on these external variables here
+      // Go through the hash creating a variable for each entry
+      console.log('variablesHash', variablesHash);
+    }
+    return variables;
+  }.property('_markVariable', 'markName', 'operation'),
+
+  drawnMark: Ember.computed.alias('marks.firstObject'),
+
+  updateMarkVariables: function() {
+    // Update variables everytime mark changes, for a draw instruction, a new mark is
+    // created anytime there is an adjust or anytime our own attribute values change
+    if (this.get('operation') !== 'draw') {
+      return;
+    }
+    var variables = this.get('markVariables');
+    var variablesHash = this.get('drawnMark.externalVariablesHash');
+    console.log('updating', variables, 'with', variablesHash);
+  }.observes('drawnMark'),
+
   addSubInstruction: function(instruction) {
-    this.get("subInstructions").pushObject(instruction);
-    instruction.set("parentInstruction", this);
+    this.addSubInstructionAtIndex(instruction, this.get('subInstructions.length'));
   },
 
   addSubInstructionAtIndex: function(instruction, index) {
