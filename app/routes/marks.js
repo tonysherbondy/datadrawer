@@ -4,31 +4,19 @@ var v = Environment.v;
 
 export default Ember.Route.extend({
   getTable: function() {
-    var columns = [
-        {name: "Nhan", age: 27, weight: 120},
-        {name: "Zack", age: 30, weight: 160},
-        {name: "Anthony", age: 37, weight: 180}
-    ];
-    var tableColumns = columns.map((hash) => {
-      var column = this.get("store").createRecord('tableColumn');
-      column.get("cells").pushObjects(this.getCellsFromHash(hash));
-      return column;
-    });
-    var table = this.get("store").createRecord('table');
-    table.get("columns").pushObjects(tableColumns);
-    return table;
-  },
+    var names = ['Nhan', 'Zack', 'Tony'];
+    var ages = [27, 30, 37];
+    var weights = [120, 160, 180];
 
-  getCellsFromHash: function(hash) {
-    var cells = [];
-    var store = this.get("store");
-    Object.keys(hash).forEach(function(key) {
-      cells.pushObject(store.createRecord('tableCell', {
-        name: key,
-        value: hash[key]
-      }));
-    });
-    return cells;
+    var table = this.get("store").createRecord('table');
+
+    var rows = table.get("rows");
+    rows.pushObject(v('name', names));
+    rows.pushObject(v('age', ages));
+    rows.pushObject(v('weight', weights));
+    rows.pushObject(v('col', [0,1,2]));
+
+    return table;
   },
 
   getScalars: function() {

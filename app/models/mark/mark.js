@@ -53,10 +53,12 @@ export default Ember.Object.extend({
       return null;
     }
 
+    var variable = attribute.get('variable');
     //TODO (nhan): reconsider the way we're getting the value of these expressions
     //perhaps the outputted d3 code should refer to variables that are initialized
     //earlier in the code
-    return `function(element, index) { return ${attribute.get('variable.jsCode')}; }`;
+
+    return `function(element, index) { return ${variable.get('d3Code')};}`;
   },
 
   // TODO need to support "table" and eventually some subsplicing of table

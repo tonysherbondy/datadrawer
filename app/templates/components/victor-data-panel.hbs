@@ -17,17 +17,9 @@
         <th>{{header}}</th>
       {{/each}}
     </tr>
-    {{#each rows as |row|}}
+    {{#each table.rows as |row|}}
       <tr>
-        {{#each row as |cell|}}
-          {{#victor-data-panel-cell
-            cell=cell
-            row=row
-            table=table
-            as |isEditing|}}
-            {{cell.value}}
-          {{/victor-data-panel-cell}}
-        {{/each}}
+        {{variable-definition variable=row}}
       </tr>
     {{/each}}
     <tr>

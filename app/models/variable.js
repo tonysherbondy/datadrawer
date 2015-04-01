@@ -1,18 +1,9 @@
 import Ember from 'ember';
 import DS from 'ember-data';
-import {isString} from 'tukey/utils/common';
+import {jsCodeFromValue} from 'tukey/utils/common';
 import Expression from 'tukey/models/expression.js';
 import Environment from 'tukey/models/environment.js';
 
-function jsCodeFromValue(value) {
-  if (Ember.isArray(value)) {
-    return `[${value}]`;
-  } else if (isString(value)) {
-    return `'${value}'`;
-  } else {
-    return `${value}`;
-  }
-}
 
 
 var Variable = DS.Model.extend({
@@ -75,7 +66,25 @@ var Variable = DS.Model.extend({
 
   jsCode: function() {
     return jsCodeFromValue(this.get('value'));
-  }.property('value')
+  }.property('value'),
+
+  d3Code: function() {
+    var fragments = this.get('definition.fragments');
+
+    var codeStrings = fragments.map((fragment) => {
+      if (fragment instanceof Variable) {
+        if (Ember.isArray(fragment.get('value'))) {
+          return `element['${fragment.get('name')}']`;
+        } else {
+          return fragment.get('jsCode');
+        }
+      }
+      // fragment is string
+      return fragment;
+    });
+
+    return codeStrings.join('');
+  }.property('definition.fragments.[]', 'value')
 });
 
 export default Variable;

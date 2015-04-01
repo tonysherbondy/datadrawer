@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import Variable from 'tukey/models/variable.js';
 import Expression from 'tukey/models/expression.js';
-import {isString} from 'tukey/utils/common';
+import {isString, jsCodeFromValue} from 'tukey/utils/common';
 
 // TODO: rewrite this using ArrayProxy
 // the list is meant to be the external interface that will be shown in the UI,
@@ -64,11 +64,15 @@ var Environment = Ember.Object.extend({
     var variableAssignmentLines = [];
 
     expression.get('variables').forEach((variable) => {
-      var varValue = this._codeRepresentation(variable.get('value'));
+      var varName = variable.get('_internalName');
+      var value = variable.get('value');
 
-      if (!Ember.isNone(varValue)) {
-        var varName = variable.get('_internalName');
-        variableAssignmentLines.push(`var ${varName} = ${varValue};`);
+      if (!Ember.isArray(value)) {
+        var firstValueCode = jsCodeFromValue(value.get('firstObject'));
+        variableAssignmentLines.push(`var ${varName} = ${firstValueCode};`);
+      } else if (value !== undefined && value !== null) {
+        var valueCode = jsCodeFromValue(value);
+        variableAssignmentLines.push(`var ${varName} = ${valueCode};`);
       }
     });
 
@@ -81,16 +85,6 @@ var Environment = Ember.Object.extend({
     var script = `(function() {${setupCode}; return (${expressionCode});})()`;
     return eval(script);
   },
-
-  _codeRepresentation: function (value) {
-    if (Ember.isArray(value)) {
-      return `[${value}]`;
-    } else if (isString(value)) {
-      return `'${value}'`;
-    } else {
-      return `${value}`;
-    }
-  }
 });
 
 Environment.reopenClass({
@@ -101,7 +95,7 @@ Environment.reopenClass({
     if (value instanceof Variable) {
       fragment = value;
     } else {
-      fragment = environment._codeRepresentation(value);
+      fragment = jsCodeFromValue(value);
     }
     var store = environment.get('store');
     var expression = store.createRecord('expression');

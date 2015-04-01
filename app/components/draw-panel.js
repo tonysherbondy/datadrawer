@@ -139,12 +139,9 @@ export default Ember.Component.extend({
 
     // Make table and scalar data available to the chart, these are used inside attr
     // functions
-    var table = [];
-    if (!Ember.isEmpty(this.get("table.columns"))) {
-      table = this.get("table.columns").map((column) => {
-        return column.get("columnHash");
-      });
-    }
+
+    var table = this.get('table.columnHashes'); // jshint ignore:line
+
     var scalars = {};
     if (!Ember.isEmpty(this.get("scalars"))) {
       this.get("scalars").forEach((scalar) => {
@@ -161,7 +158,7 @@ export default Ember.Component.extend({
     this.setupAdjustListeners();
     this.drawMarkControls();
 
-  }.observes("d3Code", "table.columns.@each.columnHash", "scalars.@each.value", "scalars.@each.name"),
+  }.observes("d3Code", "table.columnHashes", "scalars.@each.value", "scalars.@each.name"),
 
   drawInstructions: function() {
     // return list of only draw instructions
