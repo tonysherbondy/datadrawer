@@ -9,7 +9,10 @@ export default Ember.Component.extend({
   }.property("instruction", "currentInstruction"),
 
   click: function(event) {
-    this.sendAction("setParentCurrentInstruction", this.get("instruction"));
+    // Don't select the instruction if we clicked in the expression editor
+    if (!Ember.$(event.target).hasClass('expression-editor')) {
+      this.sendAction("setParentCurrentInstruction", this.get("instruction"));
+    }
     event.preventDefault();
     return false;
   },
