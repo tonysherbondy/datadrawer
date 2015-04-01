@@ -32,11 +32,14 @@ export default Ember.Route.extend({
   },
 
   getScalars: function() {
-    return [
+    var someScalars = [
       {name: 'canvasHeight', value: 200},
       {name: 'canvasWidth', value: 200},
       {name: 'padding', value: 3}
     ].map((hash) => v(hash.name, hash.value));
+    var markVar = v('mark1_center_x', 0);
+    var depVar = v('dependsOnCenter', markVar);
+    return someScalars.concat([markVar, depVar]);
   },
 
   getInstructionTree: function() {
@@ -93,6 +96,7 @@ export default Ember.Route.extend({
   model: function() {
     // setup the environment
     Environment.defaultEnvironment.set('store', this.store);
+    window.defaultEnvironment = Environment.defaultEnvironment;
     var picture = this.get("store").createRecord("picture", {
       instructionTree: this.getInstructionTree(),
       table: this.getTable()

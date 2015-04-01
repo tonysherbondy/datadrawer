@@ -20,11 +20,6 @@ export default Ember.Object.extend({
     {name: "strokeWidth", d3Name: "stroke-width"},
   ],
 
-  externalVariablesHash: function() {
-    // return a hash of name to value, basically like the control points
-    // So probably needs to be overridden by every type
-  }.property(),
-
   getAttrByName: function(name) {
     return this.get('attrs').findBy('name', name);
   },

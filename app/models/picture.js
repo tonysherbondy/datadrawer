@@ -1,4 +1,5 @@
 import DS from 'ember-data';
+import Environment from 'tukey/models/environment';
 
 export default DS.Model.extend({
 
@@ -30,5 +31,34 @@ export default DS.Model.extend({
   d3Code: function() {
     return this.get("marks").getEach("d3Code").join("\n\n");
     // TODO this probably should depend on mark attributes which should also be ember objects
-  }.property("marks.[]", "marks.@each.d3Code")
+  }.property("marks.[]", "marks.@each.d3Code"),
+
+  updateMarkVariablesEnvironment: function() {
+    // Anytime d3Code changes we will change the value of the mark variables in the environment
+
+    // For each mark
+    this.get('marks').forEach((mark) => {
+      // For each control point of mark
+      var markName = mark.get('name');
+      mark.getControlPoints().forEach((point) => {
+        // Create or update variable with var_markName_nameControlPoint
+        var pointName = point.name;
+        // Check for x and y
+        ['x', 'y'].forEach((axis, index) => {
+          var variableName = `${markName}_${pointName}_${axis}`;
+          var variable = Environment.defaultEnvironment.getVariableByName(variableName);
+          // TODO make point type or at least make it an object
+          var axisPosition = point.position[index];
+          if (!variable) {
+            // Don't really need variable just needed to add it to environment
+            variable = Environment.v(variableName, axisPosition);
+            console.log('created variable', variableName);
+          } else {
+            variable.set('definition', axisPosition);
+          }
+        });
+
+      });
+    });
+  }.observes('d3Code')
 });

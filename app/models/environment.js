@@ -31,6 +31,11 @@ var Environment = Ember.Object.extend({
     return this.get('_variables')[id];
   },
 
+  // TODO(tony) may want to make this a hash as well
+  getVariableByName: function(name) {
+    return this.get('variableList').findBy('name', name);
+  },
+
   addVariable: function(variable, definition) {
     if (arguments.length === 1 && variable instanceof Variable) {
       if (this.get('_variables')[variable.get('id')]) {
@@ -92,7 +97,12 @@ Environment.reopenClass({
   defaultEnvironment: Environment.create(),
   v: function(varName, value) {
     var environment = Environment.defaultEnvironment;
-    var fragment = environment._codeRepresentation(value);
+    var fragment;
+    if (value instanceof Variable) {
+      fragment = value;
+    } else {
+      fragment = environment._codeRepresentation(value);
+    }
     var store = environment.get('store');
     var expression = store.createRecord('expression');
     expression.set('fragments', [fragment]);
