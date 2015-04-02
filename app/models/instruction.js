@@ -4,6 +4,7 @@ import RectangleMark from 'tukey/models/mark/rectangle-mark';
 import CircleMark from 'tukey/models/mark/circle-mark';
 import LineMark from 'tukey/models/mark/line-mark';
 import TextMark from 'tukey/models/mark/text-mark';
+import Environment from 'tukey/models/environment';
 
 var markCounter = 0;
 
@@ -151,6 +152,40 @@ export default DS.Model.extend({
     }
     return flatMarks;
   }.property().volatile(),
+
+  getVariableListFromMarks: function(marks) {
+    // Anytime d3Code changes we will change the value of the mark variables in the environment
+    var variables = [];
+    marks.forEach((mark) => {
+      // For each control point of mark
+      var markName = mark.get('name');
+      mark.getControlPoints().forEach((point) => {
+        // Create or update variable with var_markName_nameControlPoint
+        var pointName = point.name;
+        // Check for x and y
+        ['x', 'y'].forEach((axis, index) => {
+          var variableName = `${markName}_${pointName}_${axis}`;
+          var variable = Environment.defaultEnvironment.getVariableByName(variableName);
+          // TODO make point type or at least make it an object
+          var axisPosition = point.position[index];
+          if (!variable) {
+            variable = Environment.v(variableName, axisPosition);
+            console.log('created variable', variableName);
+          } else {
+            variable.set('definition', axisPosition);
+          }
+          variables.push(variable);
+        });
+
+      });
+    });
+    return variables;
+  },
+
+  markVariables: function() {
+    this.get('description');
+    return this.getVariableListFromMarks(this.get('marks'));
+  }.property('instruction.description'),
 
 
   // Control point stuff

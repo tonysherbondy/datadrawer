@@ -2,6 +2,9 @@
   Loop over table
 {{else if isDraw}}
   Draw {{mark}} with
+  {{#each markVariables as |variable|}}
+    {{variable-definition variable=variable}}
+  {{/each}}
   {{#each displayableAttrs as |attr|}}
     {{variable-definition variable=attr}}
   {{/each}}

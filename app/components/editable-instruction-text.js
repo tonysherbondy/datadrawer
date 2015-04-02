@@ -20,6 +20,8 @@ export default Ember.Component.extend({
     return this.get('attrs').getEach('variable');
   }.property("attrs"),
 
+  markVariables: Ember.computed.alias('instruction.markVariables'),
+
   attrsText: function() {
     return this.get("displayableAttrs").map((attr) => {
       return `${attr.get("name")}: ${attr.get("stringRepresentation")}`;
