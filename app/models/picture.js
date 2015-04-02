@@ -27,7 +27,9 @@ export default DS.Model.extend({
     var marks = this.get('currentInstruction.marks');
     this.updateMarkVariablesEnvironment(marks);
     return marks.getEach('d3Code').join('\n\n');
-  }.property('currentInstruction.description'),
+  }.property('currentInstruction.description',
+             'scalars.@each.jsCode',
+             'table.rows.@each.jsCode'),
 
   updateMarkVariablesEnvironment: function(marks) {
     // Anytime d3Code changes we will change the value of the mark variables in the environment
