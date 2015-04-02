@@ -66,11 +66,7 @@ export default Ember.Component.extend({
       (picture.get('scalars') || []).forEach(addVariableToRecords);
 
       // Save table
-      recordsToSave.pushObjects(picture.get("table.columns").toArray());
-      picture.get("table.columns").forEach(function(column) {
-        recordsToSave.pushObjects(column.get("cells").toArray());
-      });
-
+      (picture.get('table.rows') || []).forEach(addVariableToRecords);
 
       var instructionsToSave = [picture.get("instructionTree")];
       while (instructionsToSave.length > 0) {

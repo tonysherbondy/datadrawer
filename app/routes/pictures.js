@@ -16,8 +16,6 @@ export default Ember.Route.extend({
       store.find('attribute'),
       store.find('instruction'),
       store.find('table'),
-      store.find('tableColumn'),
-      store.find('tableCell')
     ]).then((data) => {
       // Load all variables into the environment
       var variables = data[2];
