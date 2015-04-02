@@ -80,6 +80,18 @@ export default DS.Model.extend({
     return this.get('attrs').map(xform).join(', ');
   }.property('attrs.@each.value'),
 
+  attrDefinitions: function() {
+    // return a hash of values so that anytime a value changes on the attr the hash changes
+    // Only have to do this because Ember can't listen to nested properties after @each
+    var xform = (attr) => `${attr.get('name')}: ${attr.get('definition')}`;
+    return this.get('attrs').map(xform).join(', ');
+  }.property('attrs.@each.definition'),
+
+  description: function() {
+    var myDefinitions = this.get('attrDefinitions');
+    return [myDefinitions].concat(this.get('subInstructions').getEach('description')).join('\n');
+  }.property('attrDefinitions', 'subInstructions.@each.description'),
+
   // Any loop or draw instruction should be able to return
   // a list of marks
   marks: function() {
@@ -116,11 +128,6 @@ export default DS.Model.extend({
       var attrs = subInstructions.getEach('attrs')
         .reduce(this._mergeAttributes, this.get('attrs'));
 
-      //console.log('mark', this.get('markName'));
-      //attrs.forEach((attr) => {
-        //console.log('attr', attr.get('name'), attr.get('value'));
-      //});
-
       var markObject = markClass.create({
         drawInstruction: this,
         name: this.get('markName'),
@@ -143,15 +150,17 @@ export default DS.Model.extend({
       flatMarks.setEach("loopOver", "table");
     }
     return flatMarks;
-  }.property("attrValues", "operation", "mark",
-             "subInstructions.@each.{marks,attrValues}"),
+  }.property().volatile(),
 
-  subValuesDidChange: function() {
-    // TODO(Tony) Without this empty observer, when we load a picture from
-    // storage, we will not be able to listen to subInstruction attribute
-    // changes. Note that this observer is not necessary if the instructions
-    // are not loaded from persistence. FUBAR
-  }.observes('subInstructions.@each.attrValues'),
+
+  // Control point stuff
+  getAttrsForControlPoint: function(point) {
+    return this.get('marks.firstObject').getAttrsForControlPoint(point);
+  },
+
+  updateAttrsWithControlPoint: function(point) {
+    return this.get('marks.firstObject').updateAttrsWithControlPoint(point);
+  },
 
   attributesFromHash: function(attrsHash) {
     return Object.keys(attrsHash).map((attrName) => {

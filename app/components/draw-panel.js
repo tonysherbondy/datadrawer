@@ -97,7 +97,7 @@ export default Ember.Component.extend({
             } else if (isControlPoint) {
               tool.startAdjust(this.getMousePos(),
                                d3.event.target.__data__,
-                               this.get("selectedMark"));
+                               this.get("selectedDrawInstruction"));
             }
           }
         }
@@ -163,10 +163,23 @@ export default Ember.Component.extend({
 
   }.observes("d3Code", "table.columns.@each.columnHash", "scalars.@each.value", "scalars.@each.name"),
 
+  drawInstructions: function() {
+    // return list of only draw instructions
+    var instructions = [];
+    function searchTreeForDraw(instruction) {
+      if (instruction.get('operation') === 'draw') {
+        instructions.push(instruction);
+      }
+      instruction.get('subInstructions').forEach(searchTreeForDraw);
+    }
+    searchTreeForDraw(this.get('currentInstruction'));
+    return instructions;
+  }.property('currentInstruction.description'),
+
   selectedMarkId: null,
-  selectedMark: function() {
-    return this.get("marks").findBy("name", this.get("selectedMarkId"));
-  }.property("marks.@each.name", "selectedMarkId"),
+  selectedDrawInstruction: function() {
+    return this.get('drawInstructions').findBy('markName', this.get('selectedMarkId'));
+  }.property('selectedMarkId', 'drawInstructions'),
 
   selectMarkById: function(id) {
     if (this.get('selectedMarkId') === id) {
@@ -176,6 +189,7 @@ export default Ember.Component.extend({
     }
   },
 
+  // TODO(tony) - do this using instructions
   drawMarkControls: function() {
     // If a mark is selected we will have blue control
     // dots for things we can do to the mark,e.g.,
@@ -186,10 +200,12 @@ export default Ember.Component.extend({
     if (gLayer) {
       gLayer.remove();
     }
-    var mark = this.get("selectedMark");
-    if (!mark) {
+    var drawInstruction = this.get('selectedDrawInstruction');
+    if (!drawInstruction) {
       return;
     }
+
+    var mark = drawInstruction.get('marks.firstObject');
 
     gLayer = this.selectChart().append('g')
       .attr('class', 'control-layer')

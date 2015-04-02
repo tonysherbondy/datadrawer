@@ -7,37 +7,33 @@ export default DS.Model.extend({
   scalars: DS.hasMany('variable', {async: true}),
   table: DS.belongsTo('table', {async: true}),
 
-  currentInstruction: null,
-
-  // TODO Only need to do this right now because of the way that I am modifying
-  // the marks returned from the draw step in a loop step, if I just copied marks
-  // and modified those copies we'd be fine without
-  dirtyMarks: function() {
-    function notifyAllMarks(instruction) {
-      instruction.notifyPropertyChange("marks");
-      instruction.get("subInstructions").forEach(notifyAllMarks);
+  // is either set to instructionTree or some sub-tree
+  currentInstruction: function(k,v) {
+    if (arguments.length === 1) {
+      return this.get('instructionTree');
+    } else {
+      if (v === null) {
+        // Setting to null just sets to instruction tree root
+        return this.get('instructionTree');
+      }
+      return v;
     }
-    notifyAllMarks(this.get("instructionTree"));
-  }.observes("currentInstruction"),
+  }.property('instructionTree'),
 
-  marks: function() {
-    var currentInstruction = this.get("currentInstruction");
-    if (currentInstruction) {
-      return currentInstruction.get("marks");
-    }
-    return this.get("instructionTree.marks");
-  }.property("instructionTree.marks", "currentInstruction", "currentInstruction.marks"),
-
+  // The instruction description is a hash that changes if we need to render
   d3Code: function() {
-    return this.get("marks").getEach("d3Code").join("\n\n");
-    // TODO this probably should depend on mark attributes which should also be ember objects
-  }.property("marks.[]", "marks.@each.d3Code"),
+    // Have to access these values to continue to be able to listen
+    this.get('currentInstruction.description');
+    var marks = this.get('currentInstruction.marks');
+    this.updateMarkVariablesEnvironment(marks);
+    return marks.getEach('d3Code').join('\n\n');
+  }.property('currentInstruction.description'),
 
-  updateMarkVariablesEnvironment: function() {
+  updateMarkVariablesEnvironment: function(marks) {
     // Anytime d3Code changes we will change the value of the mark variables in the environment
 
     // For each mark
-    this.get('marks').forEach((mark) => {
+    marks.forEach((mark) => {
       // For each control point of mark
       var markName = mark.get('name');
       mark.getControlPoints().forEach((point) => {
@@ -60,5 +56,27 @@ export default DS.Model.extend({
 
       });
     });
-  }.observes('d3Code')
+  }
+
+
+  // TODO Only need to do this right now because of the way that I am modifying
+  // the marks returned from the draw step in a loop step, if I just copied marks
+  // and modified those copies we'd be fine without
+  //dirtyMarks: function() {
+    //function notifyAllMarks(instruction) {
+      //instruction.notifyPropertyChange("marks");
+      //instruction.get("subInstructions").forEach(notifyAllMarks);
+    //}
+    //notifyAllMarks(this.get("instructionTree"));
+  //}.observes("currentInstruction"),
+
+  //marks: function() {
+    //var currentInstruction = this.get("currentInstruction");
+    //if (currentInstruction) {
+      //return currentInstruction.get("marks");
+    //}
+    //return this.get("instructionTree.marks");
+  //}.property("instructionTree.marks", "currentInstruction", "currentInstruction.marks"),
+
+
 });
