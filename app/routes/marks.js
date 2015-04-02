@@ -37,9 +37,10 @@ export default Ember.Route.extend({
       {name: 'canvasWidth', value: 200},
       {name: 'padding', value: 3}
     ].map((hash) => v(hash.name, hash.value));
-    var markVar = v('mark1_center_x', 0);
-    var depVar = v('dependsOnCenter', markVar);
-    return someScalars.concat([markVar, depVar]);
+    return someScalars;
+    //var markVar = v('mark1_center_x', 0);
+    //var depVar = v('dependsOnCenter', markVar);
+    //return someScalars.concat([markVar, depVar]);
   },
 
   getInstructionTree: function() {

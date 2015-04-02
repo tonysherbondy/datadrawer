@@ -162,6 +162,14 @@ export default DS.Model.extend({
     return this.get('marks.firstObject').updateAttrsWithControlPoint(point);
   },
 
+  getRotation: function() {
+    return this.get('marks.firstObject.rotation');
+  },
+
+  getTransformFromRotation: function(rotation) {
+    return this.get('marks.firstObject').getTransformFromRotation(rotation);
+  },
+
   attributesFromHash: function(attrsHash) {
     return Object.keys(attrsHash).map((attrName) => {
       return this.store.createRecord('attribute', {

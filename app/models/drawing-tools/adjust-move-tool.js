@@ -9,9 +9,7 @@ export default MarkTool.extend({
   // - control point that we are modifying
   // - markID
   drawInstruction: null,
-
   controlPoint: null,
-  markId: null,
 
   startAdjust: function(mousePos, controlPoint, drawInstruction) {
     this.set('controlPoint', controlPoint);
