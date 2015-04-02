@@ -1,10 +1,8 @@
 import Ember from 'ember';
 import DS from 'ember-data';
-import {jsCodeFromValue} from 'tukey/utils/common';
+import {jsCodeFromValue, isString} from 'tukey/utils/common';
 import Expression from 'tukey/models/expression.js';
 import Environment from 'tukey/models/environment.js';
-
-
 
 var Variable = DS.Model.extend({
   // name defined and seen by the user in the UI
@@ -60,7 +58,7 @@ var Variable = DS.Model.extend({
       return undefined;
     }
   }.property('definition.isConstant',
-             'definition.fragments.[]',
+             'definition.jsString',
              'definition.variables.@each.value',
              'environment'),
 
@@ -72,7 +70,7 @@ var Variable = DS.Model.extend({
     var fragments = this.get('definition.fragments');
 
     var codeStrings = fragments.map((fragment) => {
-      if (fragment instanceof Variable) {
+      if (!isString(fragment)) {
         if (Ember.isArray(fragment.get('value'))) {
           return `element['${fragment.get('name')}']`;
         } else {
@@ -84,7 +82,7 @@ var Variable = DS.Model.extend({
     });
 
     return codeStrings.join('');
-  }.property('definition.fragments.[]', 'value')
+  }.property('definition.jsString', 'value')
 });
 
 export default Variable;
