@@ -10,7 +10,6 @@ export default Ember.Route.extend({
   afterModel: function() {
     var store = this.get("store");
     return Ember.RSVP.all([
-      store.find('fragment'),
       store.find('expression'),
       store.find('variable'),
       store.find('attribute'),
@@ -18,7 +17,7 @@ export default Ember.Route.extend({
       store.find('table'),
     ]).then((data) => {
       // Load all variables into the environment
-      var variables = data[2];
+      var variables = data[1];
       variables.forEach((variable) => {
         Environment.defaultEnvironment.addVariable(variable);
       });

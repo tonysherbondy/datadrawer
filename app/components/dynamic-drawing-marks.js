@@ -59,7 +59,6 @@ export default Ember.Component.extend({
         var expression = variable.get('expression');
         recordsToSave.pushObject(variable);
         recordsToSave.pushObject(expression);
-        recordsToSave.pushObjects(expression.get('persistedFragments').toArray());
       }
 
       // Save all scalars
