@@ -1,0 +1,10 @@
+<td>{{variable-pill variable=variable}}</td>
+{{#if shouldShowEditor}}
+  <td {{bind-attr colspan=numColumns}}>
+    {{expression-editor expression=variable.definition}}
+  </td>
+{{else}}
+  {{#each variable.value as |cellValue|}}
+    <td>{{cellValue}}</td>
+  {{/each}}
+{{/if}}

@@ -11,10 +11,10 @@ export default Ember.Route.extend({
     var table = this.get("store").createRecord('table');
 
     var rows = table.get("rows");
+    rows.pushObject(v('col', [0,1,2]));
     rows.pushObject(v('name', names));
     rows.pushObject(v('age', ages));
     rows.pushObject(v('weight', weights));
-    rows.pushObject(v('col', [0,1,2]));
 
     return table;
   },

@@ -18,9 +18,7 @@
       {{/each}}
     </tr>
     {{#each table.rows as |row|}}
-      <tr>
-        {{variable-definition variable=row}}
-      </tr>
+      {{table-row-definition variable=row numColumns=table.numColumns}}
     {{/each}}
     <tr>
       <td {{bind-attr colspan=numberOfHeaders}} class="add-table-row" {{action 'addTableRow'}}>
