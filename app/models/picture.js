@@ -31,7 +31,7 @@ export default DS.Model.extend({
 
   updateMarkVariablesEnvironment: function(marks) {
     // Anytime d3Code changes we will change the value of the mark variables in the environment
-    this.get('currentInstruction.content').getVariableListFromMarks(marks);
+    this.get('currentInstruction.getVariableListFromMarks')(marks);
   }
 
 });

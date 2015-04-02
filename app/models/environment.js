@@ -67,7 +67,7 @@ var Environment = Ember.Object.extend({
       var varName = variable.get('_internalName');
       var value = variable.get('value');
 
-      if (!Ember.isArray(value)) {
+      if (Ember.isArray(value)) {
         var firstValueCode = jsCodeFromValue(value.get('firstObject'));
         variableAssignmentLines.push(`var ${varName} = ${firstValueCode};`);
       } else if (value !== undefined && value !== null) {
