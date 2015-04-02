@@ -83,9 +83,9 @@ export default DS.Model.extend({
   attrDefinitions: function() {
     // return a hash of values so that anytime a value changes on the attr the hash changes
     // Only have to do this because Ember can't listen to nested properties after @each
-    var xform = (attr) => `${attr.get('name')}: ${attr.get('definition')}`;
+    var xform = (attr) => `${attr.get('name')}: ${attr.get('definitionString')}`;
     return this.get('attrs').map(xform).join(', ');
-  }.property('attrs.@each.definition'),
+  }.property('attrs.@each.definitionString'),
 
   description: function() {
     var myDefinitions = this.get('attrDefinitions');
