@@ -22,10 +22,8 @@ var Variable = DS.Model.extend({
         this.set('expression', value);
         return value;
       } else {
-        var expression = this.store.createRecord('expression');
-        expression.set('fragments', [jsCodeFromValue(value)]);
-        this.set('expression', expression);
-        return expression;
+        this.set('expression.fragments', [jsCodeFromValue(value)]);
+        return this.get('expression');
       }
     }
   }.property('expression'),
