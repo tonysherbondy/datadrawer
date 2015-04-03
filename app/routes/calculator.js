@@ -3,8 +3,10 @@ import Environment from 'tukey/models/environment';
 import Expression from 'tukey/models/expression';
 
 var environment = Environment.create();
-environment.addVariable('foo', Expression.constant('10'));
-environment.addVariable('bar', Expression.constant('27'));
+var v = Environment.v;
+
+environment.addVariable(v('foo', 10));
+environment.addVariable(v('bar', 27));
 
 export default Ember.Route.extend({
   model: function() {
@@ -15,7 +17,7 @@ export default Ember.Route.extend({
   actions: {
     addVariable: function() {
       var count = environment.get('variableList.length');
-      environment.addVariable(`variable ${count}`, Expression.constant(''));
+      environment.addVariable(v(`variable ${count}`, ''));
     }
   }
 });

@@ -38,12 +38,4 @@ var Expression = DS.Model.extend({
   }.property('fragments.[]')
 });
 
-Expression.reopenClass({
-  constant: function(value) {
-    return Expression.create({
-      fragments: [`${value}`],
-    });
-  }
-});
-
 export default Expression;
