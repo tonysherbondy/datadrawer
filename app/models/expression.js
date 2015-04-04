@@ -18,7 +18,8 @@ var Expression = DS.Model.extend({
       if (isString(fragment)) {
         return fragment;
       }
-      return store.find('variable', fragment.id);
+      // Assume the variable is local
+      return store.getById('variable', fragment.id);
     });
   }.property('persistedFragments'),
 
