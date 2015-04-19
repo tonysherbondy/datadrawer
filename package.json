@@ -1,0 +1,24 @@
+{
+  "name": "tukey-react",
+  "version": "1.0.0",
+  "description": "Tukey, but with React.",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "react",
+    "reactjs"
+  ],
+  "author": "ANZ",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-core": "^5.1.10",
+    "babel-loader": "^5.0.0",
+    "react-hot-loader": "^1.2.5",
+    "webpack": "^1.8.5",
+    "webpack-dev-server": "^1.8.0"
+  },
+  "dependencies": {
+    "react": "^0.13.2"
+  }
+}
