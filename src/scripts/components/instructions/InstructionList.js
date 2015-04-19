@@ -10,16 +10,16 @@ export default class InstructionList extends React.Component {
 
   render() {
     return (
-      <ul className='instructions-list list-group'>
+      <ul className='instructions-list'>
         {this.props.instructions.map((instruction, index) => {
           return (
-              <li className='list-group-item' key={index}>
+              <li className='instruction-list-item' key={index}>
                 {instruction.getUISentence()}
                 <button
                   type='button'
-                  className='btn btn-xs btn-danger pull-right'
+                  className='delete-instruction'
                   onClick={this.removeInstruction.bind(this, index)}>
-                  <i className='glyphicon glyphicon-remove'/>
+                  <i className="fa fa-close"></i>
                 </button>
               </li>
           );

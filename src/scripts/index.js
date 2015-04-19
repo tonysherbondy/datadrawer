@@ -1,6 +1,8 @@
 
 // Require styles
-require("../styles/style.css");
+require("../styles/normalize.css");
+require("font-awesome/css/font-awesome.css");
+require("../styles/tukey.css");
 
 import React from 'react';
 import App from './components/App';
