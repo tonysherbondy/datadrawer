@@ -1,8 +1,15 @@
 import React from 'react';
+import Flux from '../dispatcher/dispatcher';
+import Immutable from 'immutable';
+
 
 export default class App extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
   render() {
-    let stuff = [1, 2, 3].map(num => {
+    let stuff = Immutable.Range(1,this.props.number).map(num => {
       return (
         <li key={num}>{num}</li>
       );
@@ -18,3 +25,5 @@ export default class App extends React.Component {
     );
   }
 }
+
+App.propTypes = {number: React.PropTypes.number};

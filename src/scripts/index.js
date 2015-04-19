@@ -3,6 +3,6 @@
 require("../styles/style.css");
 
 import React from 'react';
-import App from './App';
+import App from './components/App';
 
-React.render(<App />, document.getElementById('root'));
+React.render(<App number={4}/>, document.getElementById('content'));
