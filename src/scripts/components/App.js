@@ -1,29 +1,39 @@
 import React from 'react';
-import Flux from '../dispatcher/dispatcher';
 import Immutable from 'immutable';
+import Flux from '../dispatcher/dispatcher';
+import InstructionStore from '../stores/InstructionStore';
+import InstructionList from './instructions/InstructionList';
+import InstructionResults from './instructions/InstructionResults';
 
 
-export default class App extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+class App extends React.Component {
 
   render() {
-    let stuff = Immutable.Range(1,this.props.number).map(num => {
-      return (
-        <li key={num}>{num}</li>
-      );
-    });
     return (
-      <div>
-        <h1>Hello, stupid.</h1>
-        <input type="text" />
-        <ul>
-          {stuff}
-        </ul>
+      <div className='main'>
+        <h1>Tukey App</h1>
+        <InstructionResults instructions={this.props.instructions} />
+        <InstructionList instructions={this.props.instructions} />
       </div>
     );
   }
 }
 
-App.propTypes = {number: React.PropTypes.number};
+App.propTypes = {
+  instructions: React.PropTypes.object,
+  pending: React.PropTypes.bool,
+  errors: React.PropTypes.array
+};
+
+App.defaultProps = {
+  instructions: Immutable.List()
+};
+
+App = Flux.connect(App, [InstructionStore], props => ({
+  instructions: InstructionStore.getInstructions(),
+  pending: InstructionStore.getPending(),
+  errors: InstructionStore.getErrors()
+}));
+
+
+export default App;
