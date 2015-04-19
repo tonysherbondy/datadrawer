@@ -13,6 +13,11 @@
   stroke-width: 1px;
 }
 
+textarea {
+  width: 400px;
+  height: 400px;
+}
+
 /* instructions */
 .instructions-list {
   list-style-type: none;

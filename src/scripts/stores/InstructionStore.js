@@ -3,9 +3,24 @@ import Immutable from 'immutable';
 import DrawInstruction from '../models/DrawInstruction';
 
 let instructions = Immutable.List.of(
-  new DrawInstruction({operation: 'draw', shape: 'circle', from: {x: 20, y: 20}, to: {x: 40, y: 20}}),
-  new DrawInstruction({operation: 'draw', shape: 'circle', from: {x: 40, y: 40}, to: {x: 80, y: 40}}),
-  new DrawInstruction({operation: 'draw', shape: 'circle', from: {x: 60, y: 60}, to: {x: 120, y: 60}})
+  new DrawInstruction({
+    id: 1,
+    operation: 'draw',
+    shape: 'circle',
+    from: {x: 20, y: 20},
+    to: {x: 40, y: 20}}),
+  new DrawInstruction({
+    id: 2,
+    operation: 'draw',
+    shape: 'circle',
+    from: {x: 40, y: 40},
+    to: {x: 80, y: 40}}),
+  new DrawInstruction({
+    id: 3,
+    operation: 'draw',
+    shape: 'circle',
+    from: {x: 100, y: 60},
+    to: {x: 120, y: 60}})
 );
 
 const InstructionStore = biff.createStore({
