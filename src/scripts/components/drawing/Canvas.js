@@ -7,9 +7,9 @@ class Canvas extends React.Component {
   render() {
     return (
       <svg className="canvas">
-        {this.props.shapes.map(shape => {
+        {this.props.shapes.map((shape, index) => {
           return (
-            <Circle {...shape.props} />
+            <Circle key={index} {...shape.props} />
           );
         })}
       </svg>
