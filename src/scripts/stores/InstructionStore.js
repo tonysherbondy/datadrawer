@@ -11,7 +11,7 @@ const instructions1 = [
   new DrawCircleInstruction({
     id: 'i2',
     from: {x: 50, y:50},
-    radius: 40
+    radius: {id: 'd3'}
   }),
   new DrawCircleInstruction({
     id: 'i3',

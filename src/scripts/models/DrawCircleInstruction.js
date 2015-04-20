@@ -8,15 +8,41 @@ export default class DrawCircleInstruction extends DrawInstruction {
     this.radius = props.radius;
   }
 
+  getRadiusJs() {
+    // This can be one of the following, a point specified by the to parameter,
+    // a radius number or a radius variable
+    if (this.to) {
+      return this.to.id;
+    } else if (this.radius.id) {
+      return `variables.data.${this.radius.id}`;
+    }
+    return this.radius;
+  }
+
+  getCenterJs() {
+    // Center can either refer to a reference point or explicit point
+    if (this.from.id) {
+      return {
+        cx: `${this.from.id}().x`,
+        cy: `${this.from.id}().y`,
+      };
+    }
+    return {
+      cx: this.from.x,
+      cy: this.from.y,
+    };
+  }
+
   getJsCode(varPrefix) {
     // TODO, a draw instruction can either
     // point
     // TODO, maybe creating is useful for looping??
+    let {cx, cy} = this.getCenterJs();
     let create = `${varPrefix} = {}`;
     let setup = [
-      `cx = ${this.from.x}`,
-      `cy = ${this.from.y}`,
-      `r = ${this.radius}`
+      `cx = ${cx}`,
+      `cy = ${cy}`,
+      `r = ${this.getRadiusJs()}`
     ].map(js => `${varPrefix}.${js}`);
     return [create].concat(setup).join(';\n');
   }

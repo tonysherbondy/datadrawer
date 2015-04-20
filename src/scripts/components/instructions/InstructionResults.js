@@ -3,6 +3,7 @@ import Canvas from '../drawing/Canvas';
 import InstructionCode from './InstructionCode';
 import DataVariable from '../../models/DataVariable';
 import DataVariableList from './DataVariableList';
+import DrawCanvas from '../../models/DrawCanvas';
 
 export default class InstructionResults extends React.Component {
 
@@ -57,6 +58,16 @@ export default class InstructionResults extends React.Component {
   computeFromInstructions(instructions) {
     // Compute shapes and variable values
 
+
+    // This should be a variableValues map that gets used
+    let {variableValues, jsCode: dataJsCode} = this.initVariableValuesWithData();
+    // Initialize shape variable values container
+    variableValues.shapes = {};
+
+    // Treat canvas like another shape
+    let canvasDraw = new DrawCanvas({width: 400, height: 400});
+    let canvasJs = canvasDraw.getJsCode();
+
     // Get JS from instructions
     let jsCode = instructions.map(instruction => {
       // TODO, a loop instructions total iterations can be calculated
@@ -68,9 +79,8 @@ export default class InstructionResults extends React.Component {
       return instruction.getJsCode(prefix);
     }).join('\n');
 
-    // This should be a variableValues map that gets used
-    let {variableValues, jsCode: dataJsCode} = this.initVariableValuesWithData();
-    variableValues.shapes = {};
+    jsCode = canvasJs + '\n' + jsCode;
+
     this.mutateVariableValues(variableValues, jsCode);
 
     // TODO we will need to filter by draw instructions
