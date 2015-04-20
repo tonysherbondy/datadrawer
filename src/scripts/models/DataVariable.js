@@ -4,33 +4,30 @@ function getNewID() {
   return `data_${counter++}`;
 }
 
-function isVar(v) {
-  return v instanceof DataVariable;
+function isVar(fragment) {
+  return fragment.id;
 }
 
-function getAllDescendentVariables(definition) {
-  let depVars = definition.filter(isVar);
-  if (depVars.length === 0) {
-    return [];
-  }
-  return depVars.reduce((all, v) => {
-    return all.concat(getAllDescendentVariables(v.definition));
-  }, depVars);
-}
+//let descendents = getAllDescendentVariables(definition);
+//if (!descendents.every(dV => dV.id !== id)) {
+  //// We have a cycle
+  //console.error('Variable definition cycle detected');
+  //return;
+//}
+//function getAllDescendentVariables(definition) {
+  //let depVars = definition.filter(isVar);
+  //if (depVars.length === 0) {
+    //return [];
+  //}
+  //return depVars.reduce((all, v) => {
+    //return all.concat(getAllDescendentVariables(v.definition));
+  //}, depVars);
+//}
 
 export default class DataVariable {
   constructor({name, id, definition}) {
     this.id = id || getNewID();
     this.name = name;
-
-    // TODO, before setting definition, make sure
-    // no descendents are equal to me
-    let descendents = getAllDescendentVariables(definition);
-    if (!descendents.every(dV => dV.id !== id)) {
-      // We have a cycle
-      console.error('Variable definition cycle detected');
-      return;
-    }
     this.definition = definition;
   }
 
@@ -38,8 +35,8 @@ export default class DataVariable {
     return this.definition.filter(isVar);
   }
 
-  getJsName() {
-    return `variables.data.${this.id}`;
+  getJsName(id = this.id) {
+    return `variables.data.${id}`;
   }
 
   getJsCode(prevVarsMap) {
@@ -47,15 +44,20 @@ export default class DataVariable {
     // or strings
     let value = this.definition.map(fragment => {
       if (isVar(fragment)) {
-        return fragment.getJsName();
+        return this.getJsName(fragment.id);
       }
       return fragment;
     }).join('');
     return `${this.getJsName()} = ${value};`;
   }
 
-  // TODO Let's move this to the store as only the store should do this
-  setDefinition(definition) {
-    return new DataVariable({name: this.name, id: this.id, definition});
+  getValue(values) {
+    return values.data[this.id];
   }
 }
+
+// TODO Need static methods that will check if a definition already depends on
+// a variable
+//
+// TODO Static method that checks to see if a variable is being used by
+// any data variable... for deletion

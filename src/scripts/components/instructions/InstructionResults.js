@@ -2,6 +2,7 @@ import React from 'react';
 import Canvas from '../drawing/Canvas';
 import InstructionCode from './InstructionCode';
 import DataVariable from '../../models/DataVariable';
+import DataVariableList from './DataVariableList';
 
 export default class InstructionResults extends React.Component {
 
@@ -21,8 +22,11 @@ export default class InstructionResults extends React.Component {
         // Skip this variable if its done
         if (!isDone(top)) {
 
+          // Get the actual variable
+          let topV = variables.filter(v => v.id === top.id)[0];
+
           // See if we have any dependent variables to push onto the queue
-          let depVars = top.getDependentVariables();
+          let depVars = topV.getDependentVariables();
           // Don't add any that are already done
           let toAdd = depVars.filter(v => !isDone(v));
 
@@ -30,7 +34,7 @@ export default class InstructionResults extends React.Component {
             toJsQueue.push(top, ...toAdd);
           } else {
             varDoneMap[top.id] = 'done';
-            jsLines.push(top.getJsCode());
+            jsLines.push(topV.getJsCode());
           }
         }
 
@@ -93,7 +97,12 @@ export default class InstructionResults extends React.Component {
     let {shapes, variableValues, jsCode} = this.computeFromInstructions(this.props.instructions);
     return (
       <div>
+        <DataVariableList
+          dataVariables={this.props.dataVariables}
+          dataValues={variableValues} />
+
         <Canvas shapes={shapes}/>
+
         <InstructionCode code={jsCode} />
       </div>
     );
@@ -106,10 +115,7 @@ InstructionResults.propTypes = {
   dataVariables: React.PropTypes.array
 };
 
-// TODO We will want to pass variables in from a store
-let alphaVar = new DataVariable({name: 'alpha', definition: ['42']});
-let betaVar = new DataVariable({name: 'beta', definition: [alphaVar]});
-let gammaVar = new DataVariable({name: 'gamma', definition: [alphaVar, '+', betaVar]});
 InstructionResults.defaultProps = {
-  dataVariables: [gammaVar, alphaVar, betaVar]
+  instructions: [],
+  dataVariables: []
 };
