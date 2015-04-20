@@ -17,29 +17,20 @@ const instructions1 = [
     id: 'i3',
     from: {id: 'canvasRight'},
     to: {id: 'canvasCenter'}
+  }),
+  new DrawRectInstruction({
+    id: 'i4',
+    from: {id: 'canvasLeft'},
+    width: 100,
+    height: 100
+  }),
+  new DrawRectInstruction({
+    id: 'i5',
+    from: {id: 'canvasTop'},
+    width: {id: 'd3'},
+    height: {id: 'd1'}
   })
 ];
-
-const instructions2 = [
-  new DrawRectInstruction({
-    id: 'i1',
-    from: {id: 'canvasBottomLeft'},
-    width: 100,
-    height: 200
-  }),
-  new DrawRectInstruction({
-    id: 'i2',
-    from: {id: 'canvasBottomLeft'},
-    to: 'canvasTopRight'
-  }),
-  new DrawRectInstruction({
-    id: 'i3',
-    from: {id: 'canvasBottomLeft'},
-    width: {id: 'd3'},
-    height: 200
-  }),
-];
-
 
 let instructions = instructions1;
 

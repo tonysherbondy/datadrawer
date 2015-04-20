@@ -14,7 +14,9 @@ export default class DrawCanvas {
       `height = ${this.height}`
     ].map(js => `${pre}.${js};`);
 
+    // TODO These points apply to every rectangle, need to abstract this
     let points = [
+      `function canvasTop() { return {x: ${pre}.x + ${pre}.width/2, y: ${pre}.y} }`,
       `function canvasCenter() { return {x: ${pre}.x + ${pre}.width/2, y: ${pre}.y + ${pre}.height/2} }`,
       `function canvasLeftTop() { return {x: ${pre}.x, y: ${pre}.y} }`,
       `function canvasLeft() { return {x: ${pre}.x, y: ${pre}.y + ${pre}.height/2} }`,

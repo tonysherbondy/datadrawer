@@ -1,6 +1,6 @@
 import DrawInstruction from './DrawInstruction';
 
-export default class DrawCircleInstruction extends DrawInstruction {
+export default class DrawRectInstruction extends DrawInstruction {
   constructor(props) {
     // TODO Handle that they can either set the destination to a
     // point or a radius
@@ -9,30 +9,91 @@ export default class DrawCircleInstruction extends DrawInstruction {
     this.height = props.height;
   }
 
+  getTopLeftJs() {
+    if (this.from.id) {
+      return {
+        x: `${this.from.id}().x`,
+        y: `${this.from.id}().y`,
+      };
+    }
+    return {
+      x: this.from.x,
+      y: this.from.y,
+    };
+  }
+
+  getWidthJs() {
+    // This can be one of the following, a point specified by the to parameter,
+    // a number or a variable
+    if (this.to) {
+      // assume utility function like distanceBetweenPoints(pt1, pt1)
+      let {x} = this.getTopLeftJs();
+      // TODO Probably will need some util function to handle the fact
+      // that we might get negative distances
+      return `${this.to.id}().x - ${x}`;
+    } else if (this.width.id) {
+      return `variables.data.${this.width.id}`;
+    }
+    return this.width;
+  }
+
+  getHeightJs() {
+    // This can be one of the following, a point specified by the to parameter,
+    // a number or a variable
+    if (this.to) {
+      // assume utility function like distanceBetweenPoints(pt1, pt1)
+      let {y} = this.getTopLeftJs();
+      // TODO Probably will need some util function to handle the fact
+      // that we might get negative distances
+      return `${this.to.id}().y - ${y}`;
+    } else if (this.height.id) {
+      return `variables.data.${this.height.id}`;
+    }
+    return this.height;
+  }
+
+
   getJsCode(varPrefix) {
-    // TODO, a draw instruction can either
-    // point
-    // TODO, maybe creating is useful for looping??
     let create = `${varPrefix} = {}`;
+    let {x, y} = this.getTopLeftJs();
     let setup = [
-      `x = ${this.cx}`,
-      `y = ${this.cy}`,
-      `r = ${this.radius}`
+      `x = ${x}`,
+      `y = ${y}`,
+      `width = ${this.getWidthJs()}`,
+      `height = ${this.getHeightJs()}`
     ].map(js => `${varPrefix}.${js}`);
     return [create].concat(setup).join(';\n');
   }
 
   getShapeFromVariables(variables) {
-    let {cx, cy, r} = variables;
+    let {x, y, width, height} = variables;
     return {
       type: 'rect',
-      props: {r, cx, cy}
+      props: {x, y, width, height}
     };
+  }
+
+  getWidthUi() {
+    if (this.width.id) {
+      return `${this.width.id}`;
+    }
+    return this.width;
+  }
+
+  getHeightUi() {
+    if (this.height.id) {
+      return `${this.height.id}`;
+    }
+    return this.height;
   }
 
   // TODO This belongs in the UI most likely
   getUISentence() {
-    return `Draw circle around (${this.cx}, ${this.cy}) with radius ${this.radius}`;
+    let fromUi = `Draw rect from ${this.getFromUi()}`;
+    if (this.to) {
+      return `${fromUi} until ${this.to.id}`;
+    }
+    return `${fromUi}, ${this.getWidthUi()} horizontally, ${this.getHeightUi()} vertically`;
   }
 
 }

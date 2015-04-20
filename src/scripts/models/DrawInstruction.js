@@ -13,4 +13,12 @@ export default class DrawInstruction {
   getShapeName() {
     return `shape_${this.id}`;
   }
+
+  getFromUi() {
+    if (this.from.id) {
+      return `${this.from.id}`;
+    }
+    return `(${this.from.x}, ${this.from.y})`;
+  }
+
 }

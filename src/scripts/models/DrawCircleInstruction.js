@@ -36,24 +36,7 @@ export default class DrawCircleInstruction extends DrawInstruction {
     };
   }
 
-  getCenterUi() {
-    if (this.from.id) {
-      return `${this.from.id}`;
-    }
-    return `(${this.from.x}, ${this.from.y})`;
-  }
-
-  getRadiusUi() {
-    if (this.radius.id) {
-      return `${this.radius.id}`;
-    }
-    return this.radius;
-  }
-
   getJsCode(varPrefix) {
-    // TODO, a draw instruction can either
-    // point
-    // TODO, maybe creating is useful for looping??
     let {cx, cy} = this.getCenterJs();
     let create = `${varPrefix} = {}`;
     let setup = [
@@ -72,12 +55,21 @@ export default class DrawCircleInstruction extends DrawInstruction {
     };
   }
 
+  getRadiusUi() {
+    if (this.radius.id) {
+      return `${this.radius.id}`;
+    }
+    return this.radius;
+  }
+
+
   // TODO This belongs in the UI most likely
   getUISentence() {
+    let fromUi = `Draw circle around ${this.getFromUi()}`;
     if (this.to) {
-      return `Draw circle around ${this.getCenterUi()} until ${this.to.id}`;
+      return `${fromUi} until ${this.to.id}`;
     }
-    return `Draw circle around ${this.getCenterUi()} with radius ${this.getRadiusUi()}`;
+    return `${fromUi} with radius ${this.getRadiusUi()}`;
   }
 
 }
