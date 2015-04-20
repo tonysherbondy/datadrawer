@@ -1,5 +1,4 @@
 import React from 'react';
-import Immutable from 'immutable';
 import Flux from '../dispatcher/dispatcher';
 import InstructionStore from '../stores/InstructionStore';
 import InstructionList from './instructions/InstructionList';
@@ -26,7 +25,7 @@ App.propTypes = {
 };
 
 App.defaultProps = {
-  instructions: Immutable.List()
+  instructions: []
 };
 
 App = Flux.connect(App, [InstructionStore], props => ({

@@ -1,5 +1,4 @@
 import React from 'react';
-import Immutable from 'immutable';
 import Canvas from '../drawing/Canvas';
 import InstructionCode from './InstructionCode';
 import DataVariable from '../../models/DataVariable';
@@ -104,8 +103,8 @@ InstructionResults.propTypes = {
 // TODO We will want to pass variables in from a store
 let alphaVar = new DataVariable({name: 'alpha', definition: 42});
 InstructionResults.defaultProps = {
-  dataVariables: Immutable.fromJS([
+  dataVariables: [
     alphaVar,
     new DataVariable({name: 'beta', definition: alphaVar})
-  ])
+  ]
 };

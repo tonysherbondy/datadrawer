@@ -1,5 +1,4 @@
 import React from 'react';
-import Immutable from 'immutable';
 import InstructionActions from '../../actions/InstructionActions';
 
 export default class InstructionList extends React.Component {
@@ -35,5 +34,5 @@ InstructionList.propTypes = {
 };
 
 InstructionList.defaultProps = {
-  instructions: new Immutable.List()
+  instructions: []
 };

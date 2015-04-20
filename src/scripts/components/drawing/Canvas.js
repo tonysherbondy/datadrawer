@@ -1,5 +1,4 @@
 import React from 'react';
-import Immutable from 'immutable';
 import Circle from './Circle';
 
 class Canvas extends React.Component {
@@ -22,7 +21,7 @@ Canvas.propTypes = {
 };
 
 Canvas.defaultProps = {
-  shapes: Immutable.List()
+  shapes: []
 };
 
 export default Canvas;

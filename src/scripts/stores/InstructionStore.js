@@ -1,8 +1,7 @@
 import biff from '../dispatcher/dispatcher';
-import Immutable from 'immutable';
 import DrawInstruction from '../models/DrawInstruction';
 
-let instructions = Immutable.List.of(
+let instructions = [
   new DrawInstruction({
     id: 1,
     operation: 'draw',
@@ -15,7 +14,7 @@ let instructions = Immutable.List.of(
     shape: 'circle',
     from: {x: 100, y: 60},
     to: {x: 120, y: 60}})
-);
+];
 
 const InstructionStore = biff.createStore({
   getInstructions() {
