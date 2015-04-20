@@ -21,10 +21,10 @@ export default class DataVariableList extends React.Component {
 
 DataVariableList.propTypes = {
   dataVariables: React.PropTypes.array,
-  dataValues: React.PropTypes.array
+  dataValues: React.PropTypes.object
 };
 
 DataVariableList.defaultProps = {
   dataVariables: [],
-  dataValues: []
+  dataValues: {}
 };

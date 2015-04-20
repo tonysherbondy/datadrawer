@@ -8,22 +8,6 @@ function isVar(fragment) {
   return fragment.id;
 }
 
-//let descendents = getAllDescendentVariables(definition);
-//if (!descendents.every(dV => dV.id !== id)) {
-  //// We have a cycle
-  //console.error('Variable definition cycle detected');
-  //return;
-//}
-//function getAllDescendentVariables(definition) {
-  //let depVars = definition.filter(isVar);
-  //if (depVars.length === 0) {
-    //return [];
-  //}
-  //return depVars.reduce((all, v) => {
-    //return all.concat(getAllDescendentVariables(v.definition));
-  //}, depVars);
-//}
-
 export default class DataVariable {
   constructor({name, id, definition}) {
     this.id = id || getNewID();

@@ -1,20 +1,47 @@
 import biff from '../dispatcher/dispatcher';
-import DrawInstruction from '../models/DrawInstruction';
+import DrawCircleInstruction from '../models/DrawCircleInstruction';
+import DrawRectInstruction from '../models/DrawRectInstruction';
 
-let instructions = [
-  new DrawInstruction({
-    id: 1,
-    operation: 'draw',
-    shape: 'circle',
+const instructions1 = [
+  new DrawCircleInstruction({
+    id: 'i1',
     from: {x: 20, y: 20},
-    to: {x: 40, y: 20}}),
-  new DrawInstruction({
-    id: 2,
-    operation: 'draw',
-    shape: 'circle',
-    from: {x: 100, y: 60},
-    to: {x: 130, y: 60}})
+    radius: 20
+  }),
+  new DrawCircleInstruction({
+    id: 'i2',
+    from: {x: 50, y:50},
+    radius: 40
+  }),
+  new DrawCircleInstruction({
+    id: 'i3',
+    from: {id: 'canvasCenter'},
+    radius: 40
+  })
 ];
+
+const instructions2 = [
+  new DrawRectInstruction({
+    id: 'i1',
+    from: {id: 'canvasBottomLeft'},
+    width: 100,
+    height: 200
+  }),
+  new DrawRectInstruction({
+    id: 'i2',
+    from: {id: 'canvasBottomLeft'},
+    to: 'canvasTopRight'
+  }),
+  new DrawRectInstruction({
+    id: 'i3',
+    from: {id: 'canvasBottomLeft'},
+    width: {id: 'd3'},
+    height: 200
+  }),
+];
+
+
+let instructions = instructions1;
 
 const InstructionStore = biff.createStore({
   getInstructions() {
@@ -44,7 +71,7 @@ const InstructionStore = biff.createStore({
     case 'REMOVE_INSTRUCTION': {
       InstructionStore._setPending(false);
       InstructionStore._clearErrors();
-      instructions = instructions.delete(payload.data);
+      instructions = instructions.filter((_,i) => i !== payload.data);
       InstructionStore.emitChange();
       break;
     }
