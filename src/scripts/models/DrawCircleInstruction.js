@@ -12,7 +12,10 @@ export default class DrawCircleInstruction extends DrawInstruction {
     // This can be one of the following, a point specified by the to parameter,
     // a radius number or a radius variable
     if (this.to) {
-      return this.to.id;
+      // assume utility function like distanceBetweenPoints(pt1, pt1)
+      let {cx, cy} = this.getCenterJs();
+      let fromPt = `{x: ${cx}, y: ${cy}}`;
+      return `utils.distanceBetweenPoints(${fromPt}, ${this.to.id}())`;
     } else if (this.radius.id) {
       return `variables.data.${this.radius.id}`;
     }

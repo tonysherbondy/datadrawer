@@ -5,6 +5,7 @@ export default class DrawInstruction {
     // Every draw instruction has a from, that can either be an explicit
     // point or reference to another point, refPoint
     this.from = props.from;
+    this.to = props.to;
   }
 
   // TODO Modify instructions will need to get shapeName from

@@ -15,8 +15,8 @@ const instructions1 = [
   }),
   new DrawCircleInstruction({
     id: 'i3',
-    from: {id: 'canvasCenter'},
-    radius: 40
+    from: {id: 'canvasRight'},
+    to: {id: 'canvasCenter'}
   })
 ];
 

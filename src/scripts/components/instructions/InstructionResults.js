@@ -96,7 +96,16 @@ export default class InstructionResults extends React.Component {
 
   mutateVariableValues(variables, jsCode) {
     try {
+      let utils = {
+        // Utility functions needed in the context
+        distanceBetweenPoints: function(a,b) {
+          let x = a.x - b.x;
+          let y = a.y - b.y;
+          return Math.sqrt(x*x + y*y);
+        }
+      };
       eval(jsCode); //jshint ignore:line
+
     } catch (error) {
       console.log("EVAL JSCODE ERROR " + error);
     }
