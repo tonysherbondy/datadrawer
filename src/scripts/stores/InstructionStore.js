@@ -13,7 +13,7 @@ let instructions = [
     operation: 'draw',
     shape: 'circle',
     from: {x: 100, y: 60},
-    to: {x: 120, y: 60}})
+    to: {x: 130, y: 60}})
 ];
 
 const InstructionStore = biff.createStore({

@@ -16,28 +16,31 @@ export default class DrawInstruction {
     return `shape_${this.id}`;
   }
 
+  getRadiusFromPoints(from, to) {
+    let x = from.x - to.x;
+    let y = from.y - to.y;
+    return Math.sqrt(x*x + y*y);
+  }
+
   getJsCode(varPrefix) {
-    // TODO, need to check if to is a point or variable or variable per point
-    let create = `${varPrefix} = {from: {}, to: {}}`;
+    // TODO, a draw instruction can either
+    // point
+    let radius = this.getRadiusFromPoints(this.from, this.to);
+    // TODO, maybe creating is useful for looping??
+    let create = `${varPrefix} = {}`;
     let setup = [
-      `from.x = ${this.from.x}`,
-      `from.y = ${this.from.y}`,
-      `to.x = ${this.from.x}`,
-      `to.y = ${this.from.y}`
+      `cx = ${this.from.x}`,
+      `cy = ${this.from.y}`,
+      `r = ${radius}`
     ].map(js => `${varPrefix}.${js}`);
     return [create].concat(setup).join(';\n');
   }
 
   getShapeFromVariables(variables) {
-    let {from, to} = variables;
-    let r = Math.sqrt(to.x*to.x + to.y*to.y);
+    let {cx, cy, r} = variables;
     return {
       type: this.shape,
-      props: {
-        r: r,
-        cx: from.x,
-        cy: from.y
-      }
+      props: {r, cx, cy}
     };
   }
 

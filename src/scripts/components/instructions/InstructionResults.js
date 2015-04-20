@@ -7,36 +7,38 @@ export default class InstructionResults extends React.Component {
 
   initVariableValuesWithData() {
     // Take the immutable dataVariable definitions
-    let variableDoneMap = {};
+    let varDoneMap = {};
+    let isDone = v => varDoneMap[v.id];
     let variables = this.props.dataVariables;
     let toJsQueue = [];
     let jsLines = [];
 
     function processQueue() {
-      let isCycle = false;
-      while (toJsQueue.length > 0 && !isCycle) {
+      // Assume cycles are prevented at construction
+      while (toJsQueue.length > 0) {
         let top = toJsQueue.pop();
-        let depVars = top.getDependentVariables();
-        // Don't add any that are already done
-        let toAdd = depVars.filter(v => variableDoneMap[v.id] !== 'done');
-        // And break because of a cycle if any are inQ
-        isCycle = !toAdd.every(v => variableDoneMap[v.id] !== 'inQ');
-        if (isCycle) {
-          console.error('Cycle detected in data variables');
+
+        // Skip this variable if its done
+        if (!isDone(top)) {
+
+          // See if we have any dependent variables to push onto the queue
+          let depVars = top.getDependentVariables();
+          // Don't add any that are already done
+          let toAdd = depVars.filter(v => !isDone(v));
+
+          if (toAdd.length > 0) {
+            toJsQueue.push(top, ...toAdd);
+          } else {
+            varDoneMap[top.id] = 'done';
+            jsLines.push(top.getJsCode());
+          }
         }
 
-        if (toAdd.length > 0) {
-          toJsQueue.push(top, ...toAdd);
-        } else {
-          variableDoneMap[top.id] = 'done';
-          jsLines.push(top.getJsCode());
-        }
       }
     }
 
     variables.forEach(variable => {
-      if (!variableDoneMap[variable.id]) {
-        variableDoneMap[variable.id] = 'inQ';
+      if (!isDone(variable)) {
         toJsQueue.push(variable);
         processQueue();
       }
@@ -53,6 +55,10 @@ export default class InstructionResults extends React.Component {
 
     // Get JS from instructions
     let jsCode = instructions.map(instruction => {
+      // TODO, a loop instructions total iterations can be calculated
+      // at this point because loops can only depend on data variables, this will
+      // allow us to change our context, loop prefix only affects shape variables
+      // within the loop though...
       // TODO Loop instructions don't have a shapeName, but perhaps we can just ignore
       let prefix = `variables.shapes.${instruction.getShapeName()}`;
       return instruction.getJsCode(prefix);
@@ -101,10 +107,9 @@ InstructionResults.propTypes = {
 };
 
 // TODO We will want to pass variables in from a store
-let alphaVar = new DataVariable({name: 'alpha', definition: 42});
+let alphaVar = new DataVariable({name: 'alpha', definition: ['42']});
+let betaVar = new DataVariable({name: 'beta', definition: [alphaVar]});
+let gammaVar = new DataVariable({name: 'gamma', definition: [alphaVar, '+', betaVar]});
 InstructionResults.defaultProps = {
-  dataVariables: [
-    alphaVar,
-    new DataVariable({name: 'beta', definition: alphaVar})
-  ]
+  dataVariables: [gammaVar, alphaVar, betaVar]
 };
