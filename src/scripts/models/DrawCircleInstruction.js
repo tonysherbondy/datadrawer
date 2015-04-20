@@ -36,6 +36,20 @@ export default class DrawCircleInstruction extends DrawInstruction {
     };
   }
 
+  getCenterUi() {
+    if (this.from.id) {
+      return `${this.from.id}`;
+    }
+    return `(${this.from.x}, ${this.from.y})`;
+  }
+
+  getRadiusUi() {
+    if (this.radius.id) {
+      return `${this.radius.id}`;
+    }
+    return this.radius;
+  }
+
   getJsCode(varPrefix) {
     // TODO, a draw instruction can either
     // point
@@ -60,7 +74,10 @@ export default class DrawCircleInstruction extends DrawInstruction {
 
   // TODO This belongs in the UI most likely
   getUISentence() {
-    return `Draw circle around (${this.from.x}, ${this.from.y}) with radius ${this.radius}`;
+    if (this.to) {
+      return `Draw circle around ${this.getCenterUi()} until ${this.to.id}`;
+    }
+    return `Draw circle around ${this.getCenterUi()} with radius ${this.getRadiusUi()}`;
   }
 
 }
