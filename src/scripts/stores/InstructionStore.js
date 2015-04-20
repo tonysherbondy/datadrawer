@@ -13,12 +13,6 @@ let instructions = Immutable.List.of(
     id: 2,
     operation: 'draw',
     shape: 'circle',
-    from: {x: 40, y: 40},
-    to: {x: 80, y: 40}}),
-  new DrawInstruction({
-    id: 3,
-    operation: 'draw',
-    shape: 'circle',
     from: {x: 100, y: 60},
     to: {x: 120, y: 60}})
 );

@@ -16,15 +16,6 @@ export default class DrawInstruction {
     return `shape_${this.id}`;
   }
 
-  // Need to be able to refer to these variables
-  getShapeVariableNames(varPrefix) {
-    let prefix = `${varPrefix}.${this.getVarName()}`;
-    return {
-      center: `${prefix}.center`,
-      r: `${prefix}.r`
-    };
-  }
-
   getJsCode(varPrefix) {
     // TODO, need to check if to is a point or variable or variable per point
     let create = `${varPrefix} = {from: {}, to: {}}`;
