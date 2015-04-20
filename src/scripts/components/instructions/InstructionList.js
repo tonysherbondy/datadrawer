@@ -30,7 +30,7 @@ export default class InstructionList extends React.Component {
 }
 
 InstructionList.propTypes = {
-  instructions: React.PropTypes.object
+  instructions: React.PropTypes.array
 };
 
 InstructionList.defaultProps = {

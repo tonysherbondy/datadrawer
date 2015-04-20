@@ -19,7 +19,7 @@ class App extends React.Component {
 }
 
 App.propTypes = {
-  instructions: React.PropTypes.object,
+  instructions: React.PropTypes.array,
   pending: React.PropTypes.bool,
   errors: React.PropTypes.array
 };

@@ -96,8 +96,8 @@ export default class InstructionResults extends React.Component {
 }
 
 InstructionResults.propTypes = {
-  instructions: React.PropTypes.object,
-  dataVariables: React.PropTypes.object
+  instructions: React.PropTypes.array,
+  dataVariables: React.PropTypes.array
 };
 
 // TODO We will want to pass variables in from a store

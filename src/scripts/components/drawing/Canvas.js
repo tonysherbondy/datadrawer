@@ -17,7 +17,7 @@ class Canvas extends React.Component {
 }
 
 Canvas.propTypes = {
-  shapes: React.PropTypes.object
+  shapes: React.PropTypes.array
 };
 
 Canvas.defaultProps = {
