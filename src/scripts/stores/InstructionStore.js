@@ -22,13 +22,18 @@ const instructions1 = [
     id: 'i4',
     from: {id: 'canvas', point: 'left'},
     width: 100,
-    height: 100
+    height: 120
   }),
   new DrawRectInstruction({
     id: 'i5',
     from: {id: 'canvas', point: 'top'},
     width: {id: 'd3'},
     height: {id: 'd1'}
+  }),
+  new DrawRectInstruction({
+    id: 'i6',
+    from: {id: 'shape_i4', point: 'bottomRight'},
+    to: {id: 'canvas', point: 'bottom'}
   })
 ];
 

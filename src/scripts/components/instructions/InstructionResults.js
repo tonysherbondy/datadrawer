@@ -136,6 +136,14 @@ export default class InstructionResults extends React.Component {
       left: function(id) {
         var s = getShape(id);
         return {x: s.x, y: s.y + s.height/2};
+      },
+      bottomRight: function(id) {
+        var s = getShape(id);
+        return {x: s.x + s.width, y: s.y + s.height};
+      },
+      bottom: function(id) {
+        var s = getShape(id);
+        return {x: s.x + s.width/2, y: s.y + s.height};
       }
     };
   }
