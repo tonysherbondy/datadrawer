@@ -18,7 +18,7 @@ export default class DrawCircleInstruction extends DrawInstruction {
       let toPt = this.getPointVarJs(this.to);
       return `utils.distanceBetweenPoints(${fromPt}, ${toPt})`;
     } else if (this.radius.id) {
-      return `variables.data.${this.radius.id}`;
+      return `utils.getScalar('${this.radius.id}')`;
     }
     return this.radius;
   }

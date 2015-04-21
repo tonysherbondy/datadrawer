@@ -11,7 +11,7 @@ export default class ScaleInstruction extends Instruction {
     // This can be one of the following, a point specified by the to parameter,
     // a radius number or a radius variable
     if (this.to.id) {
-      return `variables.data.${this.to.id}`;
+      return `utils.getScalar('${this.to.id}')`;
     }
     return this.to;
   }

@@ -27,6 +27,12 @@ let variables = [
     name: 'ages',
     isRow: true,
     definition: ['[37, 27, 28]']
+  }),
+  new DataVariable({
+    id: 'd6',
+    name: 'longer',
+    isRow: true,
+    definition: ['[0, 10, 20, 30, 40, 50]']
   })
 ];
 

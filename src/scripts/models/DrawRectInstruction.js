@@ -34,7 +34,7 @@ export default class DrawRectInstruction extends DrawInstruction {
       // that we might get negative distances
       return `${toPt}.x - ${x}`;
     } else if (this.width.id) {
-      return `variables.data.${this.width.id}`;
+      return `utils.getScalar('${this.width.id}')`;
     }
     return this.width;
   }
@@ -50,7 +50,7 @@ export default class DrawRectInstruction extends DrawInstruction {
       // that we might get negative distances
       return `${toPt}.y - ${y}`;
     } else if (this.height.id) {
-      return `variables.data.${this.height.id}`;
+      return `utils.getScalar('${this.height.id}')`;
     }
     return this.height;
   }
