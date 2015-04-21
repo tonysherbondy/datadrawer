@@ -21,6 +21,12 @@ let variables = [
     id: 'd4',
     name: 'aOverG',
     definition: [{id: 'd1'}, '/', {id: 'd3'}]
+  }),
+  new DataVariable({
+    id: 'd5',
+    name: 'ages',
+    isRow: true,
+    definition: ['[37, 27, 28]']
   })
 ];
 

@@ -9,10 +9,11 @@ function isVar(fragment) {
 }
 
 export default class DataVariable {
-  constructor({name, id, definition}) {
+  constructor({name, id, definition, isRow}) {
     this.id = id || getNewID();
     this.name = name;
     this.definition = definition;
+    this.isRow = isRow;
   }
 
   getDependentVariables() {

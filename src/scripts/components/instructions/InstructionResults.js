@@ -3,6 +3,7 @@ import Canvas from '../drawing/Canvas';
 import InstructionCode from './InstructionCode';
 import DataVariable from '../../models/DataVariable';
 import DataVariableList from './DataVariableList';
+import DataTable from './DataTable';
 import DrawCanvas from '../../models/DrawCanvas';
 import DrawInstruction from '../../models/DrawInstruction';
 
@@ -180,10 +181,19 @@ export default class InstructionResults extends React.Component {
 
   render() {
     let {shapes, variableValues, jsCode} = this.computeFromInstructions(this.props.instructions);
+    let {scalars, vectors} = this.props.dataVariables.reduce((map, d) => {
+      let type = d.isRow ? 'vectors' : 'scalars';
+      map[type].push(d);
+      return map;
+    }, {scalars: [], vectors: []});
     return (
       <div>
         <DataVariableList
-          dataVariables={this.props.dataVariables}
+          dataVariables={scalars}
+          dataValues={variableValues} />
+
+        <DataTable
+          rowVariables={vectors}
           dataValues={variableValues} />
 
         <Canvas shapes={shapes}/>
