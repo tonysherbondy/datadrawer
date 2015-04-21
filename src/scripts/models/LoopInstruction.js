@@ -6,10 +6,16 @@ export default class LoopInstruction {
     this.instructions = instructions;
   }
 
-  getJsCode() {
-    return this.instructions.reduce((code, i) => {
-      return code + '\n' + i.getJsCode();
-    }, '');
+  getJsCode(table) {
+    // loop until maxLength of table
+    let jsCode = '';
+    for (let index = 0; index < table.maxLength; index++) {
+      this.instructions.forEach(instruction => {
+        jsCode += '\n' + instruction.getJsCode(index);
+      });
+      jsCode += '\n';
+    }
+    return jsCode;
   }
 
   getUISentence() {

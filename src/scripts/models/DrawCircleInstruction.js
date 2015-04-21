@@ -38,8 +38,8 @@ export default class DrawCircleInstruction extends DrawInstruction {
     };
   }
 
-  getJsCode() {
-    let varPrefix = this.getVarPrefix();
+  getJsCode(index) {
+    let varPrefix = this.getVarPrefix(index);
     let {cx, cy} = this.getCenterJs();
     let create = `${varPrefix} = {}`;
     let setup = [
@@ -49,14 +49,6 @@ export default class DrawCircleInstruction extends DrawInstruction {
       `r = ${this.getRadiusJs()}`
     ].map(js => `${varPrefix}.${js}`);
     return [create].concat(setup).join(';\n');
-  }
-
-  getShapeFromVariables(variables) {
-    let {cx, cy, r} = variables;
-    return {
-      type: 'circle',
-      props: {r, cx, cy}
-    };
   }
 
   getRadiusUi() {

@@ -5,12 +5,15 @@ export default class Instruction {
     this.shapeId = shapeId;
   }
 
-  getShapeName() {
+  getShapeName(index) {
+    if (isFinite(index)) {
+      return `${this.shapeId}_${index}`;
+    }
     return this.shapeId;
   }
 
-  getVarPrefix() {
-    return `variables.shapes.${this.getShapeName()}`;
+  getVarPrefix(index) {
+    return `variables.shapes.${this.getShapeName(index)}`;
   }
 
   getPointVarJs(pointVar) {

@@ -70,14 +70,6 @@ export default class DrawRectInstruction extends DrawInstruction {
     return [create].concat(setup).join(';\n');
   }
 
-  getShapeFromVariables(variables) {
-    let {x, y, width, height} = variables;
-    return {
-      type: 'rect',
-      props: {x, y, width, height}
-    };
-  }
-
   getWidthUi() {
     if (this.width.id) {
       return `${this.width.id}`;

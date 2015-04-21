@@ -69,7 +69,7 @@ const instructions2 = [
   })
 ];
 
-let instructions = instructions1;
+let instructions = instructions2;
 
 const InstructionStore = biff.createStore({
   getInstructions() {

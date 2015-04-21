@@ -6,6 +6,7 @@ import DataVariableList from './DataVariableList';
 import DataTable from './DataTable';
 import DrawCanvas from '../../models/DrawCanvas';
 import DrawInstruction from '../../models/DrawInstruction';
+import LoopInstruction from '../../models/LoopInstruction';
 
 export default class InstructionResults extends React.Component {
 
@@ -78,6 +79,9 @@ export default class InstructionResults extends React.Component {
       // within the loop though...
       // TODO Loop instructions don't have a shapeName, but perhaps we can just ignore
       //let prefix = `variables.shapes.${instruction.getShapeName()}`;
+      if (instruction instanceof LoopInstruction) {
+        return instruction.getJsCode(this.getTable(variableValues));
+      }
       return instruction.getJsCode();
     }).join('\n');
 
@@ -96,6 +100,17 @@ export default class InstructionResults extends React.Component {
 
     jsCode = dataJsCode + '\n\n' + jsCode;
     return {shapes, variableValues, jsCode};
+  }
+
+  getTable(variableValues) {
+    let rows = this.props.dataVariables.filter(v => v.isRow);
+    let rowValues = rows.map(row => {
+      return row.getValue(variableValues);
+    });
+    let maxLength = rowValues.reduce((max, row) => {
+      return row.length > max ? row.length : max;
+    }, 0);
+    return {rows, rowValues, maxLength};
   }
 
   getShapeFromVariables(shapeVariable) {
@@ -203,8 +218,7 @@ export default class InstructionResults extends React.Component {
           dataValues={variableValues} />
 
         <DataTable
-          rowVariables={vectors}
-          dataValues={variableValues} />
+          table={this.getTable(variableValues)} />
 
         <Canvas shapes={shapes}/>
 
