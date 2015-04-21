@@ -109,8 +109,34 @@ export default class InstructionResults extends React.Component {
   // over variables
   valueContextUtils(variables) {
     var getShape = function(id) {
-      return variables.shapes[id];
+      return variables.shapes[id] ||
+        {type: 'rect', x: 0, y: 0, width: 0, height: 0};
     };
+    var pointFuncs = {
+      rect: {
+        left: function(s) {
+          return {x: s.x, y: s.y + s.height/2};
+        },
+        center: function(s) {
+          return {x: s.x + s.width/2, y: s.y + s.height/2};
+        },
+      },
+      circle: {
+        left: function(s) {
+          return {x: s.cx - s.r, y: s.cy};
+        },
+        center: function(s) {
+          return {x: s.cx, y: s.cy};
+        },
+      }
+    };
+
+    var rectCenter = function(s) {
+    };
+    var circleCenter = function(s) {
+      return {x: s.x + s.width/2, y: s.y + s.height/2};
+    };
+
     return {
       distanceBetweenPoints: function(a,b) {
         let x = a.x - b.x;
@@ -127,7 +153,7 @@ export default class InstructionResults extends React.Component {
       },
       center: function(id) {
         var s = getShape(id);
-        return {x: s.x + s.width/2, y: s.y + s.height/2};
+        return pointFuncs[s.type].center(s);
       },
       right: function(id) {
         var s = getShape(id);
@@ -135,7 +161,7 @@ export default class InstructionResults extends React.Component {
       },
       left: function(id) {
         var s = getShape(id);
-        return {x: s.x, y: s.y + s.height/2};
+        return pointFuncs[s.type].left(s);
       },
       bottomRight: function(id) {
         var s = getShape(id);
