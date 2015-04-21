@@ -56,16 +56,24 @@ const instructions1 = [
   })
 ];
 
+const instructions3 = [
+  new DrawCircleInstruction({
+    id: 'i2',
+    from: {x: 50, y:50},
+    radius: 30
+  }),
+  new ScaleInstruction({
+    id: 'i8',
+    shapeId: 'shape_i2',
+    prop: 'r',
+    to: {id: 'd7'}
+  })
+];
+
 const instructions2 = [
   new LoopInstruction({
     id: 'i1',
-    instructions: [
-      new DrawCircleInstruction({
-        id: 'i2',
-        from: {x: 50, y:50},
-        radius: {id: 'd6'}
-      })
-    ]
+    instructions: instructions3
   })
 ];
 

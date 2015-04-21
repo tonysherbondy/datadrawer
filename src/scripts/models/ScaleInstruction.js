@@ -7,18 +7,18 @@ export default class ScaleInstruction extends Instruction {
     this.to = to;
   }
 
-  getToJs() {
+  getToJs(index) {
     // This can be one of the following, a point specified by the to parameter,
     // a radius number or a radius variable
     if (this.to.id) {
-      return `utils.getScalar('${this.to.id}')`;
+      return `utils.getData('${this.to.id}', ${index})`;
     }
     return this.to;
   }
 
-  getJsCode() {
-    let name = `${this.getVarPrefix()}.${this.prop}`;
-    return `${name} = ${name} * ${this.getToJs()};`;
+  getJsCode(index) {
+    let name = `${this.getVarPrefix(index)}.${this.prop}`;
+    return `${name} = ${name} * ${this.getToJs(index)};`;
   }
 
   getToUi() {
