@@ -4,6 +4,7 @@ import InstructionCode from './InstructionCode';
 import DataVariable from '../../models/DataVariable';
 import DataVariableList from './DataVariableList';
 import DrawCanvas from '../../models/DrawCanvas';
+import DrawInstruction from '../../models/DrawInstruction';
 
 export default class InstructionResults extends React.Component {
 
@@ -75,8 +76,8 @@ export default class InstructionResults extends React.Component {
       // allow us to change our context, loop prefix only affects shape variables
       // within the loop though...
       // TODO Loop instructions don't have a shapeName, but perhaps we can just ignore
-      let prefix = `variables.shapes.${instruction.getShapeName()}`;
-      return instruction.getJsCode(prefix);
+      //let prefix = `variables.shapes.${instruction.getShapeName()}`;
+      return instruction.getJsCode();
     }).join('\n');
 
     jsCode = canvasJs + '\n' + jsCode;
@@ -84,11 +85,14 @@ export default class InstructionResults extends React.Component {
     this.mutateVariableValues(variableValues, jsCode);
 
     // TODO we will need to filter by draw instructions
-    let shapes = instructions.map(instruction => {
-      let varName = instruction.getShapeName();
-      let shapeVariables = variableValues.shapes[varName];
-      return instruction.getShapeFromVariables(shapeVariables);
-    });
+    // TODO we should probably actually traverse by variables in the variables.shape scope
+    let shapes = instructions
+                  .filter(i => i instanceof DrawInstruction)
+                  .map(instruction => {
+                    let varName = instruction.getShapeName();
+                    let shapeVariables = variableValues.shapes[varName];
+                    return instruction.getShapeFromVariables(shapeVariables);
+                  });
 
     jsCode = dataJsCode + '\n\n' + jsCode;
     return {shapes, variableValues, jsCode};

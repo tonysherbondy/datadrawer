@@ -56,7 +56,8 @@ export default class DrawRectInstruction extends DrawInstruction {
   }
 
 
-  getJsCode(varPrefix) {
+  getJsCode() {
+    let varPrefix = this.getVarPrefix();
     let create = `${varPrefix} = {}`;
     let {x, y} = this.getTopLeftJs();
     let setup = [

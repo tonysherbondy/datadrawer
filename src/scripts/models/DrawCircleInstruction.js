@@ -38,7 +38,8 @@ export default class DrawCircleInstruction extends DrawInstruction {
     };
   }
 
-  getJsCode(varPrefix) {
+  getJsCode() {
+    let varPrefix = this.getVarPrefix();
     let {cx, cy} = this.getCenterJs();
     let create = `${varPrefix} = {}`;
     let setup = [

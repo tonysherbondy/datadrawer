@@ -1,6 +1,7 @@
 import biff from '../dispatcher/dispatcher';
 import DrawCircleInstruction from '../models/DrawCircleInstruction';
 import DrawRectInstruction from '../models/DrawRectInstruction';
+import ScaleInstruction from '../models/ScaleInstruction';
 
 const instructions1 = [
   new DrawCircleInstruction({
@@ -23,6 +24,12 @@ const instructions1 = [
     from: {id: 'canvas', point: 'left'},
     width: 100,
     height: 120
+  }),
+  new ScaleInstruction({
+    id: 'i8',
+    shapeId: 'shape_i4',
+    prop: 'height',
+    to: 0.4
   }),
   new DrawRectInstruction({
     id: 'i5',

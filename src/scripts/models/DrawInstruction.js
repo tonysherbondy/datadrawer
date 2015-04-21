@@ -1,17 +1,12 @@
+import Instruction from './Instruction';
 
-export default class DrawInstruction {
-  constructor(props) {
-    this.id = props.id;
+export default class DrawInstruction extends Instruction {
+  constructor({id, from, to}) {
+    super({id, shapeId: `shape_${id}`});
     // Every draw instruction has a from, that can either be an explicit
     // point or reference to another point, refPoint
-    this.from = props.from;
-    this.to = props.to;
-  }
-
-  // TODO Modify instructions will need to get shapeName from
-  // draw instruction that they modify
-  getShapeName() {
-    return `shape_${this.id}`;
+    this.from = from;
+    this.to = to;
   }
 
   getFromUi() {
@@ -19,10 +14,6 @@ export default class DrawInstruction {
       return `${this.from.id}-${this.from.point}`;
     }
     return `(${this.from.x}, ${this.from.y})`;
-  }
-
-  getPointVarJs(pointVar) {
-    return `utils.${pointVar.point}('${pointVar.id}')`;
   }
 
 }
