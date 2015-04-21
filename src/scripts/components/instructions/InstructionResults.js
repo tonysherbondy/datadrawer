@@ -83,7 +83,7 @@ export default class InstructionResults extends React.Component {
         return instruction.getJsCode(this.getTable(variableValues));
       }
       return instruction.getJsCode();
-    }).join('\n');
+    }).join('\n\n');
 
     jsCode = canvasJs + '\n' + jsCode;
 
