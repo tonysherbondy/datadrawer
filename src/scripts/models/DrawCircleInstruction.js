@@ -71,7 +71,7 @@ export default class DrawCircleInstruction extends DrawInstruction {
   getUISentence() {
     let fromUi = `Draw circle around ${this.getFromUi()}`;
     if (this.to) {
-      return `${fromUi} until ${this.to.id}-${this.to.point}`;
+      return `${fromUi} until ${this.to.id}'s ${this.to.point}`;
     }
     return `${fromUi} with radius ${this.getRadiusUi()}`;
   }

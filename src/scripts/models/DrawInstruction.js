@@ -11,7 +11,7 @@ export default class DrawInstruction extends Instruction {
 
   getFromUi() {
     if (this.from.id) {
-      return `${this.from.id}-${this.from.point}`;
+      return `${this.from.id}'s ${this.from.point}`;
     }
     return `(${this.from.x}, ${this.from.y})`;
   }
