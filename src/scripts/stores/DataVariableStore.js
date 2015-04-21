@@ -16,6 +16,11 @@ let variables = [
     id: 'd2',
     name: 'beta',
     definition: [{id: 'd1'}]
+  }),
+  new DataVariable({
+    id: 'd4',
+    name: 'aOverG',
+    definition: [{id: 'd1'}, '/', {id: 'd3'}]
   })
 ];
 

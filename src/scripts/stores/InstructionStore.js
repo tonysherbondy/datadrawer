@@ -29,7 +29,13 @@ const instructions1 = [
     id: 'i8',
     shapeId: 'shape_i4',
     prop: 'height',
-    to: 0.4
+    to: 0.9
+  }),
+  new ScaleInstruction({
+    id: 'i8',
+    shapeId: 'shape_i4',
+    prop: 'height',
+    to: {id: 'd4'}
   }),
   new DrawRectInstruction({
     id: 'i5',
