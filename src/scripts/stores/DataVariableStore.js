@@ -33,6 +33,12 @@ let variables = [
     name: 'longer',
     isRow: true,
     definition: ['[0, 10, 20, 30, 40, 50]']
+  }),
+  new DataVariable({
+    id: 'd7',
+    name: 'scales',
+    isRow: true,
+    definition: ['[4, 2, 1, 0.7, 0.5, 0.3]']
   })
 ];
 

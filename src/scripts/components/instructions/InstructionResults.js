@@ -169,9 +169,9 @@ export default class InstructionResults extends React.Component {
         let y = a.y - b.y;
         return Math.sqrt(x*x + y*y);
       },
-      getScalar(name) {
+      getData(name, index=0) {
         let variable = variables.data[name];
-        return variable instanceof Array ? variable[0] : variable;
+        return variable instanceof Array ? variable[index] : variable;
       },
       top: function(id) {
         var s = getShape(id);

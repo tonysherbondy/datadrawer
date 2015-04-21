@@ -8,7 +8,7 @@ export default class DrawCircleInstruction extends DrawInstruction {
     this.radius = props.radius;
   }
 
-  getRadiusJs() {
+  getRadiusJs(index) {
     // This can be one of the following, a point specified by the to parameter,
     // a radius number or a radius variable
     if (this.to) {
@@ -18,7 +18,7 @@ export default class DrawCircleInstruction extends DrawInstruction {
       let toPt = this.getPointVarJs(this.to);
       return `utils.distanceBetweenPoints(${fromPt}, ${toPt})`;
     } else if (this.radius.id) {
-      return `utils.getScalar('${this.radius.id}')`;
+      return `utils.getData('${this.radius.id}', ${index})`;
     }
     return this.radius;
   }
@@ -46,7 +46,7 @@ export default class DrawCircleInstruction extends DrawInstruction {
       'type = "circle"',
       `cx = ${cx}`,
       `cy = ${cy}`,
-      `r = ${this.getRadiusJs()}`
+      `r = ${this.getRadiusJs(index)}`
     ].map(js => `${varPrefix}.${js}`);
     return [create].concat(setup).join(';\n');
   }
