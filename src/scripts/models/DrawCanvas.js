@@ -8,6 +8,7 @@ export default class DrawCanvas {
     let pre = 'variables.shapes.canvas';
     let create = `${pre} = {};`;
     let setup = [
+      'type = "rect"',
       `x = 0`,
       `y = 0`,
       `width = ${this.width}`,
@@ -23,6 +24,6 @@ export default class DrawCanvas {
       `function canvasRight() { return {x: ${pre}.x + ${pre}.width, y: ${pre}.y + ${pre}.height/2} }`,
       `function canvasRightBottom() { return {x: ${pre}.x + ${pre}.width, y: ${pre}.y + ${pre}.height} }`
     ];
-    return [create].concat(setup, points).join('\n');
+    return [create].concat(setup).join('\n');
   }
 }

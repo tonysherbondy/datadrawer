@@ -11,9 +11,10 @@ export default class DrawRectInstruction extends DrawInstruction {
 
   getTopLeftJs() {
     if (this.from.id) {
+      let fromPt = this.getPointVarJs(this.from);
       return {
-        x: `${this.from.id}().x`,
-        y: `${this.from.id}().y`,
+        x: `${fromPt}.x`,
+        y: `${fromPt}.y`
       };
     }
     return {
@@ -28,9 +29,10 @@ export default class DrawRectInstruction extends DrawInstruction {
     if (this.to) {
       // assume utility function like distanceBetweenPoints(pt1, pt1)
       let {x} = this.getTopLeftJs();
+      let toPt = this.getPointVarJs(this.to);
       // TODO Probably will need some util function to handle the fact
       // that we might get negative distances
-      return `${this.to.id}().x - ${x}`;
+      return `${toPt}.x - ${x}`;
     } else if (this.width.id) {
       return `variables.data.${this.width.id}`;
     }
@@ -43,9 +45,10 @@ export default class DrawRectInstruction extends DrawInstruction {
     if (this.to) {
       // assume utility function like distanceBetweenPoints(pt1, pt1)
       let {y} = this.getTopLeftJs();
+      let toPt = this.getPointVarJs(this.to);
       // TODO Probably will need some util function to handle the fact
       // that we might get negative distances
-      return `${this.to.id}().y - ${y}`;
+      return `${toPt}.y - ${y}`;
     } else if (this.height.id) {
       return `variables.data.${this.height.id}`;
     }
@@ -57,6 +60,7 @@ export default class DrawRectInstruction extends DrawInstruction {
     let create = `${varPrefix} = {}`;
     let {x, y} = this.getTopLeftJs();
     let setup = [
+      'type = "rect"',
       `x = ${x}`,
       `y = ${y}`,
       `width = ${this.getWidthJs()}`,

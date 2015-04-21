@@ -15,7 +15,8 @@ export default class DrawCircleInstruction extends DrawInstruction {
       // assume utility function like distanceBetweenPoints(pt1, pt1)
       let {cx, cy} = this.getCenterJs();
       let fromPt = `{x: ${cx}, y: ${cy}}`;
-      return `utils.distanceBetweenPoints(${fromPt}, ${this.to.id}())`;
+      let toPt = this.getPointVarJs(this.to);
+      return `utils.distanceBetweenPoints(${fromPt}, ${toPt})`;
     } else if (this.radius.id) {
       return `variables.data.${this.radius.id}`;
     }
@@ -25,9 +26,10 @@ export default class DrawCircleInstruction extends DrawInstruction {
   getCenterJs() {
     // Center can either refer to a reference point or explicit point
     if (this.from.id) {
+      let fromPt = this.getPointVarJs(this.from);
       return {
-        cx: `${this.from.id}().x`,
-        cy: `${this.from.id}().y`,
+        cx: `${fromPt}.x`,
+        cy: `${fromPt}.y`,
       };
     }
     return {
@@ -40,6 +42,7 @@ export default class DrawCircleInstruction extends DrawInstruction {
     let {cx, cy} = this.getCenterJs();
     let create = `${varPrefix} = {}`;
     let setup = [
+      'type = "circle"',
       `cx = ${cx}`,
       `cy = ${cy}`,
       `r = ${this.getRadiusJs()}`
@@ -67,7 +70,7 @@ export default class DrawCircleInstruction extends DrawInstruction {
   getUISentence() {
     let fromUi = `Draw circle around ${this.getFromUi()}`;
     if (this.to) {
-      return `${fromUi} until ${this.to.id}`;
+      return `${fromUi} until ${this.to.id}-${this.to.point}`;
     }
     return `${fromUi} with radius ${this.getRadiusUi()}`;
   }

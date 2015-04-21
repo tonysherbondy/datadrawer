@@ -96,20 +96,48 @@ export default class InstructionResults extends React.Component {
 
   mutateVariableValues(variables, jsCode) {
     try {
-      let utils = {
-        // Utility functions needed in the context
-        distanceBetweenPoints: function(a,b) {
-          let x = a.x - b.x;
-          let y = a.y - b.y;
-          return Math.sqrt(x*x + y*y);
-        }
-      };
+      let utils = this.valueContextUtils(variables);
       eval(jsCode); //jshint ignore:line
 
     } catch (error) {
       console.log("EVAL JSCODE ERROR " + error);
     }
     return variables;
+  }
+
+  // Utility functions needed in the context, need to close
+  // over variables
+  valueContextUtils(variables) {
+    var getShape = function(id) {
+      return variables.shapes[id];
+    };
+    return {
+      distanceBetweenPoints: function(a,b) {
+        let x = a.x - b.x;
+        let y = a.y - b.y;
+        return Math.sqrt(x*x + y*y);
+      },
+      top: function(id) {
+        var s = getShape(id);
+        return {x: s.x + s.width/2, y: s.y};
+      },
+      leftTop: function(id) {
+        var s = getShape(id);
+        return {x: s.x, y: s.y};
+      },
+      center: function(id) {
+        var s = getShape(id);
+        return {x: s.x + s.width/2, y: s.y + s.height/2};
+      },
+      right: function(id) {
+        var s = getShape(id);
+        return {x: s.x + s.width, y: s.y + s.height/2};
+      },
+      left: function(id) {
+        var s = getShape(id);
+        return {x: s.x, y: s.y + s.height/2};
+      }
+    };
   }
 
   render() {

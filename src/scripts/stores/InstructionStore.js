@@ -15,18 +15,18 @@ const instructions1 = [
   }),
   new DrawCircleInstruction({
     id: 'i3',
-    from: {id: 'canvasRight'},
-    to: {id: 'canvasCenter'}
+    from: {id: 'canvas', point: 'right'},
+    to: {id: 'canvas', point: 'center'}
   }),
   new DrawRectInstruction({
     id: 'i4',
-    from: {id: 'canvasLeft'},
+    from: {id: 'canvas', point: 'left'},
     width: 100,
     height: 100
   }),
   new DrawRectInstruction({
     id: 'i5',
-    from: {id: 'canvasTop'},
+    from: {id: 'canvas', point: 'top'},
     width: {id: 'd3'},
     height: {id: 'd1'}
   })
