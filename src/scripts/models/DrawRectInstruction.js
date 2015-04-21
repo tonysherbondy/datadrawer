@@ -23,7 +23,7 @@ export default class DrawRectInstruction extends DrawInstruction {
     };
   }
 
-  getWidthJs() {
+  getWidthJs(index) {
     // This can be one of the following, a point specified by the to parameter,
     // a number or a variable
     if (this.to) {
@@ -34,12 +34,12 @@ export default class DrawRectInstruction extends DrawInstruction {
       // that we might get negative distances
       return `${toPt}.x - ${x}`;
     } else if (this.width.id) {
-      return `utils.getScalar('${this.width.id}')`;
+      return `utils.getData('${this.width.id}', ${index})`;
     }
     return this.width;
   }
 
-  getHeightJs() {
+  getHeightJs(index) {
     // This can be one of the following, a point specified by the to parameter,
     // a number or a variable
     if (this.to) {
@@ -50,22 +50,22 @@ export default class DrawRectInstruction extends DrawInstruction {
       // that we might get negative distances
       return `${toPt}.y - ${y}`;
     } else if (this.height.id) {
-      return `utils.getScalar('${this.height.id}')`;
+      return `utils.getData('${this.height.id}', ${index})`;
     }
     return this.height;
   }
 
 
-  getJsCode() {
-    let varPrefix = this.getVarPrefix();
+  getJsCode(index) {
+    let varPrefix = this.getVarPrefix(index);
     let create = `${varPrefix} = {}`;
     let {x, y} = this.getTopLeftJs();
     let setup = [
       'type = "rect"',
       `x = ${x}`,
       `y = ${y}`,
-      `width = ${this.getWidthJs()}`,
-      `height = ${this.getHeightJs()}`
+      `width = ${this.getWidthJs(index)}`,
+      `height = ${this.getHeightJs(index)}`
     ].map(js => `${varPrefix}.${js}`);
     return [create].concat(setup).join(';\n');
   }

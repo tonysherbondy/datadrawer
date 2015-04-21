@@ -32,7 +32,7 @@ let variables = [
     id: 'd6',
     name: 'longer',
     isRow: true,
-    definition: ['[0, 10, 20, 30, 40, 50]']
+    definition: ['[0.1, 0.2, 0.4, 0.6, 0.8, 1]']
   }),
   new DataVariable({
     id: 'd7',

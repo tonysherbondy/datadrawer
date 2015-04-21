@@ -5,10 +5,21 @@ import ScaleInstruction from '../models/ScaleInstruction';
 import LoopInstruction from '../models/LoopInstruction';
 
 const instructions1 = [
-  new DrawCircleInstruction({
-    id: 'i1',
-    from: {x: 20, y: 20},
-    radius: 20
+  new LoopInstruction({
+    id: 'iloop',
+    instructions: [
+      new DrawCircleInstruction({
+        id: 'iloop1',
+        from: {x: 20, y: 20},
+        radius: 20
+      }),
+      new ScaleInstruction({
+        id: 'iloop2',
+        shapeId: 'shape_iloop1',
+        prop: 'r',
+        to: {id: 'd7'}
+      })
+    ]
   }),
   new DrawCircleInstruction({
     id: 'i2',
@@ -77,7 +88,7 @@ const instructions2 = [
   })
 ];
 
-let instructions = instructions2;
+let instructions = instructions1;
 
 const InstructionStore = biff.createStore({
   getInstructions() {
