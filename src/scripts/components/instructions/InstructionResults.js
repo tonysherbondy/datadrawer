@@ -87,16 +87,22 @@ export default class InstructionResults extends React.Component {
 
     // TODO we will need to filter by draw instructions
     // TODO we should probably actually traverse by variables in the variables.shape scope
-    let shapes = instructions
-                  .filter(i => i instanceof DrawInstruction)
-                  .map(instruction => {
-                    let varName = instruction.getShapeName();
-                    let shapeVariables = variableValues.shapes[varName];
-                    return instruction.getShapeFromVariables(shapeVariables);
-                  });
+    let shapes = Object.keys(variableValues.shapes)
+                .filter(name => name !== 'canvas')
+                .map(name => {
+                  let shapeVariable = variableValues.shapes[name];
+                  return this.getShapeFromVariables(shapeVariable);
+                });
 
     jsCode = dataJsCode + '\n\n' + jsCode;
     return {shapes, variableValues, jsCode};
+  }
+
+  getShapeFromVariables(shapeVariable) {
+    return {
+      type: shapeVariable.type,
+      props: shapeVariable
+    };
   }
 
   mutateVariableValues(variables, jsCode) {

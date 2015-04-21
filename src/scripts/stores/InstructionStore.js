@@ -2,6 +2,7 @@ import biff from '../dispatcher/dispatcher';
 import DrawCircleInstruction from '../models/DrawCircleInstruction';
 import DrawRectInstruction from '../models/DrawRectInstruction';
 import ScaleInstruction from '../models/ScaleInstruction';
+import LoopInstruction from '../models/LoopInstruction';
 
 const instructions1 = [
   new DrawCircleInstruction({
@@ -52,6 +53,19 @@ const instructions1 = [
     id: 'i7',
     from: {id: 'shape_i2', point: 'center'},
     to: {id: 'shape_i3', point: 'left'}
+  })
+];
+
+const instructions2 = [
+  new LoopInstruction({
+    id: 'i1',
+    instructions: [
+      new DrawCircleInstruction({
+        id: 'i2',
+        from: {x: 50, y:50},
+        radius: 20
+      })
+    ]
   })
 ];
 
