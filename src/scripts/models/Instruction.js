@@ -17,7 +17,7 @@ export default class Instruction {
   }
 
   getPointVarJs(pointVar, index) {
-    let varName = this.getVarName(pointVar.id, index);
+    let varName = this.getVarName(pointVar.id, pointVar.isLoop ? index : undefined);
     return `${varName}.getPoint('${pointVar.point}')`;
   }
 

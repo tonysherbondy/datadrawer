@@ -44,19 +44,19 @@ let variables = [
     id: 'sx',
     name: 'sx',
     isRow: true,
-    definition: ['[0.08, 0.32, 0.7, 0.97, 0.81, 0.44]']
+    definition: ['[0.08, 0.32, 0.7, 0.97, 0.81, 0.44, 0.18, 0.24]']
   }),
   new DataVariable({
     id: 'sy',
     name: 'sy',
     isRow: true,
-    definition: ['[0.27, 0.63, 0.93, 0.65, 0.42, 0.12]']
+    definition: ['[0.27, 0.63, 0.93, 0.65, 0.42, 0.12, 0.2, 0.37]']
   }),
   new DataVariable({
     id: 'swidth',
     name: 'swidth',
     isRow: true,
-    definition: ['[0.04, 0.04, 0.11, 0.1, 0.09, 0.1]']
+    definition: ['[0.04, 0.04, 0.11, 0.1, 0.09, 0.1, 0.07, 0.1]']
   })
 ];
 

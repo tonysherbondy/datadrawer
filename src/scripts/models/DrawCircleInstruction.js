@@ -15,7 +15,7 @@ export default class DrawCircleInstruction extends DrawInstruction {
       // assume utility function like distanceBetweenPoints(pt1, pt1)
       let {cx, cy} = this.getCenterJs();
       let fromPt = `{x: ${cx}, y: ${cy}}`;
-      let toPt = this.getPointVarJs(this.to);
+      let toPt = this.getPointVarJs(this.to, index);
       return `utils.distanceBetweenPoints(${fromPt}, ${toPt})`;
     } else if (this.radius.id) {
       return `utils.getData('${this.radius.id}', ${index})`;
@@ -23,10 +23,10 @@ export default class DrawCircleInstruction extends DrawInstruction {
     return this.radius;
   }
 
-  getCenterJs() {
+  getCenterJs(index) {
     // Center can either refer to a reference point or explicit point
     if (this.from.id) {
-      let fromPt = this.getPointVarJs(this.from);
+      let fromPt = this.getPointVarJs(this.from, index);
       return {
         cx: `${fromPt}.x`,
         cy: `${fromPt}.y`
@@ -40,7 +40,7 @@ export default class DrawCircleInstruction extends DrawInstruction {
 
   getJsCode(index) {
     let varPrefix = this.getVarName(this.shapeId, index);
-    let {cx, cy} = this.getCenterJs();
+    let {cx, cy} = this.getCenterJs(index);
     return `${varPrefix} = utils.circle({\n` +
                  `cx: ${cx},\n` +
                  `cy: ${cy},\n` +
