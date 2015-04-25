@@ -39,6 +39,24 @@ let variables = [
     name: 'scales',
     isRow: true,
     definition: ['[4, 2, 1, 0.7, 0.5, 0.3]']
+  }),
+  new DataVariable({
+    id: 'sx',
+    name: 'sx',
+    isRow: true,
+    definition: ['[0.08, 0.32, 0.7, 0.97, 0.81, 0.44]']
+  }),
+  new DataVariable({
+    id: 'sy',
+    name: 'sy',
+    isRow: true,
+    definition: ['[0.27, 0.63, 0.93, 0.65, 0.42, 0.12]']
+  }),
+  new DataVariable({
+    id: 'swidth',
+    name: 'swidth',
+    isRow: true,
+    definition: ['[0.04, 0.04, 0.11, 0.1, 0.09, 0.1]']
   })
 ];
 

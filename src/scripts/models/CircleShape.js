@@ -23,6 +23,11 @@ export default class CircleShape {
     }
   }
 
+  scalePropByPoint(prop, point, value) {
+    // We only have radius so this is simple
+    this.r *= value;
+  }
+
   moveRelative(value) {
     // Doesn't matter what point we move, the distance applies
     // to the center
