@@ -29,12 +29,12 @@ export default class DrawCircleInstruction extends DrawInstruction {
       let fromPt = this.getPointVarJs(this.from);
       return {
         cx: `${fromPt}.x`,
-        cy: `${fromPt}.y`,
+        cy: `${fromPt}.y`
       };
     }
     return {
       cx: this.from.x,
-      cy: this.from.y,
+      cy: this.from.y
     };
   }
 

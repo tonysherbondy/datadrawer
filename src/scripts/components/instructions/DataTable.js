@@ -1,5 +1,4 @@
 import React from 'react';
-import DataVariableActions from '../../actions/DataVariableActions';
 
 export default class DataTable extends React.Component {
 

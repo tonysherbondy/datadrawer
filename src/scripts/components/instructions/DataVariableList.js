@@ -1,5 +1,4 @@
 import React from 'react';
-import DataVariableActions from '../../actions/DataVariableActions';
 
 export default class DataVariableList extends React.Component {
 

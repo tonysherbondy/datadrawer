@@ -1,11 +1,9 @@
 import React from 'react';
 import Canvas from '../drawing/Canvas';
 import InstructionCode from './InstructionCode';
-import DataVariable from '../../models/DataVariable';
 import DataVariableList from './DataVariableList';
 import DataTable from './DataTable';
 import DrawCanvas from '../../models/DrawCanvas';
-import DrawInstruction from '../../models/DrawInstruction';
 import LoopInstruction from '../../models/LoopInstruction';
 
 export default class InstructionResults extends React.Component {
@@ -53,7 +51,7 @@ export default class InstructionResults extends React.Component {
     });
 
     let jsCode = jsLines.join('\n');
-    let variableValues = this.mutateVariableValues({data:{}}, jsCode);
+    let variableValues = this.mutateVariableValues({data: {}}, jsCode);
 
     return {jsCode, variableValues};
   }
@@ -122,11 +120,13 @@ export default class InstructionResults extends React.Component {
 
   mutateVariableValues(variables, jsCode) {
     try {
+      /* eslint-disable */
       let utils = this.valueContextUtils(variables);
-      eval(jsCode); //jshint ignore:line
+      eval(jsCode);
+      /* eslint-enable */
 
     } catch (error) {
-      console.log("EVAL JSCODE ERROR " + error);
+      console.log('EVAL JSCODE ERROR ' + error);
     }
     return variables;
   }
@@ -141,11 +141,11 @@ export default class InstructionResults extends React.Component {
     var pointFuncs = {
       rect: {
         left: function(s) {
-          return {x: s.x, y: s.y + s.height/2};
+          return {x: s.x, y: s.y + s.height / 2};
         },
         center: function(s) {
-          return {x: s.x + s.width/2, y: s.y + s.height/2};
-        },
+          return {x: s.x + s.width / 2, y: s.y + s.height / 2};
+        }
       },
       circle: {
         left: function(s) {
@@ -153,21 +153,15 @@ export default class InstructionResults extends React.Component {
         },
         center: function(s) {
           return {x: s.cx, y: s.cy};
-        },
+        }
       }
-    };
-
-    var rectCenter = function(s) {
-    };
-    var circleCenter = function(s) {
-      return {x: s.x + s.width/2, y: s.y + s.height/2};
     };
 
     return {
       distanceBetweenPoints: function(a,b) {
         let x = a.x - b.x;
         let y = a.y - b.y;
-        return Math.sqrt(x*x + y*y);
+        return Math.sqrt(x * x + y * y);
       },
       getData(name, index=0) {
         let variable = variables.data[name];
@@ -175,7 +169,35 @@ export default class InstructionResults extends React.Component {
       },
       top: function(id) {
         var s = getShape(id);
-        return {x: s.x + s.width/2, y: s.y};
+        return {x: s.x + s.width / 2, y: s.y};
+      },
+      setPoint(id, name, value) {
+        var s = getShape(id);
+        if (s.type === 'circle') {
+          if (name === 'center') {
+            s.cx = value.x;
+            s.cy = value.y;
+          }
+        } else {
+          if (name === 'center') {
+            s.x = value.x;
+            s.y = value.y;
+          }
+        }
+      },
+      movePoint(id, name, value) {
+        var s = getShape(id);
+        if (s.type === 'circle') {
+          if (name === 'center') {
+            s.cx += value.x;
+            s.cy += value.y;
+          }
+        } else {
+          if (name === 'center') {
+            s.x += value.x;
+            s.y += value.y;
+          }
+        }
       },
       leftTop: function(id) {
         var s = getShape(id);
@@ -187,7 +209,7 @@ export default class InstructionResults extends React.Component {
       },
       right: function(id) {
         var s = getShape(id);
-        return {x: s.x + s.width, y: s.y + s.height/2};
+        return {x: s.x + s.width, y: s.y + s.height / 2};
       },
       left: function(id) {
         var s = getShape(id);
@@ -199,14 +221,14 @@ export default class InstructionResults extends React.Component {
       },
       bottom: function(id) {
         var s = getShape(id);
-        return {x: s.x + s.width/2, y: s.y + s.height};
+        return {x: s.x + s.width / 2, y: s.y + s.height};
       }
     };
   }
 
   render() {
     let {shapes, variableValues, jsCode} = this.computeFromInstructions(this.props.instructions);
-    let {scalars, vectors} = this.props.dataVariables.reduce((map, d) => {
+    let {scalars} = this.props.dataVariables.reduce((map, d) => {
       let type = d.isRow ? 'vectors' : 'scalars';
       map[type].push(d);
       return map;

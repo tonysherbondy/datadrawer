@@ -1,5 +1,3 @@
-import Instruction from './Instruction';
-
 export default class LoopInstruction {
   constructor({id, instructions}) {
     this.id = id;

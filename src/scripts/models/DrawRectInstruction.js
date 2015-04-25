@@ -19,7 +19,7 @@ export default class DrawRectInstruction extends DrawInstruction {
     }
     return {
       x: this.from.x,
-      y: this.from.y,
+      y: this.from.y
     };
   }
 

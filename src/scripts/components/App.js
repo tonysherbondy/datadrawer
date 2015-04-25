@@ -30,7 +30,7 @@ App.defaultProps = {
   instructions: []
 };
 
-App = Flux.connect(App, [InstructionStore], props => ({
+App = Flux.connect(App, [InstructionStore], () => ({
   instructions: InstructionStore.getInstructions(),
   variables: DataVariableStore.getVariables(),
   pending: InstructionStore.getPending(),

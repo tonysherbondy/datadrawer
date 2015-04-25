@@ -3,8 +3,9 @@ import DrawCircleInstruction from '../models/DrawCircleInstruction';
 import DrawRectInstruction from '../models/DrawRectInstruction';
 import ScaleInstruction from '../models/ScaleInstruction';
 import LoopInstruction from '../models/LoopInstruction';
+import MoveInstruction from '../models/MoveInstruction';
 
-const instructions1 = [
+const instructions1 = [ // eslint-disable-line
   new LoopInstruction({
     id: 'iloop',
     instructions: [
@@ -23,13 +24,19 @@ const instructions1 = [
   }),
   new DrawCircleInstruction({
     id: 'i2',
-    from: {x: 50, y:50},
+    from: {x: 50, y: 50},
     radius: {id: 'd5'}
   }),
   new DrawCircleInstruction({
     id: 'i3',
     from: {id: 'canvas', point: 'right'},
     to: {id: 'canvas', point: 'center'}
+  }),
+  new MoveInstruction({
+    id: 'imove1',
+    shapeId: 'shape_i3',
+    prop: 'center',
+    to: {x: -20, y: 0}
   }),
   new DrawRectInstruction({
     id: 'i4',
@@ -69,19 +76,19 @@ const instructions1 = [
 
 const instructions3 = [
   new DrawCircleInstruction({
-    id: 'i2',
-    from: {x: 50, y:50},
-    radius: 30
+    id: 'i3',
+    from: {id: 'canvas', point: 'right'},
+    to: {id: 'canvas', point: 'center'}
   }),
-  new ScaleInstruction({
-    id: 'i8',
-    shapeId: 'shape_i2',
-    prop: 'r',
-    to: {id: 'd7'}
+  new MoveInstruction({
+    id: 'imove1',
+    shapeId: 'shape_i3',
+    prop: 'center',
+    to: {x: -133, y: 0}
   })
 ];
 
-const instructions2 = [
+const instructions2 = [ // eslint-disable-line
   new LoopInstruction({
     id: 'i1',
     instructions: instructions3

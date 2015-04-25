@@ -24,7 +24,7 @@ export default class DataVariable {
     return `variables.data.${id}`;
   }
 
-  getJsCode(prevVarsMap) {
+  getJsCode() {
     // fragments of definition are either variables
     // or strings
     let value = this.definition.map(fragment => {
