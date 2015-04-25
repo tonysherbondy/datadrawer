@@ -84,7 +84,7 @@ const instructions3 = [
     id: 'imove1',
     shapeId: 'shape_i3',
     prop: 'center',
-    to: {x: -133, y: 0}
+    to: {id: 'canvas', point: 'center'}
   })
 ];
 
@@ -95,7 +95,7 @@ const instructions2 = [ // eslint-disable-line
   })
 ];
 
-let instructions = instructions1;
+let instructions = instructions3;
 
 const InstructionStore = biff.createStore({
   getInstructions() {

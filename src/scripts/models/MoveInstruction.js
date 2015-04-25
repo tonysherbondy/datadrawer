@@ -13,7 +13,7 @@ export default class MoveInstruction extends Instruction {
     if (this.to.id) {
       // When setting to a variable we will move the point = to the variable
       op = 'setPoint';
-      pointJs = `utils[${this.to.point}](${this.to.id}));`;
+      pointJs = `utils['${this.to.point}']('${this.to.id}')`;
     } else {
       // Otherwise, we will move the point relative to the current position
       op = 'movePoint';
