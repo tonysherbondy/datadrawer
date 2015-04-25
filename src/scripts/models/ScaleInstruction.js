@@ -17,7 +17,7 @@ export default class ScaleInstruction extends Instruction {
   }
 
   getJsCode(index) {
-    let name = `${this.getVarPrefix(index)}.${this.prop}`;
+    let name = `${this.getVarName(this.shapeId, index)}.${this.prop}`;
     return `${name} = ${name} * ${this.getToJs(index)};`;
   }
 

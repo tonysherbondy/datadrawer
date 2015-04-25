@@ -5,16 +5,12 @@ export default class DrawCanvas {
   }
 
   getJsCode() {
-    let pre = 'variables.shapes.canvas';
-    let create = `${pre} = {};`;
-    let setup = [
-      'type = "rect"',
-      `x = 0`,
-      `y = 0`,
-      `width = ${this.width}`,
-      `height = ${this.height}`
-    ].map(js => `${pre}.${js};`);
-
-    return [create].concat(setup).join('\n');
+    let varPrefix = 'variables.shapes.canvas';
+    return `${varPrefix} = utils.rect({\n` +
+           `x: 0,\n` +
+           `y: 0,\n` +
+           `width: ${this.width},\n` +
+           `height: ${this.height}\n` +
+           `});\n`;
   }
 }

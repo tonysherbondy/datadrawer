@@ -7,10 +7,10 @@ class Canvas extends React.Component {
   render() {
     let shapes = this.props.shapes.map((shape, index) => {
       if (shape.type === 'circle') {
-        return (<Circle key={index} {...shape.props} />);
+        return (<Circle key={index} {...shape.getRenderProps()} />);
 
       } else if (shape.type === 'rect') {
-        return (<Rect key={index} {...shape.props} />);
+        return (<Rect key={index} {...shape.getRenderProps()} />);
       }
       console.error('Unknown shape type', shape.type);
     });

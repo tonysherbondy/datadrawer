@@ -5,6 +5,8 @@ import DataVariableList from './DataVariableList';
 import DataTable from './DataTable';
 import DrawCanvas from '../../models/DrawCanvas';
 import LoopInstruction from '../../models/LoopInstruction';
+import CircleShape from '../../models/CircleShape';
+import RectShape from '../../models/RectShape';
 
 export default class InstructionResults extends React.Component {
 
@@ -81,7 +83,7 @@ export default class InstructionResults extends React.Component {
         return instruction.getJsCode(this.getTable(variableValues));
       }
       return instruction.getJsCode();
-    }).join('\n\n');
+    }).join('\n');
 
     jsCode = canvasJs + '\n' + jsCode;
 
@@ -91,10 +93,7 @@ export default class InstructionResults extends React.Component {
     // TODO we should probably actually traverse by variables in the variables.shape scope
     let shapes = Object.keys(variableValues.shapes)
                 .filter(name => name !== 'canvas')
-                .map(name => {
-                  let shapeVariable = variableValues.shapes[name];
-                  return this.getShapeFromVariables(shapeVariable);
-                });
+                .map(name => variableValues.shapes[name]);
 
     jsCode = dataJsCode + '\n\n' + jsCode;
     return {shapes, variableValues, jsCode};
@@ -109,13 +108,6 @@ export default class InstructionResults extends React.Component {
       return row.length > max ? row.length : max;
     }, 0);
     return {rows, rowValues, maxLength};
-  }
-
-  getShapeFromVariables(shapeVariable) {
-    return {
-      type: shapeVariable.type,
-      props: shapeVariable
-    };
   }
 
   mutateVariableValues(variables, jsCode) {
@@ -134,29 +126,6 @@ export default class InstructionResults extends React.Component {
   // Utility functions needed in the context, need to close
   // over variables
   valueContextUtils(variables) {
-    var getShape = function(id) {
-      return variables.shapes[id] ||
-        {type: 'rect', x: 0, y: 0, width: 0, height: 0};
-    };
-    var pointFuncs = {
-      rect: {
-        left: function(s) {
-          return {x: s.x, y: s.y + s.height / 2};
-        },
-        center: function(s) {
-          return {x: s.x + s.width / 2, y: s.y + s.height / 2};
-        }
-      },
-      circle: {
-        left: function(s) {
-          return {x: s.cx - s.r, y: s.cy};
-        },
-        center: function(s) {
-          return {x: s.cx, y: s.cy};
-        }
-      }
-    };
-
     return {
       distanceBetweenPoints: function(a,b) {
         let x = a.x - b.x;
@@ -167,61 +136,11 @@ export default class InstructionResults extends React.Component {
         let variable = variables.data[name];
         return variable instanceof Array ? variable[index] : variable;
       },
-      top: function(id) {
-        var s = getShape(id);
-        return {x: s.x + s.width / 2, y: s.y};
+      circle(params) {
+        return new CircleShape(params);
       },
-      setPoint(id, name, value) {
-        var s = getShape(id);
-        if (s.type === 'circle') {
-          if (name === 'center') {
-            s.cx = value.x;
-            s.cy = value.y;
-          }
-        } else {
-          if (name === 'center') {
-            s.x = value.x;
-            s.y = value.y;
-          }
-        }
-      },
-      movePoint(id, name, value) {
-        var s = getShape(id);
-        if (s.type === 'circle') {
-          if (name === 'center') {
-            s.cx += value.x;
-            s.cy += value.y;
-          }
-        } else {
-          if (name === 'center') {
-            s.x += value.x;
-            s.y += value.y;
-          }
-        }
-      },
-      leftTop: function(id) {
-        var s = getShape(id);
-        return {x: s.x, y: s.y};
-      },
-      center: function(id) {
-        var s = getShape(id);
-        return pointFuncs[s.type].center(s);
-      },
-      right: function(id) {
-        var s = getShape(id);
-        return {x: s.x + s.width, y: s.y + s.height / 2};
-      },
-      left: function(id) {
-        var s = getShape(id);
-        return pointFuncs[s.type].left(s);
-      },
-      bottomRight: function(id) {
-        var s = getShape(id);
-        return {x: s.x + s.width, y: s.y + s.height};
-      },
-      bottom: function(id) {
-        var s = getShape(id);
-        return {x: s.x + s.width / 2, y: s.y + s.height};
+      rect(params) {
+        return new RectShape(params);
       }
     };
   }
