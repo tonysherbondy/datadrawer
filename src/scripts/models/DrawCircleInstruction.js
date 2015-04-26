@@ -44,7 +44,8 @@ export default class DrawCircleInstruction extends DrawInstruction {
     return `${varPrefix} = utils.circle({\n` +
                  `cx: ${cx},\n` +
                  `cy: ${cy},\n` +
-                 `r: ${this.getRadiusJs(index)}\n` +
+                 `r: ${this.getRadiusJs(index)},\n` +
+                 `isGuide: ${this.isGuide}\n` +
                  `});\n`;
   }
 

@@ -3,12 +3,8 @@ import React from 'react';
 class Rect extends React.Component {
   render() {
     return (
-      <rect
-        x={this.props.x}
-        y={this.props.y}
-        width={this.props.width}
-        height={this.props.height}>
-       </rect>
+      <rect {...this.props}
+       ></rect>
     );
   }
 }

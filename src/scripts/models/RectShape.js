@@ -1,11 +1,12 @@
 export default class RectShape {
-  constructor({x, y, width, height}) {
+  constructor({x, y, width, height, isGuide}) {
     let {x: cx, width: cwidth} = this.getCanonicalX({x, width});
     let {y: cy, height: cheight} = this.getCanonicalY({y, height});
     this.x = cx;
     this.y = cy;
     this.width = cwidth;
     this.height = cheight;
+    this.isGuide = isGuide;
     this.type = 'rect';
   }
 
@@ -107,7 +108,11 @@ export default class RectShape {
       x: this.x,
       y: this.y,
       width: this.width,
-      height: this.height
+      height: this.height,
+
+      // TODO there should definitely be a base shape for this
+      fillOpacity: this.isGuide ? 0 : 1,
+      strokeOpacity: this.isGuide ? 0 : 1
     };
   }
 

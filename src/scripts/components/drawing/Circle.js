@@ -4,10 +4,8 @@ class Circle extends React.Component {
   render() {
     return (
       <circle
-        r={this.props.r}
-        cx={this.props.cx}
-        cy={this.props.cy}>
-       </circle>
+        {...this.props}
+       ></circle>
     );
   }
 }

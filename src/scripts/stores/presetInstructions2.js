@@ -9,6 +9,7 @@ const instructions = [
     instructions: [
       new DrawRectInstruction({
         id: 'i1',
+        isGuide: true,
         from: {id: 'canvas', point: 'bottomLeft'},
         to: {id: 'canvas', point: 'topRight'}
       }),

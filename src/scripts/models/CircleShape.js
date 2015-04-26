@@ -1,8 +1,10 @@
 export default class CircleShape {
-  constructor({cx, cy, r}) {
+  constructor({cx, cy, r, isGuide}) {
     this.cx = cx;
     this.cy = cy;
     this.r = r;
+    // TODO - should probably be in a base shape class
+    this.isGuide = isGuide;
     this.type = 'circle';
   }
 
@@ -51,7 +53,11 @@ export default class CircleShape {
     return {
       cx: this.cx,
       cy: this.cy,
-      r: this.r
+      r: this.r,
+
+      // TODO there should definitely be a base shape for this
+      fillOpacity: this.isGuide ? 0 : 1,
+      strokeOpacity: this.isGuide ? 0 : 1
     };
   }
 

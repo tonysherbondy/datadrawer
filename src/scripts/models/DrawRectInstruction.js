@@ -63,7 +63,8 @@ export default class DrawRectInstruction extends DrawInstruction {
            `x: ${x},\n` +
            `y: ${y},\n` +
            `width: ${this.getWidthJs(index)},\n` +
-           `height: ${this.getHeightJs(index)}\n` +
+           `height: ${this.getHeightJs(index)},\n` +
+           `isGuide: ${this.isGuide}\n` +
            `});\n`;
   }
 
