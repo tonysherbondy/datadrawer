@@ -1,16 +1,14 @@
 import React from 'react';
-import Circle from './Circle';
-import Rect from './Rect';
 
 class Canvas extends React.Component {
 
   render() {
     let shapes = this.props.shapes.map((shape, index) => {
       if (shape.type === 'circle') {
-        return (<Circle key={index} {...shape.getRenderProps()} />);
+        return (<circle key={index} {...shape.getRenderProps()} />);
 
       } else if (shape.type === 'rect') {
-        return (<Rect key={index} {...shape.getRenderProps()} />);
+        return (<rect key={index} {...shape.getRenderProps()} />);
       }
       console.error('Unknown shape type', shape.type);
     });

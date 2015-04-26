@@ -1,5 +1,5 @@
 import biff from '../dispatcher/dispatcher';
-import presetInstructions from './presetInstructions2';
+import presetInstructions from './presetInstructions1';
 
 let instructions = presetInstructions;
 
