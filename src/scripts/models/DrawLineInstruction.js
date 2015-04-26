@@ -1,13 +1,13 @@
 import DrawInstruction from './DrawInstruction';
 
-export default class DrawRectInstruction extends DrawInstruction {
+export default class DrawLineInstruction extends DrawInstruction {
   constructor(props) {
     super(props);
     this.width = props.width;
     this.height = props.height;
   }
 
-  getTopLeftJs(index) {
+  getFromJs(index) {
     if (this.from.id) {
       let fromPt = this.getPointVarJs(this.from, index);
       return {
@@ -21,47 +21,44 @@ export default class DrawRectInstruction extends DrawInstruction {
     };
   }
 
-  getWidthJs(index) {
+  getToXJs(index) {
+    let {x} = this.getFromJs(index);
     // This can be one of the following, a point specified by the to parameter,
     // a number or a variable
     if (this.to) {
-      // assume utility function like distanceBetweenPoints(pt1, pt1)
-      let {x} = this.getTopLeftJs(index);
       let toPt = this.getPointVarJs(this.to, index);
       // TODO Probably will need some util function to handle the fact
       // that we might get negative distances
-      return `${toPt}.x - ${x}`;
+      return `${toPt}.x`;
     } else if (this.width.id) {
-      return `utils.getData('${this.width.id}', ${index})`;
+      return `utils.getData('${this.width.id}', ${index}) + ${x}`;
     }
-    return this.width;
+    return `${this.width} + ${x}`;
   }
 
-  getHeightJs(index) {
+  getToYJs(index) {
+    let {y} = this.getFromJs(index);
     // This can be one of the following, a point specified by the to parameter,
     // a number or a variable
     if (this.to) {
-      // assume utility function like distanceBetweenPoints(pt1, pt1)
-      let {y} = this.getTopLeftJs(index);
       let toPt = this.getPointVarJs(this.to, index);
       // TODO Probably will need some util function to handle the fact
       // that we might get negative distances
-      return `${toPt}.y - ${y}`;
+      return `${toPt}.y`;
     } else if (this.height.id) {
-      return `utils.getData('${this.height.id}', ${index})`;
+      return `utils.getData('${this.height.id}', ${index}) + ${y}`;
     }
-    return this.height;
+    return `${this.height} + ${y}`;
   }
-
 
   getJsCode(index) {
     let varPrefix = this.getVarName(this.shapeId, index);
-    let {x, y} = this.getTopLeftJs(index);
-    return `${varPrefix} = utils.rect({\n` +
-           `x: ${x},\n` +
-           `y: ${y},\n` +
-           `width: ${this.getWidthJs(index)},\n` +
-           `height: ${this.getHeightJs(index)},\n` +
+    let {x, y} = this.getFromJs(index);
+    return `${varPrefix} = utils.line({\n` +
+           `x1: ${x},\n` +
+           `y1: ${y},\n` +
+           `x2: ${this.getToXJs(index)},\n` +
+           `y2: ${this.getToYJs(index)},\n` +
            `isGuide: ${this.isGuide}\n` +
            `});\n`;
   }

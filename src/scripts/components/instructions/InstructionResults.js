@@ -7,6 +7,7 @@ import DrawCanvas from '../../models/DrawCanvas';
 import LoopInstruction from '../../models/LoopInstruction';
 import CircleShape from '../../models/CircleShape';
 import RectShape from '../../models/RectShape';
+import LineShape from '../../models/LineShape';
 
 export default class InstructionResults extends React.Component {
 
@@ -141,6 +142,9 @@ export default class InstructionResults extends React.Component {
       },
       rect(params) {
         return new RectShape(params);
+      },
+      line(params) {
+        return new LineShape(params);
       }
     };
   }
