@@ -99,6 +99,23 @@ const instructions = [
         shape: {id: 'shape_i9', isLoop: true},
         point: 'center',
         to: {id: 'shape_i6', point: 'left', isLoop: true}
+      }),
+      new DrawRectInstruction({
+        id: 'i10',
+        from: {id: 'shape_i8', point: 'center', isLoop: true},
+        to: {id: 'shape_i9', point: 'center', isLoop: true}
+      }),
+      new MoveInstruction({
+        id: 'imove5',
+        shape: {id: 'shape_i10', isLoop: true},
+        point: 'top',
+        to: {id: 'canvas', point: 'top'}
+      }),
+      new MoveInstruction({
+        id: 'imove6',
+        shape: {id: 'shape_i10', isLoop: true},
+        point: 'bottom',
+        to: {id: 'canvas', point: 'bottom'}
       })
     ]
   })

@@ -1,13 +1,17 @@
 export default class RectShape {
   constructor({x, y, width, height, isGuide}) {
+    this.setCanonicalRect({x, y, width, height});
+    this.isGuide = isGuide;
+    this.type = 'rect';
+  }
+
+  setCanonicalRect({x, y, width, height}) {
     let {x: cx, width: cwidth} = this.getCanonicalX({x, width});
     let {y: cy, height: cheight} = this.getCanonicalY({y, height});
     this.x = cx;
     this.y = cy;
     this.width = cwidth;
     this.height = cheight;
-    this.isGuide = isGuide;
-    this.type = 'rect';
   }
 
   getCanonicalOrigin({o, d}) {
@@ -30,19 +34,20 @@ export default class RectShape {
   scalePropByPoint(prop, point, value) {
     // Point is the point being moved with the scale operation
     // Prop is the property to scale
+    let {x, y, width, height} = this;
     if (prop === 'width') {
       switch (point) {
         case 'right':
         case 'topRight':
         case 'bottomRight':
-          this.width *= value;
+          width *= value;
           break;
         case 'left':
         case 'topLeft':
         case 'bottomLeft':
-          let w = this.width * value;
-          this.x += this.width - w;
-          this.width = w;
+          let w = width * value;
+          x += width - w;
+          width = w;
           break;
         default:
           console.error('unable to scale width with point', point);
@@ -52,19 +57,20 @@ export default class RectShape {
         case 'top':
         case 'topRight':
         case 'topLeft':
-          let h = this.height * value;
-          this.y += this.height - h;
-          this.height = h;
+          let h = height * value;
+          y += height - h;
+          height = h;
           break;
         case 'bottom':
         case 'bottomRight':
         case 'bottomLeft':
-          this.height *= value;
+          height *= value;
           break;
         default:
           console.error('unable to scale height with point', point);
       }
     }
+    this.setCanonicalRect({x, y, width, height});
   }
 
   getPoint(name) {
@@ -96,12 +102,35 @@ export default class RectShape {
     }
   }
 
+  // Move the shape so that a particular point is set to value
   moveToPoint(name, value) {
-    // Doesn't matter what point we move, the distance applies
-    // to the center
-    this.x += value.x;
-    this.y += value.y;
+    let {x, y, width, height} = this;
+    switch (name) {
+      case 'left':
+        width = x + width - value.x;
+        x = value.x;
+        break;
+      case 'right':
+        width = value.x - x;
+        break;
+      case 'top':
+        height = y + height - value.y;
+        y = value.y;
+        break;
+      case 'bottom':
+        height = value.y - y;
+        break;
+      case 'center':
+        x = value.x - width / 2;
+        y = value.y - height / 2;
+        break;
+      default:
+        console.error('Unknown point', name);
+        return;
+    }
+    this.setCanonicalRect({x, y, width, height});
   }
+
 
   getRenderProps() {
     return {
