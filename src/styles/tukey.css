@@ -9,12 +9,6 @@
   margin-left: 20px;
 }
 
-.canvas circle {
-  fill: rgba(0,0,0,0.2);
-  stroke: #000;
-  stroke-width: 1px;
-}
-
 .canvas rect {
   fill: rgba(0,0,0,0.2);
   stroke: #000;

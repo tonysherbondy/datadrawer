@@ -45,6 +45,9 @@ export default class DrawCircleInstruction extends DrawInstruction {
                  `cx: ${cx},\n` +
                  `cy: ${cy},\n` +
                  `r: ${this.getRadiusJs(index)},\n` +
+                 `fill: '${this.fill}',\n` +
+                 `stroke: '${this.stroke}',\n` +
+                 `strokeWidth: ${this.strokeWidth},\n` +
                  `isGuide: ${this.isGuide}\n` +
                  `});\n`;
   }

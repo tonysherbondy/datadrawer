@@ -1,9 +1,12 @@
 export default class LineShape {
-  constructor({x1, y1, x2, y2, isGuide}) {
+  constructor({x1, y1, x2, y2, stroke, strokeWidth, isGuide}) {
     this.x1 = x1;
     this.y1 = y1;
     this.x2 = x2;
     this.y2 = y2;
+    // TODO - should probably be in a base shape class
+    this.stroke = stroke;
+    this.strokeWidth = strokeWidth;
     this.isGuide = isGuide;
     this.type = 'line';
   }
@@ -70,14 +73,9 @@ export default class LineShape {
   }
 
   getRenderProps() {
-    let {x1, y1, x2, y2} = this;
+    let {x1, y1, x2, y2, stroke, strokeWidth} = this;
     return {
-      x1,
-      y1,
-      x2,
-      y2,
-      stroke: 'black',
-      strokeWidth: 2,
+      x1, y1, x2, y2, stroke, strokeWidth,
 
       // TODO there should definitely be a base shape for this
       fillOpacity: this.isGuide ? 0 : 1,

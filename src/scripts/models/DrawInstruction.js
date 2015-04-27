@@ -1,13 +1,16 @@
 import Instruction from './Instruction';
 
 export default class DrawInstruction extends Instruction {
-  constructor({id, from, to, isGuide}) {
-    super({id, shapeId: `shape_${id}`});
+  constructor(props) {
+    super({id: props.id, shapeId: `shape_${props.id}`});
     // Every draw instruction has a from, that can either be an explicit
     // point or reference to another point, refPoint
-    this.from = from;
-    this.to = to;
-    this.isGuide = isGuide;
+    this.from = props.from;
+    this.to = props.to;
+    this.isGuide = !!props.isGuide;
+    this.strokeWidth = props.strokeWidth || 1;
+    this.stroke = props.stroke || 'black';
+    this.fill = props.fill || 'rgba(0, 0, 0, 0.2)';
   }
 
   getFromUi() {

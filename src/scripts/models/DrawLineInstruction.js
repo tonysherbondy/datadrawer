@@ -59,6 +59,8 @@ export default class DrawLineInstruction extends DrawInstruction {
            `y1: ${y},\n` +
            `x2: ${this.getToXJs(index)},\n` +
            `y2: ${this.getToYJs(index)},\n` +
+           `stroke: '${this.stroke}',\n` +
+           `strokeWidth: ${this.strokeWidth},\n` +
            `isGuide: ${this.isGuide}\n` +
            `});\n`;
   }

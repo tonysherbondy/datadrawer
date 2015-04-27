@@ -1,10 +1,13 @@
 export default class CircleShape {
-  constructor({cx, cy, r, isGuide}) {
-    this.cx = cx;
-    this.cy = cy;
-    this.r = r;
+  constructor(props) {
+    this.cx = props.cx;
+    this.cy = props.cy;
+    this.r = props.r;
     // TODO - should probably be in a base shape class
-    this.isGuide = isGuide;
+    this.fill = props.fill;
+    this.stroke = props.stroke;
+    this.strokeWidth = props.strokeWidth;
+    this.isGuide = props.isGuide;
     this.type = 'circle';
   }
 
@@ -51,12 +54,12 @@ export default class CircleShape {
   }
 
   getRenderProps() {
+    let {cx, cy, r, stroke, strokeWidth, fill} = this;
     return {
-      cx: this.cx,
-      cy: this.cy,
-      r: this.r,
+      cx, cy, r,
 
       // TODO there should definitely be a base shape for this
+      stroke, strokeWidth, fill,
       fillOpacity: this.isGuide ? 0 : 1,
       strokeOpacity: this.isGuide ? 0 : 1
     };
