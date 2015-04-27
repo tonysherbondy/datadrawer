@@ -20,7 +20,8 @@ export default class PathShape {
       return `m ${pt.x} ${pt.y}`;
     });
     let fromD = `M ${this.from.x} ${this.from.y}`;
-    return [fromD].concat(pointsD).join(' ');
+    let closedD = this.isClosed ? 'Z' : '';
+    return [fromD, ...pointsD, closedD].join(' ');
   }
 
   getRenderProps() {

@@ -4,6 +4,7 @@ export default class DrawPathInstruction extends DrawInstruction {
   constructor(props) {
     super(props);
     this.to = props.to;
+    this.isClosed = props.isClosed;
   }
 
   getFromJs(index) {
@@ -35,7 +36,7 @@ export default class DrawPathInstruction extends DrawInstruction {
     return `${varPrefix} = utils.path({\n` +
                  `from: ${this.getFromJs(index)},\n` +
                  `points: ${this.getToJs(index)},\n` +
-                 `isClosed: '${this.isClosed}',\n` +
+                 `isClosed: ${this.isClosed},\n` +
                  `fill: '${this.fill}',\n` +
                  `stroke: '${this.stroke}',\n` +
                  `strokeWidth: ${this.strokeWidth},\n` +
