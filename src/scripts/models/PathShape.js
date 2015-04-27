@@ -36,4 +36,33 @@ export default class PathShape {
     };
   }
 
+  getPoint(name) {
+    // Point names are either from or point_index
+    if (name === 'from') {
+      return this.from;
+    } else {
+      let index = parseInt(name.split('_')[1], 10);
+      return this.points[index];
+    }
+  }
+
+  moveRelative(value) {
+    this.from.x += value.x;
+    this.from.y += value.y;
+    this.points.forEach(point => {
+      point.x += value.x;
+      point.y += value.y;
+    });
+  }
+
+  // Move the shape so that a particular point is set to value
+  moveToPoint(name, value) {
+    // Point names are either from or point_index
+    if (name === 'from') {
+      // All other points are relative so we just need to move from
+      this.from = value;
+    } else {
+      console.error('Only support moving path from point');
+    }
+  }
 }
