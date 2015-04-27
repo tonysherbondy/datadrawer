@@ -8,6 +8,7 @@ import LoopInstruction from '../../models/LoopInstruction';
 import CircleShape from '../../models/CircleShape';
 import RectShape from '../../models/RectShape';
 import LineShape from '../../models/LineShape';
+import PathShape from '../../models/PathShape';
 
 export default class InstructionResults extends React.Component {
 
@@ -142,6 +143,9 @@ export default class InstructionResults extends React.Component {
       },
       rect(params) {
         return new RectShape(params);
+      },
+      path(params) {
+        return new PathShape(params);
       },
       line(params) {
         return new LineShape(params);

@@ -4,6 +4,7 @@ import LoopInstruction from '../models/LoopInstruction';
 import DrawLineInstruction from '../models/DrawLineInstruction';
 import MoveInstruction from '../models/MoveInstruction';
 import ScaleInstruction from '../models/ScaleInstruction';
+import DrawPathInstruction from '../models/DrawPathInstruction';
 
 // Scatter point
 const instructions = [
@@ -102,6 +103,8 @@ const instructions = [
       }),
       new DrawRectInstruction({
         id: 'i10',
+        fill: 'rgba(255, 127, 0, 0.25)',
+        stroke: 'rgba(255, 127, 0, 0.25)',
         from: {id: 'shape_i8', point: 'center', isLoop: true},
         to: {id: 'shape_i9', point: 'center', isLoop: true}
       }),
@@ -116,6 +119,21 @@ const instructions = [
         shape: {id: 'shape_i10', isLoop: true},
         point: 'bottom',
         to: {id: 'canvas', point: 'bottom'}
+      }),
+      new MoveInstruction({
+        id: 'imove6',
+        shape: {id: 'shape_i10', isLoop: true},
+        point: 'bottom',
+        to: {id: 'canvas', point: 'bottom'}
+      }),
+      new DrawPathInstruction({
+        id: 'i11',
+        from: {id: 'canvas', point: 'center'},
+        to: [
+          {x: -40, y: -15, isLine: true},
+          {x: 0, y: 30, isLine: true}
+        ],
+        isClosed: true
       })
     ]
   })

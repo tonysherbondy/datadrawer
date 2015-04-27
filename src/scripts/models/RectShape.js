@@ -1,7 +1,12 @@
 export default class RectShape {
-  constructor({x, y, width, height, isGuide}) {
+  constructor(props) {
+    let {x, y, width, height} = props;
     this.setCanonicalRect({x, y, width, height});
-    this.isGuide = isGuide;
+    // TODO - should probably be in a base shape class
+    this.fill = props.fill;
+    this.stroke = props.stroke;
+    this.strokeWidth = props.strokeWidth;
+    this.isGuide = props.isGuide;
     this.type = 'rect';
   }
 
@@ -133,13 +138,12 @@ export default class RectShape {
 
 
   getRenderProps() {
+    let {x, y, width, height, stroke, strokeWidth, fill} = this;
     return {
-      x: this.x,
-      y: this.y,
-      width: this.width,
-      height: this.height,
+      x, y, width, height,
 
       // TODO there should definitely be a base shape for this
+      stroke, strokeWidth, fill,
       fillOpacity: this.isGuide ? 0 : 1,
       strokeOpacity: this.isGuide ? 0 : 1
     };

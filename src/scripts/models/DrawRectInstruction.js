@@ -62,6 +62,9 @@ export default class DrawRectInstruction extends DrawInstruction {
            `y: ${y},\n` +
            `width: ${this.getWidthJs(index)},\n` +
            `height: ${this.getHeightJs(index)},\n` +
+           `fill: '${this.fill}',\n` +
+           `stroke: '${this.stroke}',\n` +
+           `strokeWidth: ${this.strokeWidth},\n` +
            `isGuide: ${this.isGuide}\n` +
            `});\n`;
   }

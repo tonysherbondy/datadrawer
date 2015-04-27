@@ -12,6 +12,8 @@ class Canvas extends React.Component {
 
       } else if (shape.type === 'line') {
         return (<line key={index} {...shape.getRenderProps()} />);
+      } else if (shape.type === 'path') {
+        return (<path key={index} {...shape.getRenderProps()} />);
       }
       console.error('Unknown shape type', shape.type);
     });
