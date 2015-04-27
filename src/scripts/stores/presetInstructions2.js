@@ -42,8 +42,8 @@ const instructions = [
       }),
       new DrawLineInstruction({
         id: 'i5',
-        strokeWidth: 2,
         stroke: 'rgb(236, 194, 116)',
+        strokeWidth: 2,
         from: {id: 'shape_i0', point: 'center'},
         to: {id: 'shape_i4', point: 'center', isLoop: true}
       }),
@@ -52,6 +52,12 @@ const instructions = [
         shape: {id: 'shape_i0'},
         point: 'center',
         to: {id: 'shape_i4', point: 'center', isLoop: true}
+      }),
+      new DrawLineInstruction({
+        id: 'i6',
+        strokeWidth: 2,
+        from: {id: 'canvas', point: 'left'},
+        to: {id: 'canvas', point: 'right'}
       })
     ]
   })
