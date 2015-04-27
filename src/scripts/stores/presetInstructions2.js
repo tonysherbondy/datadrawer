@@ -5,6 +5,7 @@ import DrawLineInstruction from '../models/DrawLineInstruction';
 import MoveInstruction from '../models/MoveInstruction';
 import ScaleInstruction from '../models/ScaleInstruction';
 import DrawPathInstruction from '../models/DrawPathInstruction';
+import RotateInstruction from '../models/RotateInstruction';
 
 // Crazy scatterish plot
 const instructions = [
@@ -140,6 +141,12 @@ const instructions = [
         shape: {id: 'shape_i11', isLoop: true},
         point: 'from',
         to: {id: 'shape_i4', point: 'center', isLoop: true}
+      }),
+      new RotateInstruction({
+        id: 'irotate1',
+        shape: {id: 'shape_i11', isLoop: true},
+        point: {id: 'shape_i11', point: 'from', isLoop: true},
+        to: -45
       })
     ]
   })

@@ -9,6 +9,7 @@ export default class PathShape {
     this.stroke = props.stroke;
     this.strokeWidth = props.strokeWidth;
     this.isGuide = props.isGuide;
+    this.transform = '';
     this.type = 'path';
   }
 
@@ -25,12 +26,12 @@ export default class PathShape {
   }
 
   getRenderProps() {
-    let {stroke, strokeWidth, fill} = this;
+    let {stroke, strokeWidth, fill, transform} = this;
     return {
       d: this.getD(),
 
       // TODO there should definitely be a base shape for this
-      stroke, strokeWidth, fill,
+      stroke, strokeWidth, fill, transform,
       fillOpacity: this.isGuide ? 0 : 1,
       strokeOpacity: this.isGuide ? 0 : 1
     };
@@ -42,17 +43,18 @@ export default class PathShape {
       return this.from;
     } else {
       let index = parseInt(name.split('_')[1], 10);
-      return this.points[index];
+      let point = this.points[index];
+      return {
+        x: this.from.x + point.x,
+        y: this.from.y + point.y
+      };
     }
   }
 
   moveRelative(value) {
+    // From is only absolute point
     this.from.x += value.x;
     this.from.y += value.y;
-    this.points.forEach(point => {
-      point.x += value.x;
-      point.y += value.y;
-    });
   }
 
   // Move the shape so that a particular point is set to value
@@ -64,5 +66,9 @@ export default class PathShape {
     } else {
       console.error('Only support moving path from point');
     }
+  }
+
+  rotateAroundPoint(value, point) {
+    this.transform = `rotate(${value} ${point.x} ${point.y})`;
   }
 }
