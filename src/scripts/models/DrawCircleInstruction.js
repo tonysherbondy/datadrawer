@@ -39,7 +39,7 @@ export default class DrawCircleInstruction extends DrawInstruction {
   }
 
   getJsCode(index) {
-    let varPrefix = this.getVarName(this.shapeId, index);
+    let varPrefix = this.getShapeVarName(null, index);
     let {cx, cy} = this.getCenterJs(index);
     return `${varPrefix} = utils.circle({\n` +
                  `cx: ${cx},\n` +

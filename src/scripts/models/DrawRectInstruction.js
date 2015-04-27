@@ -55,7 +55,7 @@ export default class DrawRectInstruction extends DrawInstruction {
 
 
   getJsCode(index) {
-    let varPrefix = this.getVarName(this.shapeId, index);
+    let varPrefix = this.getShapeVarName(null, index);
     let {x, y} = this.getTopLeftJs(index);
     return `${varPrefix} = utils.rect({\n` +
            `x: ${x},\n` +

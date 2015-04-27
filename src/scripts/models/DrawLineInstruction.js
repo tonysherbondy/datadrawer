@@ -52,7 +52,7 @@ export default class DrawLineInstruction extends DrawInstruction {
   }
 
   getJsCode(index) {
-    let varPrefix = this.getVarName(this.shapeId, index);
+    let varPrefix = this.getShapeVarName(null, index);
     let {x, y} = this.getFromJs(index);
     return `${varPrefix} = utils.line({\n` +
            `x1: ${x},\n` +

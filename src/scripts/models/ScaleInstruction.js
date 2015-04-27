@@ -1,11 +1,12 @@
 import Instruction from './Instruction';
 
 export default class ScaleInstruction extends Instruction {
-  constructor({id, shapeId, point, prop, to}) {
-    super({id, shapeId});
+  constructor({id, shape, point, prop, to}) {
+    super({id, shapeId: shape.id});
     this.point = point;
     this.prop = prop;
     this.to = to;
+    this.shape = shape;
   }
 
   getToJs(index) {
@@ -19,7 +20,8 @@ export default class ScaleInstruction extends Instruction {
 
   getJsCode(index) {
     let paramsJs = `'${this.prop}', '${this.point}', ${this.getToJs(index)}`;
-    return `${this.getVarName(this.shapeId, index)}.scalePropByPoint(${paramsJs});`;
+    let varName = this.getShapeVarName(this.shape, index);
+    return `${varName}.scalePropByPoint(${paramsJs});`;
   }
 
   getToUi() {
@@ -31,6 +33,6 @@ export default class ScaleInstruction extends Instruction {
 
   // TODO This belongs in the UI most likely
   getUISentence() {
-    return `Scale ${this.shapeId} ${this.prop} by ${this.getToUi()}`;
+    return `Scale ${this.shape.id} ${this.prop} by ${this.getToUi()}`;
   }
 }

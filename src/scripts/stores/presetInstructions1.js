@@ -15,7 +15,7 @@ const instructions = [
       }),
       new ScaleInstruction({
         id: 'iloop2',
-        shapeId: 'shape_iloop1',
+        shape: {id: 'shape_iloop1'},
         prop: 'r',
         to: {id: 'd7'}
       })
@@ -33,7 +33,7 @@ const instructions = [
   }),
   new MoveInstruction({
     id: 'imove1',
-    shapeId: 'shape_i3',
+    shape: {id: 'shape_i3'},
     prop: 'center',
     to: {x: -20, y: 0}
   }),
@@ -45,13 +45,13 @@ const instructions = [
   }),
   new ScaleInstruction({
     id: 'i8',
-    shapeId: 'shape_i4',
+    shape: {id: 'shape_i4'},
     prop: 'height',
     to: 0.9
   }),
   new ScaleInstruction({
     id: 'i8',
-    shapeId: 'shape_i4',
+    shape: {id: 'shape_i4'},
     prop: 'height',
     to: {id: 'd4'}
   }),

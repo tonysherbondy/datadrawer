@@ -1,18 +1,19 @@
 import Instruction from './Instruction';
 
 export default class MoveInstruction extends Instruction {
-  constructor({id, shapeId, prop, to}) {
-    super({id, shapeId});
-    this.prop = prop;
+  constructor({id, shape, point, to}) {
+    super({id, shapeId: shape.id});
+    this.point = point;
     this.to = to;
+    this.shape = shape;
   }
 
   getJsCode(index) {
-    let varName = this.getVarName(this.shapeId, index);
+    let varName = this.getShapeVarName(this.shape, index);
     if (this.to.id) {
       // When setting to a variable we will move the point = to the variable
-      let pointJs = `utils['${this.to.point}']('${this.to.id}')`;
-      return `${varName}.moveToPoint(${pointJs});\n`;
+      let pointJs = this.getPointVarJs(this.to, index);
+      return `${varName}.moveToPoint('${this.point}', ${pointJs});\n`;
     } else {
       // Otherwise, we will move the point relative to the current position
       let getVarJs = v => {
@@ -43,10 +44,10 @@ export default class MoveInstruction extends Instruction {
   // TODO This belongs in the UI most likely
   getUISentence() {
     if (this.to.id) {
-      return `Move ${this.shapeId}'s ${this.prop} to meet ${this.to.id}'s ${this.to.point}`;
+      return `Move ${this.shape.id}'s ${this.prop} to meet ${this.to.id}'s ${this.to.point}`;
     }
     let xUi = this.getVarUi(this.to.x);
     let yUi = this.getVarUi(this.to.y);
-    return `Move ${this.shapeId}, ${xUi} horizontally, ${yUi} vertically`;
+    return `Move ${this.shape.id}, ${xUi} horizontally, ${yUi} vertically`;
   }
 }

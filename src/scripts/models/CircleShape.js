@@ -37,6 +37,7 @@ export default class CircleShape {
     this.cy += value.y;
   }
 
+  // Move the shape so that a particular point is set to value
   moveToPoint(name, value) {
     let {x, y} = value;
     switch (name) {

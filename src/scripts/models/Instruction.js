@@ -12,12 +12,16 @@ export default class Instruction {
     return shapeId;
   }
 
-  getVarName(shapeId, index) {
-    return `variables.shapes.${this.getShapeName(shapeId, index)}`;
+  getShapeVarName(shape, index) {
+    if (!shape) {
+      shape = {id: this.shapeId, isLoop: isFinite(index)};
+    }
+    index = shape.isLoop ? index : undefined;
+    return `variables.shapes.${this.getShapeName(shape.id, index)}`;
   }
 
   getPointVarJs(pointVar, index) {
-    let varName = this.getVarName(pointVar.id, pointVar.isLoop ? index : undefined);
+    let varName = this.getShapeVarName(pointVar, index);
     return `${varName}.getPoint('${pointVar.point}')`;
   }
 

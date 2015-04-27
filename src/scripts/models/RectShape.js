@@ -96,7 +96,7 @@ export default class RectShape {
     }
   }
 
-  movePoint(name, value) {
+  moveToPoint(name, value) {
     // Doesn't matter what point we move, the distance applies
     // to the center
     this.x += value.x;
