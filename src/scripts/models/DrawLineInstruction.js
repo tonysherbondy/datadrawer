@@ -52,9 +52,8 @@ export default class DrawLineInstruction extends DrawInstruction {
   }
 
   getJsCode(index) {
-    let varPrefix = this.getShapeVarName(null, index);
     let {x, y} = this.getFromJs(index);
-    return `${varPrefix} = utils.line({\n` +
+    return `utils.line({\n` +
            `x1: ${x},\n` +
            `y1: ${y},\n` +
            `x2: ${this.getToXJs(index)},\n` +
@@ -62,7 +61,7 @@ export default class DrawLineInstruction extends DrawInstruction {
            `stroke: '${this.stroke}',\n` +
            `strokeWidth: ${this.strokeWidth},\n` +
            `isGuide: ${this.isGuide}\n` +
-           `});\n`;
+           `}, '${this.shapeId}', ${index});\n`;
   }
 
   getWidthUi() {

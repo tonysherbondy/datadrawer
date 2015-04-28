@@ -5,19 +5,10 @@ export default class Instruction {
     this.shapeId = shapeId;
   }
 
-  getShapeName(shapeId, index) {
-    if (isFinite(index)) {
-      return `${shapeId}_${index}`;
-    }
-    return shapeId;
-  }
-
+  // TODO Can probably convert this to shape name now instead of object
   getShapeVarName(shape, index) {
-    if (!shape) {
-      shape = {id: this.shapeId, isLoop: isFinite(index)};
-    }
-    index = shape.isLoop ? index : undefined;
-    return `variables.shapes.${this.getShapeName(shape.id, index)}`;
+    let shapeId = shape ? shape.id : this.shapeId;
+    return `utils.getShapeVariable('${shapeId}', ${index})`;
   }
 
   getPointVarJs(pointVar, index) {

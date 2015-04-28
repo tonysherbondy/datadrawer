@@ -39,9 +39,8 @@ export default class DrawCircleInstruction extends DrawInstruction {
   }
 
   getJsCode(index) {
-    let varPrefix = this.getShapeVarName(null, index);
     let {cx, cy} = this.getCenterJs(index);
-    return `${varPrefix} = utils.circle({\n` +
+    return `utils.circle({\n` +
                  `cx: ${cx},\n` +
                  `cy: ${cy},\n` +
                  `r: ${this.getRadiusJs(index)},\n` +
@@ -49,7 +48,7 @@ export default class DrawCircleInstruction extends DrawInstruction {
                  `stroke: '${this.stroke}',\n` +
                  `strokeWidth: ${this.strokeWidth},\n` +
                  `isGuide: ${this.isGuide}\n` +
-                 `});\n`;
+                 `}, '${this.shapeId}', ${index});\n`;
   }
 
   getRadiusUi() {

@@ -35,8 +35,7 @@ export default class DrawPathInstruction extends DrawInstruction {
   }
 
   getJsCode(index) {
-    let varPrefix = this.getShapeVarName(null, index);
-    return `${varPrefix} = utils.path({\n` +
+    return `utils.path({\n` +
                  `from: ${this.getFromJs(index)},\n` +
                  `points: ${this.getToJs(index)},\n` +
                  `isClosed: ${this.isClosed},\n` +
@@ -44,7 +43,7 @@ export default class DrawPathInstruction extends DrawInstruction {
                  `stroke: '${this.stroke}',\n` +
                  `strokeWidth: ${this.strokeWidth},\n` +
                  `isGuide: ${this.isGuide}\n` +
-                 `});\n`;
+                 `}, '${this.shapeId}', ${index});\n`;
   }
 
   getUISentence() {

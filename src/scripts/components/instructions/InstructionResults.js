@@ -80,7 +80,6 @@ export default class InstructionResults extends React.Component {
       // allow us to change our context, loop prefix only affects shape variables
       // within the loop though...
       // TODO Loop instructions don't have a shapeName, but perhaps we can just ignore
-      //let prefix = `variables.shapes.${instruction.getShapeName()}`;
       if (instruction instanceof LoopInstruction) {
         return instruction.getJsCode(this.getTable(variableValues));
       }
@@ -138,17 +137,28 @@ export default class InstructionResults extends React.Component {
         let variable = variables.data[name];
         return variable instanceof Array ? variable[index] : variable;
       },
-      circle(params) {
-        return new CircleShape(params);
+      getShapeVariable(name, index=0) {
+        // TODO, perhaps the looping shapes should be an array like data
+        let variable = variables.shapes[name] || variables.shapes[`${name}_${index}`];
+        if (!variable) {
+          console.error('Unable to find shape variable', name);
+        }
+        return variable;
       },
-      rect(params) {
-        return new RectShape(params);
+      getNewShapeName(name, index) {
+        return isFinite(index) ? `${name}_${index}` : name;
       },
-      path(params) {
-        return new PathShape(params);
+      circle(params, name, index) {
+        variables.shapes[this.getNewShapeName(name, index)] = new CircleShape(params);
       },
-      line(params) {
-        return new LineShape(params);
+      rect(params, name, index) {
+        variables.shapes[this.getNewShapeName(name, index)] = new RectShape(params);
+      },
+      path(params, name, index) {
+        variables.shapes[this.getNewShapeName(name, index)] = new PathShape(params);
+      },
+      line(params, name, index) {
+        variables.shapes[this.getNewShapeName(name, index)] = new LineShape(params);
       }
     };
   }

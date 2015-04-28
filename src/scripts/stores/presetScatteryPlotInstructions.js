@@ -25,14 +25,14 @@ const instructions = [
       }),
       new ScaleInstruction({
         id: 'i2',
-        shape: {id: 'shape_i1', isLoop: true},
+        shape: {id: 'shape_i1'},
         prop: 'width',
         point: 'right',
         to: {id: 'sx'}
       }),
       new ScaleInstruction({
         id: 'i3',
-        shape: {id: 'shape_i1', isLoop: true},
+        shape: {id: 'shape_i1'},
         prop: 'height',
         point: 'top',
         to: {id: 'sy'}
@@ -40,7 +40,7 @@ const instructions = [
       new DrawCircleInstruction({
         id: 'i4',
         isGuide: true,
-        from: {id: 'shape_i1', point: 'topRight', isLoop: true},
+        from: {id: 'shape_i1', point: 'topRight'},
         radius: 10
       }),
       new DrawLineInstruction({
@@ -48,13 +48,13 @@ const instructions = [
         stroke: 'rgb(236, 194, 116)',
         strokeWidth: 2,
         from: {id: 'shape_i0', point: 'center'},
-        to: {id: 'shape_i4', point: 'center', isLoop: true}
+        to: {id: 'shape_i4', point: 'center'}
       }),
       new MoveInstruction({
         id: 'imove1',
         shape: {id: 'shape_i0'},
         point: 'center',
-        to: {id: 'shape_i4', point: 'center', isLoop: true}
+        to: {id: 'shape_i4', point: 'center'}
       }),
       new DrawLineInstruction({
         id: 'i6',
@@ -64,67 +64,67 @@ const instructions = [
       }),
       new ScaleInstruction({
         id: 'i7',
-        shape: {id: 'shape_i6', isLoop: true},
+        shape: {id: 'shape_i6'},
         prop: 'x2',
         point: 'right',
         to: {id: 'swidth'}
       }),
       new MoveInstruction({
         id: 'imove2',
-        shape: {id: 'shape_i6', isLoop: true},
+        shape: {id: 'shape_i6'},
         point: 'center',
-        to: {id: 'shape_i4', point: 'center', isLoop: true}
+        to: {id: 'shape_i4', point: 'center'}
       }),
       // TODO missing ability to draw a line centered about a point
       new DrawLineInstruction({
         id: 'i8',
         strokeWidth: 2,
-        from: {id: 'shape_i6', point: 'right', isLoop: true},
+        from: {id: 'shape_i6', point: 'right'},
         width: 0,
         height: 9.5
       }),
       new MoveInstruction({
         id: 'imove3',
-        shape: {id: 'shape_i8', isLoop: true},
+        shape: {id: 'shape_i8'},
         point: 'center',
-        to: {id: 'shape_i6', point: 'right', isLoop: true}
+        to: {id: 'shape_i6', point: 'right'}
       }),
       // TODO missing ability to draw a line centered about a point
       new DrawLineInstruction({
         id: 'i9',
         strokeWidth: 2,
-        from: {id: 'shape_i6', point: 'left', isLoop: true},
+        from: {id: 'shape_i6', point: 'left'},
         width: 0,
         height: 9.5
       }),
       new MoveInstruction({
         id: 'imove4',
-        shape: {id: 'shape_i9', isLoop: true},
+        shape: {id: 'shape_i9'},
         point: 'center',
-        to: {id: 'shape_i6', point: 'left', isLoop: true}
+        to: {id: 'shape_i6', point: 'left'}
       }),
       new DrawRectInstruction({
         id: 'i10',
         fill: 'rgba(255, 127, 0, 0.25)',
         stroke: 'rgba(255, 127, 0, 0.25)',
-        from: {id: 'shape_i8', point: 'center', isLoop: true},
-        to: {id: 'shape_i9', point: 'center', isLoop: true}
+        from: {id: 'shape_i8', point: 'center'},
+        to: {id: 'shape_i9', point: 'center'}
       }),
       new MoveInstruction({
         id: 'imove5',
-        shape: {id: 'shape_i10', isLoop: true},
+        shape: {id: 'shape_i10'},
         point: 'top',
         to: {id: 'canvas', point: 'top'}
       }),
       new MoveInstruction({
         id: 'imove6',
-        shape: {id: 'shape_i10', isLoop: true},
+        shape: {id: 'shape_i10'},
         point: 'bottom',
         to: {id: 'canvas', point: 'bottom'}
       }),
       new MoveInstruction({
         id: 'imove6',
-        shape: {id: 'shape_i10', isLoop: true},
+        shape: {id: 'shape_i10'},
         point: 'bottom',
         to: {id: 'canvas', point: 'bottom'}
       }),
@@ -141,19 +141,19 @@ const instructions = [
       }),
       new MoveInstruction({
         id: 'imove7',
-        shape: {id: 'shape_i11', isLoop: true},
+        shape: {id: 'shape_i11'},
         point: 'from',
-        to: {id: 'shape_i4', point: 'center', isLoop: true}
+        to: {id: 'shape_i4', point: 'center'}
       }),
       new RotateInstruction({
         id: 'irotate1',
-        shape: {id: 'shape_i11', isLoop: true},
-        point: {id: 'shape_i11', point: 'from', isLoop: true},
-        to: {id: 'shape_i5', prop: 'angle', isLoop: true}
+        shape: {id: 'shape_i11'},
+        point: {id: 'shape_i11', point: 'from'},
+        to: {id: 'shape_i5', prop: 'angle'}
       }),
       new ScaleInstruction({
         id: 'i12',
-        shape: {id: 'shape_i11', isLoop: true},
+        shape: {id: 'shape_i11'},
         prop: 'edge',
         point: 'from',
         to: 0.5
@@ -161,14 +161,14 @@ const instructions = [
       new DrawLineInstruction({
         id: 'i13',
         strokeWidth: 1,
-        from: {id: 'shape_i10', point: 'bottom', isLoop: true},
+        from: {id: 'shape_i10', point: 'bottom'},
         width: 0,
         height: -15
       }),
       new DrawLineInstruction({
         id: 'i14',
         strokeWidth: 1,
-        from: {id: 'shape_i1', point: 'topLeft', isLoop: true},
+        from: {id: 'shape_i1', point: 'topLeft'},
         width: 15,
         height: 0
       })
