@@ -157,6 +157,20 @@ const instructions = [
         prop: 'edge',
         point: 'from',
         to: 0.5
+      }),
+      new DrawLineInstruction({
+        id: 'i13',
+        strokeWidth: 1,
+        from: {id: 'shape_i10', point: 'bottom', isLoop: true},
+        width: 0,
+        height: -15
+      }),
+      new DrawLineInstruction({
+        id: 'i14',
+        strokeWidth: 1,
+        from: {id: 'shape_i1', point: 'topLeft', isLoop: true},
+        width: 15,
+        height: 0
       })
     ]
   })
