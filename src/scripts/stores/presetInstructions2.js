@@ -147,6 +147,13 @@ const instructions = [
         shape: {id: 'shape_i11', isLoop: true},
         point: {id: 'shape_i11', point: 'from', isLoop: true},
         to: {id: 'shape_i5', prop: 'angle', isLoop: true}
+      }),
+      new ScaleInstruction({
+        id: 'i12',
+        shape: {id: 'shape_i11', isLoop: true},
+        prop: 'edge',
+        point: 'from',
+        to: 0.5
       })
     ]
   })

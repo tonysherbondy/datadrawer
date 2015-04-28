@@ -51,6 +51,15 @@ export default class PathShape {
     }
   }
 
+  scalePropByPoint(prop, point, value) {
+    // TODO Handle more than just 'from' point and all edge mapping to this
+    this.points.forEach(pt => {
+      // All points are relative
+      pt.x *= value;
+      pt.y *= value;
+    });
+  }
+
   moveRelative(value) {
     // From is only absolute point
     this.from.x += value.x;
