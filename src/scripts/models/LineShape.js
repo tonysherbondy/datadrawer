@@ -1,3 +1,5 @@
+//import {distanceBetweenPoints} from '../utils/utils';
+
 export default class LineShape {
   constructor({x1, y1, x2, y2, stroke, strokeWidth, isGuide}) {
     this.x1 = x1;
@@ -35,6 +37,18 @@ export default class LineShape {
       default:
         console.error('Unknown point', name);
     }
+  }
+
+  getProp(name) {
+    if (name === 'angle') {
+      let dx = this.x2 - this.x1;
+      let dy = this.y2 - this.y1;
+      // atan is between -90 and 90, when x is negative
+      // we want the other hemi-circle
+      let flip = dx < 0 ? 180 : 0;
+      return Math.atan(dy / dx) * 180 / Math.PI + flip;
+    }
+    console.error(`Don't know how to get prop`, name);
   }
 
   // Move the shape relatively by this value

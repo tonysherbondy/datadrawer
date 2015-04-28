@@ -146,7 +146,7 @@ const instructions = [
         id: 'irotate1',
         shape: {id: 'shape_i11', isLoop: true},
         point: {id: 'shape_i11', point: 'from', isLoop: true},
-        to: -45
+        to: {id: 'shape_i5', prop: 'angle', isLoop: true}
       })
     ]
   })
