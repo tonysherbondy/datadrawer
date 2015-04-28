@@ -4,6 +4,9 @@ export default class DrawPathInstruction extends DrawInstruction {
   constructor(props) {
     super(props);
     this.to = props.to;
+    this.fill = props.fill;
+    this.stroke = props.stroke;
+    this.strokeWidth = props.strokeWidth;
     this.isClosed = props.isClosed;
   }
 

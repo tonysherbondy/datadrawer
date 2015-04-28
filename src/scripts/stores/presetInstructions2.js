@@ -129,6 +129,8 @@ const instructions = [
       }),
       new DrawPathInstruction({
         id: 'i11',
+        fill: 'rgba(238, 141, 40, 1)',
+        stroke: 'rgba(238, 141, 40, 1)',
         from: {id: 'canvas', point: 'center'},
         to: [
           {x: -40, y: -15, isLine: true},
