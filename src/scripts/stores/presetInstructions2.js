@@ -39,6 +39,7 @@ const instructions = [
       }),
       new DrawCircleInstruction({
         id: 'i4',
+        isGuide: true,
         from: {id: 'shape_i1', point: 'topRight', isLoop: true},
         radius: 10
       }),
