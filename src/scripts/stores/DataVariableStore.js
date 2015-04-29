@@ -66,6 +66,11 @@ let variables = [
     definition: [{id: 'energy_in_mwh'}, '.length']
   }),
   new DataVariable({
+    id: 'top_mwh',
+    name: 'Top MWh',
+    definition: ['40']
+  }),
+  new DataVariable({
     id: 'max_energy_in_mwh',
     name: 'Max energy in MWh',
     definition: ['_.max(', {id: 'energy_in_mwh'}, ')']
@@ -85,7 +90,7 @@ let variables = [
     id: 'norm_energy_in_mwh',
     name: 'Norm energy in MWh',
     isRow: true,
-    definition: [{id: 'energy_in_mwh'}, '.map(function(d) { return d / ', {id: 'max_energy_in_mwh'}, '});']
+    definition: [{id: 'energy_in_mwh'}, '.map(function(d) { return d / ', {id: 'top_mwh'}, '});']
   })
 ];
 

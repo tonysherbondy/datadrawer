@@ -9,7 +9,7 @@ export default class DrawTextInstruction extends DrawLineInstruction {
 
   getTextJs(index) {
     if (this.text.id) {
-      return `utils.getData('${this.text.id}', ${index})`;
+      return this.getDataOrShapePropJs(this.text, index);
     }
     return `'${this.text}'`;
   }

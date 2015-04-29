@@ -3,6 +3,8 @@ import ScaleInstruction from '../models/ScaleInstruction';
 import MoveInstruction from '../models/MoveInstruction';
 import LoopInstruction from '../models/LoopInstruction';
 import DrawTextInstruction from '../models/DrawTextInstruction';
+import DrawLineInstruction from '../models/DrawLineInstruction';
+import IfInstruction from '../models/IfInstruction';
 
 // Bar Chart Plot
 const instructions = [
@@ -47,6 +49,30 @@ const instructions = [
         text: {id: 'energy_in_mwh'},
         from: {id: 'shape_rect2', point: 'topLeft'},
         to: {id: 'shape_rect2', point: 'topRight'}
+      }),
+      new MoveInstruction({
+        id: 'imove2',
+        shape: {id: 'shape_text1'},
+        point: 'center',
+        to: {x: 0, y: 14}
+      }),
+      new DrawLineInstruction({
+        id: 'line1',
+        isGuide: true,
+        from: {id: 'shape_text1', point: 'center'},
+        to: {id: 'shape_rect2', point: 'bottom'}
+      }),
+      new IfInstruction({
+        id: 'if',
+        condition: [{id: 'shape_line1', prop: 'dy'}, ' < ', '1'],
+        instructions: [
+          new MoveInstruction({
+            id: 'imove3',
+            shape: {id: 'shape_text1'},
+            point: 'center',
+            to: {x: 0, y: -18}
+          })
+        ]
       })
     ]
   })

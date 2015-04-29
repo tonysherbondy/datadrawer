@@ -11,15 +11,7 @@ export default class RotateInstruction extends Instruction {
   getToJs(index) {
     // The to is either a dataVariable or hardcoded value
     if (this.to.id) {
-      if (this.to.prop) {
-        // TODO Need to do this where-ever we have getData
-        // Shape property
-        let varName = this.getShapeVarName(this.to, index);
-        return `${varName}.getProp('${this.to.prop}')`;
-      } else {
-        // Data variable
-        return `utils.getData('${this.to.id}', ${index})`;
-      }
+      return this.getDataOrShapePropJs(this.to, index);
     }
     return this.to;
   }

@@ -45,6 +45,10 @@ export default class LineShape {
       // we want the other hemi-circle
       let flip = dx < 0 ? 180 : 0;
       return Math.atan(dy / dx) * 180 / Math.PI + flip;
+    } else if (name === 'dy') {
+      return this.y2 - this.y1;
+    } else if (name === 'dx') {
+      return this.x2 - this.x1;
     }
     console.error(`Don't know how to get prop`, name);
   }

@@ -16,4 +16,15 @@ export default class Instruction {
     return `${varName}.getPoint('${pointVar.point}')`;
   }
 
+  getDataOrShapePropJs(variable, index) {
+    if (variable.prop) {
+      // Shape property
+      let varName = this.getShapeVarName(variable, index);
+      return `${varName}.getProp('${variable.prop}')`;
+    } else {
+      // Data variable
+      return `utils.getData('${variable.id}', ${index})`;
+    }
+  }
+
 }
