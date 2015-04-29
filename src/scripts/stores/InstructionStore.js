@@ -1,8 +1,13 @@
 import biff from '../dispatcher/dispatcher';
-//import presetInstructions from './presetScatteryPlotInstructions';
-import presetInstructions from './randoPresetInstructions';
+import scatterPreset from './presetScatteryPlotInstructions';
+import randoPreset from './randoPresetInstructions';
 
-let instructions = presetInstructions;
+let presetInstructions = {
+  scatter: scatterPreset,
+  rando: randoPreset
+};
+
+let instructions = presetInstructions.rando;
 
 const InstructionStore = biff.createStore({
   getInstructions() {
@@ -33,6 +38,11 @@ const InstructionStore = biff.createStore({
       InstructionStore._setPending(false);
       InstructionStore._clearErrors();
       instructions = instructions.filter((_,i) => i !== payload.data);
+      InstructionStore.emitChange();
+      break;
+    }
+    case 'LOAD_PRESET_INSTRUCTIONS': {
+      instructions = presetInstructions[payload.data] || [];
       InstructionStore.emitChange();
       break;
     }

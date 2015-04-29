@@ -24,6 +24,16 @@ const InstructionActions = biff.createActions({
     }, 600);
 
   },
+
+  // TODO Should probably change this to picture, or change instruction
+  // store to picture store
+  loadPresetInstructions(name) {
+    this.dispatch({
+      actionType: 'LOAD_PRESET_INSTRUCTIONS',
+      data: name
+    });
+  },
+
   removeInstruction(index) {
     this.dispatch({
       actionType: 'REMOVE_INSTRUCTION',

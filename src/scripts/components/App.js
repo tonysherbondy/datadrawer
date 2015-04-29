@@ -4,14 +4,25 @@ import InstructionStore from '../stores/InstructionStore';
 import DataVariableStore from '../stores/DataVariableStore';
 import InstructionList from './instructions/InstructionList';
 import InstructionResults from './instructions/InstructionResults';
+import InstructionActions from '../actions/InstructionActions';
 
 
 class App extends React.Component {
+
+  handleRandoClick() {
+    InstructionActions.loadPresetInstructions('rando');
+  }
+
+  handleScatterClick() {
+    InstructionActions.loadPresetInstructions('scatter');
+  }
 
   render() {
     return (
       <div className='main'>
         <h1>Tukey App</h1>
+        <button onClick={this.handleRandoClick}>Rando</button>
+        <button onClick={this.handleScatterClick}>Scatter</button>
         <InstructionResults instructions={this.props.instructions} dataVariables={this.props.variables} />
         <InstructionList instructions={this.props.instructions} />
       </div>
