@@ -1,6 +1,6 @@
 import biff from '../dispatcher/dispatcher';
-import presetInstructions from './presetScatteryPlotInstructions';
-//import presetInstructions from './randoPresetInstructions';
+//import presetInstructions from './presetScatteryPlotInstructions';
+import presetInstructions from './randoPresetInstructions';
 
 let instructions = presetInstructions;
 

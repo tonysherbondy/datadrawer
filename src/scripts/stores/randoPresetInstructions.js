@@ -7,6 +7,7 @@ import MoveInstruction from '../models/MoveInstruction';
 const instructions = [
   new LoopInstruction({
     id: 'iloop',
+    count: 6,
     instructions: [
       new DrawCircleInstruction({
         id: 'iloop1',
@@ -47,12 +48,14 @@ const instructions = [
     id: 'i8',
     shape: {id: 'shape_i4'},
     prop: 'height',
+    point: 'bottom',
     to: 0.9
   }),
   new ScaleInstruction({
     id: 'i8',
     shape: {id: 'shape_i4'},
     prop: 'height',
+    point: 'bottom',
     to: {id: 'd4'}
   }),
   new DrawRectInstruction({
