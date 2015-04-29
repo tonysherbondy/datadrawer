@@ -43,6 +43,7 @@ const instructions = [
       }),
       new DrawTextInstruction({
         id: 'text1',
+        fontSize: 13,
         text: {id: 'energy_in_mwh'},
         from: {id: 'shape_rect2', point: 'topLeft'},
         to: {id: 'shape_rect2', point: 'topRight'}

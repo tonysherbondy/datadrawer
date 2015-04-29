@@ -4,7 +4,14 @@ export default class TextShape extends LineShape {
   constructor(props) {
     super(props);
     this.text = props.text;
+    this.fontSize = props.fontSize || 20;
     this.type = 'text';
+  }
+
+  getStyle() {
+    return {
+      fontSize: this.fontSize
+    };
   }
 
   getRenderProps() {
@@ -23,6 +30,7 @@ export default class TextShape extends LineShape {
       y,
       textAnchor: 'middle',
       transform,
+      style: this.getStyle(),
 
       // TODO there should definitely be a base shape for this
       fillOpacity: this.isGuide ? 0 : 1,

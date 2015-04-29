@@ -4,6 +4,7 @@ export default class DrawTextInstruction extends DrawLineInstruction {
   constructor(props) {
     super(props);
     this.text = props.text;
+    this.fontSize = props.fontSize;
   }
 
   getTextJs(index) {
@@ -17,6 +18,7 @@ export default class DrawTextInstruction extends DrawLineInstruction {
     let {x, y} = this.getFromJs(index);
     return `utils.text({\n` +
            `text: ${this.getTextJs(index)},\n` +
+           `fontSize: ${this.fontSize},\n` +
            `x1: ${x},\n` +
            `y1: ${y},\n` +
            `x2: ${this.getToXJs(index)},\n` +
