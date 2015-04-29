@@ -6,10 +6,17 @@ export default class DrawTextInstruction extends DrawLineInstruction {
     this.text = props.text;
   }
 
+  getTextJs(index) {
+    if (this.text.id) {
+      return `utils.getData('${this.text.id}', ${index})`;
+    }
+    return `'${this.text}'`;
+  }
+
   getJsCode(index) {
     let {x, y} = this.getFromJs(index);
     return `utils.text({\n` +
-           `text: '${this.text}',\n` +
+           `text: ${this.getTextJs(index)},\n` +
            `x1: ${x},\n` +
            `y1: ${y},\n` +
            `x2: ${this.getToXJs(index)},\n` +

@@ -43,16 +43,9 @@ const instructions = [
       }),
       new DrawTextInstruction({
         id: 'text1',
-        text: 'Hi!',
+        text: {id: 'energy_in_mwh'},
         from: {id: 'shape_rect2', point: 'topLeft'},
         to: {id: 'shape_rect2', point: 'topRight'}
-      }),
-      new MoveInstruction({
-        id: 'temp',
-        shape: {id: 'shape_text1'},
-        point: 'right',
-        isReshape: true,
-        to: {x: 0, y: -50}
       })
     ]
   })
