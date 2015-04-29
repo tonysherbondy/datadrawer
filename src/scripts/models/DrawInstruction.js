@@ -13,6 +13,21 @@ export default class DrawInstruction extends Instruction {
     this.fill = props.fill || 'rgba(0, 0, 0, 0.2)';
   }
 
+  getFromJs(index) {
+    if (this.from.id) {
+      let fromPt = this.getPointVarJs(this.from, index);
+      return {
+        x: `${fromPt}.x`,
+        y: `${fromPt}.y`
+      };
+    }
+    return {
+      x: this.from.x,
+      y: this.from.y
+    };
+  }
+
+
   getFromUi() {
     if (this.from.id) {
       return `${this.from.id}'s ${this.from.point}`;

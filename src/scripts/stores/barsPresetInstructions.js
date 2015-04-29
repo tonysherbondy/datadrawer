@@ -2,6 +2,7 @@ import DrawRectInstruction from '../models/DrawRectInstruction';
 import ScaleInstruction from '../models/ScaleInstruction';
 import MoveInstruction from '../models/MoveInstruction';
 import LoopInstruction from '../models/LoopInstruction';
+//import DrawTextInstruction from '../models/DrawTextInstruction';
 
 // Bar Chart Plot
 const instructions = [
@@ -40,6 +41,12 @@ const instructions = [
         point: 'bottomLeft',
         to: {id: 'shape_rect2', point: 'bottomRight'}
       })
+      //new DrawTextInstruction({
+        //id: 'text1',
+        //shape: {id: 'shape_rect2'},
+        //point: 'topLeft',
+        //to: {x: 10, y: 10}
+      //})
     ]
   })
 ];

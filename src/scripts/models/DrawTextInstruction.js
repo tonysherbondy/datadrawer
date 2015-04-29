@@ -1,10 +1,8 @@
 import DrawInstruction from './DrawInstruction';
 
-export default class DrawLineInstruction extends DrawInstruction {
+export default class DrawTextInstruction extends DrawInstruction {
   constructor(props) {
     super(props);
-    this.width = props.width;
-    this.height = props.height;
   }
 
   getToXJs(index) {

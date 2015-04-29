@@ -7,26 +7,12 @@ export default class DrawRectInstruction extends DrawInstruction {
     this.height = props.height;
   }
 
-  getTopLeftJs(index) {
-    if (this.from.id) {
-      let fromPt = this.getPointVarJs(this.from, index);
-      return {
-        x: `${fromPt}.x`,
-        y: `${fromPt}.y`
-      };
-    }
-    return {
-      x: this.from.x,
-      y: this.from.y
-    };
-  }
-
   getWidthJs(index) {
     // This can be one of the following, a point specified by the to parameter,
     // a number or a variable
     if (this.to) {
       // assume utility function like distanceBetweenPoints(pt1, pt1)
-      let {x} = this.getTopLeftJs(index);
+      let {x} = this.getFromJs(index);
       let toPt = this.getPointVarJs(this.to, index);
       // TODO Probably will need some util function to handle the fact
       // that we might get negative distances
@@ -42,7 +28,7 @@ export default class DrawRectInstruction extends DrawInstruction {
     // a number or a variable
     if (this.to) {
       // assume utility function like distanceBetweenPoints(pt1, pt1)
-      let {y} = this.getTopLeftJs(index);
+      let {y} = this.getFromJs(index);
       let toPt = this.getPointVarJs(this.to, index);
       // TODO Probably will need some util function to handle the fact
       // that we might get negative distances
@@ -55,7 +41,7 @@ export default class DrawRectInstruction extends DrawInstruction {
 
 
   getJsCode(index) {
-    let {x, y} = this.getTopLeftJs(index);
+    let {x, y} = this.getFromJs(index);
     return `utils.rect({\n` +
            `x: ${x},\n` +
            `y: ${y},\n` +

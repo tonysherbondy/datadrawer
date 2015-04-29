@@ -16,6 +16,8 @@ const instructions = [
     radius: 20
   }),
   new LoopInstruction({
+    id: 'loop',
+    count: 8,
     instructions: [
       new DrawRectInstruction({
         id: 'i1',
@@ -114,18 +116,14 @@ const instructions = [
         id: 'imove5',
         shape: {id: 'shape_i10'},
         point: 'top',
+        isReshape: true,
         to: {id: 'canvas', point: 'top'}
       }),
       new MoveInstruction({
         id: 'imove6',
         shape: {id: 'shape_i10'},
         point: 'bottom',
-        to: {id: 'canvas', point: 'bottom'}
-      }),
-      new MoveInstruction({
-        id: 'imove6',
-        shape: {id: 'shape_i10'},
-        point: 'bottom',
+        isReshape: true,
         to: {id: 'canvas', point: 'bottom'}
       }),
       new DrawPathInstruction({

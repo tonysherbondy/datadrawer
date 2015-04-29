@@ -108,23 +108,55 @@ export default class RectShape {
   }
 
   // Move the shape so that a particular point is set to value
-  moveToPoint(name, value) {
+  moveToPoint(name, value, isReshape) {
     let {x, y, width, height} = this;
-    function left() { x = value.x; }
-    function right(amt) { x = value.x - amt; }
-    function top() { y = value.y; }
-    function bottom(amt) { y = value.y - amt; }
+
+    function left() {
+      let dx = x - value.x;
+      if (isReshape) {
+        width += dx;
+      }
+      x -= dx;
+    }
+
+    function right() {
+      let dx = value.x - (x + width);
+      if (isReshape) {
+        width += dx;
+      } else {
+        x += dx;
+      }
+    }
+
+    function top() {
+      let dy = y - value.y;
+      if (isReshape) {
+        height += dy;
+      }
+      y -= dy;
+    }
+
+    function bottom() {
+      let dy = value.y - (y + height);
+      if (isReshape) {
+        height += dy;
+      } else {
+        y += dy;
+      }
+    }
+
     switch (name) {
 
       case 'left':
         left();
         break;
       case 'center':
-        right(width / 2);
-        bottom(height / 2);
+        // Can't reshape from center
+        x = value.x - width / 2;
+        y = value.y - height / 2;
         break;
       case 'right':
-        right(width);
+        right();
         break;
 
       case 'topLeft':
@@ -136,19 +168,19 @@ export default class RectShape {
         break;
       case 'topRight':
         top();
-        right(width);
+        right();
         break;
 
       case 'bottomLeft':
-        bottom(height);
+        bottom();
         left();
         break;
       case 'bottom':
-        bottom(height);
+        bottom();
         break;
       case 'bottomRight':
-        bottom(height);
-        right(width);
+        bottom();
+        right();
         break;
 
       default:

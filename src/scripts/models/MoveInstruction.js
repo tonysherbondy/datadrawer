@@ -1,11 +1,12 @@
 import Instruction from './Instruction';
 
 export default class MoveInstruction extends Instruction {
-  constructor({id, shape, point, to}) {
+  constructor({id, shape, point, to, isReshape}) {
     super({id, shapeId: shape.id});
     this.point = point;
     this.to = to;
     this.shape = shape;
+    this.isReshape = isReshape;
   }
 
   getJsCode(index) {
@@ -13,7 +14,7 @@ export default class MoveInstruction extends Instruction {
     if (this.to.id) {
       // When setting to a variable we will move the point = to the variable
       let pointJs = this.getPointVarJs(this.to, index);
-      return `${varName}.moveToPoint('${this.point}', ${pointJs});\n`;
+      return `${varName}.moveToPoint('${this.point}', ${pointJs}, ${this.isReshape});\n`;
     } else {
       // Otherwise, we will move the point relative to the current position
       let getVarJs = v => {
@@ -26,7 +27,7 @@ export default class MoveInstruction extends Instruction {
       let xJs = getVarJs(this.to.x);
       let yJs = getVarJs(this.to.y);
       let pointJs = `{x: ${xJs}, y: ${yJs}}`;
-      return `${varName}.moveRelative(${pointJs});\n`;
+      return `${varName}.moveRelative(${pointJs}, ${this.isReshape});\n`;
     }
   }
 
