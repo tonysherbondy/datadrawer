@@ -14,6 +14,12 @@ class Canvas extends React.Component {
         return (<line key={index} {...shape.getRenderProps()} />);
       } else if (shape.type === 'path') {
         return (<path key={index} {...shape.getRenderProps()} />);
+      } else if (shape.type === 'text') {
+        return (
+          <text key={index} {...shape.getRenderProps()}>
+            {shape.text}
+          </text>
+        );
       }
       console.error('Unknown shape type', shape.type);
     });

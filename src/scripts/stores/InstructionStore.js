@@ -9,7 +9,7 @@ let presetInstructions = {
   rando: randoPreset
 };
 
-let instructions = presetInstructions.scatter;
+let instructions = presetInstructions.rando;
 
 const InstructionStore = biff.createStore({
   getInstructions() {

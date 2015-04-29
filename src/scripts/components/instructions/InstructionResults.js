@@ -9,6 +9,7 @@ import CircleShape from '../../models/CircleShape';
 import RectShape from '../../models/RectShape';
 import LineShape from '../../models/LineShape';
 import PathShape from '../../models/PathShape';
+import TextShape from '../../models/TextShape';
 import _ from 'lodash';
 
 export default class InstructionResults extends React.Component {
@@ -160,6 +161,9 @@ export default class InstructionResults extends React.Component {
       },
       path(params, name, index) {
         variables.shapes[this.getNewShapeName(name, index)] = new PathShape(params);
+      },
+      text(params, name, index) {
+        variables.shapes[this.getNewShapeName(name, index)] = new TextShape(params);
       },
       line(params, name, index) {
         variables.shapes[this.getNewShapeName(name, index)] = new LineShape(params);

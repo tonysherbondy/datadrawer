@@ -33,7 +33,7 @@ export default class CircleShape {
     this.r *= value;
   }
 
-  moveRelative(value) {
+  moveRelative(name, value) {
     // Doesn't matter what point we move, the distance applies
     // to the center
     this.cx += value.x;

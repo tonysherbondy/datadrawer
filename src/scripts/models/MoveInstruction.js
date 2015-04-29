@@ -27,7 +27,7 @@ export default class MoveInstruction extends Instruction {
       let xJs = getVarJs(this.to.x);
       let yJs = getVarJs(this.to.y);
       let pointJs = `{x: ${xJs}, y: ${yJs}}`;
-      return `${varName}.moveRelative(${pointJs}, ${this.isReshape});\n`;
+      return `${varName}.moveRelative('${this.point}', ${pointJs}, ${this.isReshape});\n`;
     }
   }
 

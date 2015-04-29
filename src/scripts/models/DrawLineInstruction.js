@@ -7,36 +7,6 @@ export default class DrawLineInstruction extends DrawInstruction {
     this.height = props.height;
   }
 
-  getToXJs(index) {
-    let {x} = this.getFromJs(index);
-    // This can be one of the following, a point specified by the to parameter,
-    // a number or a variable
-    if (this.to) {
-      let toPt = this.getPointVarJs(this.to, index);
-      // TODO Probably will need some util function to handle the fact
-      // that we might get negative distances
-      return `${toPt}.x`;
-    } else if (this.width.id) {
-      return `utils.getData('${this.width.id}', ${index}) + ${x}`;
-    }
-    return `${this.width} + ${x}`;
-  }
-
-  getToYJs(index) {
-    let {y} = this.getFromJs(index);
-    // This can be one of the following, a point specified by the to parameter,
-    // a number or a variable
-    if (this.to) {
-      let toPt = this.getPointVarJs(this.to, index);
-      // TODO Probably will need some util function to handle the fact
-      // that we might get negative distances
-      return `${toPt}.y`;
-    } else if (this.height.id) {
-      return `utils.getData('${this.height.id}', ${index}) + ${y}`;
-    }
-    return `${this.height} + ${y}`;
-  }
-
   getJsCode(index) {
     let {x, y} = this.getFromJs(index);
     return `utils.line({\n` +

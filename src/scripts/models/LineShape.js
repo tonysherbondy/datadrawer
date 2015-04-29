@@ -1,5 +1,3 @@
-//import {distanceBetweenPoints} from '../utils/utils';
-
 export default class LineShape {
   constructor({x1, y1, x2, y2, stroke, strokeWidth, isGuide}) {
     this.x1 = x1;
@@ -52,12 +50,37 @@ export default class LineShape {
   }
 
   // Move the shape relatively by this value
-  moveRelative(value) {
+  moveRelative(name, value, isReshape) {
     let {x, y} = value;
-    this.x1 += x;
-    this.y1 += y;
-    this.x2 += x;
-    this.y2 += y;
+    if (isReshape) {
+      switch (name) {
+        case 'left': {
+          this.x1 += x;
+          this.y1 += y;
+          break;
+        }
+        case 'center': {
+          this.x1 += x;
+          this.y1 += y;
+          this.x2 += x;
+          this.y2 += y;
+          break;
+        }
+        case 'right': {
+          this.x2 += x;
+          this.y2 += y;
+          break;
+        }
+        default: {
+          console.error(`Don't know point`, name);
+        }
+      }
+    } else {
+      this.x1 += x;
+      this.y1 += y;
+      this.x2 += x;
+      this.y2 += y;
+    }
   }
 
   // Move the shape so that a particular point is set to value

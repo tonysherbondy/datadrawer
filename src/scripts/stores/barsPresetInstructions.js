@@ -2,7 +2,7 @@ import DrawRectInstruction from '../models/DrawRectInstruction';
 import ScaleInstruction from '../models/ScaleInstruction';
 import MoveInstruction from '../models/MoveInstruction';
 import LoopInstruction from '../models/LoopInstruction';
-//import DrawTextInstruction from '../models/DrawTextInstruction';
+import DrawTextInstruction from '../models/DrawTextInstruction';
 
 // Bar Chart Plot
 const instructions = [
@@ -40,13 +40,20 @@ const instructions = [
         shape: {id: 'shape_rect1'},
         point: 'bottomLeft',
         to: {id: 'shape_rect2', point: 'bottomRight'}
+      }),
+      new DrawTextInstruction({
+        id: 'text1',
+        text: 'Hi!',
+        from: {id: 'shape_rect2', point: 'topLeft'},
+        to: {id: 'shape_rect2', point: 'topRight'}
+      }),
+      new MoveInstruction({
+        id: 'temp',
+        shape: {id: 'shape_text1'},
+        point: 'right',
+        isReshape: true,
+        to: {x: 0, y: -50}
       })
-      //new DrawTextInstruction({
-        //id: 'text1',
-        //shape: {id: 'shape_rect2'},
-        //point: 'topLeft',
-        //to: {x: 10, y: 10}
-      //})
     ]
   })
 ];
