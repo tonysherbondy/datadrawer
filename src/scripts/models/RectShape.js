@@ -110,25 +110,47 @@ export default class RectShape {
   // Move the shape so that a particular point is set to value
   moveToPoint(name, value) {
     let {x, y, width, height} = this;
+    function left() { x = value.x; }
+    function right(amt) { x = value.x - amt; }
+    function top() { y = value.y; }
+    function bottom(amt) { y = value.y - amt; }
     switch (name) {
+
       case 'left':
-        width = x + width - value.x;
-        x = value.x;
-        break;
-      case 'right':
-        width = value.x - x;
-        break;
-      case 'top':
-        height = y + height - value.y;
-        y = value.y;
-        break;
-      case 'bottom':
-        height = value.y - y;
+        left();
         break;
       case 'center':
-        x = value.x - width / 2;
-        y = value.y - height / 2;
+        right(width / 2);
+        bottom(height / 2);
         break;
+      case 'right':
+        right(width);
+        break;
+
+      case 'topLeft':
+        top();
+        left();
+        break;
+      case 'top':
+        top();
+        break;
+      case 'topRight':
+        top();
+        right(width);
+        break;
+
+      case 'bottomLeft':
+        bottom(height);
+        left();
+        break;
+      case 'bottom':
+        bottom(height);
+        break;
+      case 'bottomRight':
+        bottom(height);
+        right(width);
+        break;
+
       default:
         console.error('Unknown point', name);
         return;

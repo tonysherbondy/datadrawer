@@ -63,7 +63,7 @@ let variables = [
   new DataVariable({
     id: 'numberEnergies',
     name: 'numberEnergies',
-    definition: ['12']
+    definition: [{id: 'energy_in_mwh'}, '.length']
   }),
   new DataVariable({
     id: 'max_energy_in_mwh',
@@ -79,7 +79,7 @@ let variables = [
     id: 'energy_in_mwh',
     name: 'Energy in MWh',
     isRow: true,
-    definition: ['[6.36, 10.32, 16.08, 18.6, 19.08, 18.6]']
+    definition: ['[7.2, 29.47, 26.50, 28.2, 0.61, 6.36, 10.32, 16.08, 18.6, 19.08, 18.6]']
   }),
   new DataVariable({
     id: 'norm_energy_in_mwh',
