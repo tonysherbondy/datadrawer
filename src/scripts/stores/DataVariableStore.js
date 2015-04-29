@@ -57,6 +57,35 @@ let variables = [
     name: 'swidth',
     isRow: true,
     definition: ['[0.04, 0.04, 0.11, 0.1, 0.09, 0.1, 0.07, 0.1]']
+  }),
+
+  // Bar Chart Data
+  new DataVariable({
+    id: 'numberEnergies',
+    name: 'numberEnergies',
+    definition: ['12']
+  }),
+  new DataVariable({
+    id: 'max_energy_in_mwh',
+    name: 'Max energy in MWh',
+    definition: ['_.max(', {id: 'energy_in_mwh'}, ')']
+  }),
+  new DataVariable({
+    id: 'barWidth',
+    name: 'barWidth',
+    definition: ['1 / ', {id: 'numberEnergies'}]
+  }),
+  new DataVariable({
+    id: 'energy_in_mwh',
+    name: 'Energy in MWh',
+    isRow: true,
+    definition: ['[6.36, 10.32, 16.08, 18.6, 19.08, 18.6]']
+  }),
+  new DataVariable({
+    id: 'norm_energy_in_mwh',
+    name: 'Norm energy in MWh',
+    isRow: true,
+    definition: [{id: 'energy_in_mwh'}, '.map(function(d) { return d / ', {id: 'max_energy_in_mwh'}, '});']
   })
 ];
 

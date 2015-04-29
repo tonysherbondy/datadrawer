@@ -3,15 +3,18 @@ import React from 'react';
 export default class DataVariableList extends React.Component {
 
   render() {
+    let values = this.props.dataVariables.map((dataVariable, index) => {
+      let v = dataVariable.getValue(this.props.dataValues);
+      v = Math.round(v * 100) / 100;
+      return (
+        <li className='data-variable-list-item' key={index}>
+          {dataVariable.name} ({v})
+        </li>
+      );
+    });
     return (
       <ul className='dataVariables-list'>
-        {this.props.dataVariables.map((dataVariable, index) => {
-          return (
-              <li className='data-variable-list-item' key={index}>
-                {dataVariable.name} ({dataVariable.getValue(this.props.dataValues)})
-              </li>
-          );
-        })}
+        {values}
       </ul>
     );
   }

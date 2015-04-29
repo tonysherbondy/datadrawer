@@ -11,11 +11,14 @@ export default class DataTable extends React.Component {
     });
 
     let rowElements = rows.map((row, index) => {
-      let values = rowValues[index];
+      let cells = rowValues[index].map((v, i) => {
+          let displayV = Math.round(v * 100) / 100;
+          return (<td key={i}>{displayV}</td>);
+      });
       return (
         <tr key={index}>
           <td>{row.name}</td>
-          {values.map((v, i) => (<td key={i}>{v}</td>))}
+          {cells}
         </tr>
       );
     });

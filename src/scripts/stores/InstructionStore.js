@@ -1,13 +1,15 @@
 import biff from '../dispatcher/dispatcher';
 import scatterPreset from './presetScatteryPlotInstructions';
 import randoPreset from './randoPresetInstructions';
+import barsPreset from './barsPresetInstructions';
 
 let presetInstructions = {
   scatter: scatterPreset,
+  bars: barsPreset,
   rando: randoPreset
 };
 
-let instructions = presetInstructions.rando;
+let instructions = presetInstructions.bars;
 
 const InstructionStore = biff.createStore({
   getInstructions() {

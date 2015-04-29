@@ -30,6 +30,7 @@
   "dependencies": {
     "biff": "^0.1.6",
     "font-awesome": "^4.3.0",
+    "lodash": "^3.7.0",
     "react": "^0.13.2"
   }
 }

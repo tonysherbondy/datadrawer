@@ -9,6 +9,7 @@ import CircleShape from '../../models/CircleShape';
 import RectShape from '../../models/RectShape';
 import LineShape from '../../models/LineShape';
 import PathShape from '../../models/PathShape';
+import _ from 'lodash';
 
 export default class InstructionResults extends React.Component {
 
@@ -113,6 +114,9 @@ export default class InstructionResults extends React.Component {
 
   mutateVariableValues(variables, jsCode) {
     try {
+      if (!_) {
+        console.warn('Lodash required for evaluation environment!');
+      }
       /* eslint-disable */
       let utils = this.valueContextUtils(variables);
       eval(jsCode);
