@@ -17,6 +17,7 @@ export default class DrawTextInstruction extends DrawLineInstruction {
   getJsCode(index) {
     let {x, y} = this.getFromJs(index);
     return `utils.text({\n` +
+           `name: '${this.shapeId}',\n` +
            `text: ${this.getTextJs(index)},\n` +
            `fontSize: ${this.fontSize},\n` +
            `x1: ${x},\n` +
@@ -27,7 +28,7 @@ export default class DrawTextInstruction extends DrawLineInstruction {
   }
 
   // TODO This belongs in the UI most likely
-  getUISentence() {
+  getUiSentence() {
     let fromUi = `Draw text from ${this.getFromUi()}`;
     if (this.to) {
       return `${fromUi} until ${this.to.id}'s ${this.to.point}`;

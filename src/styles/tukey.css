@@ -31,3 +31,7 @@ textarea {
 td, th {
   padding: 5px;
 }
+
+.data-table {
+  margin-bottom: 40px;
+}

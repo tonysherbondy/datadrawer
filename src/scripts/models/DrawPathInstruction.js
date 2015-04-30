@@ -36,6 +36,7 @@ export default class DrawPathInstruction extends DrawInstruction {
 
   getJsCode(index) {
     return `utils.path({\n` +
+                 `name: '${this.shapeId}',\n` +
                  `from: ${this.getFromJs(index)},\n` +
                  `points: ${this.getToJs(index)},\n` +
                  `isClosed: ${this.isClosed},\n` +
@@ -46,7 +47,7 @@ export default class DrawPathInstruction extends DrawInstruction {
                  `}, '${this.shapeId}', ${index});\n`;
   }
 
-  getUISentence() {
+  getUiSentence() {
     let fromUi = `Draw path from ${this.getFromUi()}`;
     let allTosUi = this.to.map(to => {
       if (to.id) {

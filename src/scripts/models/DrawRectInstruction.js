@@ -43,6 +43,7 @@ export default class DrawRectInstruction extends DrawInstruction {
   getJsCode(index) {
     let {x, y} = this.getFromJs(index);
     return `utils.rect({\n` +
+           `name: '${this.shapeId}',\n` +
            `x: ${x},\n` +
            `y: ${y},\n` +
            `width: ${this.getWidthJs(index)},\n` +
@@ -69,7 +70,11 @@ export default class DrawRectInstruction extends DrawInstruction {
   }
 
   // TODO This belongs in the UI most likely
-  getUISentence() {
+  getUiSentence() {
+    if (!this.isValid()) {
+      return `Draw a rect ...`;
+    }
+
     let fromUi = `Draw rect from ${this.getFromUi()}`;
     if (this.to) {
       return `${fromUi} until ${this.to.id}'s ${this.to.point}`;

@@ -26,6 +26,7 @@ export default class DrawCircleInstruction extends DrawInstruction {
   getJsCode(index) {
     let {x, y} = this.getFromJs(index);
     return `utils.circle({\n` +
+                 `name: '${this.shapeId}',\n` +
                  `cx: ${x},\n` +
                  `cy: ${y},\n` +
                  `r: ${this.getRadiusJs(index)},\n` +
@@ -45,7 +46,7 @@ export default class DrawCircleInstruction extends DrawInstruction {
 
 
   // TODO This belongs in the UI most likely
-  getUISentence() {
+  getUiSentence() {
     let fromUi = `Draw circle around ${this.getFromUi()}`;
     if (this.to) {
       return `${fromUi} until ${this.to.id}'s ${this.to.point}`;

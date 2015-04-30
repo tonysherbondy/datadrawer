@@ -1,6 +1,8 @@
-export default class LoopInstruction {
+import Instruction from './Instruction';
+
+export default class LoopInstruction extends Instruction {
   constructor({id, instructions, count}) {
-    this.id = id;
+    super({id, shapeId: null});
     this.count = count;
     this.instructions = instructions;
   }
@@ -13,7 +15,8 @@ export default class LoopInstruction {
       count = table.maxLength;
     }
     for (let index = 0; index < count; index++) {
-      this.instructions.forEach(instruction => {
+      let validInstructions = this.instructions.filter(i => i.isValid());
+      validInstructions.forEach(instruction => {
         jsCode += '\n' + instruction.getJsCode(index);
       });
       jsCode += '\n';
@@ -29,7 +32,7 @@ export default class LoopInstruction {
     return '# of columns';
   }
 
-  getUISentence() {
+  getUiSentence() {
     // TODO support different ranges by checking range property
     return `Repeat from 1 to ${this.getCountUi()}`;
   }

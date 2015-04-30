@@ -1,5 +1,8 @@
-export default class RectShape {
+import Shape from './Shape';
+
+export default class RectShape extends Shape {
   constructor(props) {
+    super(props);
     let {x, y, width, height} = props;
     this.setCanonicalRect({x, y, width, height});
     // TODO - should probably be in a base shape class

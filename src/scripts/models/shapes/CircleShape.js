@@ -1,5 +1,8 @@
-export default class CircleShape {
+import Shape from './Shape';
+
+export default class CircleShape extends Shape {
   constructor(props) {
+    super(props);
     this.cx = props.cx;
     this.cy = props.cy;
     this.r = props.r;

@@ -32,7 +32,7 @@ export default class ScaleInstruction extends Instruction {
   }
 
   // TODO This belongs in the UI most likely
-  getUISentence() {
+  getUiSentence() {
     return `Scale ${this.shape.id} ${this.prop} by ${this.getToUi()}`;
   }
 }

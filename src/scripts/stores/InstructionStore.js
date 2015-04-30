@@ -9,7 +9,7 @@ let presetInstructions = {
   rando: randoPreset
 };
 
-let instructions = presetInstructions.bars;
+let instructions = [];
 
 const InstructionStore = biff.createStore({
   getInstructions() {
@@ -25,7 +25,7 @@ const InstructionStore = biff.createStore({
       break;
     }
     case 'ADD_INSTRUCTION_SUCCESS': {
-      instructions = instructions.push(payload.data);
+      instructions = instructions.concat([payload.data]);
       InstructionStore._setPending(false);
       InstructionStore.emitChange();
       break;

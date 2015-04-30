@@ -2,8 +2,10 @@ import React from 'react';
 
 class Canvas extends React.Component {
 
-  render() {
-    let shapes = this.props.shapes.map((shape, index) => {
+  drawShapes() {
+    // Filter out canvas
+    return this.props.shapes.filter(shape => shape.name !== 'canvas')
+    .map((shape, index) => {
       if (shape.type === 'circle') {
         return (<circle key={index} {...shape.getRenderProps()} />);
 
@@ -23,9 +25,12 @@ class Canvas extends React.Component {
       }
       console.error('Unknown shape type', shape.type);
     });
+  }
+
+  render() {
     return (
       <svg className="canvas">
-        {shapes}
+        {this.drawShapes()}
       </svg>
     );
   }

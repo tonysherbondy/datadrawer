@@ -19,7 +19,8 @@ export default class IfInstruction extends Instruction {
   getJsCode(index) {
     // loop until maxLength of table
     let jsCode = `\nif (${this.getConditionJs(index)}) {\n`;
-    this.instructions.forEach(instruction => {
+    let validInstructions = this.instructions.filter(i => i.isValid());
+    validInstructions.forEach(instruction => {
       jsCode += instruction.getJsCode(index) + '\n';
     });
     jsCode += '}\n\n';
@@ -35,7 +36,7 @@ export default class IfInstruction extends Instruction {
     }).join('');
   }
 
-  getUISentence() {
+  getUiSentence() {
     // TODO support different ranges by checking range property
     return `If ${this.getConditionUi()}`;
   }

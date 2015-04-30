@@ -5,6 +5,10 @@ export default class Instruction {
     this.shapeId = shapeId;
   }
 
+  isValid() {
+    return true;
+  }
+
   // TODO Can probably convert this to shape name now instead of object
   getShapeVarName(shape, index) {
     let shapeId = shape ? shape.id : this.shapeId;

@@ -9,7 +9,7 @@ export default class InstructionList extends React.Component {
 
   render() {
     let getInstructionItems = (instruction, index) => {
-      let subInstructions = instruction.instructions;
+      let subInstructions = (instruction.instructions || []).filter(i => i.isValid());
       let subInstructionList;
       if (subInstructions) {
         subInstructionList = (
@@ -21,7 +21,7 @@ export default class InstructionList extends React.Component {
 
       return (
         <li className='instruction-list-item' key={index}>
-          {instruction.getUISentence()}
+          {instruction.getUiSentence()}
           <button
             type='button'
             className='delete-instruction'
@@ -32,9 +32,11 @@ export default class InstructionList extends React.Component {
         </li>
       );
     };
+
+    let validInstructions = this.props.instructions.filter(i => i.isValid());
     return (
       <ul className='instructions-list'>
-        {this.props.instructions.map(getInstructionItems)}
+        {validInstructions.map(getInstructionItems)}
       </ul>
     );
   }

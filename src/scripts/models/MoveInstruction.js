@@ -43,7 +43,7 @@ export default class MoveInstruction extends Instruction {
   }
 
   // TODO This belongs in the UI most likely
-  getUISentence() {
+  getUiSentence() {
     if (this.to.id) {
       return `Move ${this.shape.id}'s ${this.prop} to meet ${this.to.id}'s ${this.to.point}`;
     }

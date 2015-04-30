@@ -1,15 +1,16 @@
 import React from 'react';
 import Canvas from '../drawing/Canvas';
+import InstructionTitle from './InstructionTitle';
 import InstructionCode from './InstructionCode';
 import DataVariableList from './DataVariableList';
 import DataTable from './DataTable';
 import DrawCanvas from '../../models/DrawCanvas';
 import LoopInstruction from '../../models/LoopInstruction';
-import CircleShape from '../../models/CircleShape';
-import RectShape from '../../models/RectShape';
-import LineShape from '../../models/LineShape';
-import PathShape from '../../models/PathShape';
-import TextShape from '../../models/TextShape';
+import CircleShape from '../../models/shapes/CircleShape';
+import RectShape from '../../models/shapes/RectShape';
+import LineShape from '../../models/shapes/LineShape';
+import PathShape from '../../models/shapes/PathShape';
+import TextShape from '../../models/shapes/TextShape';
 import _ from 'lodash';
 
 export default class InstructionResults extends React.Component {
@@ -76,7 +77,8 @@ export default class InstructionResults extends React.Component {
     let canvasJs = canvasDraw.getJsCode();
 
     // Get JS from instructions
-    let jsCode = instructions.map(instruction => {
+    let validInstructions = instructions.filter(i => i.isValid());
+    let jsCode = validInstructions.map(instruction => {
       // TODO, a loop instructions total iterations can be calculated
       // at this point because loops can only depend on data variables, this will
       // allow us to change our context, loop prefix only affects shape variables
@@ -95,7 +97,6 @@ export default class InstructionResults extends React.Component {
     // TODO we will need to filter by draw instructions
     // TODO we should probably actually traverse by variables in the variables.shape scope
     let shapes = Object.keys(variableValues.shapes)
-                .filter(name => name !== 'canvas')
                 .map(name => variableValues.shapes[name]);
 
     jsCode = dataJsCode + '\n\n' + jsCode;
@@ -186,6 +187,8 @@ export default class InstructionResults extends React.Component {
 
         <DataTable
           table={this.getTable(variableValues)} />
+
+        <InstructionTitle instruction={this.props.editingInstruction} />
 
         <Canvas shapes={shapes}/>
 

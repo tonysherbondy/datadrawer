@@ -24,7 +24,7 @@ export default class DataTable extends React.Component {
     });
 
     return (
-      <table>
+      <table className="data-table">
         <thead>
           <tr>
             {headerCells}

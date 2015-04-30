@@ -57,7 +57,7 @@ export default class RotateInstruction extends Instruction {
   }
 
   // TODO This belongs in the UI most likely
-  getUISentence() {
+  getUiSentence() {
     let to = this.to;
     return `Rotate ${this.shape.id} around ${this.getPointUi()} by ${to.id ? to.id : to}`;
   }

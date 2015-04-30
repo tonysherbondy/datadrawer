@@ -1,5 +1,8 @@
-export default class PathShape {
+import Shape from './Shape';
+
+export default class PathShape extends Shape {
   constructor(props) {
+    super(props);
     this.from = props.from;
     this.points = props.points;
     this.isClosed = props.isClosed;

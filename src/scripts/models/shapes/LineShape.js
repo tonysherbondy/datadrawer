@@ -1,13 +1,16 @@
-export default class LineShape {
-  constructor({x1, y1, x2, y2, stroke, strokeWidth, isGuide}) {
-    this.x1 = x1;
-    this.y1 = y1;
-    this.x2 = x2;
-    this.y2 = y2;
+import Shape from './Shape';
+
+export default class LineShape extends Shape {
+  constructor(props) {
+    super(props);
+    this.x1 = props.x1;
+    this.y1 = props.y1;
+    this.x2 = props.x2;
+    this.y2 = props.y2;
     // TODO - should probably be in a base shape class
-    this.stroke = stroke;
-    this.strokeWidth = strokeWidth;
-    this.isGuide = isGuide;
+    this.stroke = props.stroke;
+    this.strokeWidth = props.strokeWidth;
+    this.isGuide = props.isGuide;
     this.type = 'line';
   }
 
