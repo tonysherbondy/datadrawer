@@ -9,6 +9,11 @@
   margin-left: 20px;
 }
 
+.magnet {
+  fill: rgb(231, 238, 80);
+  stroke: darkgray;
+}
+
 textarea {
   width: 400px;
   height: 400px;

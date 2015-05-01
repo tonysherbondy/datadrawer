@@ -190,7 +190,7 @@ export default class InstructionResults extends React.Component {
 
         <InstructionTitle instruction={this.props.editingInstruction} />
 
-        <Canvas shapes={shapes}/>
+        <Canvas shapes={shapes} editingInstruction={this.props.editingInstruction} />
 
         <InstructionCode code={jsCode} />
       </div>

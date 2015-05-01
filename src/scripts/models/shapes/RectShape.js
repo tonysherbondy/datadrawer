@@ -110,6 +110,20 @@ export default class RectShape extends Shape {
     }
   }
 
+  getMagnets() {
+    let names = [
+      'topLeft', 'left', 'bottomLeft',
+      'top', 'center', 'bottom',
+      'topRight', 'right', 'bottomRight'
+    ];
+    return names.map(pointName => {
+      return Object.assign({
+        pointName,
+        shapeName: this.name
+      }, this.getPoint(pointName));
+    });
+  }
+
   // Move the shape so that a particular point is set to value
   moveToPoint(name, value, isReshape) {
     let {x, y, width, height} = this;

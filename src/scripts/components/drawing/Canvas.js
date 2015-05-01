@@ -27,10 +27,38 @@ class Canvas extends React.Component {
     });
   }
 
+  drawMagnets() {
+    // All shapes that are not the current editing shape
+    // have magnets
+    let editingInstruction = this.props.editingInstruction;
+    if (!editingInstruction) {
+      // Only draw magnets when we are currently drawing
+      return null;
+    }
+
+    let editingShapeName = editingInstruction.getShapeName();
+    function drawMagnet(magnet) {
+      let id = `magnet_${magnet.shapeName}_${magnet.pointName}`;
+      return (
+        <circle key={id} className='magnet' r='5' cx={magnet.x} cy={magnet.y} />
+      );
+    }
+    return this.props.shapes.filter(shape => shape.name !== editingShapeName)
+            .map(shape => {
+              return (
+                <g key={shape.name}>
+                  {shape.getMagnets().map(drawMagnet)}
+                </g>
+              );
+            });
+  }
+
   render() {
+    console.log('props', this.props);
     return (
       <svg className="canvas">
         {this.drawShapes()}
+        {this.drawMagnets()}
       </svg>
     );
   }
