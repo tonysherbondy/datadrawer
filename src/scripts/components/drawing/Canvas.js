@@ -3,6 +3,33 @@ import _ from 'lodash';
 import {distanceBetweenPoints} from '../../utils/utils';
 
 class Canvas extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      magnets: this.getMagnets(props)
+    };
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps) {
+      this.state.magnets = this.getMagnets(newProps);
+      this.setState(this.state);
+    }
+  }
+
+  getMagnets({shapes, editingInstruction}) {
+    // All shapes that are not the current editing shape
+    // have magnets
+    if (!editingInstruction) {
+      // Only draw magnets when we are currently drawing
+      return [];
+    }
+
+    let editingShapeName = editingInstruction.getShapeName();
+    return _.flatten(shapes
+            .filter(shape => shape.name !== editingShapeName)
+            .map(shape => shape.getMagnets()));
+  }
 
   drawShapes() {
     // Filter out canvas
@@ -34,26 +61,10 @@ class Canvas extends React.Component {
     console.log('draw from', shapeName, pointName);
   }
 
-  // TODO - may want to just call this once and store in state
-  getMagnets() {
-    // All shapes that are not the current editing shape
-    // have magnets
-    let editingInstruction = this.props.editingInstruction;
-    if (!editingInstruction) {
-      // Only draw magnets when we are currently drawing
-      return [];
-    }
-
-    let editingShapeName = editingInstruction.getShapeName();
-    return _.flatten(this.props.shapes
-            .filter(shape => shape.name !== editingShapeName)
-            .map(shape => shape.getMagnets()));
-  }
-
   getCloseMagnets(point) {
     // Return magnets that are within a threshold distance away from position
     let threshold = 20;
-    return this.getMagnets().reduce((closeMagnets, magnet) => {
+    return this.state.magnets.reduce((closeMagnets, magnet) => {
       let d = distanceBetweenPoints(point, magnet);
       return d < threshold ? closeMagnets.concat(magnet) : closeMagnets;
     }, []);
@@ -67,7 +78,7 @@ class Canvas extends React.Component {
         <circle onClick={this.handleMagnetClick.bind(this,id)} key={id} className='magnet' r='5' cx={magnet.x} cy={magnet.y} />
       );
     };
-    return this.getMagnets().map(drawMagnet);
+    return this.state.magnets.map(drawMagnet);
   }
 
   handleMouseMove(e) {

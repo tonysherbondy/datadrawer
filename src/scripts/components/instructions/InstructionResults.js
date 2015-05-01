@@ -179,6 +179,7 @@ export default class InstructionResults extends React.Component {
       map[type].push(d);
       return map;
     }, {scalars: [], vectors: []});
+
     return (
       <div>
         <DataVariableList
