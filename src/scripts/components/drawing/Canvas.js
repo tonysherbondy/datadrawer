@@ -1,6 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import {distanceBetweenPoints} from '../../utils/utils';
+import InstructionActions from '../../actions/InstructionActions';
 
 class Canvas extends React.Component {
   constructor(props) {
@@ -70,17 +71,12 @@ class Canvas extends React.Component {
     });
   }
 
-  handleMagnetClick(id) {
-    let [, shapeName, pointName] = id.split('_');
-    console.log('draw from', shapeName, pointName);
-  }
-
   drawMagnets() {
     let drawMagnet = (magnet) => {
       let id = `magnet_${magnet.shapeName}_${magnet.pointName}`;
       // TODO probably better way to handle this is to make magnet a component
       return (
-        <circle onClick={this.handleMagnetClick.bind(this,id)} key={id} className='magnet' r='5' cx={magnet.x} cy={magnet.y} />
+        <circle key={id} className='magnet' r='5' cx={magnet.x} cy={magnet.y} />
       );
     };
     return this.state.magnets.map(drawMagnet);
@@ -95,10 +91,8 @@ class Canvas extends React.Component {
     return this.drawShape(closeShape, `magnet_outline`, closeShape.getMagnetOutlineProps());
   }
 
-  handleMouseMove(e) {
-    let {left, bottom, height} = this.refs.canvas.getDOMNode().getBoundingClientRect();
-    let x = e.clientX - left;
-    let y = e.clientY - (bottom - height);
+  handleMouseMove(event) {
+    let {x, y} = this.getPositionOfEvent(event);
     let magnets = this.getCloseMagnets({x, y});
     if (magnets.length > 0) {
       this.state.closeMagnet = magnets[0];
@@ -109,9 +103,39 @@ class Canvas extends React.Component {
     }
   }
 
+  getPositionOfEvent(event) {
+    let {left, bottom, height} = this.refs.canvas.getDOMNode().getBoundingClientRect();
+    let x = Math.round(event.clientX - left);
+    let y = Math.round(event.clientY - (bottom - height));
+    return {x, y};
+  }
+
+  handleClick(event) {
+    // This means we are in a draw and we haven't started yet
+    let point = this.getPositionOfEvent(event);
+    if (this.state.closeMagnet) {
+      // TODO need to consolidate naming convention
+      point = {
+        id: this.state.closeMagnet.shapeName,
+        point: this.state.closeMagnet.pointName
+      };
+    }
+
+    // TODO - probably need to use setState if we don't want any
+    // ui glitches
+    let instruction = this.props.editingInstruction;
+    if (instruction) {
+      if (!instruction.isValid()) {
+        // This has to be a draw instruction, set the from
+        // TODO - treat this as actually immutable
+        InstructionActions.modifyInstruction(instruction.getCloneWithFrom(point));
+      }
+    }
+  }
+
   render() {
     return (
-      <svg ref='canvas' className="canvas" onMouseMove={this.handleMouseMove.bind(this)}>
+      <svg ref='canvas' className="canvas" onClick={this.handleClick.bind(this)} onMouseMove={this.handleMouseMove.bind(this)}>
         {this.drawShapes()}
         {this.drawMagnets()}
         {this.drawCloseMagnetShapeOutline()}

@@ -13,6 +13,13 @@ export default class DrawInstruction extends Instruction {
     this.fill = props.fill || 'rgba(0, 0, 0, 0.2)';
   }
 
+  getCloneProps() {
+    let props = super.getCloneProps();
+    let {from, to, isGuide, strokeWidth, stroke, fill} = this;
+    return Object.assign(props, {to, from, isGuide, stroke,
+                         strokeWidth, fill});
+  }
+
   isValid() {
     return !!this.from;
   }

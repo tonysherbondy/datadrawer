@@ -5,6 +5,10 @@ export default class Instruction {
     this.shapeId = shapeId;
   }
 
+  getCloneProps() {
+    return {id: this.id, shapeId: this.shapeId};
+  }
+
   isValid() {
     return true;
   }

@@ -43,6 +43,16 @@ const InstructionStore = biff.createStore({
       InstructionStore.emitChange();
       break;
     }
+    case 'MODIFY_INSTRUCTION': {
+      let index = instructions.findIndex(i => i.id === payload.data.id);
+      if (index > -1) {
+        let before = instructions.slice(0,index);
+        let after = instructions.slice(index+1, instructions.length);
+        instructions = [...before, payload.data, ...after];
+        InstructionStore.emitChange();
+      }
+      break;
+    }
     case 'LOAD_PRESET_INSTRUCTIONS': {
       instructions = presetInstructions[payload.data] || [];
       InstructionStore.emitChange();

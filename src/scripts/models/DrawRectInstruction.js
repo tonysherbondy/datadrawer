@@ -39,7 +39,6 @@ export default class DrawRectInstruction extends DrawInstruction {
     return this.height;
   }
 
-
   getJsCode(index) {
     let {x, y} = this.getFromJs(index);
     return `utils.rect({\n` +
@@ -80,6 +79,23 @@ export default class DrawRectInstruction extends DrawInstruction {
       return `${fromUi} until ${this.to.id}'s ${this.to.point}`;
     }
     return `${fromUi}, ${this.getWidthUi()} horizontally, ${this.getHeightUi()} vertically`;
+  }
+
+  getCloneProps() {
+    let props = super.getCloneProps();
+    let {width, height} = this;
+    props.width = width;
+    props.height = height;
+    return props;
+  }
+
+  getCloneWithFrom(from) {
+    let props = this.getCloneProps();
+    props.from = from;
+    props.to = undefined;
+    props.width = 10;
+    props.height = 10;
+    return new DrawRectInstruction(props);
   }
 
 }

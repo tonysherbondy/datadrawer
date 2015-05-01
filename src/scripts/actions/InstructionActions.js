@@ -25,6 +25,14 @@ const InstructionActions = biff.createActions({
 
   },
 
+  // Expect that you change the instruction and pass it in
+  modifyInstruction(instruction) {
+    this.dispatch({
+      actionType: 'MODIFY_INSTRUCTION',
+      data: instruction
+    });
+  },
+
   // TODO Should probably change this to picture, or change instruction
   // store to picture store
   loadPresetInstructions(name) {
