@@ -6,7 +6,8 @@ class Canvas extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      magnets: this.getMagnets(props)
+      magnets: this.getMagnets(props),
+      closeMagnet: null
     };
   }
 
@@ -31,36 +32,6 @@ class Canvas extends React.Component {
             .map(shape => shape.getMagnets()));
   }
 
-  drawShapes() {
-    // Filter out canvas
-    return this.props.shapes.filter(shape => shape.name !== 'canvas')
-    .map((shape, index) => {
-      if (shape.type === 'circle') {
-        return (<circle key={index} {...shape.getRenderProps()} />);
-
-      } else if (shape.type === 'rect') {
-        return (<rect key={index} {...shape.getRenderProps()} />);
-
-      } else if (shape.type === 'line') {
-        return (<line key={index} {...shape.getRenderProps()} />);
-      } else if (shape.type === 'path') {
-        return (<path key={index} {...shape.getRenderProps()} />);
-      } else if (shape.type === 'text') {
-        return (
-          <text key={index} {...shape.getRenderProps()}>
-            {shape.text}
-          </text>
-        );
-      }
-      console.error('Unknown shape type', shape.type);
-    });
-  }
-
-  handleMagnetClick(id) {
-    let [, shapeName, pointName] = id.split('_');
-    console.log('draw from', shapeName, pointName);
-  }
-
   getCloseMagnets(point) {
     // Return magnets that are within a threshold distance away from position
     let threshold = 20;
@@ -68,6 +39,40 @@ class Canvas extends React.Component {
       let d = distanceBetweenPoints(point, magnet);
       return d < threshold ? closeMagnets.concat(magnet) : closeMagnets;
     }, []);
+  }
+
+  drawShape(shape, key, props) {
+    if (shape.type === 'circle') {
+      return (<circle key={key} {...props} />);
+
+    } else if (shape.type === 'rect') {
+      return (<rect key={key} {...props} />);
+
+    } else if (shape.type === 'line') {
+      return (<line key={key} {...props} />);
+    } else if (shape.type === 'path') {
+      return (<path key={key} {...props} />);
+    } else if (shape.type === 'text') {
+      return (
+        <text key={key} {...props}>
+          {shape.text}
+        </text>
+      );
+    }
+    console.error('Unknown type', shape.type);
+  }
+
+  drawShapes() {
+    // Filter out canvas
+    return this.props.shapes.filter(shape => shape.name !== 'canvas')
+    .map((shape, index) => {
+      return this.drawShape(shape, index, shape.getRenderProps());
+    });
+  }
+
+  handleMagnetClick(id) {
+    let [, shapeName, pointName] = id.split('_');
+    console.log('draw from', shapeName, pointName);
   }
 
   drawMagnets() {
@@ -81,14 +86,26 @@ class Canvas extends React.Component {
     return this.state.magnets.map(drawMagnet);
   }
 
+  drawCloseMagnetShapeOutline() {
+    if (!this.state.closeMagnet) {
+      return null;
+    }
+    let magnet = this.state.closeMagnet;
+    let closeShape = this.props.shapes.find(s => s.name === magnet.shapeName);
+    return this.drawShape(closeShape, `magnet_outline`, closeShape.getMagnetOutlineProps());
+  }
+
   handleMouseMove(e) {
     let {left, bottom, height} = this.refs.canvas.getDOMNode().getBoundingClientRect();
     let x = e.clientX - left;
     let y = e.clientY - (bottom - height);
     let magnets = this.getCloseMagnets({x, y});
     if (magnets.length > 0) {
-      let {shapeName, pointName} = magnets[0];
-      console.log(`found ${shapeName}'s ${pointName} close enough`);
+      this.state.closeMagnet = magnets[0];
+      this.setState(this.state);
+    } else {
+      this.state.closeMagnet = null;
+      this.setState(this.state);
     }
   }
 
@@ -97,6 +114,7 @@ class Canvas extends React.Component {
       <svg ref='canvas' className="canvas" onMouseMove={this.handleMouseMove.bind(this)}>
         {this.drawShapes()}
         {this.drawMagnets()}
+        {this.drawCloseMagnetShapeOutline()}
       </svg>
     );
   }

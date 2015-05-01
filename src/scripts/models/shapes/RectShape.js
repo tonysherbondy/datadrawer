@@ -207,7 +207,6 @@ export default class RectShape extends Shape {
     this.setCanonicalRect({x, y, width, height});
   }
 
-
   getRenderProps() {
     let {x, y, width, height, stroke, strokeWidth, fill} = this;
     return {
