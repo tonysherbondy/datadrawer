@@ -2,6 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import {distanceBetweenPoints} from '../../utils/utils';
 import InstructionActions from '../../actions/InstructionActions';
+import DrawingStateActions from '../../actions/DrawingStateActions';
 
 class Canvas extends React.Component {
   constructor(props) {
@@ -40,6 +41,12 @@ class Canvas extends React.Component {
       let d = distanceBetweenPoints(point, magnet);
       return d < threshold ? closeMagnets.concat(magnet) : closeMagnets;
     }, []);
+  }
+
+  getEditingShape() {
+    return this.props.shapes.find(shape => {
+      return shape.name === this.props.editingInstruction.getShapeName();
+    });
   }
 
   drawShape(shape, key, props) {
@@ -94,12 +101,20 @@ class Canvas extends React.Component {
   handleMouseMove(event) {
     let {x, y} = this.getPositionOfEvent(event);
     let magnets = this.getCloseMagnets({x, y});
+    console.log('hello');
     if (magnets.length > 0) {
       this.state.closeMagnet = magnets[0];
       this.setState(this.state);
     } else {
       this.state.closeMagnet = null;
       this.setState(this.state);
+    }
+
+    let instruction = this.props.editingInstruction;
+    if (instruction && instruction.isValid()) {
+      let point = {x, y};
+      let shape = this.getEditingShape();
+      InstructionActions.modifyInstruction(instruction.getCloneWithTo(point, shape));
     }
   }
 
@@ -129,6 +144,10 @@ class Canvas extends React.Component {
         // This has to be a draw instruction, set the from
         // TODO - treat this as actually immutable
         InstructionActions.modifyInstruction(instruction.getCloneWithFrom(point));
+      } else {
+        // If we click when we have a valid editing instruction we are ending
+        // the instruction editing
+        DrawingStateActions.setDrawingMode('normal');
       }
     }
   }

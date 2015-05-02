@@ -98,4 +98,16 @@ export default class DrawRectInstruction extends DrawInstruction {
     return new DrawRectInstruction(props);
   }
 
+  getCloneWithTo(to, shape) {
+    let props = this.getCloneProps();
+    if (to.id) {
+      props.to = to;
+    } else {
+      let topLeft = shape.getPoint('topLeft');
+      props.width = to.x - topLeft.x;
+      props.height = to.y - topLeft.y;
+    }
+    return new DrawRectInstruction(props);
+  }
+
 }

@@ -2,7 +2,7 @@ import biff from '../dispatcher/dispatcher';
 
 let drawingState = {
   mode: 'normal',
-  editingInstruction: null
+  editingInstructionId: null
 };
 
 const DrawingStateStore = biff.createStore({
@@ -14,16 +14,19 @@ const DrawingStateStore = biff.createStore({
   switch (payload.actionType) {
     case 'SET_DRAWING_MODE': {
       drawingState.mode = payload.data;
+      if (drawingState.mode === 'normal') {
+        drawingState.editingInstructionId = null;
+      }
       DrawingStateStore.emitChange();
       break;
     }
     case 'SET_EDITING_INSTRUCTION': {
-      drawingState.editingInstruction = payload.data;
+      drawingState.editingInstructionId = payload.data.id;
       DrawingStateStore.emitChange();
       break;
     }
     case 'ADD_INSTRUCTION_SUCCESS': {
-      drawingState.editingInstruction = payload.data;
+      drawingState.editingInstructionId = payload.data.id;
       DrawingStateStore.emitChange();
       break;
     }

@@ -71,6 +71,9 @@ class App extends React.Component {
   }
 
   render() {
+    let editingInstruction = this.props.instructions.find(i => {
+      return i.id === this.props.drawingState.editingInstructionId;
+    });
     return (
       <div onKeyDown={this.handleKeyPress} className='main'>
         <h1>Tukey App</h1>
@@ -81,7 +84,7 @@ class App extends React.Component {
         <InstructionResults
           instructions={this.props.instructions}
           dataVariables={this.props.variables}
-          editingInstruction={this.props.drawingState.editingInstruction}
+          editingInstruction={editingInstruction}
         />
         Mode: {this.props.drawingState.mode}
         <InstructionList instructions={this.props.instructions} />
