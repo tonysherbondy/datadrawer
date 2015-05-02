@@ -180,6 +180,13 @@ export default class InstructionResults extends React.Component {
       return map;
     }, {scalars: [], vectors: []});
 
+
+    // TODO - this should be done somewhere else
+    // for now selected shape is the shape corresponding to the last instruction
+    let lastInstruction = _.last(this.props.instructions);
+    let selectedShapeId = lastInstruction ? lastInstruction.shapeId : null;
+    let selectedShape = selectedShapeId ? shapes.find(s => s.name === selectedShapeId) : null;
+
     return (
       <div>
         <DataVariableList
@@ -191,7 +198,10 @@ export default class InstructionResults extends React.Component {
 
         <InstructionTitle instruction={this.props.editingInstruction} />
 
-        <Canvas shapes={shapes} editingInstruction={this.props.editingInstruction} />
+        <Canvas
+          shapes={shapes}
+          selectedShape={selectedShape}
+          editingInstruction={this.props.editingInstruction} />
 
         <InstructionCode code={jsCode} />
       </div>

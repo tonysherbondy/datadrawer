@@ -9,13 +9,15 @@ class Canvas extends React.Component {
     super(props);
     this.state = {
       magnets: this.getMagnets(props),
-      closeMagnet: null
+      closeMagnet: null,
+      selectedShapePoints: null
     };
   }
 
   componentWillReceiveProps(newProps) {
     if (newProps) {
       this.state.magnets = this.getMagnets(newProps);
+      this.state.selectedShapePoints = this.getSelectedShapePoints(newProps);
       this.setState(this.state);
     }
   }
@@ -32,6 +34,13 @@ class Canvas extends React.Component {
     return _.flatten(shapes
             .filter(shape => shape.name !== editingShapeName)
             .map(shape => shape.getMagnets()));
+  }
+
+  getSelectedShapePoints({selectedShape}) {
+    if (!selectedShape) {
+      return null;
+    }
+    return selectedShape.getMagnets();
   }
 
   getCloseMagnets(point) {
@@ -98,6 +107,17 @@ class Canvas extends React.Component {
     return this.drawShape(closeShape, `magnet_outline`, closeShape.getMagnetOutlineProps());
   }
 
+  drawSelectedShapeControlPoints() {
+    let drawControlPoint = (point) => {
+      let id = `control_{point.shapeName}_${point.pointName}`;
+      // TODO probably better way to handle this is to make point a component
+      return (
+        <circle key={id} className='control-point' r='5' cx={point.x} cy={point.y} />
+      );
+    };
+    return (this.state.selectedShapePoints || []).map(drawControlPoint);
+  }
+
   handleMouseMove(event) {
     let {x, y} = this.getPositionOfEvent(event);
     let magnets = this.getCloseMagnets({x, y});
@@ -160,6 +180,7 @@ class Canvas extends React.Component {
         {this.drawShapes()}
         {this.drawMagnets()}
         {this.drawCloseMagnetShapeOutline()}
+        {this.drawSelectedShapeControlPoints()}
       </svg>
     );
   }

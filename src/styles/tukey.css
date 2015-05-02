@@ -14,6 +14,11 @@
   stroke: darkgray;
 }
 
+.control-point {
+  fill: rgb(38, 137, 220);
+  stroke: white;
+}
+
 textarea {
   width: 400px;
   height: 400px;

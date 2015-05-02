@@ -3,6 +3,10 @@ export default class Shape {
     this.name = props.name;
   }
 
+  getMagnets() {
+    return [];
+  }
+
   getMagnetOutlineProps() {
     let props = this.getRenderProps();
     return Object.assign(props, {
