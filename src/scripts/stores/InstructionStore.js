@@ -12,10 +12,15 @@ let presetInstructions = {
 
 let instructions = [];
 //let instructions = presetInstructions.rando;
+var name = '';
 
 const InstructionStore = biff.createStore({
   getInstructions() {
     return instructions;
+  },
+
+  getName() {
+    return name;
   }
 }, (payload) => {
 
@@ -62,6 +67,11 @@ const InstructionStore = biff.createStore({
     }
     case 'LOAD_PRESET_INSTRUCTIONS': {
       instructions = presetInstructions[payload.data] || [];
+      InstructionStore.emitChange();
+      break;
+    }
+    case 'SET_PICTURE_NAME': {
+      name = payload.data;
       InstructionStore.emitChange();
       break;
     }

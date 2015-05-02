@@ -58,6 +58,13 @@ const InstructionActions = biff.createActions({
 
   removeInstruction(instruction) {
     InstructionActions.removeInstructions([instruction]);
+  },
+
+  setName(name) {
+    this.dispatch({
+      actionType: 'SET_PICTURE_NAME',
+      data: name
+    });
   }
 });
 

@@ -24,6 +24,7 @@ import DataTable from './instructions/DataTable';
 import InstructionTitle from './instructions/InstructionTitle';
 import InstructionCode from './instructions/InstructionCode';
 import Canvas from './drawing/Canvas';
+import NameField from './drawing/NameField';
 
 class App extends React.Component {
   constructor(props) {
@@ -375,6 +376,9 @@ class App extends React.Component {
       <div onKeyDown={this.handleKeyPress} className='main'>
         <div className='top-bar'>
           <h1>Tukey App</h1>
+          <NameField
+            name={this.props.name}
+          />
           <button onClick={this.handlePresetClick.bind(this, 'rando')}>Rando</button>
           <button onClick={this.handlePresetClick.bind(this, 'scatter')}>Scatter</button>
           <button onClick={this.handlePresetClick.bind(this, 'bars')}>Bars</button>
@@ -436,7 +440,8 @@ App.propTypes = {
   instructions: React.PropTypes.array,
   variables: React.PropTypes.array,
   pending: React.PropTypes.bool,
-  errors: React.PropTypes.array
+  errors: React.PropTypes.array,
+  name: React.PropTypes.string
 };
 
 App.defaultProps = {
@@ -447,6 +452,7 @@ let stores = [InstructionStore, DrawingStateStore, DataVariableStore];
 let propsAccessor = () => ({
   drawingState: DrawingStateStore.getDrawingState(),
   instructions: InstructionStore.getInstructions(),
+  name: InstructionStore.getName(),
   variables: DataVariableStore.getVariables(),
   pending: InstructionStore.getPending(),
   errors: InstructionStore.getErrors()
