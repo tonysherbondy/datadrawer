@@ -10,33 +10,49 @@ export default class DrawRectInstruction extends DrawInstruction {
   getWidthJs(index) {
     // This can be one of the following, a point specified by the to parameter,
     // a number or a variable
-    if (this.to) {
-      // assume utility function like distanceBetweenPoints(pt1, pt1)
-      let {x} = this.getFromJs(index);
-      let toPt = this.getPointVarJs(this.to, index);
-      // TODO Probably will need some util function to handle the fact
-      // that we might get negative distances
-      return `${toPt}.x - ${x}`;
-    } else if (this.width.id) {
-      return this.getDataOrShapePropJs(this.width, index);
+    if (this.width) {
+      if (this.width.id) {
+        return this.getDataOrShapePropJs(this.width, index);
+      }
+      return this.width;
     }
-    return this.width;
+
+    if (this.to) {
+      let {x} = this.getFromJs(index);
+      if (this.to.id) {
+        let toPt = this.getPointVarJs(this.to, index);
+        // TODO Probably will need some util function to handle the fact
+        // that we might get negative distances
+        return `${toPt}.x - ${x}`;
+      } else {
+        // TODO - need to handle variable for to coords
+        return `${this.to.x} - ${x}`;
+      }
+    }
   }
 
   getHeightJs(index) {
     // This can be one of the following, a point specified by the to parameter,
     // a number or a variable
-    if (this.to) {
-      // assume utility function like distanceBetweenPoints(pt1, pt1)
-      let {y} = this.getFromJs(index);
-      let toPt = this.getPointVarJs(this.to, index);
-      // TODO Probably will need some util function to handle the fact
-      // that we might get negative distances
-      return `${toPt}.y - ${y}`;
-    } else if (this.height.id) {
-      return this.getDataOrShapePropJs(this.height, index);
+    if (this.height) {
+      if (this.height.id) {
+        return this.getDataOrShapePropJs(this.height, index);
+      }
+      return this.height;
     }
-    return this.height;
+
+    if (this.to) {
+      let {y} = this.getFromJs(index);
+      if (this.to.id) {
+        let toPt = this.getPointVarJs(this.to, index);
+        // TODO Probably will need some util function to handle the fact
+        // that we might get negative distances
+        return `${toPt}.y - ${y}`;
+      } else {
+        // TODO - need to handle variable for to coords
+        return `${this.to.y} - ${y}`;
+      }
+    }
   }
 
   getJsCode(index) {
@@ -92,24 +108,17 @@ export default class DrawRectInstruction extends DrawInstruction {
   getCloneWithFrom(from) {
     let props = this.getCloneProps();
     props.from = from;
-    props.to = undefined;
+    props.to = null;
     props.width = 10;
     props.height = 10;
     return new DrawRectInstruction(props);
   }
 
-  getCloneWithTo(to, shape) {
+  getCloneWithTo(to) {
     let props = this.getCloneProps();
-    props.to = null;
+    props.to = to;
     props.width = null;
     props.height = null;
-    if (to.id) {
-      props.to = to;
-    } else {
-      let topLeft = shape.getPoint('topLeft');
-      props.width = to.x - topLeft.x;
-      props.height = to.y - topLeft.y;
-    }
     return new DrawRectInstruction(props);
   }
 
