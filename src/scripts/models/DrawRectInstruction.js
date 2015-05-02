@@ -100,6 +100,9 @@ export default class DrawRectInstruction extends DrawInstruction {
 
   getCloneWithTo(to, shape) {
     let props = this.getCloneProps();
+    props.to = null;
+    props.width = null;
+    props.height = null;
     if (to.id) {
       props.to = to;
     } else {

@@ -101,7 +101,6 @@ class Canvas extends React.Component {
   handleMouseMove(event) {
     let {x, y} = this.getPositionOfEvent(event);
     let magnets = this.getCloseMagnets({x, y});
-    console.log('hello');
     if (magnets.length > 0) {
       this.state.closeMagnet = magnets[0];
       this.setState(this.state);
@@ -112,7 +111,7 @@ class Canvas extends React.Component {
 
     let instruction = this.props.editingInstruction;
     if (instruction && instruction.isValid()) {
-      let point = {x, y};
+      let point = this.getEventPoint(event);
       let shape = this.getEditingShape();
       InstructionActions.modifyInstruction(instruction.getCloneWithTo(point, shape));
     }
@@ -125,8 +124,7 @@ class Canvas extends React.Component {
     return {x, y};
   }
 
-  handleClick(event) {
-    // This means we are in a draw and we haven't started yet
+  getEventPoint(event) {
     let point = this.getPositionOfEvent(event);
     if (this.state.closeMagnet) {
       // TODO need to consolidate naming convention
@@ -135,7 +133,11 @@ class Canvas extends React.Component {
         point: this.state.closeMagnet.pointName
       };
     }
+    return point;
+  }
 
+  handleClick(event) {
+    let point = this.getEventPoint(event);
     // TODO - probably need to use setState if we don't want any
     // ui glitches
     let instruction = this.props.editingInstruction;
