@@ -92,7 +92,11 @@ export default class DrawRectInstruction extends DrawInstruction {
 
     let fromUi = `Draw rect from ${this.getFromUi()}`;
     if (this.to) {
-      return `${fromUi} until ${this.to.id}'s ${this.to.point}`;
+      if (this.to.id) {
+        return `${fromUi} until ${this.to.id}'s ${this.to.point}`;
+      } else {
+        return `${fromUi} until (${this.to.x}, ${this.to.y})`;
+      }
     }
     return `${fromUi}, ${this.getWidthUi()} horizontally, ${this.getHeightUi()} vertically`;
   }
