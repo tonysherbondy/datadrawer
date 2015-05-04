@@ -185,7 +185,7 @@ export default class InstructionResults extends React.Component {
     // for now selected shape is the shape corresponding to the last instruction
     let lastInstruction = _.last(this.props.instructions);
     let selectedShapeId = lastInstruction ? lastInstruction.shapeId : null;
-    let selectedShape = selectedShapeId ? shapes.find(s => s.name === selectedShapeId) : null;
+    let selectedShape = selectedShapeId ? shapes.find(s => s.id === selectedShapeId) : null;
 
     return (
       <div>

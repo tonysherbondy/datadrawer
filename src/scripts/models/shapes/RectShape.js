@@ -119,7 +119,8 @@ export default class RectShape extends Shape {
     return names.map(pointName => {
       return Object.assign({
         pointName,
-        shapeName: this.name
+        shapeName: this.id,
+        index: this.index
       }, this.getPoint(pointName));
     });
   }

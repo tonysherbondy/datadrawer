@@ -10,7 +10,8 @@ export default class DrawLineInstruction extends DrawInstruction {
   getJsCode(index) {
     let {x, y} = this.getFromJs(index);
     return `utils.line({\n` +
-           `name: '${this.shapeId}',\n` +
+           `id: '${this.shapeId}',\n` +
+           `index: '${index}',\n` +
            `x1: ${x},\n` +
            `y1: ${y},\n` +
            `x2: ${this.getToXJs(index)},\n` +

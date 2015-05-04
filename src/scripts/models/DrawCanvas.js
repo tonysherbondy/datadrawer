@@ -6,7 +6,7 @@ export default class DrawCanvas {
 
   getJsCode() {
     return `utils.rect({\n` +
-           `name: 'canvas',\n` +
+           `id: 'canvas',\n` +
            `x: 0,\n` +
            `y: 0,\n` +
            `width: ${this.width},\n` +

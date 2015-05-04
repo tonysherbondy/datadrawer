@@ -58,7 +58,8 @@ export default class DrawRectInstruction extends DrawInstruction {
   getJsCode(index) {
     let {x, y} = this.getFromJs(index);
     return `utils.rect({\n` +
-           `name: '${this.shapeId}',\n` +
+           `id: '${this.shapeId}',\n` +
+           `index: '${index}',\n` +
            `x: ${x},\n` +
            `y: ${y},\n` +
            `width: ${this.getWidthJs(index)},\n` +

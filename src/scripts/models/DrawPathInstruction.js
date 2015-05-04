@@ -36,7 +36,8 @@ export default class DrawPathInstruction extends DrawInstruction {
 
   getJsCode(index) {
     return `utils.path({\n` +
-                 `name: '${this.shapeId}',\n` +
+                 `id: '${this.shapeId}',\n` +
+                 `index: '${index}',\n` +
                  `from: ${this.getFromJs(index)},\n` +
                  `points: ${this.getToJs(index)},\n` +
                  `isClosed: ${this.isClosed},\n` +

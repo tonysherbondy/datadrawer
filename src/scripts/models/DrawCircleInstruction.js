@@ -26,7 +26,8 @@ export default class DrawCircleInstruction extends DrawInstruction {
   getJsCode(index) {
     let {x, y} = this.getFromJs(index);
     return `utils.circle({\n` +
-                 `name: '${this.shapeId}',\n` +
+                 `id: '${this.shapeId}',\n` +
+                 `index: '${index}',\n` +
                  `cx: ${x},\n` +
                  `cy: ${y},\n` +
                  `r: ${this.getRadiusJs(index)},\n` +

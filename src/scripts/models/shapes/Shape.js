@@ -1,6 +1,7 @@
 export default class Shape {
   constructor(props) {
-    this.name = props.name;
+    this.id = props.id;
+    this.index = props.index;
   }
 
   getMagnets() {
