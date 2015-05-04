@@ -1,5 +1,6 @@
 import React from 'react';
 import VariablePill from '../VariablePill';
+import ExpressionEditor from '../ExpressionEditor';
 
 export default class DataVariableList extends React.Component {
 
@@ -11,6 +12,7 @@ export default class DataVariableList extends React.Component {
         <li className='data-variable-list-item' key={index}>
           <VariablePill variable={dataVariable} />
           ({v})
+          <ExpressionEditor />
         </li>
       );
     });
