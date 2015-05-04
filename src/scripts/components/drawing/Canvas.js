@@ -201,11 +201,14 @@ class Canvas extends React.Component {
       if (closeControlPoint && shape) {
         let mode = this.props.drawingState.mode;
         if (mode === 'scale' || mode === 'move') {
-          this.state.startPoint = closeControlPoint;
-          this.setState(this.state);
-          let props = shape.getAdjustProps(mode, this.state.startPoint, point);
-          let IClass = mode === 'scale' ? ScaleInstruction : MoveInstruction;
-          InstructionActions.addInstruction(new IClass(props));
+          let props = shape.getAdjustProps(mode, closeControlPoint, point);
+          if (props) {
+            props.id = this.props.instructions.length + 1;
+            this.state.startPoint = closeControlPoint;
+            this.setState(this.state);
+            let IClass = mode === 'scale' ? ScaleInstruction : MoveInstruction;
+            InstructionActions.addInstruction(new IClass(props));
+          }
         }
       }
     }

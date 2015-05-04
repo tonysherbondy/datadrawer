@@ -248,6 +248,7 @@ export default class RectShape extends Shape {
         break;
       default:
         console.warn(`Don't know how to scale from ${pointName}`);
+        return null;
     }
     return props;
   }
