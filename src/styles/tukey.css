@@ -45,3 +45,22 @@ td, th {
 .data-table {
   margin-bottom: 40px;
 }
+
+/* expressions */
+.variable-pill {
+  background-color: #a0caff;
+  margin: 0px 5px 0px 5px;
+  padding: 0px 5px 0px 5px;
+  border-radius: 5px;
+}
+
+.expression-editor {
+  display: inline-block;
+  background-color: #a0ffca;
+  margin: 0px 10px 0px 10px;
+  width:150px;
+}
+
+.variable-definition {
+  padding: 0px;
+}

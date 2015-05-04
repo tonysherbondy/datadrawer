@@ -199,7 +199,7 @@ export default class InstructionResults extends React.Component {
         <InstructionTitle
           dataVariables={this.props.dataVariables}
           variableValues={variableValues}
-          instruction={this.props.editingInstruction} />
+          instruction={lastInstruction} />
 
         <Canvas
           shapes={shapes}

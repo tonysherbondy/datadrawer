@@ -1,4 +1,5 @@
 import React from 'react';
+import VariablePill from '../VariablePill';
 
 export default class DataVariableList extends React.Component {
 
@@ -8,7 +9,8 @@ export default class DataVariableList extends React.Component {
       v = Math.round(v * 100) / 100;
       return (
         <li className='data-variable-list-item' key={index}>
-          {dataVariable.name} ({v})
+          <VariablePill variable={dataVariable} />
+          ({v})
         </li>
       );
     });
