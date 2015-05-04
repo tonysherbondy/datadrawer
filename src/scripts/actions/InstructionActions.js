@@ -21,7 +21,7 @@ const InstructionActions = biff.createActions({
         });
       }
 
-    }, 600);
+    }, 6);
 
   },
 

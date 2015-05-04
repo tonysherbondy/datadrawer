@@ -215,28 +215,41 @@ export default class RectShape extends Shape {
     //  - Position from where we started the scale
     //  - Position we ended the scale
     let prop = '';
-    let to = 0;
     let {pointName} = startPoint;
+    let props = {
+      shape: {id: this.id},
+      point: pointName,
+      to: 0
+    };
+
+    function getAxisProps(opp, axis) {
+      prop = axis === 'y' ? 'height' : 'width';
+      let toV = toPoint[axis];
+      let oppV = opp[axis];
+      let startV = startPoint[axis];
+      return {
+        prop,
+        to: (toV - oppV) / (startV - oppV)
+      };
+    }
+
     switch (pointName) {
       case 'top':
+        props = Object.assign(props, getAxisProps(this.getPoint('bottom'), 'y'));
+        break;
       case 'bottom':
-        prop = 'height';
-        to = toPoint.y / startPoint.y;
+        props = Object.assign(props, getAxisProps(this.getPoint('top'), 'y'));
         break;
       case 'left':
+        props = Object.assign(props, getAxisProps(this.getPoint('right'), 'x'));
+        break;
       case 'right':
-        prop = 'width';
-        to = toPoint.x / startPoint.x;
+        props = Object.assign(props, getAxisProps(this.getPoint('left'), 'x'));
         break;
       default:
         console.warn(`Don't know how to scale from ${pointName}`);
     }
-    return {
-      shape: {id: this.id},
-      prop,
-      to,
-      point: pointName
-    };
+    return props;
   }
 
   getRenderProps() {
