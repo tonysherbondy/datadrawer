@@ -28,8 +28,9 @@ class Canvas extends React.Component {
   getMagnets({shapes, editingInstruction}) {
     // All shapes that are not the current editing shape
     // have magnets
-    if (!editingInstruction) {
+    if (!editingInstruction || editingInstruction instanceof ScaleInstruction) {
       // Only draw magnets when we are currently drawing
+      // Also, no magnets for scale
       return [];
     }
 
