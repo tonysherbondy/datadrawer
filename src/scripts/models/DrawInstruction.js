@@ -68,6 +68,14 @@ export default class DrawInstruction extends Instruction {
     return `${this.height} + ${y}`;
   }
 
+  getFromValue(variableValues) {
+    if (this.from.id) {
+      // Must be a shape point
+      let shape = variableValues.shapes[this.from.id];
+      return shape.getPoint(this.from.point);
+    }
+    return this.from;
+  }
 
   getFromUi() {
     if (this.from.id) {

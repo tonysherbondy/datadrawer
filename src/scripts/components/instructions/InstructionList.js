@@ -21,7 +21,7 @@ export default class InstructionList extends React.Component {
 
       return (
         <li className='instruction-list-item' key={index}>
-          {instruction.getUiSentence()}
+          {instruction.getUiSentence(this.props.variableValues)}
           <button
             type='button'
             className='delete-instruction'
@@ -44,9 +44,11 @@ export default class InstructionList extends React.Component {
 }
 
 InstructionList.propTypes = {
-  instructions: React.PropTypes.array
+  instructions: React.PropTypes.array,
+  variableValues: React.PropTypes.object
 };
 
 InstructionList.defaultProps = {
-  instructions: []
+  instructions: [],
+  variableValues: {}
 };

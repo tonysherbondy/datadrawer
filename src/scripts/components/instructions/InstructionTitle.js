@@ -3,7 +3,11 @@ import React from 'react';
 export default class InstructionTitle extends React.Component {
 
   render() {
-    let titleUi = this.props.instruction ? this.props.instruction.getUiSentence() : '';
+    let titleUi = '';
+    let instruction = this.props.instruction;
+    if (instruction) {
+      titleUi = instruction.getUiSentence(this.props.variableValues);
+    }
     return (
       <div className="instruction-title">
         {titleUi}
@@ -11,3 +15,11 @@ export default class InstructionTitle extends React.Component {
     );
   }
 }
+
+InstructionTitle.propTypes = {
+  variableValues: React.PropTypes.object
+};
+
+InstructionTitle.defaultProps = {
+  variableValues: {}
+};

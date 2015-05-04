@@ -71,35 +71,47 @@ export default class DrawRectInstruction extends DrawInstruction {
            `}, '${this.shapeId}', ${index});\n`;
   }
 
-  getWidthUi() {
-    if (this.width.id) {
-      return `${this.width.id}`;
+  getWidthUi(variableValues) {
+    if (this.width) {
+      if (this.width.id) {
+        return `${this.width.id}`;
+      }
+      return this.width;
     }
-    return this.width;
+
+    if (this.to.x) {
+      // TODO - must get from value and subtract
+      let from = this.getFromValue(variableValues);
+      return this.to.x - from.x;
+    }
   }
 
-  getHeightUi() {
-    if (this.height.id) {
-      return `${this.height.id}`;
+  getHeightUi(variableValues) {
+    if (this.height) {
+      if (this.height.id) {
+        return `${this.height.id}`;
+      }
+      return this.height;
     }
-    return this.height;
+
+    if (this.to.y) {
+      // TODO - must get from value and subtract
+      let from = this.getFromValue(variableValues);
+      return this.to.y - from.y;
+    }
   }
 
   // TODO This belongs in the UI most likely
-  getUiSentence() {
+  getUiSentence(variableValues) {
     if (!this.isValid()) {
       return `Draw a rect ...`;
     }
 
     let fromUi = `Draw rect from ${this.getFromUi()}`;
-    if (this.to) {
-      if (this.to.id) {
-        return `${fromUi} until ${this.to.id}'s ${this.to.point}`;
-      } else {
-        return `${fromUi} until (${this.to.x}, ${this.to.y})`;
-      }
+    if (this.to && this.to.id) {
+      return `${fromUi} until ${this.to.id}'s ${this.to.point}`;
     }
-    return `${fromUi}, ${this.getWidthUi()} horizontally, ${this.getHeightUi()} vertically`;
+    return `${fromUi}, ${this.getWidthUi(variableValues)} horizontally, ${this.getHeightUi(variableValues)} vertically`;
   }
 
   getCloneProps() {

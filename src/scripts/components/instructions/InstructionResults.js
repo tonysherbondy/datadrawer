@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import Canvas from '../drawing/Canvas';
 import InstructionTitle from './InstructionTitle';
 import InstructionCode from './InstructionCode';
@@ -11,7 +12,7 @@ import RectShape from '../../models/shapes/RectShape';
 import LineShape from '../../models/shapes/LineShape';
 import PathShape from '../../models/shapes/PathShape';
 import TextShape from '../../models/shapes/TextShape';
-import _ from 'lodash';
+import InstructionList from './InstructionList';
 
 export default class InstructionResults extends React.Component {
 
@@ -180,7 +181,6 @@ export default class InstructionResults extends React.Component {
       return map;
     }, {scalars: [], vectors: []});
 
-
     // TODO - this should be done somewhere else
     // for now selected shape is the shape corresponding to the last instruction
     let lastInstruction = _.last(this.props.instructions);
@@ -196,7 +196,10 @@ export default class InstructionResults extends React.Component {
         <DataTable
           table={this.getTable(variableValues)} />
 
-        <InstructionTitle instruction={this.props.editingInstruction} />
+        <InstructionTitle
+          dataVariables={this.props.dataVariables}
+          variableValues={variableValues}
+          instruction={this.props.editingInstruction} />
 
         <Canvas
           shapes={shapes}
@@ -204,6 +207,15 @@ export default class InstructionResults extends React.Component {
           editingInstruction={this.props.editingInstruction} />
 
         <InstructionCode code={jsCode} />
+
+        <div>
+          Mode: {this.props.drawingState.mode}
+        </div>
+
+        <InstructionList
+          dataVariables={this.props.dataVariables}
+          variableValues={variableValues}
+          instructions={this.props.instructions} />
       </div>
     );
   }

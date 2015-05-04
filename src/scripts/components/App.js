@@ -3,7 +3,6 @@ import Flux from '../dispatcher/dispatcher';
 import InstructionStore from '../stores/InstructionStore';
 import DataVariableStore from '../stores/DataVariableStore';
 import DrawingStateStore from '../stores/DrawingStateStore';
-import InstructionList from './instructions/InstructionList';
 import InstructionResults from './instructions/InstructionResults';
 import InstructionActions from '../actions/InstructionActions';
 import DrawingStateActions from '../actions/DrawingStateActions';
@@ -82,12 +81,11 @@ class App extends React.Component {
         <button onClick={this.handlePresetClick.bind(this, 'bars')}>Bars</button>
         <button onClick={this.handlePresetClick.bind(this, '')}>Blank</button>
         <InstructionResults
+          drawingState={this.props.drawingState}
           instructions={this.props.instructions}
           dataVariables={this.props.variables}
           editingInstruction={editingInstruction}
         />
-        Mode: {this.props.drawingState.mode}
-        <InstructionList instructions={this.props.instructions} />
       </div>
     );
   }
