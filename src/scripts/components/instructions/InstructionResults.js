@@ -203,6 +203,9 @@ export default class InstructionResults extends React.Component {
 
         <Canvas
           shapes={shapes}
+          drawingState={this.props.drawingState}
+          // TODO - Only need this to create new instruction ID :/
+          instructions={this.props.instructions}
           selectedShape={selectedShape}
           editingInstruction={this.props.editingInstruction} />
 

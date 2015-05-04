@@ -3,6 +3,8 @@ import _ from 'lodash';
 import {distanceBetweenPoints} from '../../utils/utils';
 import InstructionActions from '../../actions/InstructionActions';
 import DrawingStateActions from '../../actions/DrawingStateActions';
+import ScaleInstruction from '../../models/ScaleInstruction';
+import MoveInstruction from '../../models/MoveInstruction';
 
 class Canvas extends React.Component {
   constructor(props) {
@@ -10,7 +12,8 @@ class Canvas extends React.Component {
     this.state = {
       magnets: this.getMagnets(props),
       closeMagnet: null,
-      selectedShapePoints: null
+      selectedShapePoints: null,
+      startPoint: null
     };
   }
 
@@ -43,13 +46,21 @@ class Canvas extends React.Component {
     return selectedShape.getMagnets();
   }
 
-  getCloseMagnets(point) {
+  getClosePoints(point, points) {
     // Return magnets that are within a threshold distance away from position
     let threshold = 20;
-    return this.state.magnets.reduce((closeMagnets, magnet) => {
-      let d = distanceBetweenPoints(point, magnet);
-      return d < threshold ? closeMagnets.concat(magnet) : closeMagnets;
+    return (points || []).reduce((closePoints, shapePoint) => {
+      let d = distanceBetweenPoints(point, shapePoint);
+      return d < threshold ? closePoints.concat(shapePoint) : closePoints;
     }, []);
+  }
+
+  getCloseMagnets(point) {
+    return this.getClosePoints(point, this.state.magnets);
+  }
+
+  getCloseSelectedShapePoint(point) {
+    return this.getClosePoints(point, this.state.selectedShapePoints);
   }
 
   getEditingShape() {
@@ -133,7 +144,15 @@ class Canvas extends React.Component {
     if (instruction && instruction.isValid()) {
       let point = this.getEventPoint(event);
       let shape = this.getEditingShape();
-      InstructionActions.modifyInstruction(instruction.getCloneWithTo(point, shape));
+      let {mode} = this.props.drawingState;
+      let to = point;
+      if (mode === 'scale' || mode === 'move') {
+        let shape = this.props.selectedShape;
+        let startPoint = this.state.startPoint;
+        let props = shape.getAdjustProps(mode, startPoint, point);
+        to = props.to;
+      }
+      InstructionActions.modifyInstruction(instruction.getCloneWithTo(to, shape));
     }
   }
 
@@ -146,6 +165,9 @@ class Canvas extends React.Component {
 
   getEventPoint(event) {
     let point = this.getPositionOfEvent(event);
+
+    // There will only be magnets shown if we are currently editing
+    // an instruction
     if (this.state.closeMagnet) {
       // TODO need to consolidate naming convention
       point = {
@@ -170,6 +192,20 @@ class Canvas extends React.Component {
         // If we click when we have a valid editing instruction we are ending
         // the instruction editing
         DrawingStateActions.setDrawingMode('normal');
+      }
+    } else {
+      // No active instruction so let's see if we are about to do an adjust instruction
+      let closeControlPoint = this.getCloseSelectedShapePoint(point)[0];
+      let shape = this.props.selectedShape;
+      if (closeControlPoint && shape) {
+        let mode = this.props.drawingState.mode;
+        if (mode === 'scale' || mode === 'move') {
+          this.state.startPoint = closeControlPoint;
+          this.setState(this.state);
+          let props = shape.getAdjustProps(mode, this.state.startPoint, point);
+          let IClass = mode === 'scale' ? ScaleInstruction : MoveInstruction;
+          InstructionActions.addInstruction(new IClass(props));
+        }
       }
     }
   }

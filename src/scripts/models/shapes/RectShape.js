@@ -208,6 +208,37 @@ export default class RectShape extends Shape {
     this.setCanonicalRect({x, y, width, height});
   }
 
+  getAdjustProps(mode, startPoint, toPoint) {
+    // Input:
+    //  - mode of adjust (scale or move)
+    //  - Name of point to adjust.
+    //  - Position from where we started the scale
+    //  - Position we ended the scale
+    let prop = '';
+    let to = 0;
+    let {pointName} = startPoint;
+    switch (pointName) {
+      case 'top':
+      case 'bottom':
+        prop = 'height';
+        to = toPoint.y / startPoint.y;
+        break;
+      case 'left':
+      case 'right':
+        prop = 'width';
+        to = toPoint.x / startPoint.x;
+        break;
+      default:
+        console.warn(`Don't know how to scale from ${pointName}`);
+    }
+    return {
+      shape: {id: this.id},
+      prop,
+      to,
+      point: pointName
+    };
+  }
+
   getRenderProps() {
     let {x, y, width, height, stroke, strokeWidth, fill} = this;
     return {

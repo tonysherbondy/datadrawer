@@ -35,4 +35,20 @@ export default class ScaleInstruction extends Instruction {
   getUiSentence() {
     return `Scale ${this.shape.id} ${this.prop} by ${this.getToUi()}`;
   }
+
+  getCloneProps() {
+    let props = super.getCloneProps();
+    let {point, prop, to, shape} = this;
+    props.point = point;
+    props.prop = prop;
+    props.to = to;
+    props.shape = shape;
+    return props;
+  }
+
+  getCloneWithTo(to) {
+    let props = this.getCloneProps();
+    props.to = to;
+    return new ScaleInstruction(props);
+  }
 }
