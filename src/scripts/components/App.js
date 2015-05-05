@@ -379,6 +379,7 @@ class App extends React.Component {
           <NameField
             name={this.props.name}
           />
+          <br/>
           <button onClick={this.handlePresetClick.bind(this, 'rando')}>Rando</button>
           <button onClick={this.handlePresetClick.bind(this, 'scatter')}>Scatter</button>
           <button onClick={this.handlePresetClick.bind(this, 'bars')}>Bars</button>

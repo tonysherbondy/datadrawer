@@ -8,7 +8,7 @@ export default class NameField extends React.Component {
     event.stopPropagation();
   }
 
-  handleKeyUp(event) {
+  handleChange(event) {
     var val = this.refs.nameField.getDOMNode().value.trim();
     InstructionActions.setName(val);
     event.stopPropagation();
@@ -22,10 +22,10 @@ export default class NameField extends React.Component {
           ref="nameField"
           id="name-field"
           placeholder="Untitled Picture"
-          onKeyUp={this.handleKeyUp.bind(this)}
           onKeyDown={this.handleKeyDown}
+          onChange={this.handleChange.bind(this)}
+          value={name}
         />
-        <span className="picture-name">{name}</span>
       </div>
     );
   }

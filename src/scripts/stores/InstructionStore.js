@@ -3,6 +3,7 @@ import scatterPreset from './presetScatteryPlotInstructions';
 import randoPreset from './randoPresetInstructions';
 import barsPreset from './barsPresetInstructions';
 import InstructionTreeNode from '../models/InstructionTreeNode';
+import firebaseConnection from '../Syncing';
 
 let presetInstructions = {
   scatter: scatterPreset,
@@ -72,11 +73,17 @@ const InstructionStore = biff.createStore({
     }
     case 'SET_PICTURE_NAME': {
       name = payload.data;
+      firebaseConnection.child('name').set(payload.data);
       InstructionStore.emitChange();
       break;
     }
   }
 
+});
+
+firebaseConnection.child('name').on('value', function(dataSnapshot) {
+  name = dataSnapshot.val();
+  InstructionStore.emitChange();
 });
 
 export default InstructionStore;
