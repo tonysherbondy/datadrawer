@@ -1,39 +1,32 @@
+import Expression from './Expression';
 
 let counter = 0;
 function getNewID() {
   return `data_${counter++}`;
 }
 
-function isVar(fragment) {
-  return fragment.id;
-}
-
 export default class DataVariable {
   constructor({name, id, definition, isRow}) {
     this.id = id || getNewID();
     this.name = name;
-    this.definition = definition;
     this.isRow = isRow;
+    if (definition instanceof Expression) {
+      this.definition = definition;
+    } else {
+      this.definition = new Expression(definition);
+    }
   }
 
   getDependentVariables() {
-    return this.definition.filter(isVar);
+    return this.definition.getDependentVariables();
   }
 
-  getJsName(id = this.id) {
-    return `variables.data.${id}`;
+  getJsName() {
+    return `variables.data.${this.id}`;
   }
 
   getJsCode() {
-    // fragments of definition are either variables
-    // or strings
-    let value = this.definition.map(fragment => {
-      if (isVar(fragment)) {
-        return this.getJsName(fragment.id);
-      }
-      return fragment;
-    }).join('');
-    return `${this.getJsName()} = ${value};`;
+    return `${this.getJsName()} = ${this.definition.getJsCode()};`;
   }
 
   getValue(values) {

@@ -4,7 +4,9 @@ export default class VariablePill extends React.Component {
 
   render() {
     return (
-      <span className="variable-pill">
+      <span
+        draggable='true'
+        className="variable-pill">
         {this.props.variable.name}
       </span>
 

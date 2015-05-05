@@ -1,5 +1,6 @@
 import React from 'react';
 import ContentEditable from './ContentEditable';
+import Expression from '../models/Expression';
 
 export default class ExpressionEditor extends React.Component {
   constructor(props) {
@@ -10,13 +11,18 @@ export default class ExpressionEditor extends React.Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      definitionHtml: this.getHtml(nextProps.definition)
+    });
+  }
+
   getHtml(definition) {
-    return definition.join('');
+    return definition.fragments.join('');
   }
 
   render() {
     if (this.state.showDefinition) {
-      console.log('showDefinition');
       return (
         <ContentEditable
           onMouseOut={this.handleMouseOut.bind(this)}
@@ -47,5 +53,5 @@ export default class ExpressionEditor extends React.Component {
 
 ExpressionEditor.propTypes = {
   value: React.PropTypes.number,
-  definition: React.PropTypes.array
+  definition: React.PropTypes.instanceOf(Expression)
 };

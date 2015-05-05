@@ -1,8 +1,12 @@
+import React from 'react';
 import DrawInstruction from './DrawInstruction';
+import ExpressionEditor from '../components/ExpressionEditor';
+import Expression from './Expression';
 
 export default class DrawRectInstruction extends DrawInstruction {
   constructor(props) {
     super(props);
+    // TODO - Assume these are Expressions
     this.width = props.width;
     this.height = props.height;
   }
@@ -73,31 +77,27 @@ export default class DrawRectInstruction extends DrawInstruction {
 
   getWidthUi(variableValues) {
     if (this.width) {
-      if (this.width.id) {
-        return `${this.width.id}`;
-      }
-      return this.width;
+      return new Expression(this.width);
     }
 
+    // TODO - Should be able to get rid of this, simply
+    // make height an expression of the y position - from.y
     if (this.to.x) {
-      // TODO - must get from value and subtract
       let from = this.getFromValue(variableValues);
-      return this.to.x - from.x;
+      return new Expression(this.to.x - from.x);
     }
   }
 
   getHeightUi(variableValues) {
     if (this.height) {
-      if (this.height.id) {
-        return `${this.height.id}`;
-      }
-      return this.height;
+      return new Expression(this.height);
     }
 
+    // TODO - Should be able to get rid of this, simply
+    // make height an expression of the y position - from.y
     if (this.to.y) {
-      // TODO - must get from value and subtract
       let from = this.getFromValue(variableValues);
-      return this.to.y - from.y;
+      return new Expression(this.to.y - from.y);
     }
   }
 
@@ -111,7 +111,33 @@ export default class DrawRectInstruction extends DrawInstruction {
     if (this.to && this.to.id) {
       return `${fromUi} until ${this.to.id}'s ${this.to.point}`;
     }
-    return `${fromUi}, ${this.getWidthUi(variableValues)} horizontally, ${this.getHeightUi(variableValues)} vertically`;
+
+    let widthUi = this.getWidthUi(variableValues);
+    let heightUi = this.getHeightUi(variableValues);
+    return (
+      <span className='instruction-sentence'>
+        {fromUi},
+        <ExpressionEditor
+          onChange={this.handleWidthChange.bind(this)}
+          // TODO - will be able to ask expression for value
+          // in editor
+          value={0}
+          definition={widthUi} />
+         horizontally
+
+        <ExpressionEditor
+          value={0}
+          definition={heightUi} />
+        vertically.
+      </span>
+    );
+  }
+
+  handleWidthChange(definition) {
+    console.log('change rect width', definition);
+    let props = this.getCloneProps();
+    props.width = null;
+    props.height = null;
   }
 
   getCloneProps() {
