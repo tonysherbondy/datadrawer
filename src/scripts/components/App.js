@@ -20,6 +20,11 @@ class App extends React.Component {
   }
 
   handleKeyDown(e) {
+    if (e.target.isContentEditable) {
+      // ignore if we are typing inside something editable
+      return;
+    }
+
     let code = e.keyCode || e.which;
     switch (code) {
       case 82: { //r
