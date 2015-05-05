@@ -1,6 +1,7 @@
 import React from 'react';
 import ContentEditable from './ContentEditable';
 import Expression from '../models/Expression';
+import VariablePill from './VariablePill';
 
 export default class ExpressionEditor extends React.Component {
   constructor(props) {
@@ -18,29 +19,60 @@ export default class ExpressionEditor extends React.Component {
   }
 
   getHtml(definition) {
-    return definition.fragments.join('');
+    let fragments = definition.fragments;
+    return fragments.map( fragment => {
+      if (!fragment.id) {
+        return fragment;
+      } else {
+        let id = fragment.id;
+        // TODO - Need a general display name lookup for variables
+        let displayName = id;
+        return `<span class="variable-pill" contenteditable="false" ` +
+          `draggable="true" data-variable-id="${id}">${displayName}</span>`;
+      }
+    })
+    .concat([`<span id="${VariablePill.cursorLocationId}"></span>`])
+    .join('');
   }
 
   render() {
     let definition = this.props.definition;
-    if (this.state.showDefinition) {
-      return (
+    let value = definition.evaluate(this.props.variableValues);
+    if (isFinite(value)) {
+      value = Math.round(value * 100) / 100;
+    }
+
+    return (
+      <div>
         <ContentEditable
-          onMouseOut={this.handleMouseOut.bind(this)}
           html={this.state.definitionHtml}
           onChange={this.handleChange.bind(this)} />
-      );
-    } else {
-      let value = definition.evaluate(this.props.variableValues);
-      if (isFinite(value)) {
-        value = Math.round(value * 100) / 100;
-      }
-      return (
-        <div onMouseOver={this.handleMouseOver.bind(this)}>
+
+        <div>
           {value}
         </div>
-      );
-    }
+      </div>
+    );
+
+    // TODO - Make this on hover eventually
+    //if (this.state.showDefinition) {
+      //return (
+        //<ContentEditable
+          //onMouseOut={this.handleMouseOut.bind(this)}
+          //html={this.state.definitionHtml}
+          //onChange={this.handleChange.bind(this)} />
+      //);
+    //} else {
+      //let value = definition.evaluate(this.props.variableValues);
+      //if (isFinite(value)) {
+        //value = Math.round(value * 100) / 100;
+      //}
+      //return (
+        //<div onMouseOver={this.handleMouseOver.bind(this)}>
+          //{value}
+        //</div>
+      //);
+    //}
   }
 
   handleMouseOver() {
