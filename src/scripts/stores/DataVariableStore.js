@@ -63,7 +63,7 @@ let variables = [
   new DataVariable({
     id: 'numberEnergies',
     name: 'numberEnergies',
-    definition: [{id: 'energy_in_mwh'}, '.length']
+    definition: [{id: 'energy_in_mwh', asVector: true}, '.length']
   }),
   new DataVariable({
     id: 'top_mwh',
@@ -73,7 +73,7 @@ let variables = [
   new DataVariable({
     id: 'max_energy_in_mwh',
     name: 'Max energy in MWh',
-    definition: ['_.max(', {id: 'energy_in_mwh'}, ')']
+    definition: ['_.max(', {id: 'energy_in_mwh', asVector: true}, ')']
   }),
   new DataVariable({
     id: 'barWidth',
@@ -90,7 +90,7 @@ let variables = [
     id: 'norm_energy_in_mwh',
     name: 'Norm energy in MWh',
     isRow: true,
-    definition: [{id: 'energy_in_mwh'}, '.map(function(d) { return d / ', {id: 'top_mwh'}, '});']
+    definition: [{id: 'energy_in_mwh', asVector: true}, '.map(function(d) { return d / ', {id: 'top_mwh'}, '});']
   })
 ];
 

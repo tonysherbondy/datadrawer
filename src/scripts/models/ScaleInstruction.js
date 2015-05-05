@@ -13,7 +13,7 @@ export default class ScaleInstruction extends Instruction {
     // This can be one of the following, a point specified by the to parameter,
     // a radius number or a radius variable
     if (this.to.id) {
-      return `utils.getData('${this.to.id}', ${index})`;
+      return this.getDataOrShapePropJs(this.to, index);
     }
     return this.to;
   }

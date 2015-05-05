@@ -48,7 +48,8 @@ export default class DrawInstruction extends Instruction {
       // that we might get negative distances
       return `${toPt}.x`;
     } else if (this.width.id) {
-      return `utils.getData('${this.width.id}', ${index}) + ${x}`;
+      let widthVar = this.getDataOrShapePropJs(this.width, index);
+      return `${widthVar} + ${x}`;
     }
     return `${this.width} + ${x}`;
   }
@@ -63,7 +64,8 @@ export default class DrawInstruction extends Instruction {
       // that we might get negative distances
       return `${toPt}.y`;
     } else if (this.height.id) {
-      return `utils.getData('${this.height.id}', ${index}) + ${y}`;
+      let heightVar = this.getDataOrShapePropJs(this.height, index);
+      return `${heightVar} + ${y}`;
     }
     return `${this.height} + ${y}`;
   }

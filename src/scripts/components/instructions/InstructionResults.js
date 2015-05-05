@@ -140,8 +140,14 @@ export default class InstructionResults extends React.Component {
         let y = a.y - b.y;
         return Math.sqrt(x * x + y * y);
       },
-      getData(name, index=0) {
-        let variable = variables.data[name];
+      getData(varRef, index=0) {
+        let variable = variables.data[varRef.id];
+        // The variable reference will know whether or not we
+        // want to refer to a vector as an entire vector or just
+        // index of vector, the default is index
+        if (varRef.asVector) {
+          return variable;
+        }
         return variable instanceof Array ? variable[index] : variable;
       },
       getShapeVariable(name, index=0) {

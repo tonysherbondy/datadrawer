@@ -24,7 +24,7 @@ export default class RotateInstruction extends Instruction {
       // Otherwise, we will move the point relative to the current position
       let getVarJs = v => {
         if (v.id) {
-          return `utils.getData('${v.id}', ${index})`;
+          return this.getDataOrShapePropJs(v, index);
         }
         return v;
       };

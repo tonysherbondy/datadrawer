@@ -1,3 +1,4 @@
+import Expression from './Expression';
 
 export default class Instruction {
   constructor({id, shapeId}) {
@@ -19,24 +20,19 @@ export default class Instruction {
 
   // TODO Can probably convert this to shape name now instead of object
   getShapeVarName(shape, index) {
-    let shapeId = shape ? shape.id : this.shapeId;
-    return `utils.getShapeVariable('${shapeId}', ${index})`;
+    if (!shape) {
+      shape = {id: this.shapeId};
+    }
+    return Expression.getShapeVarName(shape, index);
+  }
+
+  getDataOrShapePropJs(variable, index) {
+    return Expression.getDataOrShapePropJs(variable, index);
   }
 
   getPointVarJs(pointVar, index) {
     let varName = this.getShapeVarName(pointVar, index);
     return `${varName}.getPoint('${pointVar.point}')`;
-  }
-
-  getDataOrShapePropJs(variable, index) {
-    if (variable.prop) {
-      // Shape property
-      let varName = this.getShapeVarName(variable, index);
-      return `${varName}.getProp('${variable.prop}')`;
-    } else {
-      // Data variable
-      return `utils.getData('${variable.id}', ${index})`;
-    }
   }
 
 }
