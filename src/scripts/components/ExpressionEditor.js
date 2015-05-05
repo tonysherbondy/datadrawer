@@ -5,17 +5,47 @@ export default class ExpressionEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      html: '<b>Hello <i>World</i></b>'
+      showDefinition: false,
+      definitionHtml: this.getHtml(this.props.definition)
     };
   }
 
+  getHtml(definition) {
+    return definition.join('');
+  }
+
   render() {
-    return (
-      <ContentEditable html={this.state.html} onChange={this.handleChange.bind(this)} />
-    );
+    if (this.state.showDefinition) {
+      console.log('showDefinition');
+      return (
+        <ContentEditable
+          onMouseOut={this.handleMouseOut.bind(this)}
+          html={this.state.definitionHtml}
+          onChange={this.handleChange.bind(this)} />
+      );
+    } else {
+      return (
+        <div onMouseOver={this.handleMouseOver.bind(this)}>
+          {this.props.value}
+        </div>
+      );
+    }
+  }
+
+  handleMouseOver() {
+    this.setState({showDefinition: true});
+  }
+
+  handleMouseOut() {
+    this.setState({showDefinition: false});
   }
 
   handleChange(evt) {
-    this.setState({html: evt.target.value});
+    this.setState({definitionHtml: evt.target.value});
   }
 }
+
+ExpressionEditor.propTypes = {
+  value: React.PropTypes.number,
+  definition: React.PropTypes.array
+};

@@ -6,13 +6,14 @@ export default class DataVariableList extends React.Component {
 
   render() {
     let values = this.props.dataVariables.map((dataVariable, index) => {
-      let v = dataVariable.getValue(this.props.dataValues);
-      v = Math.round(v * 100) / 100;
+      let value = dataVariable.getValue(this.props.dataValues);
+      value = Math.round(value * 100) / 100;
       return (
         <li className='data-variable-list-item' key={index}>
           <VariablePill variable={dataVariable} />
-          ({v})
-          <ExpressionEditor />
+          <ExpressionEditor
+            value={value}
+            definition={dataVariable.definition} />
         </li>
       );
     });
