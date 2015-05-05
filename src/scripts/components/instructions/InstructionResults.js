@@ -7,12 +7,8 @@ import DataVariableList from './DataVariableList';
 import DataTable from './DataTable';
 import DrawCanvas from '../../models/DrawCanvas';
 import LoopInstruction from '../../models/LoopInstruction';
-import CircleShape from '../../models/shapes/CircleShape';
-import RectShape from '../../models/shapes/RectShape';
-import LineShape from '../../models/shapes/LineShape';
-import PathShape from '../../models/shapes/PathShape';
-import TextShape from '../../models/shapes/TextShape';
 import InstructionList from './InstructionList';
+import evaluateJs from '../../utils/evaluateJs';
 
 export default class InstructionResults extends React.Component {
 
@@ -59,7 +55,8 @@ export default class InstructionResults extends React.Component {
     });
 
     let jsCode = jsLines.join('\n');
-    let variableValues = this.mutateVariableValues({data: {}}, jsCode);
+    let variableValues = {data: {}};
+    evaluateJs(jsCode, variableValues);
 
     return {jsCode, variableValues};
   }
@@ -93,7 +90,7 @@ export default class InstructionResults extends React.Component {
 
     jsCode = canvasJs + '\n' + jsCode;
 
-    this.mutateVariableValues(variableValues, jsCode);
+    evaluateJs(jsCode, variableValues);
 
     // TODO we will need to filter by draw instructions
     // TODO we should probably actually traverse by variables in the variables.shape scope
@@ -113,70 +110,6 @@ export default class InstructionResults extends React.Component {
       return row.length > max ? row.length : max;
     }, 0);
     return {rows, rowValues, maxLength};
-  }
-
-  mutateVariableValues(variables, jsCode) {
-    try {
-      if (!_) {
-        console.warn('Lodash required for evaluation environment!');
-      }
-      /* eslint-disable */
-      let utils = this.valueContextUtils(variables);
-      eval(jsCode);
-      /* eslint-enable */
-
-    } catch (error) {
-      console.log('EVAL JSCODE ERROR ' + error);
-    }
-    return variables;
-  }
-
-  // Utility functions needed in the context, need to close
-  // over variables
-  valueContextUtils(variables) {
-    return {
-      distanceBetweenPoints: function(a,b) {
-        let x = a.x - b.x;
-        let y = a.y - b.y;
-        return Math.sqrt(x * x + y * y);
-      },
-      getData(varRef, index=0) {
-        let variable = variables.data[varRef.id];
-        // The variable reference will know whether or not we
-        // want to refer to a vector as an entire vector or just
-        // index of vector, the default is index
-        if (varRef.asVector) {
-          return variable;
-        }
-        return variable instanceof Array ? variable[index] : variable;
-      },
-      getShapeVariable(name, index=0) {
-        // TODO, perhaps the looping shapes should be an array like data
-        let variable = variables.shapes[name] || variables.shapes[`${name}_${index}`];
-        if (!variable) {
-          console.error('Unable to find shape variable', name);
-        }
-        return variable;
-      },
-      getNewShapeName(name, index) {
-        return isFinite(index) ? `${name}_${index}` : name;
-      },
-      circle(params, name, index) {
-        variables.shapes[this.getNewShapeName(name, index)] = new CircleShape(params);
-      },
-      rect(params, name, index) {
-        variables.shapes[this.getNewShapeName(name, index)] = new RectShape(params);
-      },
-      path(params, name, index) {
-        variables.shapes[this.getNewShapeName(name, index)] = new PathShape(params);
-      },
-      text(params, name, index) {
-        variables.shapes[this.getNewShapeName(name, index)] = new TextShape(params);
-      },
-      line(params, name, index) {
-        variables.shapes[this.getNewShapeName(name, index)] = new LineShape(params);
-      }
-    };
   }
 
   render() {

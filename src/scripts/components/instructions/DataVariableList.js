@@ -12,7 +12,7 @@ export default class DataVariableList extends React.Component {
         <li className='data-variable-list-item' key={index}>
           <VariablePill variable={dataVariable} />
           <ExpressionEditor
-            value={value}
+            variableValues={this.props.dataValues}
             definition={dataVariable.definition} />
         </li>
       );

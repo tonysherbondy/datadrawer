@@ -119,14 +119,12 @@ export default class DrawRectInstruction extends DrawInstruction {
         {fromUi},
         <ExpressionEditor
           onChange={this.handleWidthChange.bind(this)}
-          // TODO - will be able to ask expression for value
-          // in editor
-          value={0}
+          variableValues={variableValues}
           definition={widthUi} />
          horizontally
 
         <ExpressionEditor
-          value={0}
+          variableValues={variableValues}
           definition={heightUi} />
         vertically.
       </span>

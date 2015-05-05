@@ -1,3 +1,5 @@
+import evaluateJs from '../utils/evaluateJs';
+
 function isVar(fragment) {
   return fragment.id;
 }
@@ -32,8 +34,8 @@ export default class Expression {
     }).join('');
   }
 
-  evaluate(variables) {
-    console.log('evaluate expression with variables context', variables);
+  evaluate(variables, index) {
+    return evaluateJs(this.getJsCode(index), variables);
   }
 }
 

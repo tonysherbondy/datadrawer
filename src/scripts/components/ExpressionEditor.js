@@ -22,6 +22,7 @@ export default class ExpressionEditor extends React.Component {
   }
 
   render() {
+    let definition = this.props.definition;
     if (this.state.showDefinition) {
       return (
         <ContentEditable
@@ -30,9 +31,13 @@ export default class ExpressionEditor extends React.Component {
           onChange={this.handleChange.bind(this)} />
       );
     } else {
+      let value = definition.evaluate(this.props.variableValues);
+      if (isFinite(value)) {
+        value = Math.round(value * 100) / 100;
+      }
       return (
         <div onMouseOver={this.handleMouseOver.bind(this)}>
-          {this.props.value}
+          {value}
         </div>
       );
     }
@@ -52,6 +57,6 @@ export default class ExpressionEditor extends React.Component {
 }
 
 ExpressionEditor.propTypes = {
-  value: React.PropTypes.number,
-  definition: React.PropTypes.instanceOf(Expression)
+  variableValues: React.PropTypes.object.isRequired,
+  definition: React.PropTypes.instanceOf(Expression).isRequired
 };
