@@ -32,6 +32,12 @@ VariablePill.getHtmlString = function(variable) {
   return `<span ${attrs}>${variable.name}</span>`;
 };
 
+VariablePill.getHtmlStringFromFragment = function(fragment, variables) {
+  let id = fragment.id;
+  let name = VariablePill.getVariableName(variables, id);
+  return VariablePill.getHtmlString({id, name});
+};
+
 VariablePill.getVariableName = function(variables, id) {
   return variables.filter(v => v.id === id).map(v => v.name)[0];
 };

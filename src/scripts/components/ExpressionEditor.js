@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import Expression from '../models/Expression';
 import VariablePill from './VariablePill';
 
@@ -6,22 +7,44 @@ export default class ExpressionEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      cursorFragmentIndex: null,
+      cursorOffset: 0,
       showDefinition: false
     };
   }
 
+  getCursorSpan() {
+    return `<span id='${VariablePill.cursorLocationId}'></span>`;
+  }
+
   getHtml(fragments) {
-    return fragments.map( fragment => {
-      if (!fragment.id) {
-        return fragment;
+    let html = '';
+
+    if (this.state.cursorFragmentIndex === -1) {
+      html += this.getCursorSpan();
+    }
+
+    fragments.forEach((fragment, i) => {
+      let fragmentString = '';
+
+      if (_.isString(fragment)) {
+        let escSpace = f => f.replace(/ /g, '&nbsp;');
+        // String fragment
+        if (this.state.cursorFragmentIndex === i) {
+          let offset = this.state.cursorOffset;
+          let sides = [fragment.slice(0, offset), fragment.slice(offset)];
+          fragmentString = sides.map(escSpace).join(this.getCursorSpan());
+        } else {
+          fragmentString = escSpace(fragment);
+        }
       } else {
-        let id = fragment.id;
-        let name = VariablePill.getVariableName(this.props.variables, id);
-        return VariablePill.getHtmlString({id, name});
+        // Variable fragment
+        fragmentString = VariablePill.getHtmlStringFromFragment(fragment, this.props.variables);
       }
-    })
-    .concat([`<span id="${VariablePill.cursorLocationId}"></span>`])
-    .join('');
+      html += fragmentString;
+    });
+
+    return html;
   }
 
   shouldComponentUpdate(nextProps) {
@@ -36,6 +59,22 @@ export default class ExpressionEditor extends React.Component {
     }
   }
 
+  updateCursorLocation() {
+    let marker = React.findDOMNode(this).getElementById(VariablePill.cursorLocationId);
+    if (marker) {
+      this.moverCursorToBefore(marker);
+      marker.remove();
+    }
+  }
+
+  moverCursorToBefore(node) {
+    window.getSelection().removeAllRanges();
+    let range = document.createRange();
+    range.setStart(node, 0);
+    range.setEnd(node, 0);
+    window.getSelection().addRange(range);
+  }
+
   render() {
     //
     // TODO - Make this on hover eventually
@@ -43,7 +82,6 @@ export default class ExpressionEditor extends React.Component {
     let html = this.getHtml(this.props.definition.fragments);
     return (
       <div
-        {...this.props}
         onInput={this.handleChange.bind(this)}
         onBlur={this.handleChange.bind(this)}
         contentEditable='true'
