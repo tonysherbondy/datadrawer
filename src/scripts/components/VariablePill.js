@@ -7,6 +7,7 @@ export default class VariablePill extends React.Component {
       <span
         onDragStart={this.handleDragStart.bind(this)}
         draggable='true'
+        dataVariableId={this.props.variable.id}
         className="variable-pill">
         {this.props.variable.name}
       </span>
@@ -15,7 +16,8 @@ export default class VariablePill extends React.Component {
   }
 
   handleDragStart(evt) {
-    let html = `<span class='variable-pill' draggable='true'>` +
+    let dataAttr = `data-variable-id='${this.props.variable.id}'`;
+    let html = `<span class='variable-pill' ${dataAttr} draggable='true'>` +
                 this.props.variable.name +
                 `</span>`;
     evt.dataTransfer.setData('text/html',

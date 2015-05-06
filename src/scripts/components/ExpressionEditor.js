@@ -8,18 +8,17 @@ export default class ExpressionEditor extends React.Component {
     super(props);
     this.state = {
       showDefinition: false,
-      definitionHtml: this.getHtml(this.props.definition)
+      definitionHtml: this.getHtml(this.props.definition.fragments)
     };
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      definitionHtml: this.getHtml(nextProps.definition)
+      definitionHtml: this.getHtml(nextProps.definition.fragments)
     });
   }
 
-  getHtml(definition) {
-    let fragments = definition.fragments;
+  getHtml(fragments) {
     return fragments.map( fragment => {
       if (!fragment.id) {
         return fragment;
@@ -83,8 +82,27 @@ export default class ExpressionEditor extends React.Component {
     this.setState({showDefinition: false});
   }
 
-  handleChange(evt) {
-    this.setState({definitionHtml: evt.target.value});
+  nodeToFragment(node) {
+    if (node.hasAttribute && node.hasAttribute('data-variable-id')) {
+      let id = node.getAttribute('data-variable-id');
+      return {id};
+    } else {
+      return node.data;
+    }
+  }
+
+  // This expects nodes back so that we can process the
+  // html... not super user friendly, but useful for parsing out
+  // variables from text
+  handleChange(nodes) {
+    let fragments = [];
+    for (let i = 0; i < nodes.length; i++) {
+      let fragment = this.nodeToFragment(nodes[i]);
+      if (fragment) {
+        fragments.push(fragment);
+      }
+    }
+    this.setState({definitionHtml: this.getHtml(fragments)});
   }
 }
 

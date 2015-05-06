@@ -26,10 +26,11 @@ export default class ContentEditable extends React.Component {
   }
 
   emitChange(evt) {
-    let html = React.findDOMNode(this).innerHTML;
+    let element = React.findDOMNode(this);
+    let html = element.innerHTML;
     if (this.props.onChange && html !== this.lastHtml) {
       evt.target = {value: html};
-      this.props.onChange(evt);
+      this.props.onChange(element.childNodes);
     }
     this.lastHtml = html;
   }
