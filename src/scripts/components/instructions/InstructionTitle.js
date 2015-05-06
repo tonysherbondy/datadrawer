@@ -6,7 +6,7 @@ export default class InstructionTitle extends React.Component {
     let titleUi = '';
     let instruction = this.props.instruction;
     if (instruction) {
-      titleUi = instruction.getUiSentence(this.props.variableValues);
+      titleUi = instruction.getUiSentence(this.props.dataVariables, this.props.variableValues);
     }
     return (
       <div className="instruction-title">
@@ -17,6 +17,7 @@ export default class InstructionTitle extends React.Component {
 }
 
 InstructionTitle.propTypes = {
+  dataVariables: React.PropTypes.array.isRequired,
   variableValues: React.PropTypes.object
 };
 

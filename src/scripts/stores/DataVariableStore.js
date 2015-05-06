@@ -62,7 +62,7 @@ let variables = [
   // Bar Chart Data
   new DataVariable({
     id: 'numberEnergies',
-    name: 'numberEnergies',
+    name: 'number of energies',
     definition: [{id: 'energy_in_mwh', asVector: true}, '.length']
   }),
   new DataVariable({

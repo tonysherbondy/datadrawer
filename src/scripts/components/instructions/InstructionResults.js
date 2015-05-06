@@ -129,7 +129,8 @@ export default class InstructionResults extends React.Component {
     return (
       <div>
         <DataVariableList
-          dataVariables={scalars}
+          scalars={scalars}
+          dataVariables={this.props.dataVariables}
           dataValues={variableValues} />
 
         <DataTable

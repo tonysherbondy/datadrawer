@@ -5,15 +5,18 @@ import ExpressionEditor from '../ExpressionEditor';
 export default class DataVariableList extends React.Component {
 
   render() {
-    let values = this.props.dataVariables.map((dataVariable, index) => {
+    let values = this.props.scalars.map((dataVariable, index) => {
       let value = dataVariable.getValue(this.props.dataValues);
       value = Math.round(value * 100) / 100;
       return (
         <li className='data-variable-list-item' key={index}>
           <VariablePill variable={dataVariable} />
           <ExpressionEditor
-            variableValues={this.props.dataValues}
+            variables={this.props.dataVariables}
             definition={dataVariable.definition} />
+          <div>
+            {value}
+          </div>
         </li>
       );
     });

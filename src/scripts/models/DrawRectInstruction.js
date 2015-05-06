@@ -102,7 +102,7 @@ export default class DrawRectInstruction extends DrawInstruction {
   }
 
   // TODO This belongs in the UI most likely
-  getUiSentence(variableValues) {
+  getUiSentence(variables, variableValues) {
     if (!this.isValid()) {
       return `Draw a rect ...`;
     }
@@ -119,11 +119,13 @@ export default class DrawRectInstruction extends DrawInstruction {
         {fromUi},
         <ExpressionEditor
           onChange={this.handleWidthChange.bind(this)}
+          variables={variables}
           variableValues={variableValues}
           definition={widthUi} />
          horizontally
 
         <ExpressionEditor
+          variables={variables}
           variableValues={variableValues}
           definition={heightUi} />
         vertically.

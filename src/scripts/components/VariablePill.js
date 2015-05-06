@@ -16,10 +16,7 @@ export default class VariablePill extends React.Component {
   }
 
   handleDragStart(evt) {
-    let dataAttr = `data-variable-id='${this.props.variable.id}'`;
-    let html = `<span class='variable-pill' ${dataAttr} draggable='true'>` +
-                this.props.variable.name +
-                `</span>`;
+    let html = VariablePill.getHtmlString(this.props.variable);
     evt.dataTransfer.setData('text/html',
       `${html}&nbsp;` +
       `<span id="${VariablePill.cursorLocationId}"></span>`);
@@ -28,6 +25,16 @@ export default class VariablePill extends React.Component {
 }
 
 VariablePill.cursorLocationId = 'cursorLocation';
+
+VariablePill.getHtmlString = function(variable) {
+  let dataAttr = `data-variable-id='${variable.id}'`;
+  let attrs = `class='variable-pill' ${dataAttr} draggable='true'`;
+  return `<span ${attrs}>${variable.name}</span>`;
+};
+
+VariablePill.getVariableName = function(variables, id) {
+  return variables.filter(v => v.id === id).map(v => v.name)[0];
+};
 
 VariablePill.propTypes = {
   variable: React.PropTypes.object

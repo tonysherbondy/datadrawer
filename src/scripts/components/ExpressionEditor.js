@@ -1,5 +1,4 @@
 import React from 'react';
-import ContentEditable from './ContentEditable';
 import Expression from '../models/Expression';
 import VariablePill from './VariablePill';
 
@@ -7,15 +6,8 @@ export default class ExpressionEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showDefinition: false,
-      definitionHtml: this.getHtml(this.props.definition.fragments)
+      showDefinition: false
     };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      definitionHtml: this.getHtml(nextProps.definition.fragments)
-    });
   }
 
   getHtml(fragments) {
@@ -24,62 +16,41 @@ export default class ExpressionEditor extends React.Component {
         return fragment;
       } else {
         let id = fragment.id;
-        // TODO - Need a general display name lookup for variables
-        let displayName = id;
-        return `<span class="variable-pill" contenteditable="false" ` +
-          `draggable="true" data-variable-id="${id}">${displayName}</span>`;
+        let name = VariablePill.getVariableName(this.props.variables, id);
+        return VariablePill.getHtmlString({id, name});
       }
     })
     .concat([`<span id="${VariablePill.cursorLocationId}"></span>`])
     .join('');
   }
 
-  render() {
-    let definition = this.props.definition;
-    let value = definition.evaluate(this.props.variableValues);
-    if (isFinite(value)) {
-      value = Math.round(value * 100) / 100;
+  shouldComponentUpdate(nextProps) {
+    let html = this.getHtml(nextProps.definition.fragments);
+    return html !== React.findDOMNode(this).innerHTML;
+  }
+
+  componentDidUpdate() {
+    let html = React.findDOMNode(this).innerHTML;
+    if (this.props.html !== html) {
+      html = this.props.html;
     }
+  }
 
+  render() {
+    //
+    // TODO - Make this on hover eventually
+    //
+    let html = this.getHtml(this.props.definition.fragments);
     return (
-      <div>
-        <ContentEditable
-          html={this.state.definitionHtml}
-          onChange={this.handleChange.bind(this)} />
-
-        <div>
-          {value}
-        </div>
-      </div>
+      <div
+        {...this.props}
+        onInput={this.handleChange.bind(this)}
+        onBlur={this.handleChange.bind(this)}
+        contentEditable='true'
+        dangerouslySetInnerHTML={{__html: html}}
+      ></div>
     );
 
-    // TODO - Make this on hover eventually
-    //if (this.state.showDefinition) {
-      //return (
-        //<ContentEditable
-          //onMouseOut={this.handleMouseOut.bind(this)}
-          //html={this.state.definitionHtml}
-          //onChange={this.handleChange.bind(this)} />
-      //);
-    //} else {
-      //let value = definition.evaluate(this.props.variableValues);
-      //if (isFinite(value)) {
-        //value = Math.round(value * 100) / 100;
-      //}
-      //return (
-        //<div onMouseOver={this.handleMouseOver.bind(this)}>
-          //{value}
-        //</div>
-      //);
-    //}
-  }
-
-  handleMouseOver() {
-    this.setState({showDefinition: true});
-  }
-
-  handleMouseOut() {
-    this.setState({showDefinition: false});
   }
 
   nodeToFragment(node) {
@@ -102,11 +73,11 @@ export default class ExpressionEditor extends React.Component {
         fragments.push(fragment);
       }
     }
-    this.setState({definitionHtml: this.getHtml(fragments)});
+    console.log('should update definition', fragments);
   }
 }
 
 ExpressionEditor.propTypes = {
-  variableValues: React.PropTypes.object.isRequired,
+  variables: React.PropTypes.array.isRequired,
   definition: React.PropTypes.instanceOf(Expression).isRequired
 };
