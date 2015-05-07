@@ -26,16 +26,17 @@ export default class VariablePill extends React.Component {
 
 VariablePill.cursorLocationId = 'cursorLocation';
 
-VariablePill.getHtmlString = function(variable) {
+VariablePill.getHtmlString = function(variable, fragmentIndex) {
   let dataAttr = `data-variable-id="${variable.id}"`;
-  let attrs = `class="variable-pill" ${dataAttr} draggable="true"`;
+  let fragmentAttr = isFinite(fragmentIndex) ? `data-fragment-index="${fragmentIndex}"` : '';
+  let attrs = `class="variable-pill" ${fragmentAttr} ${dataAttr} draggable="true"`;
   return `<span ${attrs}>${variable.name}</span>`;
 };
 
-VariablePill.getHtmlStringFromFragment = function(fragment, variables) {
+VariablePill.getHtmlStringFromFragment = function(fragment, fragmentIndex, variables) {
   let id = fragment.id;
   let name = VariablePill.getVariableName(variables, id);
-  return VariablePill.getHtmlString({id, name});
+  return VariablePill.getHtmlString({id, name}, fragmentIndex);
 };
 
 VariablePill.getVariableName = function(variables, id) {

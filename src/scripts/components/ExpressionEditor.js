@@ -61,7 +61,7 @@ export default class ExpressionEditor extends React.Component {
         if (this.state.cursorFragmentIndex === i) {
           cursorSpan = this.getCursorSpan();
         }
-        fragmentString = cursorSpan + VariablePill.getHtmlStringFromFragment(fragment, this.props.variables);
+        fragmentString = cursorSpan + VariablePill.getHtmlStringFromFragment(fragment, i, this.props.variables);
       }
       html += fragmentString;
     });
@@ -126,11 +126,14 @@ export default class ExpressionEditor extends React.Component {
   handleClick() {
     let index = this.state.cursorFragmentIndex + 1;
     index = index === this.state.fragments.length ? 0 : index;
-    console.log('setting index', index, this.state.fragments);
+    //console.log('setting index', index, this.state.fragments);
+
+    let location = this.getCursorLocation(React.findDOMNode(this));
+    console.log('click location', location);
 
     this.setState({
-      cursorFragmentIndex: index,
-      cursorOffset: 0
+      cursorFragmentIndex: location.fragmentIndex,
+      cursorOffset: location.offset
     });
   }
 
@@ -157,40 +160,39 @@ export default class ExpressionEditor extends React.Component {
     }
   }
 
-  getCursorLocation(element) {
+  getCursorLocation() {
+    let fragmentIndex = 0;
+    let offset = 0;
+
     let selection = window.getSelection();
-    let node, offset;
     if (selection) {
       let range = selection.getRangeAt(0);
       if (range) {
-        if (range.startContainer === element) {
-          if (range.startOffset < element.childNodes.length) {
-            node = element.childNodes[range.startOffset];
-            offset = 0;
-          } else {
-            node = element.childNodes[element.childNodes.length - 1];
-            if (node) {
-              //node is guaranteed to be a text node due to the render function
-              offset = node.length;
-            } else {
-              // this case happens when the editor is empty
-              offset = 0;
-            }
+
+        let parentEl = range.startContainer.parentElement;
+        if (parentEl.hasAttribute('data-fragment-index')) {
+          // We are within a variable pill
+          fragmentIndex = +parentEl.getAttribute('data-fragment-index');
+          // Always leave the offset at the beginning of variable pill
+        } else {
+          // We are within a text node
+          let prevEl = range.startContainer.previousElementSibling;
+          if (prevEl && prevEl.hasAttribute('data-fragment-index')) {
+            // We are either the index ahead of the previous variable or the first
+            fragmentIndex = +prevEl.getAttribute('data-fragment-index') + 1;
+            offset = range.startOffset;
           }
-        } else { // range starts in child node
-          node = range.startContainer;
-          offset = range.startOffset;
         }
       }
     }
-    return {node, offset};
+    return {fragmentIndex, offset};
   }
 
   // This expects nodes back so that we can process the
   // html... not super user friendly, but useful for parsing out
   // variables from text
   handleChange() {
-    console.log('Need to handle change');
+    console.log('Need to handleChange');
 
     //// TODO - why do this here?
     //this.updateCursorLocation();
