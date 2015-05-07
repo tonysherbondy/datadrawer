@@ -37,6 +37,19 @@ export default class Expression {
   evaluate(variables, index) {
     return evaluateJs(this.getJsCode(index), variables);
   }
+
+  equal(other) {
+    let oFragments = other.fragments;
+    if (oFragments.length !== this.fragments.length) {
+      return false;
+    }
+    this.fragments.every((fragment, i) => {
+      if (fragment.id) {
+        return fragment.id === oFragments[i].id;
+      }
+      return fragment === oFragments[i];
+    });
+  }
 }
 
 // TODO Can probably convert this to shape name now instead of object

@@ -27,8 +27,8 @@ export default class VariablePill extends React.Component {
 VariablePill.cursorLocationId = 'cursorLocation';
 
 VariablePill.getHtmlString = function(variable) {
-  let dataAttr = `data-variable-id='${variable.id}'`;
-  let attrs = `class='variable-pill' ${dataAttr} draggable='true'`;
+  let dataAttr = `data-variable-id="${variable.id}"`;
+  let attrs = `class="variable-pill" ${dataAttr} draggable="true"`;
   return `<span ${attrs}>${variable.name}</span>`;
 };
 

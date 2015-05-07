@@ -32,6 +32,11 @@ export default class DataVariable {
   getValue(values) {
     return values.data[this.id];
   }
+
+  cloneWithDefinition(definition) {
+    let {id, name, isRow} = this;
+    return new DataVariable({id, name, isRow, definition});
+  }
 }
 
 // TODO Need static methods that will check if a definition already depends on

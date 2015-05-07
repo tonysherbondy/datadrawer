@@ -64,3 +64,9 @@ td, th {
 .variable-definition {
   padding: 0px;
 }
+
+
+// testing
+#cursorLocation {
+  background-color: red;
+}

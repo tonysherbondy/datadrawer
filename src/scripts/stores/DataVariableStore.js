@@ -120,6 +120,16 @@ const DataVariableStore = biff.createStore({
       DataVariableStore.emitChange();
       break;
     }
+    case 'MODIFY_VARIABLE': {
+      let index = variables.findIndex(v => v.id === payload.data.id);
+      if (index > -1) {
+        let before = variables.slice(0,index);
+        let after = variables.slice(index+1, variables.length);
+        variables = [...before, payload.data, ...after];
+        DataVariableStore.emitChange();
+      }
+      break;
+    }
     case 'REMOVE_DATAVARIABLE': {
       // TODO probably need to not allow removal of variables that
       // depend on each other
