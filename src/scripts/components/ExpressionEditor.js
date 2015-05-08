@@ -98,13 +98,39 @@ export default class ExpressionEditor extends React.Component {
   }
 
   moveCursorPosition(dir) {
-    console.log('Please move cursor', dir);
+    let index = this.state.cursorFragmentIndex;
+    let offset = this.state.cursorOffset;
+    let fragments = this.state.fragments;
+    let fragment = fragments[index];
+
+    if (dir === 'right') {
+      if (_.isString(fragment) && offset < fragment.length) {
+        offset++;
+      } else {
+        index++;
+      }
+
+    } else {
+      if (_.isString(fragment) && offset > 0) {
+        offset--;
+      } else {
+        index--;
+      }
+    }
+    if (index < 0) {
+      index = 0;
+    } else if (index > fragments.length - 1) {
+      index = fragments.length - 1;
+    }
+    this.setState({
+      cursorFragmentIndex: index,
+      cursorOffset: offset
+    });
   }
 
   handleClick() {
     let index = this.state.cursorFragmentIndex + 1;
     index = index === this.state.fragments.length ? 0 : index;
-    //console.log('setting index', index, this.state.fragments);
 
     let location = this.getCursorLocation(React.findDOMNode(this));
     console.log('click location', location);
