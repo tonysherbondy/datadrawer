@@ -64,5 +64,6 @@ export default function evalutateJs(jsCode, variables) {
 
   } catch (error) {
     console.log('EVAL JSCODE ERROR ' + error);
+    return error;
   }
 }

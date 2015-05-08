@@ -3,11 +3,6 @@ import _ from 'lodash';
 import Expression from '../models/Expression';
 import VariablePill from './VariablePill';
 
- // node is text node
-//function isTextNode(node) {
-  //return node.nodeType === 3;
-//}
-
 export default class ExpressionEditor extends React.Component {
   constructor(props) {
     super(props);
@@ -75,8 +70,7 @@ export default class ExpressionEditor extends React.Component {
     let html = this.getHtml(this.state.fragments);
     return (
       <div
-        onInput={this.handleChange.bind(this)}
-        onBlur={this.handleChange.bind(this)}
+        onInput={this.handleInput.bind(this)}
         onKeyDown={this.handleKeyDown.bind(this)}
         onClick={this.handleClick.bind(this)}
         contentEditable='true'
@@ -234,8 +228,7 @@ export default class ExpressionEditor extends React.Component {
   // This expects nodes back so that we can process the
   // html... not super user friendly, but useful for parsing out
   // variables from text
-  handleChange() {
-
+  handleInput() {
 
     let nodes = React.findDOMNode(this).childNodes;
     let newFragments = [];
@@ -246,57 +239,16 @@ export default class ExpressionEditor extends React.Component {
     // Get the new cursor location from the edit
     let location = this.getCursorLocation(React.findDOMNode(this));
 
-    //let cursorLocation = this.getCursorLocation();
-    //// cursorFragmentIndex === -1 means the editor is empty
-    //let cursorFragmentIndex = -1;
-    //let cursorOffset = cursorLocation.offset;
-
-    //// make sure we always have a text fragment at the start
-    //// this is so the cursor will appear if it is before a variable
-    //let lastFragment = ' ';
-    //if (_.isEmpty(nodes) || isTextNode(nodes[0])) {
-      //lastFragment = '';
-    //}
-
-    //let newFragments = [];
-    //for (let i = 0; i < nodes.length; i++) {
-      //// if current node is where cursor is located save the index
-      //// and compute the correct offset
-      //if (cursorLocation.node === nodes[i]) {
-        //if (_.isString(lastFragment)) {
-          //cursorOffset = cursorOffset + lastFragment.length;
-          //cursorFragmentIndex = newFragments.length;
-        //} else {
-          //cursorOffset = cursorOffset;
-          //// we will be pushing lastFragment since
-          //// the node type of fragment and lastfragment are different
-          //cursorFragmentIndex = newFragments.length + 1;
-        //}
-      //}
-
-      //let fragment = this.nodeToFragment(nodes[i]);
-      //if (_.isString(lastFragment) && _.isString(fragment)) {
-        //// consolidate consecutive string nodes
-        //lastFragment = lastFragment + fragment;
-      //} else if (!_.isString(lastFragment) && !_.isString(fragment)) {
-        //// insert space in between consecutive variables
-        //newFragments.push(lastFragment);
-        //newFragments.push(' ');
-        //lastFragment = fragment;
-      //} else {
-        //newFragments.push(lastFragment);
-        //lastFragment = fragment;
-      //}
-    //}
-    //newFragments.push(lastFragment);
-    //if (!_.isString(lastFragment)) {
-      //newFragments.push(' ');
-    //}
-
-    console.log('Update app with new fragments');
-    //if (this.props.onChange) {
-      //this.props.onChange(new Expression(newFragments));
-    //}
+    // Only update the app if the expression is valid
+    let newExpression = new Expression(newFragments);
+    let value = newExpression.evaluate(this.props.variables);
+    if (value instanceof Error) {
+      console.log('Invalid Expression', value.message);
+    } else {
+      if (this.props.onChange) {
+        this.props.onChange(new Expression(newFragments));
+      }
+    }
 
     this.setState({
       cursorFragmentIndex: location.fragmentIndex,
@@ -304,7 +256,6 @@ export default class ExpressionEditor extends React.Component {
       fragments: this.getSpaceBufferedFragments(newFragments)
     });
 
-    console.log('should update definition', newFragments);
   }
 }
 
