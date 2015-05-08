@@ -109,6 +109,7 @@ export default class ExpressionEditor extends React.Component {
         offset++;
       } else {
         index++;
+        offset = 0;
       }
 
     } else {
@@ -116,6 +117,11 @@ export default class ExpressionEditor extends React.Component {
         offset--;
       } else {
         index--;
+        offset = 0;
+        let prevFragment = fragments[index];
+        if (_.isString(prevFragment)) {
+          offset = prevFragment.length;
+        }
       }
     }
     if (index < 0) {
@@ -123,6 +129,7 @@ export default class ExpressionEditor extends React.Component {
     } else if (index > fragments.length - 1) {
       index = fragments.length - 1;
     }
+
     this.setState({
       cursorFragmentIndex: index,
       cursorOffset: offset
@@ -241,7 +248,7 @@ export default class ExpressionEditor extends React.Component {
 
     // Only update the app if the expression is valid
     let newExpression = new Expression(newFragments);
-    let value = newExpression.evaluate(this.props.variables);
+    let value = newExpression.evaluate(this.props.variableValues);
     if (value instanceof Error) {
       console.log('Invalid Expression', value.message);
     } else {
@@ -260,6 +267,7 @@ export default class ExpressionEditor extends React.Component {
 }
 
 ExpressionEditor.propTypes = {
+  variableValues: React.PropTypes.object.isRequired,
   variables: React.PropTypes.array.isRequired,
   definition: React.PropTypes.instanceOf(Expression).isRequired
 };
