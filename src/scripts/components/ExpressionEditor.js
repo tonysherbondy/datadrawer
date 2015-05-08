@@ -162,7 +162,9 @@ export default class ExpressionEditor extends React.Component {
   nodeToFragment(node) {
     if (node.hasAttribute && node.hasAttribute('data-variable-id')) {
       let id = node.getAttribute('data-variable-id');
-      return {id};
+      // The expression editor either treats all possible vector values as is or not
+      // If you are in the data list area, you will be vector valued otherwise, don't
+      return {id, asVector: this.props.asVector};
     } else if (node.hasAttribute) {
       // Probably a cursor location
       return '';
@@ -266,7 +268,12 @@ export default class ExpressionEditor extends React.Component {
   }
 }
 
+ExpressionEditor.defaultProps = {
+  asVector: false
+};
+
 ExpressionEditor.propTypes = {
+  asVector: React.PropTypes.bool,
   variableValues: React.PropTypes.object.isRequired,
   variables: React.PropTypes.array.isRequired,
   definition: React.PropTypes.instanceOf(Expression).isRequired

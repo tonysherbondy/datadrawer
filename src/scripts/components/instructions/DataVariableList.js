@@ -16,6 +16,7 @@ export default class DataVariableList extends React.Component {
         <li className='data-variable-list-item' key={index}>
           <VariablePill variable={dataVariable} />
           <ExpressionEditor
+            asVector={true}
             onChange={this.handleDefinitionChange.bind(this, dataVariable)}
             variables={this.props.dataVariables}
             variableValues={this.props.dataValues}
