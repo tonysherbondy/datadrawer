@@ -29,7 +29,7 @@ VariablePill.cursorLocationId = 'cursorLocation';
 VariablePill.getHtmlString = function(variable, fragmentIndex) {
   let dataAttr = `data-variable-id="${variable.id}"`;
   let fragmentAttr = isFinite(fragmentIndex) ? `data-fragment-index="${fragmentIndex}"` : '';
-  let attrs = `class="variable-pill" ${fragmentAttr} ${dataAttr} draggable="true"`;
+  let attrs = `class="variable-pill" ${fragmentAttr} ${dataAttr} draggable="true" contenteditable="false"`;
   return `<span ${attrs}>${variable.name}</span>`;
 };
 

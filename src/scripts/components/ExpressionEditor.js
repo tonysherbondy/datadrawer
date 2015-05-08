@@ -28,6 +28,13 @@ export default class ExpressionEditor extends React.Component {
     if (!_.isString(_.last(newFragments))) {
       newFragments = newFragments.concat([' ']);
     }
+    // Can't have two consecutive variables without a space between
+    newFragments = newFragments.reduce((cum, fragment) => {
+      if (fragment.id && _.last(cum).id) {
+        return cum.concat([' ', fragment]);
+      }
+      return cum.concat([fragment]);
+    }, []);
     return newFragments;
   }
 
@@ -228,12 +235,17 @@ export default class ExpressionEditor extends React.Component {
   // html... not super user friendly, but useful for parsing out
   // variables from text
   handleChange() {
-    console.log('Need to handleChange');
 
-    //// TODO - why do this here?
-    //this.updateCursorLocation();
 
-    //let nodes = React.findDOMNode(this).childNodes;
+    let nodes = React.findDOMNode(this).childNodes;
+    let newFragments = [];
+    for (let i = 0; i < nodes.length; i++) {
+      newFragments.push(this.nodeToFragment(nodes[i]));
+    }
+
+    // Get the new cursor location from the edit
+    let location = this.getCursorLocation(React.findDOMNode(this));
+
     //let cursorLocation = this.getCursorLocation();
     //// cursorFragmentIndex === -1 means the editor is empty
     //let cursorFragmentIndex = -1;
@@ -281,17 +293,18 @@ export default class ExpressionEditor extends React.Component {
       //newFragments.push(' ');
     //}
 
+    console.log('Update app with new fragments');
     //if (this.props.onChange) {
       //this.props.onChange(new Expression(newFragments));
     //}
 
-    //this.setState({
-      //cursorFragmentIndex: cursorFragmentIndex,
-      //cursorOffset: cursorOffset,
-      //fragments: this.getSpaceBufferedFragments(newFragments)
-    //});
+    this.setState({
+      cursorFragmentIndex: location.fragmentIndex,
+      cursorOffset: location.offset,
+      fragments: this.getSpaceBufferedFragments(newFragments)
+    });
 
-    //console.log('should update definition', newFragments);
+    console.log('should update definition', newFragments);
   }
 }
 
