@@ -36,37 +36,13 @@ export default class ExpressionEditor extends React.Component {
   }
 
   getHtml(fragments) {
-    let html = '';
-
-    if (this.state.cursorFragmentIndex === -1) {
-      html += this.getCursorSpan();
-    }
-
-    fragments.forEach((fragment, i) => {
-      let fragmentString = '';
-
+    let escSpace = f => f.replace(/ /g, '&nbsp;');
+    return fragments.map((fragment, i) => {
       if (_.isString(fragment)) {
-        let escSpace = f => f.replace(/ /g, '&nbsp;');
-        // String fragment
-        if (this.state.cursorFragmentIndex === i) {
-          let offset = this.state.cursorOffset;
-          let sides = [fragment.slice(0, offset), fragment.slice(offset)];
-          fragmentString = sides.map(escSpace).join(this.getCursorSpan());
-        } else {
-          fragmentString = escSpace(fragment);
-        }
-      } else {
-        // Variable fragment
-        let cursorSpan = '';
-        if (this.state.cursorFragmentIndex === i) {
-          cursorSpan = this.getCursorSpan();
-        }
-        fragmentString = cursorSpan + VariablePill.getHtmlStringFromFragment(fragment, i, this.props.variables);
+        return escSpace(fragment);
       }
-      html += fragmentString;
-    });
-
-    return html;
+      return VariablePill.getHtmlStringFromFragment(fragment, i, this.props.variables);
+    }).join('');
   }
 
   componentWillReceiveProps(nextProps) {
@@ -104,18 +80,20 @@ export default class ExpressionEditor extends React.Component {
   }
 
   updateCursorLocation() {
-    let marker = document.getElementById(VariablePill.cursorLocationId);
-    if (marker) {
-      this.moverCursorToBefore(marker);
-      marker.remove();
-    }
+    this.moveCursorTo(this.state.cursorFragmentIndex, this.state.cursorOffset);
   }
 
-  moverCursorToBefore(node) {
+  moveCursorTo(nodeIndex, offset) {
+    if (nodeIndex === null) {
+      return;
+    }
+    let element = React.findDOMNode(this);
+    let node = element.childNodes[nodeIndex];
+
     window.getSelection().removeAllRanges();
     let range = document.createRange();
-    range.setStart(node, 0);
-    range.setEnd(node, 0);
+    range.setStart(node, offset);
+    range.setEnd(node, offset);
     window.getSelection().addRange(range);
   }
 
@@ -160,7 +138,31 @@ export default class ExpressionEditor extends React.Component {
     }
   }
 
-  getCursorLocation() {
+  getCursorNodeOffsetWithinTextFragment(range, element) {
+    let node, offset;
+    if (range.startContainer === element) {
+      // This means the container is not the text
+      if (range.startOffset < element.childNodes.length) {
+        node = element.childNodes[range.startOffset];
+        offset = 0;
+      } else {
+        node = element.childNodes[element.childNodes.length - 1];
+        if (node) {
+          //node is guaranteed to be a text node due to the render function
+          offset = node.length;
+        } else {
+          // this case happens when the editor is empty
+          offset = 0;
+        }
+      }
+    } else { // range starts in child node
+      node = range.startContainer;
+      offset = range.startOffset;
+    }
+    return {node, offset};
+  }
+
+  getCursorLocation(element) {
     let fragmentIndex = 0;
     let offset = 0;
 
@@ -171,17 +173,25 @@ export default class ExpressionEditor extends React.Component {
 
         let parentEl = range.startContainer.parentElement;
         if (parentEl.hasAttribute('data-fragment-index')) {
+
           // We are within a variable pill
           fragmentIndex = +parentEl.getAttribute('data-fragment-index');
-          // Always leave the offset at the beginning of variable pill
-        } else {
-          // We are within a text node
-          let prevEl = range.startContainer.previousElementSibling;
-          if (prevEl && prevEl.hasAttribute('data-fragment-index')) {
-            // We are either the index ahead of the previous variable or the first
-            fragmentIndex = +prevEl.getAttribute('data-fragment-index') + 1;
-            offset = range.startOffset;
+          // If we tried to click on the end of the pill, place the curso
+          // in the next node
+          if (range.startOffset === range.startContainer.length) {
+            // Always have a next node because we buffer the variables with space
+            fragmentIndex++;
           }
+        } else {
+
+          // We are within a text node
+          let nodeOffset = this.getCursorNodeOffsetWithinTextFragment(range, element);
+          // We are either the index ahead of the previous variable or the first
+          let prevEl = nodeOffset.node.previousElementSibling;
+          if (prevEl && prevEl.hasAttribute('data-fragment-index')) {
+            fragmentIndex = +prevEl.getAttribute('data-fragment-index') + 1;
+          }
+          offset = nodeOffset.offset;
         }
       }
     }
