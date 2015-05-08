@@ -36,7 +36,15 @@ export default class DataVariableList extends React.Component {
 
   handleDefinitionChange(variable, newDefinition) {
     let newVariable = variable.cloneWithDefinition(newDefinition);
-    DataVariableActions.modifyVariable(newVariable);
+    // Make sure the new variable hasn't introduced cycle
+    if (!newVariable.hasCycle(this.props.dataVariables)) {
+      DataVariableActions.modifyVariable(newVariable);
+    } else {
+      // Force rerender
+      // TODO - Right now this is a hack, probably a better way to do this is to flash
+      // some error message that makes us rerender anyway
+      this.forceUpdate();
+    }
   }
 
 }

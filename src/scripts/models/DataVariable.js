@@ -37,6 +37,23 @@ export default class DataVariable {
     let {id, name, isRow} = this;
     return new DataVariable({id, name, isRow, definition});
   }
+
+  // Detect whether one of dep vars depends on this variable
+  hasCycle(variables) {
+    let getVariable = v => variables.find(vv => vv.id === v.id);
+    let getAllDepVarsAsVars = v => v.getDependentVariables().map(getVariable);
+    let depVars = getAllDepVarsAsVars(this);
+    while (depVars.length > 0) {
+      if (depVars.find(v => v.id === this.id)) {
+        return true;
+      }
+      depVars = depVars.reduce((vars, v) => {
+        return vars.concat(getAllDepVarsAsVars(v));
+      }, []);
+    }
+    return false;
+  }
+
 }
 
 // TODO Need static methods that will check if a definition already depends on
