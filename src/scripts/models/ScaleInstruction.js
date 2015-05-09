@@ -1,4 +1,8 @@
+import React from 'react';
 import Instruction from './Instruction';
+import Expression from './Expression';
+import ExpressionEditor from '../components/ExpressionEditor';
+import InstructionActions from '../actions/InstructionActions';
 
 export default class ScaleInstruction extends Instruction {
   constructor({id, shape, point, prop, to}) {
@@ -25,15 +29,27 @@ export default class ScaleInstruction extends Instruction {
   }
 
   getToUi() {
-    if (this.to.id) {
-      return this.to.id;
-    }
-    return this.to;
+    return new Expression(this.to);
   }
 
   // TODO This belongs in the UI most likely
-  getUiSentence() {
-    return `Scale ${this.shape.id} ${this.prop} by ${this.getToUi()}`;
+  getUiSentence(variables, variableValues) {
+    return (
+      <span className='instruction-sentence'>
+        {`Scale ${this.shape.id} ${this.prop} by`}
+        <ExpressionEditor
+          onChange={this.handleToChange.bind(this, variableValues)}
+          variables={variables}
+          variableValues={variableValues}
+          definition={this.getToUi(variableValues)} />
+      </span>
+    );
+  }
+
+  handleToChange(variableValues, definition) {
+    let props = this.getCloneProps();
+    props.to = definition.evaluate(variableValues);
+    InstructionActions.modifyInstruction(new ScaleInstruction(props));
   }
 
   getCloneProps() {

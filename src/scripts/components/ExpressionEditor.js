@@ -70,6 +70,7 @@ export default class ExpressionEditor extends React.Component {
     let html = this.getHtml(this.state.fragments);
     return (
       <div
+        className='expression-editor'
         onInput={this.handleInput.bind(this)}
         onKeyDown={this.handleKeyDown.bind(this)}
         onClick={this.handleClick.bind(this)}

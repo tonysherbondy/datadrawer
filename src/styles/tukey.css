@@ -55,10 +55,11 @@ td, th {
 }
 
 .expression-editor {
+  white-space: nowrap;
   display: inline-block;
   background-color: #a0ffca;
   margin: 0px 10px 0px 10px;
-  width:150px;
+  /*width:150px;*/
 }
 
 .variable-definition {

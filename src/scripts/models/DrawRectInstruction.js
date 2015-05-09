@@ -2,6 +2,7 @@ import React from 'react';
 import DrawInstruction from './DrawInstruction';
 import ExpressionEditor from '../components/ExpressionEditor';
 import Expression from './Expression';
+import InstructionActions from '../actions/InstructionActions';
 
 export default class DrawRectInstruction extends DrawInstruction {
   constructor(props) {
@@ -118,13 +119,14 @@ export default class DrawRectInstruction extends DrawInstruction {
       <span className='instruction-sentence'>
         {fromUi},
         <ExpressionEditor
-          onChange={this.handleWidthChange.bind(this)}
+          onChange={this.handleWidthChange.bind(this, variableValues)}
           variables={variables}
           variableValues={variableValues}
           definition={widthUi} />
          horizontally
 
         <ExpressionEditor
+          onChange={this.handleHeightChange.bind(this, variableValues)}
           variables={variables}
           variableValues={variableValues}
           definition={heightUi} />
@@ -133,11 +135,18 @@ export default class DrawRectInstruction extends DrawInstruction {
     );
   }
 
-  handleWidthChange(definition) {
-    console.log('change rect width', definition);
+  // TODO - I think it would be best if these values
+  // were also simply expressions
+  handleWidthChange(variableValues, definition) {
     let props = this.getCloneProps();
-    props.width = null;
-    props.height = null;
+    props.width = definition.evaluate(variableValues);
+    InstructionActions.modifyInstruction(new DrawRectInstruction(props));
+  }
+
+  handleHeightChange(variableValues, definition) {
+    let props = this.getCloneProps();
+    props.height = definition.evaluate(variableValues);
+    InstructionActions.modifyInstruction(new DrawRectInstruction(props));
   }
 
   getCloneProps() {

@@ -229,7 +229,7 @@ export default class RectShape extends Shape {
       let startV = startPoint[axis];
       return {
         prop,
-        to: (toV - oppV) / (startV - oppV)
+        to: Math.round((toV - oppV) / (startV - oppV) * 100) / 100
       };
     }
 

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import evaluateJs from '../utils/evaluateJs';
 
 function isVar(fragment) {
@@ -9,10 +10,20 @@ export default class Expression {
     if (!fragments) {
       this.fragments = [];
     } else if (fragments instanceof Array) {
-      this.fragments = fragments;
+      this.fragments = this.normalizeFragments(fragments);
     } else {
-      this.fragments = [fragments];
+      this.fragments = this.normalizeFragments([fragments]);
     }
+  }
+
+  normalizeFragments(fragments) {
+    // Can only be strings or objects with id
+    return fragments.map(f => {
+      if (!_.isString(f) && !f.id) {
+        return '' + f;
+      }
+      return f;
+    });
   }
 
   getDependentVariables() {
