@@ -45,6 +45,8 @@ const InstructionStore = biff.createStore({
       break;
     }
     case 'MODIFY_INSTRUCTION': {
+      // TODO - This is not a correct way to search for an existing instruction
+      // because the instruction is a tree
       let index = instructions.findIndex(i => i.id === payload.data.id);
       if (index > -1) {
         let before = instructions.slice(0,index);

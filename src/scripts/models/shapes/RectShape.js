@@ -1,4 +1,5 @@
 import Shape from './Shape';
+import Expression from '../Expression';
 
 export default class RectShape extends Shape {
   constructor(props) {
@@ -219,7 +220,7 @@ export default class RectShape extends Shape {
     let props = {
       shape: {id: this.id},
       point: pointName,
-      to: 0
+      to: new Expression(0)
     };
 
     function getAxisProps(opp, axis) {
@@ -227,9 +228,10 @@ export default class RectShape extends Shape {
       let toV = toPoint[axis];
       let oppV = opp[axis];
       let startV = startPoint[axis];
+      let roundTo = Math.round((toV - oppV) / (startV - oppV) * 100) / 100;
       return {
         prop,
-        to: Math.round((toV - oppV) / (startV - oppV) * 100) / 100
+        to: new Expression(roundTo)
       };
     }
 

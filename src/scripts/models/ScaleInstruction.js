@@ -1,6 +1,5 @@
 import React from 'react';
 import Instruction from './Instruction';
-import Expression from './Expression';
 import ExpressionEditor from '../components/ExpressionEditor';
 import InstructionActions from '../actions/InstructionActions';
 
@@ -14,12 +13,8 @@ export default class ScaleInstruction extends Instruction {
   }
 
   getToJs(index) {
-    // This can be one of the following, a point specified by the to parameter,
-    // a radius number or a radius variable
-    if (this.to.id) {
-      return this.getDataOrShapePropJs(this.to, index);
-    }
-    return this.to;
+    // To is always an expression
+    return this.to.getJsCode(index);
   }
 
   getJsCode(index) {
@@ -29,7 +24,7 @@ export default class ScaleInstruction extends Instruction {
   }
 
   getToUi() {
-    return new Expression(this.to);
+    return this.to;
   }
 
   // TODO This belongs in the UI most likely
@@ -48,7 +43,7 @@ export default class ScaleInstruction extends Instruction {
 
   handleToChange(variableValues, definition) {
     let props = this.getCloneProps();
-    props.to = definition.evaluate(variableValues);
+    props.to = definition;
     InstructionActions.modifyInstruction(new ScaleInstruction(props));
   }
 

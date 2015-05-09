@@ -1,9 +1,26 @@
 import _ from 'lodash';
 import evaluateJs from '../utils/evaluateJs';
 
-function isVar(fragment) {
-  return fragment.id;
+// Fragments can be variable, shape property or strings
+function fragmentType(fragment) {
+  if (_.isString(fragment)) {
+    return 'string';
+  }
+
+  if (fragment.id) {
+    if (fragment.prop) {
+      return 'property';
+    }
+    return 'variable';
+  }
+
+  return 'unknown';
 }
+
+function isVar(fragment) {
+  return fragmentType(fragment) === 'variable';
+}
+
 
 export default class Expression {
   constructor(fragments) {
@@ -19,7 +36,7 @@ export default class Expression {
   normalizeFragments(fragments) {
     // Can only be strings or objects with id
     return fragments.map(f => {
-      if (!_.isString(f) && !f.id) {
+      if (fragmentType(f) === 'unknown') {
         return '' + f;
       }
       return f;
@@ -38,10 +55,11 @@ export default class Expression {
     // fragments of definition are either variables
     // or strings
     return this.fragments.map(fragment => {
-      if (isVar(fragment)) {
-        return this.getJsName(fragment, index);
+      let type = fragmentType(fragment);
+      if (type === 'string') {
+        return fragment;
       }
-      return fragment;
+      return this.getJsName(fragment, index);
     }).join('');
   }
 

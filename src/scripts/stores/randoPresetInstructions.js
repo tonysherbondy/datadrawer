@@ -3,6 +3,7 @@ import LoopInstruction from '../models/LoopInstruction';
 import ScaleInstruction from '../models/ScaleInstruction';
 import DrawRectInstruction from '../models/DrawRectInstruction';
 import MoveInstruction from '../models/MoveInstruction';
+import Expression from '../models/Expression';
 
 const instructions = [
   new LoopInstruction({
@@ -18,7 +19,7 @@ const instructions = [
         id: 'iloop2',
         shape: {id: 'shape_iloop1'},
         prop: 'r',
-        to: {id: 'd7'}
+        to: new Expression({id: 'd7'})
       })
     ]
   }),
@@ -49,14 +50,14 @@ const instructions = [
     shape: {id: 'shape_i4'},
     prop: 'height',
     point: 'bottom',
-    to: 0.9
+    to: new Expression(0.9)
   }),
   new ScaleInstruction({
-    id: 'i8',
+    id: 'i9',
     shape: {id: 'shape_i4'},
     prop: 'height',
     point: 'bottom',
-    to: {id: 'd4'}
+    to: new Expression({id: 'd4'})
   }),
   new DrawRectInstruction({
     id: 'i5',
