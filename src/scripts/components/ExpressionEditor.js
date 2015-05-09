@@ -92,11 +92,20 @@ export default class ExpressionEditor extends React.Component {
     let element = React.findDOMNode(this);
     let node = element.childNodes[nodeIndex];
 
-    window.getSelection().removeAllRanges();
-    let range = document.createRange();
-    range.setStart(node, offset);
-    range.setEnd(node, offset);
-    window.getSelection().addRange(range);
+    try {
+      window.getSelection().removeAllRanges();
+      let range = document.createRange();
+      range.setStart(node, offset);
+      range.setEnd(node, offset);
+      window.getSelection().addRange(range);
+    }
+    catch (err) {
+      // TODO - Perhaps remove this and explore why this fails sometimes
+      this.setState({
+        cursorFragmentIndex: null,
+        cursorOffset: 0
+      });
+    }
   }
 
   moveCursorPosition(dir) {
