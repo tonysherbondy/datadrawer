@@ -72,6 +72,7 @@ export default class ExpressionEditor extends React.Component {
       <div
         className='expression-editor'
         onInput={this.handleInput.bind(this)}
+        onBlur={this.handleBlur.bind(this)}
         onKeyDown={this.handleKeyDown.bind(this)}
         onClick={this.handleClick.bind(this)}
         contentEditable='true'
@@ -144,6 +145,12 @@ export default class ExpressionEditor extends React.Component {
       cursorFragmentIndex: index,
       cursorOffset: offset
     });
+  }
+
+  handleBlur() {
+    // Set our cursor index to null so that we don't update
+    // the cursor even though we aren't focused
+    this.setState({cursorFragmentIndex: null});
   }
 
   handleClick() {
