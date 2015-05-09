@@ -42,8 +42,8 @@ const instructions = [
   new DrawRectInstruction({
     id: 'i4',
     from: {id: 'canvas', point: 'left'},
-    width: 100,
-    height: 120
+    width: new Expression(100),
+    height: new Expression(120)
   }),
   new ScaleInstruction({
     id: 'i8',
@@ -62,8 +62,8 @@ const instructions = [
   new DrawRectInstruction({
     id: 'i5',
     from: {id: 'canvas', point: 'top'},
-    width: {id: 'd3'},
-    height: {id: 'd1'}
+    width: new Expression({id: 'd3'}),
+    height: new Expression({id: 'd1'})
   }),
   new DrawRectInstruction({
     id: 'i6',

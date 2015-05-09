@@ -10,7 +10,7 @@ let presetInstructions = {
 };
 
 let instructions = [];
-//let instructions = presetInstructions.rando;
+//let instructions = presetInstructions.bars;
 
 const InstructionStore = biff.createStore({
   getInstructions() {

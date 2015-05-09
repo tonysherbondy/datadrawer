@@ -12,19 +12,11 @@ export default class ScaleInstruction extends Instruction {
     this.shape = shape;
   }
 
-  getToJs(index) {
-    // To is always an expression
-    return this.to.getJsCode(index);
-  }
-
   getJsCode(index) {
-    let paramsJs = `'${this.prop}', '${this.point}', ${this.getToJs(index)}`;
+    let toJs = this.to.getJsCode(index);
+    let paramsJs = `'${this.prop}', '${this.point}', ${toJs}`;
     let varName = this.getShapeVarName(this.shape, index);
     return `${varName}.scalePropByPoint(${paramsJs});`;
-  }
-
-  getToUi() {
-    return this.to;
   }
 
   // TODO This belongs in the UI most likely
@@ -36,7 +28,7 @@ export default class ScaleInstruction extends Instruction {
           onChange={this.handleToChange.bind(this, variableValues)}
           variables={variables}
           variableValues={variableValues}
-          definition={this.getToUi(variableValues)} />
+          definition={this.to} />
       </span>
     );
   }

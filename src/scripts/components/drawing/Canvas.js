@@ -144,7 +144,6 @@ class Canvas extends React.Component {
     let instruction = this.props.editingInstruction;
     if (instruction && instruction.isValid()) {
       let point = this.getEventPoint(event);
-      let shape = this.getEditingShape();
       let {mode} = this.props.drawingState;
       let to = point;
       if (mode === 'scale' || mode === 'move') {
@@ -153,7 +152,7 @@ class Canvas extends React.Component {
         let props = shape.getAdjustProps(mode, startPoint, point);
         to = props.to;
       }
-      InstructionActions.modifyInstruction(instruction.getCloneWithTo(to, shape));
+      InstructionActions.modifyInstruction(instruction.getCloneWithTo(to, this.props.shapes));
     }
   }
 

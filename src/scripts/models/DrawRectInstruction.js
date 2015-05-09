@@ -1,63 +1,42 @@
 import React from 'react';
 import DrawInstruction from './DrawInstruction';
 import ExpressionEditor from '../components/ExpressionEditor';
-import Expression from './Expression';
 import InstructionActions from '../actions/InstructionActions';
+import Expression from './Expression';
 
 export default class DrawRectInstruction extends DrawInstruction {
   constructor(props) {
     super(props);
-    // TODO - Assume these are Expressions
     this.width = props.width;
     this.height = props.height;
   }
 
   getWidthJs(index) {
-    // This can be one of the following, a point specified by the to parameter,
-    // a number or a variable
-    if (this.width) {
-      if (this.width.id) {
-        return this.getDataOrShapePropJs(this.width, index);
-      }
-      return this.width;
-    }
-
+    // Someone can specify a magnet to draw to
     if (this.to) {
       let {x} = this.getFromJs(index);
-      if (this.to.id) {
-        let toPt = this.getPointVarJs(this.to, index);
-        // TODO Probably will need some util function to handle the fact
-        // that we might get negative distances
-        return `${toPt}.x - ${x}`;
-      } else {
-        // TODO - need to handle variable for to coords
-        return `${this.to.x} - ${x}`;
-      }
+      let toPt = this.getPointVarJs(this.to, index);
+      // TODO Probably will need some util function to handle the fact
+      // that we might get negative distances
+      return `${toPt}.x - ${x}`;
     }
+
+    // Otherwise width must be an expression
+    return this.width.getJsCode(index);
   }
 
   getHeightJs(index) {
-    // This can be one of the following, a point specified by the to parameter,
-    // a number or a variable
-    if (this.height) {
-      if (this.height.id) {
-        return this.getDataOrShapePropJs(this.height, index);
-      }
-      return this.height;
-    }
-
+    // Someone can specify a magnet to draw to
     if (this.to) {
       let {y} = this.getFromJs(index);
-      if (this.to.id) {
-        let toPt = this.getPointVarJs(this.to, index);
-        // TODO Probably will need some util function to handle the fact
-        // that we might get negative distances
-        return `${toPt}.y - ${y}`;
-      } else {
-        // TODO - need to handle variable for to coords
-        return `${this.to.y} - ${y}`;
-      }
+      let toPt = this.getPointVarJs(this.to, index);
+      // TODO Probably will need some util function to handle the fact
+      // that we might get negative distances
+      return `${toPt}.y - ${y}`;
     }
+
+    // Otherwise height must be an expression
+    return this.height.getJsCode(index);
   }
 
   getJsCode(index) {
@@ -76,32 +55,6 @@ export default class DrawRectInstruction extends DrawInstruction {
            `}, '${this.shapeId}', ${index});\n`;
   }
 
-  getWidthUi(variableValues) {
-    if (this.width) {
-      return new Expression(this.width);
-    }
-
-    // TODO - Should be able to get rid of this, simply
-    // make height an expression of the y position - from.y
-    if (this.to.x) {
-      let from = this.getFromValue(variableValues);
-      return new Expression(this.to.x - from.x);
-    }
-  }
-
-  getHeightUi(variableValues) {
-    if (this.height) {
-      return new Expression(this.height);
-    }
-
-    // TODO - Should be able to get rid of this, simply
-    // make height an expression of the y position - from.y
-    if (this.to.y) {
-      let from = this.getFromValue(variableValues);
-      return new Expression(this.to.y - from.y);
-    }
-  }
-
   // TODO This belongs in the UI most likely
   getUiSentence(variables, variableValues) {
     if (!this.isValid()) {
@@ -109,43 +62,39 @@ export default class DrawRectInstruction extends DrawInstruction {
     }
 
     let fromUi = `Draw rect from ${this.getFromUi()}`;
-    if (this.to && this.to.id) {
+    if (this.to) {
       return `${fromUi} until ${this.to.id}'s ${this.to.point}`;
     }
 
-    let widthUi = this.getWidthUi(variableValues);
-    let heightUi = this.getHeightUi(variableValues);
     return (
       <span className='instruction-sentence'>
         {fromUi},
         <ExpressionEditor
-          onChange={this.handleWidthChange.bind(this, variableValues)}
+          onChange={this.handleWidthChange.bind(this)}
           variables={variables}
           variableValues={variableValues}
-          definition={widthUi} />
+          definition={this.width} />
          horizontally
 
         <ExpressionEditor
-          onChange={this.handleHeightChange.bind(this, variableValues)}
+          onChange={this.handleHeightChange.bind(this)}
           variables={variables}
           variableValues={variableValues}
-          definition={heightUi} />
+          definition={this.height} />
         vertically.
       </span>
     );
   }
 
-  // TODO - I think it would be best if these values
-  // were also simply expressions
-  handleWidthChange(variableValues, definition) {
+  handleWidthChange(definition) {
     let props = this.getCloneProps();
-    props.width = definition.evaluate(variableValues);
+    props.width = definition;
     InstructionActions.modifyInstruction(new DrawRectInstruction(props));
   }
 
-  handleHeightChange(variableValues, definition) {
+  handleHeightChange(definition) {
     let props = this.getCloneProps();
-    props.height = definition.evaluate(variableValues);
+    props.height = definition;
     InstructionActions.modifyInstruction(new DrawRectInstruction(props));
   }
 
@@ -161,16 +110,24 @@ export default class DrawRectInstruction extends DrawInstruction {
     let props = this.getCloneProps();
     props.from = from;
     props.to = null;
-    props.width = 10;
-    props.height = 10;
+    props.width = new Expression(1);
+    props.height = new Expression(1);
     return new DrawRectInstruction(props);
   }
 
-  getCloneWithTo(to) {
+  getCloneWithTo(to, shapes) {
     let props = this.getCloneProps();
-    props.to = to;
-    props.width = null;
-    props.height = null;
+    // TODO - if to is a magnet, we set to otherwise, width & height
+    if (to.id) {
+      props.to = to;
+      props.width = null;
+      props.height = null;
+    } else {
+      let from = this.getFromValue(shapes);
+      props.to = null;
+      props.width = new Expression(to.x - from.x);
+      props.height = new Expression(to.y - from.y);
+    }
     return new DrawRectInstruction(props);
   }
 

@@ -5,6 +5,7 @@ import LoopInstruction from '../models/LoopInstruction';
 import DrawTextInstruction from '../models/DrawTextInstruction';
 import DrawLineInstruction from '../models/DrawLineInstruction';
 import IfInstruction from '../models/IfInstruction';
+import Expression from '../models/Expression';
 
 // Bar Chart Plot
 const instructions = [
@@ -20,7 +21,7 @@ const instructions = [
     shape: {id: 'shape_rect1'},
     prop: 'width',
     point: 'right',
-    to: {id: 'barWidth'}
+    to: new Expression({id: 'barWidth'})
   }),
   new LoopInstruction({
     id: 'loop',
@@ -35,7 +36,7 @@ const instructions = [
         shape: {id: 'shape_rect2'},
         prop: 'height',
         point: 'top',
-        to: {id: 'norm_energy_in_mwh'}
+        to: new Expression({id: 'norm_energy_in_mwh'})
       }),
       new MoveInstruction({
         id: 'imove1',

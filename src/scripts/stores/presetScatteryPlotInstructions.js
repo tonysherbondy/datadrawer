@@ -6,6 +6,7 @@ import MoveInstruction from '../models/MoveInstruction';
 import ScaleInstruction from '../models/ScaleInstruction';
 import DrawPathInstruction from '../models/DrawPathInstruction';
 import RotateInstruction from '../models/RotateInstruction';
+import Expression from '../models/Expression';
 
 // Crazy scatterish plot
 const instructions = [
@@ -30,14 +31,14 @@ const instructions = [
         shape: {id: 'shape_i1'},
         prop: 'width',
         point: 'right',
-        to: {id: 'sx'}
+        to: new Expression({id: 'sx'})
       }),
       new ScaleInstruction({
         id: 'i3',
         shape: {id: 'shape_i1'},
         prop: 'height',
         point: 'top',
-        to: {id: 'sy'}
+        to: new Expression({id: 'sy'})
       }),
       new DrawCircleInstruction({
         id: 'i4',
@@ -69,7 +70,7 @@ const instructions = [
         shape: {id: 'shape_i6'},
         prop: 'x2',
         point: 'right',
-        to: {id: 'swidth'}
+        to: new Expression({id: 'swidth'})
       }),
       new MoveInstruction({
         id: 'imove2',
@@ -154,7 +155,7 @@ const instructions = [
         shape: {id: 'shape_i11'},
         prop: 'edge',
         point: 'from',
-        to: 0.5
+        to: new Expression(0.5)
       }),
       new DrawLineInstruction({
         id: 'i13',
