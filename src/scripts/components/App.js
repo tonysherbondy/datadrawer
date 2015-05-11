@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import Flux from '../dispatcher/dispatcher';
 import InstructionStore from '../stores/InstructionStore';
 import DataVariableStore from '../stores/DataVariableStore';
@@ -7,6 +8,7 @@ import InstructionResults from './instructions/InstructionResults';
 import InstructionActions from '../actions/InstructionActions';
 import DrawingStateActions from '../actions/DrawingStateActions';
 import DrawRectInstruction from '../models/DrawRectInstruction';
+import DrawInstruction from '../models/DrawInstruction';
 
 
 class App extends React.Component {
@@ -22,6 +24,16 @@ class App extends React.Component {
   handleKeyDown(e) {
     let code = e.keyCode || e.which;
     switch (code) {
+      case 71: { //g
+        // Toggle guide setting on selected shape
+        let drawInstruction = this.getDrawInstructionForSelectedShape();
+        if (drawInstruction) {
+          drawInstruction = drawInstruction.clone();
+          drawInstruction.isGuide = !drawInstruction.isGuide;
+          InstructionActions.modifyInstruction(drawInstruction);
+        }
+        break;
+      }
       case 82: { //r
         DrawingStateActions.setDrawingMode('rect');
         // TODO Need to decide when we allow invalid instructions,
@@ -59,6 +71,24 @@ class App extends React.Component {
     }
   }
 
+  getEditingInstruction() {
+    return this.props.instructions.find(i => {
+      return i.id === this.props.drawingState.editingInstructionId;
+    });
+  }
+
+  // TODO - Right now it is the last instruction
+  getSelectedInstruction() {
+    return _.last(this.props.instructions);
+  }
+
+  getDrawInstructionForSelectedShape() {
+    let shapeId = this.getSelectedInstruction().shapeId;
+    return this.props.instructions.find(i => {
+      return i.shapeId === shapeId && i instanceof DrawInstruction;
+    });
+  }
+
   componentDidMount() {
     // Loading keyboard shortcuts
     window.addEventListener('keydown', this.handleKeyDown.bind(this));
@@ -70,9 +100,6 @@ class App extends React.Component {
   }
 
   render() {
-    let editingInstruction = this.props.instructions.find(i => {
-      return i.id === this.props.drawingState.editingInstructionId;
-    });
     return (
       <div onKeyDown={this.handleKeyPress} className='main'>
         <h1>Tukey App</h1>
@@ -84,7 +111,8 @@ class App extends React.Component {
           drawingState={this.props.drawingState}
           instructions={this.props.instructions}
           dataVariables={this.props.variables}
-          editingInstruction={editingInstruction}
+          editingInstruction={this.getEditingInstruction()}
+          selectedInstruction={this.getSelectedInstruction()}
         />
       </div>
     );

@@ -1,5 +1,4 @@
 import React from 'react';
-import _ from 'lodash';
 import Canvas from '../drawing/Canvas';
 import InstructionTitle from './InstructionTitle';
 import InstructionCode from './InstructionCode';
@@ -119,10 +118,8 @@ export default class InstructionResults extends React.Component {
       return map;
     }, {scalars: [], vectors: []});
 
-    // TODO - this should be done somewhere else
-    // for now selected shape is the shape corresponding to the last instruction
-    let lastInstruction = _.last(this.props.instructions);
-    let selectedShape = lastInstruction ? shapes[lastInstruction.shapeId] : null;
+    let selectedInstruction = this.props.selectedInstruction;
+    let selectedShape = selectedInstruction ? shapes[selectedInstruction.shapeId] : null;
 
     return (
       <div>
@@ -137,7 +134,7 @@ export default class InstructionResults extends React.Component {
         <InstructionTitle
           dataVariables={this.props.dataVariables}
           variableValues={variableValues}
-          instruction={lastInstruction} />
+          instruction={selectedInstruction} />
 
         <Canvas
           shapes={shapes}

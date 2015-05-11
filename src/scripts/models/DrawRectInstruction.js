@@ -131,4 +131,8 @@ export default class DrawRectInstruction extends DrawInstruction {
     return new DrawRectInstruction(props);
   }
 
+  clone() {
+    return new DrawRectInstruction(this.getCloneProps());
+  }
+
 }
