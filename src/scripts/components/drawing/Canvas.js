@@ -35,9 +35,10 @@ class Canvas extends React.Component {
     }
 
     let editingShapeName = editingInstruction.getShapeName();
-    return _.flatten(shapes
-            .filter(shape => shape.id !== editingShapeName)
-            .map(shape => shape.getMagnets()));
+    let magnets = Object.keys(shapes)
+                    .filter(id => id !== editingShapeName)
+                    .map(id => shapes[id].getMagnets());
+    return _.flatten(magnets);
   }
 
   getSelectedShapePoints({selectedShape}) {
@@ -65,9 +66,7 @@ class Canvas extends React.Component {
   }
 
   getEditingShape() {
-    return this.props.shapes.find(shape => {
-      return shape.id === this.props.editingInstruction.getShapeName();
-    });
+    return this.props.shapes[this.props.editingInstruction.getShapeName()];
   }
 
   drawShape(shape, key, props) {
@@ -93,10 +92,10 @@ class Canvas extends React.Component {
 
   drawShapes() {
     // Filter out canvas
-    return this.props.shapes.filter(shape => shape.id !== 'canvas')
-    .map((shape, index) => {
-      return this.drawShape(shape, index, shape.getRenderProps());
-    });
+    let shapes = this.props.shapes;
+    return Object.keys(shapes)
+            .filter(id => id !== 'canvas')
+            .map(id => this.drawShape(shapes[id], id, shapes[id].getRenderProps()));
   }
 
   drawMagnets() {
@@ -115,7 +114,7 @@ class Canvas extends React.Component {
       return null;
     }
     let magnet = this.state.closeMagnet;
-    let closeShape = this.props.shapes.find(s => s.id === magnet.shapeName);
+    let closeShape = this.props.shapes[magnet.shapeName];
     return this.drawShape(closeShape, `magnet_outline`, closeShape.getMagnetOutlineProps());
   }
 
@@ -226,11 +225,7 @@ class Canvas extends React.Component {
 }
 
 Canvas.propTypes = {
-  shapes: React.PropTypes.array
-};
-
-Canvas.defaultProps = {
-  shapes: []
+  shapes: React.PropTypes.object.isRequired
 };
 
 export default Canvas;

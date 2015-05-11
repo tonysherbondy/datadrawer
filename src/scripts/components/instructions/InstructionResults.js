@@ -94,8 +94,7 @@ export default class InstructionResults extends React.Component {
 
     // TODO we will need to filter by draw instructions
     // TODO we should probably actually traverse by variables in the variables.shape scope
-    let shapes = Object.keys(variableValues.shapes)
-                .map(name => variableValues.shapes[name]);
+    let shapes = variableValues.shapes;
 
     jsCode = dataJsCode + '\n\n' + jsCode;
     return {shapes, variableValues, jsCode};
@@ -123,8 +122,7 @@ export default class InstructionResults extends React.Component {
     // TODO - this should be done somewhere else
     // for now selected shape is the shape corresponding to the last instruction
     let lastInstruction = _.last(this.props.instructions);
-    let selectedShapeId = lastInstruction ? lastInstruction.shapeId : null;
-    let selectedShape = selectedShapeId ? shapes.find(s => s.id === selectedShapeId) : null;
+    let selectedShape = lastInstruction ? shapes[lastInstruction.shapeId] : null;
 
     return (
       <div>
