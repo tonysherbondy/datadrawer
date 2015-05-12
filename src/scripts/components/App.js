@@ -9,6 +9,8 @@ import InstructionActions from '../actions/InstructionActions';
 import DrawingStateActions from '../actions/DrawingStateActions';
 import DrawRectInstruction from '../models/DrawRectInstruction';
 import DrawInstruction from '../models/DrawInstruction';
+import ScaleInstruction from '../models/ScaleInstruction';
+import Canvas from './drawing/Canvas';
 
 
 class App extends React.Component {
@@ -31,6 +33,47 @@ class App extends React.Component {
           drawInstruction = drawInstruction.clone();
           drawInstruction.isGuide = !drawInstruction.isGuide;
           InstructionActions.modifyInstruction(drawInstruction);
+        }
+        break;
+      }
+      case 78: { //n
+        // Edit the selected instruction by cycling through overlapping
+        // magnet points
+        // Toggle guide setting on selected shape
+        let instruction = this.getSelectedInstruction();
+        if ((instruction instanceof DrawInstruction ||
+            instruction instanceof ScaleInstruction) &&
+            instruction.isValid()) {
+
+          // If the point is valid we have either a scale or draw instruction
+          // and either way we access the to point.
+          // An invalid instruction means we have the draw instruction and the
+          // from point is the one we are cycling.
+
+          let pointName = 'to';
+          if (instruction instanceof DrawInstruction &&
+              instruction.id === this.props.drawingState.editingInstructionId) {
+            pointName = 'from';
+          }
+          let point = instruction[pointName];
+          let magnets = instruction[pointName + 'Magnets'];
+          if (point && point.id && magnets.length > 1) {
+            // Grab possible magnets for this draw instruction
+            let index = magnets.findIndex(m => {
+              return m.shapeName === point.id && m.pointName === point.point;
+            });
+            index++;
+            if (index === magnets.length) {
+              index = 0;
+            }
+            let magnetPoint = Canvas.convertMagnetToPoint(magnets[index]);
+            if (pointName === 'from') {
+              instruction = instruction.getCloneWithFrom(magnetPoint, magnets);
+            } else {
+              instruction = instruction.getCloneWithTo(magnetPoint, {}, magnets);
+            }
+            InstructionActions.modifyInstruction(instruction);
+          }
         }
         break;
       }

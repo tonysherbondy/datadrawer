@@ -4,12 +4,13 @@ import ExpressionEditor from '../components/ExpressionEditor';
 import InstructionActions from '../actions/InstructionActions';
 
 export default class ScaleInstruction extends Instruction {
-  constructor({id, shape, point, prop, to}) {
-    super({id, shapeId: shape.id});
-    this.point = point;
-    this.prop = prop;
-    this.to = to;
-    this.shape = shape;
+  constructor(props) {
+    super({id: props.id, shapeId: props.shape.id});
+    this.point = props.point;
+    this.prop = props.prop;
+    this.to = props.to;
+    this.toMagnets = props.toMagnets;
+    this.shape = props.shape;
   }
 
   getJsCode(index) {

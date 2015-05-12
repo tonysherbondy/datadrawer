@@ -6,7 +6,9 @@ export default class DrawInstruction extends Instruction {
     // Every draw instruction has a from, that can either be an explicit
     // point or reference to another point, refPoint
     this.from = props.from;
+    this.fromMagnets = props.fromMagnets;
     this.to = props.to;
+    this.toMagnets = props.toMagnets;
     this.isGuide = !!props.isGuide;
     this.strokeWidth = props.strokeWidth || 1;
     this.stroke = props.stroke || 'black';
@@ -15,8 +17,8 @@ export default class DrawInstruction extends Instruction {
 
   getCloneProps() {
     let props = super.getCloneProps();
-    let {from, to, isGuide, strokeWidth, stroke, fill} = this;
-    return Object.assign(props, {to, from, isGuide, stroke,
+    let {from, fromMagnets, to, toMagnets, isGuide, strokeWidth, stroke, fill} = this;
+    return Object.assign(props, {to, toMagnets, from, fromMagnets, isGuide, stroke,
                          strokeWidth, fill});
   }
 

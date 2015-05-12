@@ -7,8 +7,8 @@ import Expression from './Expression';
 export default class DrawRectInstruction extends DrawInstruction {
   constructor(props) {
     super(props);
-    this.width = props.width;
-    this.height = props.height;
+    this.width = props.width || new Expression(1);
+    this.height = props.height || new Expression(1);
   }
 
   getWidthJs(index) {
@@ -106,25 +106,25 @@ export default class DrawRectInstruction extends DrawInstruction {
     return props;
   }
 
-  getCloneWithFrom(from) {
+  getCloneWithFrom(from, magnets) {
     let props = this.getCloneProps();
     props.from = from;
-    props.to = null;
-    props.width = new Expression(1);
-    props.height = new Expression(1);
+    props.fromMagnets = magnets;
     return new DrawRectInstruction(props);
   }
 
-  getCloneWithTo(to, shapes) {
+  getCloneWithTo(to, shapes, magnets) {
     let props = this.getCloneProps();
     // TODO - if to is a magnet, we set to otherwise, width & height
     if (to.id) {
       props.to = to;
+      props.toMagnets = magnets;
       props.width = null;
       props.height = null;
     } else {
       let from = this.getFromValue(shapes);
       props.to = null;
+      // TODO - Somehow this gets set to empty array???
       props.width = new Expression(to.x - from.x);
       props.height = new Expression(to.y - from.y);
     }

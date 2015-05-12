@@ -142,7 +142,7 @@ class Canvas extends React.Component {
 
     let instruction = this.props.editingInstruction;
     if (instruction && instruction.isValid()) {
-      let point = this.getEventPoint(event);
+      let {point} = this.getEventPoint(event);
       let {mode} = this.props.drawingState;
       let to = point;
       if (mode === 'scale' || mode === 'move') {
@@ -151,7 +151,7 @@ class Canvas extends React.Component {
         let props = shape.getAdjustProps(mode, startPoint, point);
         to = props.to;
       }
-      InstructionActions.modifyInstruction(instruction.getCloneWithTo(to, this.props.shapes));
+      InstructionActions.modifyInstruction(instruction.getCloneWithTo(to, this.props.shapes, magnets));
     }
   }
 
@@ -164,21 +164,20 @@ class Canvas extends React.Component {
 
   getEventPoint(event) {
     let point = this.getPositionOfEvent(event);
+    let magnets = [];
 
     // There will only be magnets shown if we are currently editing
     // an instruction
     if (this.state.closeMagnet) {
+      magnets = this.getCloseMagnets(point);
       // TODO need to consolidate naming convention
-      point = {
-        id: this.state.closeMagnet.shapeName,
-        point: this.state.closeMagnet.pointName
-      };
+      point = Canvas.convertMagnetToPoint(this.state.closeMagnet);
     }
-    return point;
+    return {point, magnets};
   }
 
   handleClick(event) {
-    let point = this.getEventPoint(event);
+    let {point, magnets} = this.getEventPoint(event);
     // TODO - probably need to use setState if we don't want any
     // ui glitches
     let instruction = this.props.editingInstruction;
@@ -186,7 +185,7 @@ class Canvas extends React.Component {
       if (!instruction.isValid()) {
         // This has to be a draw instruction, set the from
         // TODO - treat this as actually immutable
-        InstructionActions.modifyInstruction(instruction.getCloneWithFrom(point));
+        InstructionActions.modifyInstruction(instruction.getCloneWithFrom(point, magnets));
       } else {
         // If we click when we have a valid editing instruction we are ending
         // the instruction editing
@@ -226,6 +225,14 @@ class Canvas extends React.Component {
 
 Canvas.propTypes = {
   shapes: React.PropTypes.object.isRequired
+};
+
+// TODO - shouldn't need this, convert magnet to use same naming convention
+Canvas.convertMagnetToPoint = function(magnet) {
+  return {
+    id: magnet.shapeName,
+    point: magnet.pointName
+  };
 };
 
 export default Canvas;

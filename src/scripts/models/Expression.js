@@ -24,7 +24,7 @@ function isVar(fragment) {
 
 export default class Expression {
   constructor(fragments) {
-    if (!fragments) {
+    if (fragments === null || fragments === undefined) {
       this.fragments = [];
     } else if (fragments instanceof Array) {
       this.fragments = this.normalizeFragments(fragments);
