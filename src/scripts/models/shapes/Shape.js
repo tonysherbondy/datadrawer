@@ -2,6 +2,7 @@ export default class Shape {
   constructor(props) {
     this.id = props.id;
     this.index = props.index;
+    this.name = props.name || props.id;
   }
 
   getMagnets() {

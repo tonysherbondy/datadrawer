@@ -22,9 +22,10 @@ export default class ScaleInstruction extends Instruction {
 
   // TODO This belongs in the UI most likely
   getUiSentence(variables, variableValues) {
+    let shapeName = this.getShapeName(variableValues.shapes);
     return (
       <span className='instruction-sentence'>
-        {`Scale ${this.shape.id} ${this.prop} by`}
+        {`Scale ${shapeName} ${this.prop} by`}
         <ExpressionEditor
           onChange={this.handleToChange.bind(this, variableValues)}
           variables={variables}

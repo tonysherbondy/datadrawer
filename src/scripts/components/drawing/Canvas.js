@@ -34,9 +34,9 @@ class Canvas extends React.Component {
       return [];
     }
 
-    let editingShapeName = editingInstruction.getShapeName();
+    let editingId = editingInstruction.shapeId;
     let magnets = Object.keys(shapes)
-                    .filter(id => id !== editingShapeName)
+                    .filter(id => id !== editingId)
                     .map(id => shapes[id].getMagnets());
     return _.flatten(magnets);
   }
@@ -48,25 +48,24 @@ class Canvas extends React.Component {
     return selectedShape.getMagnets();
   }
 
-  getClosePoints(point, points) {
+  getClosePoints(point, points, threshold = 20) {
     // Return magnets that are within a threshold distance away from position
-    let threshold = 20;
     return (points || []).reduce((closePoints, shapePoint) => {
       let d = distanceBetweenPoints(point, shapePoint);
       return d < threshold ? closePoints.concat(shapePoint) : closePoints;
     }, []);
   }
 
-  getCloseMagnets(point) {
-    return this.getClosePoints(point, this.state.magnets);
+  getCloseMagnets(point, threshold = 20) {
+    return this.getClosePoints(point, this.state.magnets, threshold);
   }
 
-  getCloseSelectedShapePoint(point) {
-    return this.getClosePoints(point, this.state.selectedShapePoints);
+  getCloseSelectedShapePoint(point, threshold = 5) {
+    return this.getClosePoints(point, this.state.selectedShapePoints, threshold);
   }
 
   getEditingShape() {
-    return this.props.shapes[this.props.editingInstruction.getShapeName()];
+    return this.props.shapes[this.props.editingInstruction.shapeId];
   }
 
   drawShape(shape, key, props) {

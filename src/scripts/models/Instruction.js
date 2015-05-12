@@ -14,8 +14,17 @@ export default class Instruction {
     return true;
   }
 
-  getShapeName() {
-    return this.shapeId;
+  getShapeName(shapes) {
+    let shape = shapes[this.shapeId];
+    if (!shape) {
+      // That means we have a looped shape
+      shape = shapes[`${this.shapeId}_0`];
+    }
+    return shape.name;
+  }
+
+  getIndexString(index) {
+    return isFinite(index) ? `'${index}'` : undefined;
   }
 
   // TODO Can probably convert this to shape name now instead of object

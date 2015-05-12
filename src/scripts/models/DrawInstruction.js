@@ -10,6 +10,7 @@ export default class DrawInstruction extends Instruction {
     this.to = props.to;
     this.toMagnets = props.toMagnets;
     this.isGuide = !!props.isGuide;
+    this.name = props.name;
     this.strokeWidth = props.strokeWidth || 1;
     this.stroke = props.stroke || 'black';
     this.fill = props.fill || 'rgba(0, 0, 0, 0.2)';

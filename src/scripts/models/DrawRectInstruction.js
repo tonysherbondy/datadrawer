@@ -7,6 +7,7 @@ import Expression from './Expression';
 export default class DrawRectInstruction extends DrawInstruction {
   constructor(props) {
     super(props);
+    this.name = props.name || 'rect';
     this.width = props.width || new Expression(1);
     this.height = props.height || new Expression(1);
   }
@@ -43,7 +44,8 @@ export default class DrawRectInstruction extends DrawInstruction {
     let {x, y} = this.getFromJs(index);
     return `utils.rect({\n` +
            `id: '${this.shapeId}',\n` +
-           `index: '${index}',\n` +
+           `index: ${this.getIndexString(index)},\n` +
+           `name: '${this.name}',\n` +
            `x: ${x},\n` +
            `y: ${y},\n` +
            `width: ${this.getWidthJs(index)},\n` +
@@ -58,10 +60,10 @@ export default class DrawRectInstruction extends DrawInstruction {
   // TODO This belongs in the UI most likely
   getUiSentence(variables, variableValues) {
     if (!this.isValid()) {
-      return `Draw a rect ...`;
+      return `Draw a ${this.name} ...`;
     }
 
-    let fromUi = `Draw rect from ${this.getFromUi()}`;
+    let fromUi = `Draw ${this.name} from ${this.getFromUi()}`;
     if (this.to) {
       return `${fromUi} until ${this.to.id}'s ${this.to.point}`;
     }
