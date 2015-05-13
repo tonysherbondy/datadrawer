@@ -3,7 +3,6 @@ import DrawInstruction from './DrawInstruction';
 import ExpressionEditor from '../components/ExpressionEditor';
 import InstructionActions from '../actions/InstructionActions';
 import Expression from './Expression';
-import ContentEditable from '../components/ContentEditable';
 
 export default class DrawRectInstruction extends DrawInstruction {
   constructor(props) {
@@ -58,36 +57,18 @@ export default class DrawRectInstruction extends DrawInstruction {
            `}, '${this.shapeId}', ${index});\n`;
   }
 
-  getNameEditable() {
-    return (
-      <ContentEditable className='name-editable' html={this.name} onChange={this.handleShapeNameChange.bind(this)} />
-    );
-  }
 
   // TODO This belongs in the UI most likely
   getUiSentence(variables, variableValues) {
-    if (!this.isValid()) {
-      return (
-        <span className='instruction-sentence'>
-          Draw a {this.getNameEditable()}
-        </span>
-      );
-    }
 
-    let fromUi = (
-      <span>Draw {this.getNameEditable()} from {this.getFromUi()}</span>
-    );
-    if (this.to) {
-      let toName = this.getShapeName(variableValues.shapes, this.to.id);
-      let toUi = `until ${toName}'s ${this.to.point}`;
-      return (
-        <span className='instruction-sentence'>
-          {fromUi}
-          {toUi}
-        </span>
-      );
+    let basicUi = super.getUiSentence(variables, variableValues);
+    if (basicUi) {
+      return basicUi;
     }
+    let fromUi = this.getFromUi(variableValues.shapes);
 
+    // TODO - Actually what we should probably do is call the basic
+    // draw instruction and feed it the width/height ui children
     return (
       <span className='instruction-sentence'>
         {fromUi},
@@ -108,24 +89,20 @@ export default class DrawRectInstruction extends DrawInstruction {
     );
   }
 
-  handleShapeNameChange(evt) {
-    // Only draw instructions can change shape name for now
-    let props = this.getCloneProps();
-    props.name = evt.target.value;
+  modifyInstructionWithProps(props) {
     InstructionActions.modifyInstruction(new DrawRectInstruction(props));
   }
-
 
   handleWidthChange(definition) {
     let props = this.getCloneProps();
     props.width = definition;
-    InstructionActions.modifyInstruction(new DrawRectInstruction(props));
+    this.modifyInstructionWithProps(props);
   }
 
   handleHeightChange(definition) {
     let props = this.getCloneProps();
     props.height = definition;
-    InstructionActions.modifyInstruction(new DrawRectInstruction(props));
+    this.modifyInstructionWithProps(props);
   }
 
   getCloneProps() {
@@ -140,6 +117,7 @@ export default class DrawRectInstruction extends DrawInstruction {
     let props = this.getCloneProps();
     props.from = from;
     props.fromMagnets = magnets;
+    // TODO - Shouldn't we do our own modify here?
     return new DrawRectInstruction(props);
   }
 
@@ -158,6 +136,7 @@ export default class DrawRectInstruction extends DrawInstruction {
       props.width = new Expression(to.x - from.x);
       props.height = new Expression(to.y - from.y);
     }
+    // TODO - Shouldn't we do our own modify here?
     return new DrawRectInstruction(props);
   }
 

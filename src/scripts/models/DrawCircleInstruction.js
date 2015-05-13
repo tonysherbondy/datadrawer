@@ -1,12 +1,21 @@
+import React from 'react';
 import DrawInstruction from './DrawInstruction';
+import InstructionActions from '../actions/InstructionActions';
 
 export default class DrawCircleInstruction extends DrawInstruction {
   constructor(props) {
     super(props);
-    // TODO Handle that they can either set the destination to a
-    // point or a radius
+    this.name = props.name || 'circle';
     this.radius = props.radius;
   }
+
+  getCloneProps() {
+    let props = super.getCloneProps();
+    let {radius} = this;
+    props.radius = radius;
+    return props;
+  }
+
 
   getRadiusJs(index) {
     // This can be one of the following, a point specified by the to parameter,
@@ -45,14 +54,23 @@ export default class DrawCircleInstruction extends DrawInstruction {
     return this.radius;
   }
 
-
-  // TODO This belongs in the UI most likely
-  getUiSentence() {
-    let fromUi = `Draw circle around ${this.getFromUi()}`;
-    if (this.to) {
-      return `${fromUi} until ${this.to.id}'s ${this.to.point}`;
+  getUiSentence(variables, variableValues) {
+    let basicUi = super.getUiSentence(variables, variableValues);
+    if (basicUi) {
+      return basicUi;
     }
-    return `${fromUi} with radius ${this.getRadiusUi()}`;
+    let fromUi = this.getFromUi(variableValues.shapes);
+
+    return (
+      <span className='instruction-sentence'>
+        {fromUi},
+        with radius {this.getRadiusUi()}
+      </span>
+    );
+  }
+
+  modifyInstructionWithProps(props) {
+    InstructionActions.modifyInstruction(new DrawCircleInstruction(props));
   }
 
 }

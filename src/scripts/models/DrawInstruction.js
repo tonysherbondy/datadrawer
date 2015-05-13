@@ -1,4 +1,6 @@
+import React from 'react';
 import Instruction from './Instruction';
+import ContentEditable from '../components/ContentEditable';
 
 export default class DrawInstruction extends Instruction {
   constructor(props) {
@@ -82,11 +84,70 @@ export default class DrawInstruction extends Instruction {
     return this.from;
   }
 
-  getFromUi() {
-    if (this.from.id) {
-      return `${this.from.id}'s ${this.from.point}`;
+  getPointUi(shapes, point) {
+    if (!point || !point.point) {
+      return null;
     }
-    return `(${this.from.x}, ${this.from.y})`;
+    let name = this.getShapeName(shapes, point.id);
+    return `${name}'s ${point.point}`;
+  }
+
+  getNameEditable() {
+    if (!this.name) {
+      console.error('Must set name on draw instruction');
+    }
+
+    return (
+      <ContentEditable
+        className='name-editable'
+        html={this.name}
+        onChange={this.handleShapeNameChange.bind(this)} />
+    );
+  }
+
+  getInvalidUi() {
+    return (
+      <span className='instruction-sentence'>
+        Draw a {this.getNameEditable()}
+      </span>
+    );
+  }
+
+  getFromUi(shapes) {
+    let pointUi = this.getPointUi(shapes, this.from);
+    if (pointUi === null) {
+      pointUi = `(${this.from.x}, ${this.from.y})`;
+    }
+    return (
+      <span>Draw {this.getNameEditable()} from {pointUi}</span>
+    );
+  }
+
+
+  getUiSentence(variables, variableValues) {
+    if (!this.isValid()) {
+      return this.getInvalidUi();
+    }
+
+    let {shapes} = variableValues;
+    let fromUi = this.getFromUi(shapes);
+    if (this.to) {
+      let toUi = ` until ${this.getPointUi(shapes, this.to)}`;
+      return (
+        <span className='instruction-sentence'>
+          {fromUi}
+          {toUi}
+        </span>
+      );
+    }
+    return null;
+  }
+
+  handleShapeNameChange(evt) {
+    // Only draw instructions can change shape name for now
+    let props = this.getCloneProps();
+    props.name = evt.target.value;
+    this.modifyInstructionWithProps(props);
   }
 
 }
