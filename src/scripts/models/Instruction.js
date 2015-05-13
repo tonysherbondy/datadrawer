@@ -14,11 +14,12 @@ export default class Instruction {
     return true;
   }
 
-  getShapeName(shapes) {
-    let shape = shapes[this.shapeId];
+  getShapeName(shapes, shapeId) {
+    shapeId = shapeId || this.shapeId;
+    let shape = shapes[shapeId];
     if (!shape) {
       // That means we have a looped shape
-      shape = shapes[`${this.shapeId}_0`];
+      shape = shapes[`${shapeId}_0`];
     }
     return shape.name;
   }

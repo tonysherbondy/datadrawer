@@ -58,10 +58,6 @@ export default class DrawRectInstruction extends DrawInstruction {
            `}, '${this.shapeId}', ${index});\n`;
   }
 
-  handleShapeNameChange(name) {
-    console.log('handle shape name change', name);
-  }
-
   getNameEditable() {
     return (
       <ContentEditable className='name-editable' html={this.name} onChange={this.handleShapeNameChange.bind(this)} />
@@ -82,7 +78,8 @@ export default class DrawRectInstruction extends DrawInstruction {
       <span>Draw {this.getNameEditable()} from {this.getFromUi()}</span>
     );
     if (this.to) {
-      let toUi = `until ${this.to.id}'s ${this.to.point}`;
+      let toName = this.getShapeName(variableValues.shapes, this.to.id);
+      let toUi = `until ${toName}'s ${this.to.point}`;
       return (
         <span className='instruction-sentence'>
           {fromUi}
@@ -110,6 +107,14 @@ export default class DrawRectInstruction extends DrawInstruction {
       </span>
     );
   }
+
+  handleShapeNameChange(evt) {
+    // Only draw instructions can change shape name for now
+    let props = this.getCloneProps();
+    props.name = evt.target.value;
+    InstructionActions.modifyInstruction(new DrawRectInstruction(props));
+  }
+
 
   handleWidthChange(definition) {
     let props = this.getCloneProps();
