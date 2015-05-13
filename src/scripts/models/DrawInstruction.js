@@ -105,7 +105,7 @@ export default class DrawInstruction extends Instruction {
   getInvalidUi() {
     return (
       <span className='instruction-sentence'>
-        Draw a {this.getNameEditable()}
+        Draw a {this.getNameEditable()} ...
       </span>
     );
   }

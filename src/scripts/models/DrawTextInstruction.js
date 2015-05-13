@@ -1,17 +1,25 @@
+import React from 'react';
 import DrawLineInstruction from './DrawLineInstruction';
+import InstructionActions from '../actions/InstructionActions';
 
 export default class DrawTextInstruction extends DrawLineInstruction {
   constructor(props) {
     super(props);
+    this.name = props.name || 'text';
     this.text = props.text;
     this.fontSize = props.fontSize;
   }
 
-  getTextJs(index) {
-    if (this.text.id) {
-      return this.getDataOrShapePropJs(this.text, index);
-    }
-    return `'${this.text}'`;
+  modifyInstructionWithProps(props) {
+    InstructionActions.modifyInstruction(new DrawTextInstruction(props));
+  }
+
+  getCloneProps() {
+    let props = super.getCloneProps();
+    let {text, fontSize} = this;
+    props.text = text;
+    props.fontSize = fontSize;
+    return props;
   }
 
   getJsCode(index) {
@@ -19,7 +27,8 @@ export default class DrawTextInstruction extends DrawLineInstruction {
     return `utils.text({\n` +
            `id: '${this.shapeId}',\n` +
            `index: '${index}',\n` +
-           `text: ${this.getTextJs(index)},\n` +
+           `name: '${this.name}',\n` +
+           `text: ${this.text.getJsCode(index)},\n` +
            `fontSize: ${this.fontSize},\n` +
            `x1: ${x},\n` +
            `y1: ${y},\n` +
@@ -29,12 +38,12 @@ export default class DrawTextInstruction extends DrawLineInstruction {
   }
 
   // TODO This belongs in the UI most likely
-  getUiSentence() {
-    let fromUi = `Draw text from ${this.getFromUi()}`;
-    if (this.to) {
-      return `${fromUi} until ${this.to.id}'s ${this.to.point}`;
-    }
-    return `${fromUi}, ${this.getWidthUi()} horizontally, ${this.getHeightUi()} vertically`;
+  getUiSentence(variables, variableValues) {
+    return (
+      <span className='instruction-sentence'>
+        {this.getFromUi(variableValues.shapes)}
+      </span>
+    );
   }
 
 }
