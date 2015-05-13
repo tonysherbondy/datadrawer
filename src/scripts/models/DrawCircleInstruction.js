@@ -1,12 +1,17 @@
 import React from 'react';
 import DrawInstruction from './DrawInstruction';
 import InstructionActions from '../actions/InstructionActions';
+import ExpressionEditor from '../components/ExpressionEditor';
 
 export default class DrawCircleInstruction extends DrawInstruction {
   constructor(props) {
     super(props);
     this.name = props.name || 'circle';
     this.radius = props.radius;
+  }
+
+  modifyInstructionWithProps(props) {
+    InstructionActions.modifyInstruction(new DrawCircleInstruction(props));
   }
 
   getCloneProps() {
@@ -24,51 +29,38 @@ export default class DrawCircleInstruction extends DrawInstruction {
       let fromPt = `{x: ${x}, y: ${y}}`;
       let toPt = this.getPointVarJs(this.to, index);
       return `utils.distanceBetweenPoints(${fromPt}, ${toPt})`;
-    } else if (this.radius.id) {
-      return this.getDataOrShapePropJs(this.radius, index);
     }
-    return this.radius;
+    return this.radius.getJsCode(index);
   }
 
   getJsCode(index) {
     let {x, y} = this.getFromJs(index);
+    let propsJs = super.getPropsJs(index).join(',\n');
     return `utils.circle({\n` +
-                 `id: '${this.shapeId}',\n` +
-                 `index: '${index}',\n` +
-                 `cx: ${x},\n` +
-                 `cy: ${y},\n` +
-                 `r: ${this.getRadiusJs(index)},\n` +
-                 `fill: '${this.fill}',\n` +
-                 `stroke: '${this.stroke}',\n` +
-                 `strokeWidth: ${this.strokeWidth},\n` +
-                 `isGuide: ${this.isGuide}\n` +
-                 `}, '${this.shapeId}', ${index});\n`;
+           `${propsJs},\n` +
+           `cx: ${x},\n` +
+           `cy: ${y},\n` +
+           `r: ${this.getRadiusJs(index)},\n` +
+           `}, '${this.shapeId}', ${index});\n`;
   }
 
-  getRadiusUi() {
-    if (this.radius.id) {
-      return `${this.radius.id}`;
-    }
-    return this.radius;
-  }
-
-  getUiSentence(variables, variableValues) {
-    let basicUi = super.getUiSentence(variables, variableValues);
-    if (basicUi) {
-      return basicUi;
-    }
-    let fromUi = this.getFromUi(variableValues.shapes);
-
+  getSizeUi(variables, variableValues) {
     return (
-      <span className='instruction-sentence'>
-        {fromUi},
-        with radius {this.getRadiusUi()}
+      <span className="size-ui">
+        , with radius
+        <ExpressionEditor
+          onChange={this.handleRadiusChange.bind(this)}
+          variables={variables}
+          variableValues={variableValues}
+          definition={this.radius} />
       </span>
     );
   }
 
-  modifyInstructionWithProps(props) {
-    InstructionActions.modifyInstruction(new DrawCircleInstruction(props));
+  handleRadiusChange(definition) {
+    let props = this.getCloneProps();
+    props.radius = definition;
+    this.modifyInstructionWithProps(props);
   }
 
 }

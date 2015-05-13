@@ -85,34 +85,19 @@ export default class DrawRectInstruction extends DrawInstruction {
 
   getJsCode(index) {
     let {x, y} = this.getFromJs(index);
+    let propsJs = super.getPropsJs(index).join(',\n');
     return `utils.rect({\n` +
-           `id: '${this.shapeId}',\n` +
-           `index: ${this.getIndexString(index)},\n` +
-           `name: '${this.name}',\n` +
+           `${propsJs},\n` +
            `x: ${x},\n` +
            `y: ${y},\n` +
            `width: ${this.getWidthJs(index)},\n` +
-           `height: ${this.getHeightJs(index)},\n` +
-           `fill: '${this.fill}',\n` +
-           `stroke: '${this.stroke}',\n` +
-           `strokeWidth: ${this.strokeWidth},\n` +
-           `isGuide: ${this.isGuide}\n` +
+           `height: ${this.getHeightJs(index)}\n` +
            `}, '${this.shapeId}', ${index});\n`;
   }
 
-
-  getUiSentence(variables, variableValues) {
-    let basicUi = super.getUiSentence(variables, variableValues);
-    if (basicUi) {
-      return basicUi;
-    }
-    let fromUi = this.getFromUi(variableValues.shapes);
-
-    // TODO - Actually what we should probably do is call the basic
-    // draw instruction and feed it the width/height ui children
+  getSizeUi(variables, variableValues) {
     return (
-      <span className='instruction-sentence'>
-        {fromUi},
+      <span className="to-expression">
         <ExpressionEditor
           onChange={this.handleWidthChange.bind(this)}
           variables={variables}

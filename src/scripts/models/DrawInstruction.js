@@ -18,6 +18,16 @@ export default class DrawInstruction extends Instruction {
     this.fill = props.fill || 'rgba(0, 0, 0, 0.2)';
   }
 
+  getPropsJs(index) {
+    return super.getPropsJs(index).concat([
+     `name: '${this.name}'`,
+     `fill: '${this.fill}'`,
+     `stroke: '${this.stroke}'`,
+     `strokeWidth: ${this.strokeWidth}`,
+     `isGuide: ${this.isGuide}`
+    ]);
+  }
+
   getCloneProps() {
     let props = super.getCloneProps();
     let {from, fromMagnets, to, toMagnets, isGuide, strokeWidth, stroke, fill} = this;
@@ -120,6 +130,10 @@ export default class DrawInstruction extends Instruction {
     );
   }
 
+  getPointToUi(shapes) {
+    return ` until ${this.getPointUi(shapes, this.to)}`;
+  }
+
   getUiSentence(variables, variableValues) {
     if (!this.isValid()) {
       return this.getInvalidUi();
@@ -127,16 +141,18 @@ export default class DrawInstruction extends Instruction {
 
     let {shapes} = variableValues;
     let fromUi = this.getFromUi(shapes);
+    let toUi;
     if (this.to) {
-      let toUi = ` until ${this.getPointUi(shapes, this.to)}`;
-      return (
-        <span className='instruction-sentence'>
-          {fromUi}
-          {toUi}
-        </span>
-      );
+      toUi = this.getPointToUi(shapes);
+    } else {
+      toUi = this.getSizeUi(variables, variableValues);
     }
-    return null;
+    return (
+      <span className='instruction-sentence'>
+        {fromUi}
+        {toUi}
+      </span>
+    );
   }
 
   handleShapeNameChange(evt) {

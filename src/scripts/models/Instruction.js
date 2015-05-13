@@ -6,6 +6,13 @@ export default class Instruction {
     this.shapeId = shapeId;
   }
 
+  getPropsJs(index) {
+    return [
+      `id: '${this.shapeId}'`,
+      `index: ${this.getIndexString(index)}`
+    ];
+  }
+
   getCloneProps() {
     return {id: this.id, shapeId: this.shapeId};
   }
