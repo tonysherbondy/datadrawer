@@ -21,8 +21,9 @@ export default class DrawInstruction extends Instruction {
   getCloneProps() {
     let props = super.getCloneProps();
     let {from, fromMagnets, to, toMagnets, isGuide, strokeWidth, stroke, fill} = this;
-    return Object.assign(props, {to, toMagnets, from, fromMagnets, isGuide, stroke,
-                         strokeWidth, fill});
+    return Object.assign(props, {to, toMagnets, from, fromMagnets,
+                                 isGuide, stroke,
+                                 strokeWidth, fill});
   }
 
   isValid() {
@@ -52,11 +53,9 @@ export default class DrawInstruction extends Instruction {
       // TODO Probably will need some util function to handle the fact
       // that we might get negative distances
       return `${toPt}.x`;
-    } else if (this.width.id) {
-      let widthVar = this.getDataOrShapePropJs(this.width, index);
-      return `${widthVar} + ${x}`;
     }
-    return `${this.width} + ${x}`;
+    let widthJs = this.width.getJsCode(index);
+    return `${widthJs} + ${x}`;
   }
 
   getToYJs(index) {
@@ -68,11 +67,9 @@ export default class DrawInstruction extends Instruction {
       // TODO Probably will need some util function to handle the fact
       // that we might get negative distances
       return `${toPt}.y`;
-    } else if (this.height.id) {
-      let heightVar = this.getDataOrShapePropJs(this.height, index);
-      return `${heightVar} + ${y}`;
     }
-    return `${this.height} + ${y}`;
+    let heightJs = this.height.getJsCode(index);
+    return `${heightJs} + ${y}`;
   }
 
   getFromValue(shapes) {
@@ -122,7 +119,6 @@ export default class DrawInstruction extends Instruction {
       <span>Draw {this.getNameEditable()} from {pointUi}</span>
     );
   }
-
 
   getUiSentence(variables, variableValues) {
     if (!this.isValid()) {

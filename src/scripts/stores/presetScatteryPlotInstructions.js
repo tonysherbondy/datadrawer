@@ -1,12 +1,12 @@
-import DrawRectInstruction from '../models/DrawRectInstruction';
 import DrawCircleInstruction from '../models/DrawCircleInstruction';
+import DrawRectInstruction from '../models/DrawRectInstruction';
 import LoopInstruction from '../models/LoopInstruction';
+import ScaleInstruction from '../models/ScaleInstruction';
+import Expression from '../models/Expression';
 import DrawLineInstruction from '../models/DrawLineInstruction';
 import MoveInstruction from '../models/MoveInstruction';
-import ScaleInstruction from '../models/ScaleInstruction';
 import DrawPathInstruction from '../models/DrawPathInstruction';
 import RotateInstruction from '../models/RotateInstruction';
-import Expression from '../models/Expression';
 
 // Crazy scatterish plot
 const instructions = [
@@ -78,13 +78,13 @@ const instructions = [
         point: 'center',
         to: {id: 'shape_i4', point: 'center'}
       }),
-      // TODO missing ability to draw a line centered about a point
+      //// TODO missing ability to draw a line centered about a point
       new DrawLineInstruction({
         id: 'i8',
         strokeWidth: 2,
         from: {id: 'shape_i6', point: 'right'},
-        width: 0,
-        height: 9.5
+        width: new Expression(0),
+        height: new Expression(9.5)
       }),
       new MoveInstruction({
         id: 'imove3',
@@ -92,13 +92,13 @@ const instructions = [
         point: 'center',
         to: {id: 'shape_i6', point: 'right'}
       }),
-      // TODO missing ability to draw a line centered about a point
+      //// TODO missing ability to draw a line centered about a point
       new DrawLineInstruction({
         id: 'i9',
         strokeWidth: 2,
         from: {id: 'shape_i6', point: 'left'},
-        width: 0,
-        height: 9.5
+        width: new Expression(0),
+        height: new Expression(9.5)
       }),
       new MoveInstruction({
         id: 'imove4',
@@ -161,15 +161,15 @@ const instructions = [
         id: 'i13',
         strokeWidth: 1,
         from: {id: 'shape_i10', point: 'bottom'},
-        width: 0,
-        height: -15
+        width: new Expression(0),
+        height: new Expression(-15)
       }),
       new DrawLineInstruction({
         id: 'i14',
         strokeWidth: 1,
         from: {id: 'shape_i1', point: 'topLeft'},
-        width: 15,
-        height: 0
+        width: new Expression(15),
+        height: new Expression(0)
       })
     ]
   })

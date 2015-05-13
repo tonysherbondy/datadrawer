@@ -12,6 +12,49 @@ export default class DrawRectInstruction extends DrawInstruction {
     this.height = props.height || new Expression(1);
   }
 
+  modifyInstructionWithProps(props) {
+    InstructionActions.modifyInstruction(new DrawRectInstruction(props));
+  }
+
+  getCloneProps() {
+    let props = super.getCloneProps();
+    let {width, height} = this;
+    props.width = width;
+    props.height = height;
+    return props;
+  }
+
+  getCloneWithFrom(from, magnets) {
+    let props = this.getCloneProps();
+    props.from = from;
+    props.fromMagnets = magnets;
+    // TODO - Shouldn't we do our own modify here?
+    return new DrawRectInstruction(props);
+  }
+
+  getCloneWithTo(to, shapes, magnets) {
+    let props = this.getCloneProps();
+    // TODO - if to is a magnet, we set to otherwise, width & height
+    if (to.id) {
+      props.to = to;
+      props.toMagnets = magnets;
+      props.width = null;
+      props.height = null;
+    } else {
+      let from = this.getFromValue(shapes);
+      props.to = null;
+      // TODO - Somehow this gets set to empty array???
+      props.width = new Expression(to.x - from.x);
+      props.height = new Expression(to.y - from.y);
+    }
+    // TODO - Shouldn't we do our own modify here?
+    return new DrawRectInstruction(props);
+  }
+
+  clone() {
+    return new DrawRectInstruction(this.getCloneProps());
+  }
+
   getWidthJs(index) {
     // Someone can specify a magnet to draw to
     if (this.to) {
@@ -58,9 +101,7 @@ export default class DrawRectInstruction extends DrawInstruction {
   }
 
 
-  // TODO This belongs in the UI most likely
   getUiSentence(variables, variableValues) {
-
     let basicUi = super.getUiSentence(variables, variableValues);
     if (basicUi) {
       return basicUi;
@@ -89,10 +130,6 @@ export default class DrawRectInstruction extends DrawInstruction {
     );
   }
 
-  modifyInstructionWithProps(props) {
-    InstructionActions.modifyInstruction(new DrawRectInstruction(props));
-  }
-
   handleWidthChange(definition) {
     let props = this.getCloneProps();
     props.width = definition;
@@ -103,45 +140,6 @@ export default class DrawRectInstruction extends DrawInstruction {
     let props = this.getCloneProps();
     props.height = definition;
     this.modifyInstructionWithProps(props);
-  }
-
-  getCloneProps() {
-    let props = super.getCloneProps();
-    let {width, height} = this;
-    props.width = width;
-    props.height = height;
-    return props;
-  }
-
-  getCloneWithFrom(from, magnets) {
-    let props = this.getCloneProps();
-    props.from = from;
-    props.fromMagnets = magnets;
-    // TODO - Shouldn't we do our own modify here?
-    return new DrawRectInstruction(props);
-  }
-
-  getCloneWithTo(to, shapes, magnets) {
-    let props = this.getCloneProps();
-    // TODO - if to is a magnet, we set to otherwise, width & height
-    if (to.id) {
-      props.to = to;
-      props.toMagnets = magnets;
-      props.width = null;
-      props.height = null;
-    } else {
-      let from = this.getFromValue(shapes);
-      props.to = null;
-      // TODO - Somehow this gets set to empty array???
-      props.width = new Expression(to.x - from.x);
-      props.height = new Expression(to.y - from.y);
-    }
-    // TODO - Shouldn't we do our own modify here?
-    return new DrawRectInstruction(props);
-  }
-
-  clone() {
-    return new DrawRectInstruction(this.getCloneProps());
   }
 
 }

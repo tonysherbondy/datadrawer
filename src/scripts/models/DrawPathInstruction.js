@@ -1,13 +1,23 @@
+import React from 'react';
 import DrawInstruction from './DrawInstruction';
+import InstructionActions from '../actions/InstructionActions';
 
 export default class DrawPathInstruction extends DrawInstruction {
   constructor(props) {
     super(props);
     this.to = props.to;
-    this.fill = props.fill;
-    this.stroke = props.stroke;
-    this.strokeWidth = props.strokeWidth;
+    this.name = props.name || 'path';
     this.isClosed = props.isClosed;
+  }
+
+  modifyInstructionWithProps(props) {
+    InstructionActions.modifyInstruction(new DrawPathInstruction(props));
+  }
+
+  getCloneProps() {
+    let props = super.getCloneProps();
+    props.isClosed = this.isClosed;
+    return props;
   }
 
   getFromJs(index) {
@@ -38,6 +48,7 @@ export default class DrawPathInstruction extends DrawInstruction {
     return `utils.path({\n` +
                  `id: '${this.shapeId}',\n` +
                  `index: '${index}',\n` +
+                 `name: '${this.name}',\n` +
                  `from: ${this.getFromJs(index)},\n` +
                  `points: ${this.getToJs(index)},\n` +
                  `isClosed: ${this.isClosed},\n` +
@@ -48,14 +59,18 @@ export default class DrawPathInstruction extends DrawInstruction {
                  `}, '${this.shapeId}', ${index});\n`;
   }
 
-  getUiSentence() {
-    let fromUi = `Draw path from ${this.getFromUi()}`;
+  getUiSentence(variables, variableValues) {
     let allTosUi = this.to.map(to => {
       if (to.id) {
       return `to (to.id)`;
       }
       return `to (${to.x}, ${to.y})`;
     });
-    return [fromUi].concat(allTosUi).join(' ');
+    return (
+      <span className='instruction-sentence'>
+        {this.getFromUi(variableValues.shapes)}
+        {' ' + allTosUi.join(' ')}
+      </span>
+    );
   }
 }

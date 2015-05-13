@@ -11,11 +11,9 @@ export default class DrawCircleInstruction extends DrawInstruction {
 
   getCloneProps() {
     let props = super.getCloneProps();
-    let {radius} = this;
-    props.radius = radius;
+    props.radius = this.radius;
     return props;
   }
-
 
   getRadiusJs(index) {
     // This can be one of the following, a point specified by the to parameter,
