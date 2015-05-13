@@ -8,9 +8,10 @@ export default class ContentEditable extends React.Component {
         {...this.props}
         onInput={this.emitChange.bind(this)}
         onBlur={this.emitChange.bind(this)}
+        onKeyDown={this.handleKeyDown.bind(this)}
         contentEditable='true'
-        dangerouslySetInnerHTML={{__html: this.props.html}}
-      ></div>
+        dangerouslySetInnerHTML={{__html: this.props.html}}>
+      </div>
     );
   }
 
@@ -19,25 +20,27 @@ export default class ContentEditable extends React.Component {
   }
 
   componentDidUpdate() {
-    let html = React.findDOMNode(this).innerHTML;
-    if (this.props.html !== html) {
-      html = this.props.html;
+    if ( this.props.html !== React.findDOMNode(this).innerHTML ) {
+     this.getDOMNode().innerHTML = this.props.html;
     }
   }
 
-  emitChange() {
-    let element = React.findDOMNode(this);
-    let html = element.innerHTML;
-    if (html !== this.lastHtml) {
-      if (this.props.onChangeNodes) {
-        // The handler wants the actual DOM nodes sent
-        this.props.onChangeNodes(element.childNodes);
-      } else if (this.props.onChange) {
-        // The handler wants the html string sent
-        this.props.onChange(html);
-      }
+  emitChange(evt) {
+    var html = React.findDOMNode(this).innerHTML;
+    if (this.props.onChange && html !== this.lastHtml) {
+      evt.target = {value: html};
+      this.props.onChange(evt);
     }
     this.lastHtml = html;
   }
 
+  handleKeyDown(evt) {
+    // Don't let this bubble to app that is listening for key presses
+    evt.stopPropagation();
+  }
+
 }
+
+ContentEditable.propTypes = {
+  html: React.PropTypes.string.isRequired
+};

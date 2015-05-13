@@ -66,6 +66,12 @@ td, th {
   padding: 0px;
 }
 
+.name-editable {
+  background-color: rgb(231, 238, 80);
+  white-space: nowrap;
+  display: inline-block;
+  margin: 0px 10px 0px 10px;
+}
 
 // testing
 #cursorLocation {

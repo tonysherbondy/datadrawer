@@ -3,6 +3,7 @@ import DrawInstruction from './DrawInstruction';
 import ExpressionEditor from '../components/ExpressionEditor';
 import InstructionActions from '../actions/InstructionActions';
 import Expression from './Expression';
+import ContentEditable from '../components/ContentEditable';
 
 export default class DrawRectInstruction extends DrawInstruction {
   constructor(props) {
@@ -57,15 +58,37 @@ export default class DrawRectInstruction extends DrawInstruction {
            `}, '${this.shapeId}', ${index});\n`;
   }
 
+  handleShapeNameChange(name) {
+    console.log('handle shape name change', name);
+  }
+
+  getNameEditable() {
+    return (
+      <ContentEditable className='name-editable' html={this.name} onChange={this.handleShapeNameChange.bind(this)} />
+    );
+  }
+
   // TODO This belongs in the UI most likely
   getUiSentence(variables, variableValues) {
     if (!this.isValid()) {
-      return `Draw a ${this.name} ...`;
+      return (
+        <span className='instruction-sentence'>
+          Draw a {this.getNameEditable()}
+        </span>
+      );
     }
 
-    let fromUi = `Draw ${this.name} from ${this.getFromUi()}`;
+    let fromUi = (
+      <span>Draw {this.getNameEditable()} from {this.getFromUi()}</span>
+    );
     if (this.to) {
-      return `${fromUi} until ${this.to.id}'s ${this.to.point}`;
+      let toUi = `until ${this.to.id}'s ${this.to.point}`;
+      return (
+        <span className='instruction-sentence'>
+          {fromUi}
+          {toUi}
+        </span>
+      );
     }
 
     return (
