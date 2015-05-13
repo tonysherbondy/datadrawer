@@ -99,6 +99,14 @@ export default class DrawInstruction extends Instruction {
     return `${name}'s ${point.point}`;
   }
 
+  getSizeUi() {
+    return (
+      <span className="size-ui">
+        , with unknown size
+      </span>
+    );
+  }
+
   getNameEditable() {
     if (!this.name) {
       console.error('Must set name on draw instruction');

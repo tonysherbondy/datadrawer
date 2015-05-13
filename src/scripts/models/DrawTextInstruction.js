@@ -24,10 +24,9 @@ export default class DrawTextInstruction extends DrawLineInstruction {
 
   getJsCode(index) {
     let {x, y} = this.getFromJs(index);
+    let propsJs = super.getPropsJs(index).join(',\n');
     return `utils.text({\n` +
-           `id: '${this.shapeId}',\n` +
-           `index: '${index}',\n` +
-           `name: '${this.name}',\n` +
+           `${propsJs},\n` +
            `text: ${this.text.getJsCode(index)},\n` +
            `fontSize: ${this.fontSize},\n` +
            `x1: ${x},\n` +

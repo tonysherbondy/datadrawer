@@ -45,18 +45,13 @@ export default class DrawPathInstruction extends DrawInstruction {
   }
 
   getJsCode(index) {
+    let propsJs = super.getPropsJs(index).join(',\n');
     return `utils.path({\n` +
-                 `id: '${this.shapeId}',\n` +
-                 `index: '${index}',\n` +
-                 `name: '${this.name}',\n` +
-                 `from: ${this.getFromJs(index)},\n` +
-                 `points: ${this.getToJs(index)},\n` +
-                 `isClosed: ${this.isClosed},\n` +
-                 `fill: '${this.fill}',\n` +
-                 `stroke: '${this.stroke}',\n` +
-                 `strokeWidth: ${this.strokeWidth},\n` +
-                 `isGuide: ${this.isGuide}\n` +
-                 `}, '${this.shapeId}', ${index});\n`;
+           `${propsJs},\n` +
+           `from: ${this.getFromJs(index)},\n` +
+           `points: ${this.getToJs(index)},\n` +
+           `isClosed: ${this.isClosed},\n` +
+           `}, '${this.shapeId}', ${index});\n`;
   }
 
   getUiSentence(variables, variableValues) {

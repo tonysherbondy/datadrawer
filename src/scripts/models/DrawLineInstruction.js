@@ -26,45 +26,19 @@ export default class DrawLineInstruction extends DrawInstruction {
 
   getJsCode(index) {
     let {x, y} = this.getFromJs(index);
+    let propsJs = super.getPropsJs(index).join(',\n');
     return `utils.line({\n` +
-           `id: '${this.shapeId}',\n` +
-           `index: '${index}',\n` +
+           `${propsJs},\n` +
            `x1: ${x},\n` +
            `y1: ${y},\n` +
            `x2: ${this.getToXJs(index)},\n` +
            `y2: ${this.getToYJs(index)},\n` +
-           `stroke: '${this.stroke}',\n` +
-           `strokeWidth: ${this.strokeWidth},\n` +
-           `isGuide: ${this.isGuide}\n` +
            `}, '${this.shapeId}', ${index});\n`;
   }
 
-  getWidthUi() {
-    if (this.width.id) {
-      return `${this.width.id}`;
-    }
-    return this.width;
-  }
-
-  getHeightUi() {
-    if (this.height.id) {
-      return `${this.height.id}`;
-    }
-    return this.height;
-  }
-
-  getUiSentence(variables, variableValues) {
-    let basicUi = super.getUiSentence(variables, variableValues);
-    if (basicUi) {
-      return basicUi;
-    }
-    let fromUi = this.getFromUi(variableValues.shapes);
-
-    // TODO - Actually what we should probably do is call the basic
-    // draw instruction and feed it the width/height ui children
+  getSizeUi(variables, variableValues) {
     return (
-      <span className='instruction-sentence'>
-        {fromUi},
+      <span className="to-expression">
         <ExpressionEditor
           onChange={this.handleWidthChange.bind(this)}
           variables={variables}

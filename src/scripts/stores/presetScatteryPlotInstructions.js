@@ -14,7 +14,7 @@ const instructions = [
     id: 'i0',
     from: {id: 'canvas', point: 'bottomLeft'},
     isGuide: true,
-    radius: 20
+    radius: new Expression(20)
   }),
   new LoopInstruction({
     id: 'loop',
@@ -44,7 +44,7 @@ const instructions = [
         id: 'i4',
         isGuide: true,
         from: {id: 'shape_i1', point: 'topRight'},
-        radius: 10
+        radius: new Expression(10)
       }),
       new DrawLineInstruction({
         id: 'i5',
