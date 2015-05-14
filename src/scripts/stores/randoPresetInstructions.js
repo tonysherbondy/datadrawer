@@ -36,8 +36,9 @@ const instructions = [
   new MoveInstruction({
     id: 'imove1',
     shape: {id: 'shape_i3'},
-    prop: 'center',
-    to: {x: -20, y: 0}
+    point: 'center',
+    x: new Expression(-20),
+    y: new Expression(0)
   }),
   new DrawRectInstruction({
     id: 'i4',

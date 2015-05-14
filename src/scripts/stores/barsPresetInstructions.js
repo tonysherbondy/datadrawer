@@ -55,7 +55,8 @@ const instructions = [
         id: 'imove2',
         shape: {id: 'shape_text1'},
         point: 'center',
-        to: {x: 0, y: 14}
+        x: new Expression(0),
+        y: new Expression(14)
       }),
       new DrawLineInstruction({
         id: 'line1',
@@ -71,7 +72,8 @@ const instructions = [
             id: 'imove3',
             shape: {id: 'shape_text1'},
             point: 'center',
-            to: {x: 0, y: -18}
+            x: new Expression(0),
+            y: new Expression(-18)
           })
         ]
       })

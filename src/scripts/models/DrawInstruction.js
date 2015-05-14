@@ -91,14 +91,6 @@ export default class DrawInstruction extends Instruction {
     return this.from;
   }
 
-  getPointUi(shapes, point) {
-    if (!point || !point.point) {
-      return null;
-    }
-    let name = this.getShapeName(shapes, point.id);
-    return `${name}'s ${point.point}`;
-  }
-
   getSizeUi() {
     return (
       <span className="size-ui">

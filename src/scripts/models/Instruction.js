@@ -52,4 +52,13 @@ export default class Instruction {
     return `${varName}.getPoint('${pointVar.point}')`;
   }
 
+  getPointUi(shapes, point) {
+    if (!point || !point.point) {
+      return null;
+    }
+    let name = this.getShapeName(shapes, point.id);
+    return `${name}'s ${point.point}`;
+  }
+
+
 }
