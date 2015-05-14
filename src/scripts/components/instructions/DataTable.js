@@ -1,4 +1,5 @@
 import React from 'react';
+import VariablePill from '../VariablePill';
 
 export default class DataTable extends React.Component {
 
@@ -17,7 +18,9 @@ export default class DataTable extends React.Component {
       });
       return (
         <tr key={index}>
-          <td>{row.name}</td>
+          <td>
+            <VariablePill variable={row} />
+          </td>
           {cells}
         </tr>
       );
