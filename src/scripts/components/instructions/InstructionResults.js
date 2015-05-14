@@ -118,8 +118,9 @@ export default class InstructionResults extends React.Component {
       return map;
     }, {scalars: [], vectors: []});
 
+    let {selectedShapeId} = this.props;
     let selectedInstruction = this.props.selectedInstruction;
-    let selectedShape = selectedInstruction ? shapes[selectedInstruction.shapeId] : null;
+    let selectedShape = selectedShapeId ? shapes[selectedShapeId] : null;
 
     return (
       <div>

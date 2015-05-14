@@ -23,6 +23,22 @@ class App extends React.Component {
     return 'i' + this.props.instructions.length + 1;
   }
 
+  selectNextShape() {
+    // Get all available shape ids
+    let shapes = this.props.instructions
+                  .filter(i => i instanceof DrawInstruction)
+                  .map(i => i.shapeId);
+    let {selectedShapeId} = this.props.drawingState;
+
+    // If the selectedShape wasn't found or didn't have one go to first
+    // otherwise next
+    let nextIndex = shapes.indexOf(selectedShapeId) + 1;
+    if (nextIndex >= shapes.length || nextIndex < 0) {
+      DrawingStateActions.setSelectedShape(null);
+    }
+    DrawingStateActions.setSelectedShape(shapes[nextIndex]);
+  }
+
   handleKeyDown(e) {
     let code = e.keyCode || e.which;
     switch (code) {
@@ -37,13 +53,17 @@ class App extends React.Component {
         break;
       }
       case 78: { //n
+        if (e.shiftKey) {
+          this.selectNextShape();
+          return;
+        }
         // Edit the selected instruction by cycling through overlapping
         // magnet points
         // Toggle guide setting on selected shape
         let instruction = this.getSelectedInstruction();
-        if ((instruction instanceof DrawInstruction ||
-            instruction instanceof ScaleInstruction) &&
-            instruction.isValid()) {
+        if (instruction && instruction.isValid() &&
+            (instruction instanceof DrawInstruction ||
+            instruction instanceof ScaleInstruction)) {
 
           // If the point is valid we have either a scale or draw instruction
           // and either way we access the to point.
@@ -120,15 +140,27 @@ class App extends React.Component {
     });
   }
 
-  // TODO - Right now it is the last instruction
+  // If there is a selected shape then there is no selecte instruction, o.w.,
+  // it is the last instruction
   getSelectedInstruction() {
     return _.last(this.props.instructions);
   }
 
+  // Either the one the user selected or the shape from the selected
+  // shape
+  getSelectedShapeId() {
+    let {selectedShapeId} = this.props.drawingState;
+    let selectedInstruction = this.getSelectedInstruction();
+    if (!_.isString(selectedShapeId) && selectedInstruction) {
+      selectedShapeId = selectedInstruction.shapeId;
+    }
+    return selectedShapeId;
+  }
+
   getDrawInstructionForSelectedShape() {
-    let shapeId = this.getSelectedInstruction().shapeId;
+    let selectedShapeId = this.getSelectedShapeId();
     return this.props.instructions.find(i => {
-      return i.shapeId === shapeId && i instanceof DrawInstruction;
+      return i.shapeId === selectedShapeId && i instanceof DrawInstruction;
     });
   }
 
@@ -143,6 +175,11 @@ class App extends React.Component {
   }
 
   render() {
+    // When the user selects a shape, there is no selected instruction
+    let selectedInstruction = this.getSelectedInstruction();
+    if (_.isString(this.props.drawingState.selectedShapeId)) {
+      selectedInstruction = null;
+    }
     return (
       <div onKeyDown={this.handleKeyPress} className='main'>
         <h1>Tukey App</h1>
@@ -155,7 +192,8 @@ class App extends React.Component {
           instructions={this.props.instructions}
           dataVariables={this.props.variables}
           editingInstruction={this.getEditingInstruction()}
-          selectedInstruction={this.getSelectedInstruction()}
+          selectedShapeId={this.getSelectedShapeId()}
+          selectedInstruction={selectedInstruction}
         />
       </div>
     );

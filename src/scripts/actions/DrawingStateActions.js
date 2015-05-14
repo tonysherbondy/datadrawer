@@ -13,6 +13,13 @@ const DrawingStateActions = biff.createActions({
       actionType: 'SET_EDITING_INSTRUCTION',
       data: id
     });
+  },
+
+  setSelectedShape(id) {
+    this.dispatch({
+      actionType: 'SET_SELECTED_SHAPE',
+      data: {id}
+    });
   }
 });
 
