@@ -1,16 +1,21 @@
 import React from 'react';
-import Instruction from './Instruction';
+import AdjustInstruction from './AdjustInstruction';
 import ExpressionEditor from '../components/ExpressionEditor';
 import InstructionActions from '../actions/InstructionActions';
 
-export default class ScaleInstruction extends Instruction {
+export default class ScaleInstruction extends AdjustInstruction {
   constructor(props) {
-    super({id: props.id, shapeId: props.shape.id});
-    this.point = props.point;
-    this.prop = props.prop;
-    this.to = props.to;
-    this.toMagnets = props.toMagnets;
-    this.shape = props.shape;
+    super(props);
+  }
+
+  modifyInstructionWithProps(props) {
+    InstructionActions.modifyInstruction(new ScaleInstruction(props));
+  }
+
+  getCloneWithTo(to) {
+    let props = this.getCloneProps();
+    props.to = to;
+    return new ScaleInstruction(props);
   }
 
   getJsCode(index) {
@@ -27,7 +32,7 @@ export default class ScaleInstruction extends Instruction {
       <span className='instruction-sentence'>
         {`Scale ${shapeName}'s ${this.prop} by`}
         <ExpressionEditor
-          onChange={this.handleToChange.bind(this, variableValues)}
+          onChange={this.handleToChange.bind(this)}
           variables={variables}
           variableValues={variableValues}
           definition={this.to} />
@@ -35,25 +40,10 @@ export default class ScaleInstruction extends Instruction {
     );
   }
 
-  handleToChange(variableValues, definition) {
+  handleToChange(definition) {
     let props = this.getCloneProps();
     props.to = definition;
-    InstructionActions.modifyInstruction(new ScaleInstruction(props));
+    this.modifyInstructionWithProps(props);
   }
 
-  getCloneProps() {
-    let props = super.getCloneProps();
-    let {point, prop, to, shape} = this;
-    props.point = point;
-    props.prop = prop;
-    props.to = to;
-    props.shape = shape;
-    return props;
-  }
-
-  getCloneWithTo(to) {
-    let props = this.getCloneProps();
-    props.to = to;
-    return new ScaleInstruction(props);
-  }
 }

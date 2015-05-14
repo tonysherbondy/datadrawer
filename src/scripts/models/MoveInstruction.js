@@ -1,16 +1,27 @@
 import React from 'react';
-import Instruction from './Instruction';
+import AdjustInstruction from './AdjustInstruction';
 import ExpressionEditor from '../components/ExpressionEditor';
+import InstructionActions from '../actions/InstructionActions';
 
-export default class MoveInstruction extends Instruction {
+export default class MoveInstruction extends AdjustInstruction {
   constructor(props) {
-    super({id: props.id, shapeId: props.shape.id});
-    this.point = props.point;
-    this.to = props.to;
+    super(props);
     this.x = props.x;
     this.y = props.y;
-    this.shape = props.shape;
     this.isReshape = props.isReshape;
+  }
+
+  modifyInstructionWithProps(props) {
+    InstructionActions.modifyInstruction(new MoveInstruction(props));
+  }
+
+  getCloneProps() {
+    let props = super.getCloneProps();
+    let {x, y, isReshape} = this;
+    props.x = x;
+    props.y = y;
+    props.isReshape = isReshape;
+    return props;
   }
 
   getJsCode(index) {
@@ -64,11 +75,16 @@ export default class MoveInstruction extends Instruction {
     );
   }
 
-  handleYChange(evt) {
-    console.log('handle y change', evt);
+  handleXChange(definition) {
+    let props = this.getCloneProps();
+    props.x = definition;
+    this.modifyInstructionWithProps(props);
   }
 
-  handleXChange(evt) {
-    console.log('handle x change', evt);
+  handleYChange(definition) {
+    let props = this.getCloneProps();
+    props.y = definition;
+    this.modifyInstructionWithProps(props);
   }
+
 }
