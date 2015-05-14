@@ -43,7 +43,6 @@ export default class DrawRectInstruction extends DrawInstruction {
     } else {
       let from = this.getFromValue(shapes);
       props.to = null;
-      // TODO - Somehow this gets set to empty array???
       props.width = new Expression(to.x - from.x);
       props.height = new Expression(to.y - from.y);
     }

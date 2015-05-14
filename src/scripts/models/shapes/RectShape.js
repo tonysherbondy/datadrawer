@@ -126,6 +126,13 @@ export default class RectShape extends Shape {
     });
   }
 
+  moveRelative(name, value) {
+    // Doesn't matter what point we move, the distance applies
+    // to the center
+    this.x += value.x;
+    this.y += value.y;
+  }
+
   // Move the shape so that a particular point is set to value
   moveToPoint(name, value, isReshape) {
     let {x, y, width, height} = this;

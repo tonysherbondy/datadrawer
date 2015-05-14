@@ -2,6 +2,7 @@ import React from 'react';
 import AdjustInstruction from './AdjustInstruction';
 import ExpressionEditor from '../components/ExpressionEditor';
 import InstructionActions from '../actions/InstructionActions';
+import Expression from './Expression';
 
 export default class MoveInstruction extends AdjustInstruction {
   constructor(props) {
@@ -22,6 +23,20 @@ export default class MoveInstruction extends AdjustInstruction {
     props.y = y;
     props.isReshape = isReshape;
     return props;
+  }
+
+  modifyWithTo(to, start) {
+    let props = this.getCloneProps();
+    if (to.id) {
+      props.to = to;
+      props.x = null;
+      props.y = null;
+    } else {
+      props.to = null;
+      props.x = new Expression(to.x - start.x);
+      props.y = new Expression(to.y - start.y);
+    }
+    this.modifyInstructionWithProps(props);
   }
 
   getJsCode(index) {

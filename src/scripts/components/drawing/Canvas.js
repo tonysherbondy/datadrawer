@@ -5,6 +5,7 @@ import InstructionActions from '../../actions/InstructionActions';
 import DrawingStateActions from '../../actions/DrawingStateActions';
 import ScaleInstruction from '../../models/ScaleInstruction';
 import MoveInstruction from '../../models/MoveInstruction';
+import Expression from '../../models/Expression';
 
 class Canvas extends React.Component {
   constructor(props) {
@@ -144,13 +145,19 @@ class Canvas extends React.Component {
       let {point} = this.getEventPoint(event);
       let {mode} = this.props.drawingState;
       let to = point;
-      if (mode === 'scale' || mode === 'move') {
+      if (mode === 'scale') {
         let shape = this.props.selectedShape;
         let startPoint = this.state.startPoint;
         let props = shape.getAdjustProps(mode, startPoint, point);
         to = props.to;
+        InstructionActions.modifyInstruction(instruction.getCloneWithTo(to, this.props.shapes, magnets));
+
+      } else if (mode === 'move') {
+        instruction.modifyWithTo(to, this.state.startPoint);
+
+      } else {
+        InstructionActions.modifyInstruction(instruction.getCloneWithTo(to, this.props.shapes, magnets));
       }
-      InstructionActions.modifyInstruction(instruction.getCloneWithTo(to, this.props.shapes, magnets));
     }
   }
 
@@ -196,15 +203,29 @@ class Canvas extends React.Component {
       let shape = this.props.selectedShape;
       if (closeControlPoint && shape) {
         let mode = this.props.drawingState.mode;
-        if (mode === 'scale' || mode === 'move') {
+        if (mode === 'scale') {
           let props = shape.getAdjustProps(mode, closeControlPoint, point);
           if (props) {
             props.id = this.props.instructions.length + 1;
             this.state.startPoint = closeControlPoint;
             this.setState(this.state);
-            let IClass = mode === 'scale' ? ScaleInstruction : MoveInstruction;
-            InstructionActions.addInstruction(new IClass(props));
+            InstructionActions.addInstruction(new ScaleInstruction(props));
           }
+        }
+        if (mode === 'move') {
+          let props = {
+            id: this.props.instructions.length + 1,
+            point: closeControlPoint.pointName,
+            shape: {id: closeControlPoint.shapeName},
+            x: new Expression(point.x - closeControlPoint.x),
+            y: new Expression(point.y - closeControlPoint.y)
+          };
+          this.state.startPoint = closeControlPoint;
+          this.setState(this.state);
+          // TODO - for some reason I can't do the below setState??
+          //this.setState({startPoint: closeControlPoint});
+          InstructionActions.addInstruction(new MoveInstruction(props));
+
         }
       }
     }
