@@ -6,13 +6,16 @@ export default class Shape {
   }
 
   // Default is rect points
-  getMagnets() {
-    let names = [
+  getMagnetNames() {
+    return [
       'topLeft', 'left', 'bottomLeft',
       'top', 'center', 'bottom',
       'topRight', 'right', 'bottomRight'
     ];
-    return names.map(pointName => {
+  }
+
+  getMagnets() {
+    return this.getMagnetNames().map(pointName => {
       return Object.assign({
         pointName,
         shapeName: this.id,

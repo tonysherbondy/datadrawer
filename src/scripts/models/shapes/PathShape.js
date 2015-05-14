@@ -40,6 +40,10 @@ export default class PathShape extends Shape {
     };
   }
 
+  getMagnetNames() {
+    return ['from'].concat(this.points.map((p,i) => `point_${i}`));
+  }
+
   getPoint(name) {
     // Point names are either from or point_index
     if (name === 'from') {

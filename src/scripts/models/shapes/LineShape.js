@@ -26,6 +26,10 @@ export default class LineShape extends Shape {
     }
   }
 
+  getMagnetNames() {
+    return ['left', 'center', 'right'];
+  }
+
   getPoint(name) {
     let {x1, y1, x2, y2} = this;
     switch (name) {

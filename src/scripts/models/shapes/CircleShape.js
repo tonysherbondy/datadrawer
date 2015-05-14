@@ -31,15 +31,8 @@ export default class CircleShape extends Shape {
     }
   }
 
-  getMagnets() {
-    let names = ['left', 'top', 'center', 'bottom', 'right'];
-    return names.map(pointName => {
-      return Object.assign({
-        pointName,
-        shapeName: this.id,
-        index: this.index
-      }, this.getPoint(pointName));
-    });
+  getMagnetNames() {
+    return ['left', 'top', 'center', 'bottom', 'right'];
   }
 
   scalePropByPoint(prop, point, value) {
