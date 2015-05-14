@@ -14,11 +14,18 @@ export default class Shape {
     ];
   }
 
+  getShapeName() {
+    if (this.index !== null && this.index !== undefined) {
+      return `${this.id}_${this.index}`;
+    }
+    return this.id;
+  }
+
   getMagnets() {
     return this.getMagnetNames().map(pointName => {
       return Object.assign({
         pointName,
-        shapeName: this.id,
+        shapeName: this.getShapeName(),
         index: this.index
       }, this.getPoint(pointName));
     });
