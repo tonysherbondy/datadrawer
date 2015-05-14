@@ -25,9 +25,11 @@ class App extends React.Component {
 
   selectNextShape() {
     // Get all available shape ids
-    let shapes = this.props.instructions
-                  .filter(i => i instanceof DrawInstruction)
-                  .map(i => i.shapeId);
+    let shapes = _.chain(this.props.instructions)
+                  .map(i => i.getShapeIds())
+                  .flatten()
+                  .unique()
+                  .value();
     let {selectedShapeId} = this.props.drawingState;
 
     // If the selectedShape wasn't found or didn't have one go to first
@@ -129,7 +131,7 @@ class App extends React.Component {
         break;
       }
       default:
-        console.log('unknown code', code);
+        //console.log('unknown code', code);
         break;
     }
   }

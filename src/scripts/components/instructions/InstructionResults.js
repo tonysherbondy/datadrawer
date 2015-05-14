@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import Canvas from '../drawing/Canvas';
 import InstructionTitle from './InstructionTitle';
 import InstructionCode from './InstructionCode';
@@ -110,6 +111,18 @@ export default class InstructionResults extends React.Component {
     return {rows, rowValues, maxLength};
   }
 
+  getSelectedShape(id, shapes) {
+    if (!_.isString(id)) {
+      return null;
+    }
+    let shape = shapes[id];
+    if (!shape) {
+      // try adding looping index
+      shape = shapes[`${id}_0`];
+    }
+    return shape;
+  }
+
   render() {
     let {shapes, variableValues, jsCode} = this.computeFromInstructions(this.props.instructions);
     let {scalars} = this.props.dataVariables.reduce((map, d) => {
@@ -118,9 +131,9 @@ export default class InstructionResults extends React.Component {
       return map;
     }, {scalars: [], vectors: []});
 
-    let {selectedShapeId} = this.props;
     let selectedInstruction = this.props.selectedInstruction;
-    let selectedShape = selectedShapeId ? shapes[selectedShapeId] : null;
+    let selectedShape = this.getSelectedShape(this.props.selectedShapeId, shapes);
+    console.log('selected shape', selectedShape);
 
     return (
       <div>

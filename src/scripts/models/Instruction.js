@@ -1,9 +1,19 @@
 import Expression from './Expression';
+import _ from 'lodash';
 
 export default class Instruction {
   constructor({id, shapeId}) {
     this.id = id;
     this.shapeId = shapeId;
+  }
+
+  getShapeIds() {
+    if (this.shapeId) {
+      return [this.shapeId];
+    } else if (this.instructions) {
+      return _.flatten(this.instructions.map(i => i.getShapeIds()));
+    }
+    return [];
   }
 
   getPropsJs(index) {
