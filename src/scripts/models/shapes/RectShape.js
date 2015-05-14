@@ -111,21 +111,6 @@ export default class RectShape extends Shape {
     }
   }
 
-  getMagnets() {
-    let names = [
-      'topLeft', 'left', 'bottomLeft',
-      'top', 'center', 'bottom',
-      'topRight', 'right', 'bottomRight'
-    ];
-    return names.map(pointName => {
-      return Object.assign({
-        pointName,
-        shapeName: this.id,
-        index: this.index
-      }, this.getPoint(pointName));
-    });
-  }
-
   moveRelative(name, value) {
     // Doesn't matter what point we move, the distance applies
     // to the center

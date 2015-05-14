@@ -5,9 +5,22 @@ export default class Shape {
     this.name = props.name || props.id;
   }
 
+  // Default is rect points
   getMagnets() {
-    return [];
+    let names = [
+      'topLeft', 'left', 'bottomLeft',
+      'top', 'center', 'bottom',
+      'topRight', 'right', 'bottomRight'
+    ];
+    return names.map(pointName => {
+      return Object.assign({
+        pointName,
+        shapeName: this.id,
+        index: this.index
+      }, this.getPoint(pointName));
+    });
   }
+
 
   getMagnetOutlineProps() {
     let props = this.getRenderProps();
