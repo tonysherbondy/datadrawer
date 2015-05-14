@@ -28,6 +28,8 @@ const DrawingStateStore = biff.createStore({
     }
     case 'ADD_INSTRUCTION_SUCCESS': {
       drawingState.editingInstructionId = payload.data.id;
+      // Remove any selecte shape state when we've just added an instruction
+      drawingState.selectedShapeId = null;
       DrawingStateStore.emitChange();
       break;
     }
