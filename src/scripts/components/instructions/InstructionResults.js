@@ -133,7 +133,6 @@ export default class InstructionResults extends React.Component {
 
     let selectedInstruction = this.props.selectedInstruction;
     let selectedShape = this.getSelectedShape(this.props.selectedShapeId, shapes);
-    console.log('selected shape', selectedShape);
 
     return (
       <div>

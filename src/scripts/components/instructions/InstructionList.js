@@ -1,5 +1,6 @@
 import React from 'react';
 import InstructionActions from '../../actions/InstructionActions';
+import DrawingStateActions from '../../actions/DrawingStateActions';
 
 export default class InstructionList extends React.Component {
 
@@ -20,7 +21,7 @@ export default class InstructionList extends React.Component {
       }
 
       return (
-        <li className='instruction-list-item' key={index}>
+        <li className='instruction-list-item' key={index} onClick={this.handleItemClick.bind(this, instruction)}>
           {instruction.getUiSentence(this.props.dataVariables, this.props.variableValues)}
           <button
             type='button'
@@ -39,6 +40,12 @@ export default class InstructionList extends React.Component {
         {validInstructions.map(getInstructionItems)}
       </ul>
     );
+  }
+
+  handleItemClick(instruction, evt) {
+    console.log('handle', instruction, evt);
+    DrawingStateActions.setSelectedInstruction(instruction);
+    evt.stopPropagation();
   }
 
 }

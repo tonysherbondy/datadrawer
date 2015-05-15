@@ -8,10 +8,17 @@ const DrawingStateActions = biff.createActions({
     });
   },
 
-  setEditingInstruction(id) {
+  setEditingInstruction(instruction) {
     this.dispatch({
       actionType: 'SET_EDITING_INSTRUCTION',
-      data: id
+      data: instruction
+    });
+  },
+
+  setSelectedInstruction(instruction) {
+    this.dispatch({
+      actionType: 'SET_SELECTED_INSTRUCTION',
+      data: instruction
     });
   },
 

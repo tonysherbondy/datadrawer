@@ -18,7 +18,7 @@ export default class DataTable extends React.Component {
       });
       return (
         <tr key={index}>
-          <td>
+          <td key={0}>
             <VariablePill variable={row} />
           </td>
           {cells}

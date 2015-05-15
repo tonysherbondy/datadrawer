@@ -1,19 +1,12 @@
 import Expression from './Expression';
 import _ from 'lodash';
+import InstructionTreeNode from './InstructionTreeNode';
 
-export default class Instruction {
+export default class Instruction extends InstructionTreeNode {
   constructor({id, shapeId}) {
+    super();
     this.id = id;
     this.shapeId = shapeId;
-  }
-
-  getShapeIds() {
-    if (this.shapeId) {
-      return [this.shapeId];
-    } else if (this.instructions) {
-      return _.flatten(this.instructions.map(i => i.getShapeIds()));
-    }
-    return [];
   }
 
   getPropsJs(index) {
@@ -70,5 +63,13 @@ export default class Instruction {
     return `${name}'s ${point.point}`;
   }
 
+  getShapeIds() {
+    if (this.shapeId) {
+      return [this.shapeId];
+    } else if (this.instructions) {
+      return _.flatten(this.instructions.map(i => i.getShapeIds()));
+    }
+    return [];
+  }
 
 }

@@ -11,6 +11,7 @@ import DrawRectInstruction from '../models/DrawRectInstruction';
 import DrawInstruction from '../models/DrawInstruction';
 import ScaleInstruction from '../models/ScaleInstruction';
 import Canvas from './drawing/Canvas';
+import InstructionTreeNode from '../models/InstructionTreeNode';
 
 
 class App extends React.Component {
@@ -20,7 +21,10 @@ class App extends React.Component {
   }
 
   getNewInstructionID() {
-    return 'i' + this.props.instructions.length + 1;
+    let {instructions} = this.props;
+    let node = new InstructionTreeNode({instructions});
+    // the size will start at one because of our artificial containment node
+    return `i${node.getSize() + 1}`;
   }
 
   selectNextShape() {
@@ -145,6 +149,7 @@ class App extends React.Component {
   // If there is a selected shape then there is no selecte instruction, o.w.,
   // it is the last instruction
   getSelectedInstruction() {
+    console.log('selected instruction id', this.props.drawingState.selectedInstructionId);
     return _.last(this.props.instructions);
   }
 

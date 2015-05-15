@@ -3,6 +3,7 @@ import biff from '../dispatcher/dispatcher';
 let drawingState = {
   mode: 'normal',
   selectedShapeId: null,
+  selectedInstructionId: null,
   editingInstructionId: null
 };
 
@@ -26,8 +27,14 @@ const DrawingStateStore = biff.createStore({
       DrawingStateStore.emitChange();
       break;
     }
+    case 'SET_SELECTED_INSTRUCTION': {
+      drawingState.selectedInstructionId = payload.data.id;
+      DrawingStateStore.emitChange();
+      break;
+    }
     case 'ADD_INSTRUCTION_SUCCESS': {
       drawingState.editingInstructionId = payload.data.id;
+      drawingState.selectedInstructionId = payload.data.id;
       // Remove any selecte shape state when we've just added an instruction
       drawingState.selectedShapeId = null;
       DrawingStateStore.emitChange();
