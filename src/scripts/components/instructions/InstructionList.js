@@ -20,8 +20,14 @@ export default class InstructionList extends React.Component {
         );
       }
 
+      let itemClass = 'instruction-list-item';
+      let isSelected = this.props.selectedInstruction && instruction.id === this.props.selectedInstruction.id;
+      if (isSelected) {
+        itemClass += ' selected';
+      }
+
       return (
-        <li className='instruction-list-item' key={index} onClick={this.handleItemClick.bind(this, instruction)}>
+        <li className={itemClass} key={index} onClick={this.handleItemClick.bind(this, instruction)}>
           {instruction.getUiSentence(this.props.dataVariables, this.props.variableValues)}
           <button
             type='button'
@@ -43,7 +49,6 @@ export default class InstructionList extends React.Component {
   }
 
   handleItemClick(instruction, evt) {
-    console.log('handle', instruction, evt);
     DrawingStateActions.setSelectedInstruction(instruction);
     evt.stopPropagation();
   }

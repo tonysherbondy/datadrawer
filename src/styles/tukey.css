@@ -37,6 +37,18 @@ textarea {
   color: black;
 }
 
+.sub-instructions-list {
+  background: #efefef;
+}
+
+.instruction-list-item {
+  background: #efefef;
+}
+
+.instruction-list-item.selected {
+  background: #999;
+}
+
 /* table */
 td, th {
   padding: 5px;

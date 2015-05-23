@@ -146,10 +146,19 @@ class App extends React.Component {
     });
   }
 
-  // If there is a selected shape then there is no selecte instruction, o.w.,
-  // it is the last instruction
+  // Either the one the user selected or the last instruction
   getSelectedInstruction() {
-    console.log('selected instruction id', this.props.drawingState.selectedInstructionId);
+    let {selectedInstructionId} = this.props.drawingState;
+    if (selectedInstructionId) {
+      let {instructions} = this.props;
+      let node = new InstructionTreeNode({instructions});
+      let allInstructions = node.getAllInstructions();
+      let instruction = allInstructions.find(i => i.id === selectedInstructionId);
+      if (!instruction) {
+        console.error(`Couldn't find instruction`);
+      }
+      return instruction;
+    }
     return _.last(this.props.instructions);
   }
 

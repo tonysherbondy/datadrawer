@@ -164,6 +164,7 @@ export default class InstructionResults extends React.Component {
         </div>
 
         <InstructionList
+          selectedInstruction={selectedInstruction}
           dataVariables={this.props.dataVariables}
           variableValues={variableValues}
           instructions={this.props.instructions} />
