@@ -148,8 +148,9 @@ class App extends React.Component {
   // Either the one the user selected or the last instruction
   getSelectedInstructions() {
     let {selectedInstructions} = this.props.drawingState;
+    let {instructions} = this.props;
     if (selectedInstructions && selectedInstructions.length > 0) {
-      return selectedInstructions;
+      return selectedInstructions.map(i => instructions.find(ii => ii.id === i.id));
     }
     return [_.last(this.props.instructions)];
   }
@@ -209,7 +210,7 @@ class App extends React.Component {
           editingInstruction={this.getEditingInstruction()}
           selectedShapeId={this.getSelectedShapeId()}
           selectedInstructions={selectedInstructions}
-          currentInstructions={currentInstruction}
+          currentInstruction={currentInstruction}
         />
       </div>
     );
