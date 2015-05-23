@@ -145,14 +145,51 @@ class App extends React.Component {
         InstructionActions.insertInstruction(instruction, index, parent);
         break;
       }
+      case 37: {
+        console.log('left arrow');
+        e.preventDefault();
+        break;
+      }
+      case 39: {
+        console.log('right arrow');
+        e.preventDefault();
+        break;
+      }
+      case 38: {
+        this.stepCurrentInstruction(-1);
+        e.preventDefault();
+        break;
+      }
+      case 40: {
+        this.stepCurrentInstruction(1);
+        e.preventDefault();
+        break;
+      }
       case 27: { //esc
         DrawingStateActions.setDrawingMode('normal');
         break;
       }
       default:
-        //console.log('unknown code', code);
+        console.log('unknown code', code);
         break;
     }
+  }
+
+  // step should either be 1 or -1
+  // will move that step amount forward or backwards
+  stepCurrentInstruction(step) {
+    let currentInstruction = this.getCurrentInstruction();
+    let {instructions} = this.props;
+    let {parent, index} = InstructionTreeNode.findParentWithIndex(instructions, currentInstruction);
+
+    // TODO - Need to be able to step into loops
+    index = index + step;
+    if (index < 0) {
+      index = parent.instructions.length - 1;
+    } else if (index > parent.instructions.length - 1) {
+      index = 0;
+    }
+    DrawingStateActions.setSelectedInstruction(parent.instructions[index]);
   }
 
   getEditingInstruction() {
