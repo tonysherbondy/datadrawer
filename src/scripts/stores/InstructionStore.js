@@ -41,16 +41,22 @@ const InstructionStore = biff.createStore({
     case 'REMOVE_INSTRUCTIONS': {
       InstructionStore._setPending(false);
       InstructionStore._clearErrors();
-      // TODO - Make this handle arrays of instructions
-      instructions = InstructionTreeNode.removeById(instructions, payload.data[0].id);
+      // I don't feel good about this way :(
+      payload.data.forEach(iToRemove => {
+        instructions = InstructionTreeNode.removeById(instructions, iToRemove.id);
+      });
       InstructionStore.emitChange();
       break;
     }
     case 'MODIFY_INSTRUCTION': {
-      // TODO - This is not a correct way to search for an existing instruction
-      // because the instruction is a tree
       let instruction = payload.data;
       instructions = InstructionTreeNode.replaceById(instructions, instruction.id, instruction);
+      InstructionStore.emitChange();
+      break;
+    }
+    case 'INSERT_INSTRUCTION': {
+      let {instruction, index, parent} = payload.data;
+      instructions = InstructionTreeNode.insertInstruction(instructions, instruction, index, parent);
       InstructionStore.emitChange();
       break;
     }

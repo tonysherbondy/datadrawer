@@ -12,7 +12,7 @@ import DrawInstruction from '../models/DrawInstruction';
 import ScaleInstruction from '../models/ScaleInstruction';
 import Canvas from './drawing/Canvas';
 import InstructionTreeNode from '../models/InstructionTreeNode';
-//import LoopInstruction from '../models/LoopInstruction';
+import LoopInstruction from '../models/LoopInstruction';
 
 
 class App extends React.Component {
@@ -127,17 +127,22 @@ class App extends React.Component {
       }
       case 76: { //l
         let selectedInstructions = this.getSelectedInstructions();
-        let parent = InstructionTreeNode.findParent(selectedInstructions[0]);
-        let firstIndex = parent.instructions.findIndex(i => i.id === selectedInstructions[0]);
-        // TODO - Remove the selected instructions from the list
-        console.log('will delete selectedInstructions', selectedInstructions);
-        // TODO - Add a loop instruction after the id with the selected instructions
-        console.log('will insert instructions after', firstIndex - 1);
-        //let instruction = new LoopInstruction({
-          //id: this.getNewInstructionID(),
-          //instructions: this.getSelectedInstructions()
-        //});
-        //InstructionActions.addInstruction(instruction);
+        let {instructions} = this.props;
+
+        // Get the parent and index of first instruction
+        let {parent, index} = InstructionTreeNode.findParentWithIndex(instructions, selectedInstructions[0]);
+
+        // Remove selected instructions from list
+        InstructionActions.removeInstructions(selectedInstructions);
+
+        // Create a new loop instruction with selected instructions as children
+        let instruction = new LoopInstruction({
+          id: this.getNewInstructionID(),
+          instructions: selectedInstructions
+        });
+
+        // Insert loop instruction before previous instruction index
+        InstructionActions.insertInstruction(instruction, index, parent);
         break;
       }
       case 27: { //esc

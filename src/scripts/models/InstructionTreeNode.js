@@ -56,20 +56,24 @@ InstructionTreeNode.findParent = function(instructions, instruction) {
   });
 };
 
-InstructionTreeNode.replaceById = function(instructions, idToRemove, newInstruction) {
-  // Currently we assume that there is either no parent or one parent
-  // No parent is represented as a parent with no ID because find parent always
-  // constructs a root node
-  let parent = InstructionTreeNode.findParent(instructions, {id: idToRemove});
-  let index = parent.instructions.findIndex(i => i.id === idToRemove);
-  let spliceArray = newInstruction ? [index, 1, newInstruction] : [index, 1];
-  let spliceParams = {$splice: [spliceArray]};
+InstructionTreeNode.findParentWithIndex = function(instructions, instruction) {
+  // Get the parent of this instruction and our index within the parent
+  let parent = InstructionTreeNode.findParent(instructions, instruction);
+  let index = parent.instructions.findIndex(i => i.id === instruction.id);
+  return {parent, index};
+};
+
+InstructionTreeNode.insertInstruction = function(instructions, instruction, index, parent) {
+  let spliceParams = {$splice: [[index, 0, instruction]]};
+  return InstructionTreeNode.spliceParent(instructions, spliceParams, parent);
+};
+
+InstructionTreeNode.spliceParent = function(instructions, spliceParams, parent) {
   let newInstructions;
   if (parent.id) {
     // For now assume a parent can only be nested one level deep
     // First find the parent's parent
-    let pParent = InstructionTreeNode.findParent(instructions, parent);
-    let pIndex = pParent.instructions.findIndex(i => i.id === parent.id);
+    let {index: pIndex} = InstructionTreeNode.findParentWithIndex(instructions, parent);
     // Next, clone the parent instruction
     let cloneParent = parent.clone();
     // Splice the new instruction into the previous array of instructions that had the parent
@@ -77,9 +81,18 @@ InstructionTreeNode.replaceById = function(instructions, idToRemove, newInstruct
     newInstructions = update(instructions, {$splice: [[pIndex, 1, cloneParent]]});
   } else {
     newInstructions = update(instructions, spliceParams);
-
   }
   return newInstructions;
+};
+
+InstructionTreeNode.replaceById = function(instructions, idToRemove, newInstruction) {
+  // Currently we assume that there is either no parent or one parent
+  // No parent is represented as a parent with no ID because find parent always
+  // constructs a root node
+  let {parent, index} = InstructionTreeNode.findParentWithIndex(instructions, {id: idToRemove});
+  let spliceArray = newInstruction ? [index, 1, newInstruction] : [index, 1];
+  let spliceParams = {$splice: [spliceArray]};
+  return InstructionTreeNode.spliceParent(instructions, spliceParams, parent);
 };
 
 InstructionTreeNode.removeById = function(instructions, idToRemove) {

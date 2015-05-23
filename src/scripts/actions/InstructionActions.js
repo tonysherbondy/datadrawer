@@ -49,6 +49,13 @@ const InstructionActions = biff.createActions({
     });
   },
 
+  insertInstruction(instruction, index, parent) {
+    this.dispatch({
+      actionType: 'INSERT_INSTRUCTION',
+      data: {instruction, index, parent}
+    });
+  },
+
   removeInstruction(instruction) {
     InstructionActions.removeInstructions([instruction]);
   }
