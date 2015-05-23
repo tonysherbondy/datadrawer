@@ -5,8 +5,8 @@ import InstructionTreeNode from '../../models/InstructionTreeNode';
 
 export default class InstructionList extends React.Component {
 
-  removeInstruction(index) {
-    InstructionActions.removeInstruction(index);
+  removeInstruction(instruction) {
+    InstructionActions.removeInstruction(instruction);
   }
 
   render() {
@@ -34,7 +34,7 @@ export default class InstructionList extends React.Component {
           <button
             type='button'
             className='delete-instruction'
-            onClick={this.removeInstruction.bind(this, index)}>
+            onClick={this.removeInstruction.bind(this, instruction)}>
             <i className="fa fa-close"></i>
           </button>
           {subInstructionList}

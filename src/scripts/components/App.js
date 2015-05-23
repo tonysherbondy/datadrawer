@@ -12,6 +12,7 @@ import DrawInstruction from '../models/DrawInstruction';
 import ScaleInstruction from '../models/ScaleInstruction';
 import Canvas from './drawing/Canvas';
 import InstructionTreeNode from '../models/InstructionTreeNode';
+//import LoopInstruction from '../models/LoopInstruction';
 
 
 class App extends React.Component {
@@ -125,8 +126,18 @@ class App extends React.Component {
         break;
       }
       case 76: { //l
-        // TODO - Should just sent out a loop action
-        DrawingStateActions.setDrawingMode('loop');
+        let selectedInstructions = this.getSelectedInstructions();
+        let parent = InstructionTreeNode.findParent(selectedInstructions[0]);
+        let firstIndex = parent.instructions.findIndex(i => i.id === selectedInstructions[0]);
+        // TODO - Remove the selected instructions from the list
+        console.log('will delete selectedInstructions', selectedInstructions);
+        // TODO - Add a loop instruction after the id with the selected instructions
+        console.log('will insert instructions after', firstIndex - 1);
+        //let instruction = new LoopInstruction({
+          //id: this.getNewInstructionID(),
+          //instructions: this.getSelectedInstructions()
+        //});
+        //InstructionActions.addInstruction(instruction);
         break;
       }
       case 27: { //esc
@@ -150,9 +161,12 @@ class App extends React.Component {
     let {selectedInstructions} = this.props.drawingState;
     let {instructions} = this.props;
     if (selectedInstructions && selectedInstructions.length > 0) {
-      return selectedInstructions.map(i => instructions.find(ii => ii.id === i.id));
+      return _.compact(selectedInstructions.map(i => {
+        return InstructionTreeNode.findById(instructions, i.id);
+      }));
     }
-    return [_.last(this.props.instructions)];
+    let lastInstruction = _.last(this.props.instructions);
+    return lastInstruction ? [lastInstruction] : [];
   }
 
   getCurrentInstruction() {

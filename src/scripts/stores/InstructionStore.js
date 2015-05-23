@@ -2,6 +2,7 @@ import biff from '../dispatcher/dispatcher';
 import scatterPreset from './presetScatteryPlotInstructions';
 import randoPreset from './randoPresetInstructions';
 import barsPreset from './barsPresetInstructions';
+import InstructionTreeNode from '../models/InstructionTreeNode';
 
 let presetInstructions = {
   scatter: scatterPreset,
@@ -37,10 +38,11 @@ const InstructionStore = biff.createStore({
       InstructionStore.emitChange();
       break;
     }
-    case 'REMOVE_INSTRUCTION': {
+    case 'REMOVE_INSTRUCTIONS': {
       InstructionStore._setPending(false);
       InstructionStore._clearErrors();
-      instructions = instructions.filter((_,i) => i !== payload.data);
+      // TODO - Make this handle arrays of instructions
+      instructions = InstructionTreeNode.removeInstruction(instructions, payload.data[0]);
       InstructionStore.emitChange();
       break;
     }

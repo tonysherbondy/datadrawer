@@ -1,4 +1,6 @@
 import _ from 'lodash';
+import Addons from 'react/addons';
+let {update} = Addons.addons;
 
 export default class InstructionTreeNode {
   constructor(props={}) {
@@ -23,6 +25,8 @@ export default class InstructionTreeNode {
 
 }
 
+// The below functions operate on a list of instructions that may contain children,
+// these probably won't be necessary when we have a picture object
 InstructionTreeNode.getListSize = function(instructions) {
   let node = new InstructionTreeNode({instructions});
   return node.getSize() - 1;
@@ -35,6 +39,42 @@ InstructionTreeNode.flatten = function(instructions) {
 
 InstructionTreeNode.find = function(instructions, func) {
   return InstructionTreeNode.flatten(instructions).find(func);
+};
+
+InstructionTreeNode.findById = function(instructions, id) {
+  return InstructionTreeNode.flatten(instructions).find(i => i.id === id);
+};
+
+InstructionTreeNode.findParent = function(instructions, instruction) {
+  let all = InstructionTreeNode.flatten(instructions);
+  return all.find(i => {
+    // find the instruction that has this instruction as a child
+    if (!i.instructions) {
+      return false;
+    }
+    return !!i.instructions.find(child => child.id === instruction.id);
+  });
+};
+
+InstructionTreeNode.removeInstruction = function(instructions, instruction) {
+  // Currently we assume that there is either no parent or one parent
+  // No parent is represented as a parent with no ID because find parent always
+  // constructs a root node
+  let parent = InstructionTreeNode.findParent(instructions, instruction);
+  if (!parent) {
+    console.error('Asked to delete an instruction that does not exist');
+  }
+
+  let index = parent.instructions.findIndex(i => i.id === instruction.id);
+  let newInstructions;
+  if (parent.id) {
+    console.log('do something with nested parents');
+    newInstructions = instructions;
+  } else {
+    newInstructions = update(instructions, {$splice: [[index, 1]]});
+
+  }
+  return newInstructions;
 };
 
 // Find a set of instructions between two instructions. The set must

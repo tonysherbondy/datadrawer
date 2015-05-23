@@ -42,11 +42,15 @@ const InstructionActions = biff.createActions({
     });
   },
 
-  removeInstruction(index) {
+  removeInstructions(instructions) {
     this.dispatch({
-      actionType: 'REMOVE_INSTRUCTION',
-      data: index
+      actionType: 'REMOVE_INSTRUCTIONS',
+      data: instructions
     });
+  },
+
+  removeInstruction(instruction) {
+    InstructionActions.removeInstructions([instruction]);
   }
 });
 
