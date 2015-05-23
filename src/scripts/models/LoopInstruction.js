@@ -7,6 +7,18 @@ export default class LoopInstruction extends Instruction {
     this.instructions = instructions;
   }
 
+  getCloneProps() {
+    let props = super.getCloneProps();
+    let {count, instructions} = this;
+    props.count = count;
+    props.instructions = instructions;
+    return props;
+  }
+
+  clone() {
+    return new LoopInstruction(this.getCloneProps());
+  }
+
   getJsCode(table) {
     // loop until maxLength of table
     let jsCode = '';

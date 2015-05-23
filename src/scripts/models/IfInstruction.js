@@ -7,6 +7,18 @@ export default class IfInstruction extends Instruction {
     this.instructions = instructions;
   }
 
+  getCloneProps() {
+    let props = super.getCloneProps();
+    let {condition, instructions} = this;
+    props.condition = condition;
+    props.instructions = instructions;
+    return props;
+  }
+
+  clone() {
+    return new IfInstruction(this.getCloneProps());
+  }
+
   getConditionJs(index) {
     return this.condition.reduce((js, fragment) => {
       if (fragment.id) {

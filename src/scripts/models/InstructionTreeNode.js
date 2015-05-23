@@ -56,26 +56,34 @@ InstructionTreeNode.findParent = function(instructions, instruction) {
   });
 };
 
-InstructionTreeNode.removeInstruction = function(instructions, instruction) {
+InstructionTreeNode.removeById = function(instructions, idToRemove) {
   // Currently we assume that there is either no parent or one parent
   // No parent is represented as a parent with no ID because find parent always
   // constructs a root node
-  let parent = InstructionTreeNode.findParent(instructions, instruction);
-  if (!parent) {
-    console.error('Asked to delete an instruction that does not exist');
-  }
-
-  let index = parent.instructions.findIndex(i => i.id === instruction.id);
+  let parent = InstructionTreeNode.findParent(instructions, {id: idToRemove});
+  let index = parent.instructions.findIndex(i => i.id === idToRemove);
+  let spliceParams = {$splice: [[index, 1]]};
   let newInstructions;
   if (parent.id) {
-    console.log('do something with nested parents');
-    newInstructions = instructions;
+    // For now assume a parent can only be nested one level deep
+    // First find the parent's parent
+    let pParent = InstructionTreeNode.findParent(instructions, parent);
+    let pIndex = pParent.instructions.findIndex(i => i.id === parent.id);
+    // Next, clone the parent instruction
+    let cloneParent = parent.clone();
+    // Splice the new instruction into the previous array of instructions that had the parent
+    cloneParent.instructions = update(cloneParent.instructions, spliceParams);
+    newInstructions = update(instructions, {$splice: [[pIndex, 1, cloneParent]]});
   } else {
-    newInstructions = update(instructions, {$splice: [[index, 1]]});
+    newInstructions = update(instructions, spliceParams);
 
   }
   return newInstructions;
 };
+
+//InstructionTreeNode.replaceInstruction = function(instructions, instruction) {
+  //// Replace instruction with same id
+//};
 
 // Find a set of instructions between two instructions. The set must
 // be at the same level, so we walk the tree of instructions

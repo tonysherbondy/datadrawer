@@ -42,7 +42,7 @@ const InstructionStore = biff.createStore({
       InstructionStore._setPending(false);
       InstructionStore._clearErrors();
       // TODO - Make this handle arrays of instructions
-      instructions = InstructionTreeNode.removeInstruction(instructions, payload.data[0]);
+      instructions = InstructionTreeNode.removeById(instructions, payload.data[0].id);
       InstructionStore.emitChange();
       break;
     }
