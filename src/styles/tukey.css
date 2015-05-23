@@ -35,6 +35,14 @@ textarea {
   background: #efefef;
   box-shadow: 0px 0px 5px rgba(0,0,0,0.25);
   color: black;
+
+  // no-select stuff
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .sub-instructions-list {
@@ -89,3 +97,4 @@ td, th {
 #cursorLocation {
   background-color: red;
 }
+

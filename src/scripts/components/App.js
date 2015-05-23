@@ -22,9 +22,8 @@ class App extends React.Component {
 
   getNewInstructionID() {
     let {instructions} = this.props;
-    let node = new InstructionTreeNode({instructions});
-    // the size will start at one because of our artificial containment node
-    return `i${node.getSize() + 1}`;
+    let size = InstructionTreeNode.getListSize(instructions);
+    return `i${size++}`;
   }
 
   selectNextShape() {
@@ -66,7 +65,7 @@ class App extends React.Component {
         // Edit the selected instruction by cycling through overlapping
         // magnet points
         // Toggle guide setting on selected shape
-        let instruction = this.getSelectedInstruction();
+        let instruction = this.getCurrentInstruction();
         if (instruction && instruction.isValid() &&
             (instruction instanceof DrawInstruction ||
             instruction instanceof ScaleInstruction)) {
@@ -147,28 +146,25 @@ class App extends React.Component {
   }
 
   // Either the one the user selected or the last instruction
-  getSelectedInstruction() {
-    let {selectedInstructionId} = this.props.drawingState;
-    if (selectedInstructionId) {
-      let {instructions} = this.props;
-      let node = new InstructionTreeNode({instructions});
-      let allInstructions = node.getAllInstructions();
-      let instruction = allInstructions.find(i => i.id === selectedInstructionId);
-      if (!instruction) {
-        console.error(`Couldn't find instruction`);
-      }
-      return instruction;
+  getSelectedInstructions() {
+    let {selectedInstructions} = this.props.drawingState;
+    if (selectedInstructions && selectedInstructions.length > 0) {
+      return selectedInstructions;
     }
-    return _.last(this.props.instructions);
+    return [_.last(this.props.instructions)];
+  }
+
+  getCurrentInstruction() {
+    return _.last(this.getSelectedInstructions());
   }
 
   // Either the one the user selected or the shape from the selected
   // shape
   getSelectedShapeId() {
     let {selectedShapeId} = this.props.drawingState;
-    let selectedInstruction = this.getSelectedInstruction();
-    if (!_.isString(selectedShapeId) && selectedInstruction) {
-      selectedShapeId = selectedInstruction.shapeId;
+    let currentInstruction = this.getCurrentInstruction();
+    if (!_.isString(selectedShapeId) && currentInstruction) {
+      selectedShapeId = currentInstruction.shapeId;
     }
     return selectedShapeId;
   }
@@ -191,10 +187,13 @@ class App extends React.Component {
   }
 
   render() {
-    // When the user selects a shape, there is no selected instruction
-    let selectedInstruction = this.getSelectedInstruction();
+    // Selected instructions were selected by user or are the last instruction in set of all
+    let selectedInstructions = this.getSelectedInstructions();
+    // Current instruction is the last instruction of the selected set
+    let currentInstruction = this.getCurrentInstruction();
+    // When the user selects a shape, there is no current instruction
     if (_.isString(this.props.drawingState.selectedShapeId)) {
-      selectedInstruction = null;
+      currentInstruction = null;
     }
     return (
       <div onKeyDown={this.handleKeyPress} className='main'>
@@ -209,7 +208,8 @@ class App extends React.Component {
           dataVariables={this.props.variables}
           editingInstruction={this.getEditingInstruction()}
           selectedShapeId={this.getSelectedShapeId()}
-          selectedInstruction={selectedInstruction}
+          selectedInstructions={selectedInstructions}
+          currentInstructions={currentInstruction}
         />
       </div>
     );

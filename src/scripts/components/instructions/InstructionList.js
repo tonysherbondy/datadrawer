@@ -1,6 +1,7 @@
 import React from 'react';
 import InstructionActions from '../../actions/InstructionActions';
 import DrawingStateActions from '../../actions/DrawingStateActions';
+import InstructionTreeNode from '../../models/InstructionTreeNode';
 
 export default class InstructionList extends React.Component {
 
@@ -9,6 +10,7 @@ export default class InstructionList extends React.Component {
   }
 
   render() {
+    let {selectedInstructions} = this.props;
     let getInstructionItems = (instruction, index) => {
       let subInstructions = (instruction.instructions || []).filter(i => i.isValid());
       let subInstructionList;
@@ -21,7 +23,7 @@ export default class InstructionList extends React.Component {
       }
 
       let itemClass = 'instruction-list-item';
-      let isSelected = this.props.selectedInstruction && instruction.id === this.props.selectedInstruction.id;
+      let isSelected = selectedInstructions.findIndex(i => i.id === instruction.id) > -1;
       if (isSelected) {
         itemClass += ' selected';
       }
@@ -49,8 +51,22 @@ export default class InstructionList extends React.Component {
   }
 
   handleItemClick(instruction, evt) {
-    DrawingStateActions.setSelectedInstruction(instruction);
+    let {selectedInstructions} = this.props;
+    // Only select range of instructions with shift key down and if we have only one other selected
+    if (evt.shiftKey && selectedInstructions.length === 1) {
+      // try to select range of instructions
+      let {instructions} = this.props;
+      // try either end of the instructions to see which side is bigger
+      let prevInstruction = selectedInstructions[0];
+      let between = InstructionTreeNode.findBetweenRange(instructions, prevInstruction, instruction);
+      if (between.length && between.length > 0) {
+        DrawingStateActions.setSelectedInstructions(between);
+      }
+    } else {
+      DrawingStateActions.setSelectedInstruction(instruction);
+    }
     evt.stopPropagation();
+    evt.preventDefault();
   }
 
 }

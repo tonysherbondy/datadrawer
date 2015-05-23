@@ -22,6 +22,13 @@ const DrawingStateActions = biff.createActions({
     });
   },
 
+  setSelectedInstructions(instructions) {
+    this.dispatch({
+      actionType: 'SET_SELECTED_INSTRUCTIONS',
+      data: instructions
+    });
+  },
+
   setSelectedShape(id) {
     this.dispatch({
       actionType: 'SET_SELECTED_SHAPE',

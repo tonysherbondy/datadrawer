@@ -131,7 +131,8 @@ export default class InstructionResults extends React.Component {
       return map;
     }, {scalars: [], vectors: []});
 
-    let selectedInstruction = this.props.selectedInstruction;
+    let {currentInstruction} = this.props;
+    let {selectedInstructions} = this.props;
     let selectedShape = this.getSelectedShape(this.props.selectedShapeId, shapes);
 
     return (
@@ -147,7 +148,7 @@ export default class InstructionResults extends React.Component {
         <InstructionTitle
           dataVariables={this.props.dataVariables}
           variableValues={variableValues}
-          instruction={selectedInstruction} />
+          instruction={currentInstruction} />
 
         <Canvas
           shapes={shapes}
@@ -164,7 +165,8 @@ export default class InstructionResults extends React.Component {
         </div>
 
         <InstructionList
-          selectedInstruction={selectedInstruction}
+          currentInstruction={currentInstruction}
+          selectedInstructions={selectedInstructions}
           dataVariables={this.props.dataVariables}
           variableValues={variableValues}
           instructions={this.props.instructions} />
