@@ -49,13 +49,9 @@ const InstructionStore = biff.createStore({
     case 'MODIFY_INSTRUCTION': {
       // TODO - This is not a correct way to search for an existing instruction
       // because the instruction is a tree
-      let index = instructions.findIndex(i => i.id === payload.data.id);
-      if (index > -1) {
-        let before = instructions.slice(0,index);
-        let after = instructions.slice(index+1, instructions.length);
-        instructions = [...before, payload.data, ...after];
-        InstructionStore.emitChange();
-      }
+      let instruction = payload.data;
+      instructions = InstructionTreeNode.replaceById(instructions, instruction.id, instruction);
+      InstructionStore.emitChange();
       break;
     }
     case 'LOAD_PRESET_INSTRUCTIONS': {

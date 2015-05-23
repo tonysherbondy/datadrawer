@@ -56,13 +56,14 @@ InstructionTreeNode.findParent = function(instructions, instruction) {
   });
 };
 
-InstructionTreeNode.removeById = function(instructions, idToRemove) {
+InstructionTreeNode.replaceById = function(instructions, idToRemove, newInstruction) {
   // Currently we assume that there is either no parent or one parent
   // No parent is represented as a parent with no ID because find parent always
   // constructs a root node
   let parent = InstructionTreeNode.findParent(instructions, {id: idToRemove});
   let index = parent.instructions.findIndex(i => i.id === idToRemove);
-  let spliceParams = {$splice: [[index, 1]]};
+  let spliceArray = newInstruction ? [index, 1, newInstruction] : [index, 1];
+  let spliceParams = {$splice: [spliceArray]};
   let newInstructions;
   if (parent.id) {
     // For now assume a parent can only be nested one level deep
@@ -81,9 +82,9 @@ InstructionTreeNode.removeById = function(instructions, idToRemove) {
   return newInstructions;
 };
 
-//InstructionTreeNode.replaceInstruction = function(instructions, instruction) {
-  //// Replace instruction with same id
-//};
+InstructionTreeNode.removeById = function(instructions, idToRemove) {
+  return InstructionTreeNode.replaceById(instructions, idToRemove);
+};
 
 // Find a set of instructions between two instructions. The set must
 // be at the same level, so we walk the tree of instructions
