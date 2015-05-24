@@ -156,12 +156,14 @@ class App extends React.Component {
         break;
       }
       case 38: {
-        this.stepCurrentInstruction(-1);
+        let nextInstruction = this.stepFromInstruction(this.getCurrentInstruction(), -1);
+        DrawingStateActions.setSelectedInstruction(nextInstruction);
         e.preventDefault();
         break;
       }
       case 40: {
-        this.stepCurrentInstruction(1);
+        let nextInstruction = this.stepFromInstruction(this.getCurrentInstruction(), 1);
+        DrawingStateActions.setSelectedInstruction(nextInstruction);
         e.preventDefault();
         break;
       }
@@ -177,19 +179,67 @@ class App extends React.Component {
 
   // step should either be 1 or -1
   // will move that step amount forward or backwards
-  stepCurrentInstruction(step) {
-    let currentInstruction = this.getCurrentInstruction();
+  stepFromInstruction(currentInstruction, step) {
     let {instructions} = this.props;
     let {parent, index} = InstructionTreeNode.findParentWithIndex(instructions, currentInstruction);
 
-    // TODO - Need to be able to step into loops
-    index = index + step;
-    if (index < 0) {
-      index = parent.instructions.length - 1;
-    } else if (index > parent.instructions.length - 1) {
-      index = 0;
+    // Possible States
+    // -- Step from one instruction to the next in same parent
+    // -- Step forwards onto a loop instruction and go to the first instruction of the loop
+    // -- Step forwards at the end of a loop and need to step out of the loop to the next instruction of the parent
+    // -- Step backwards at the beginning of a loop and need to step out of the loop to the previous instruction of the parent
+    // -- Step backwards from a non-loop instruction to a loop instruction and go to the last instruction of the loop
+
+    let nextIndex = index + step;
+    if (step > 0) {
+      // step forwards
+
+      if (nextIndex > parent.instructions.length - 1) {
+        // have stepped forward past the end of instructions
+        if (parent.id) {
+          // we were in a loop so take a step forward from our parent
+          return this.stepFromInstruction(parent, 1);
+        } else {
+          // we were not in a loop so try to cycle back to first index
+          nextIndex = 0;
+        }
+      }
+
+      // Stepping forwards within bounds
+      let nextInstruction = parent.instructions[nextIndex];
+      if (nextInstruction.instructions && nextInstruction.instructions.length > 0) {
+        // stepping forwards onto a loop we go to first instruction of loop
+        return _.first(nextInstruction.instructions);
+      }
+
+      // Normal forward move to the next instruction
+      return nextInstruction;
+
+    } else {
+      // step backwards
+
+      if (nextIndex < 0) {
+        // have stepped backwards before the beginning of a set of instructions
+        if (parent.id) {
+          // we were in a loop so take a step backward from our parent
+          return this.stepFromInstruction(parent, -1);
+        } else {
+          // we were not in a loop so cycle to try to step to the last index in this set
+          nextIndex = parent.instructions.length - 1;
+        }
+      }
+
+      // We are stepping backwards within bounds
+      let nextInstruction = parent.instructions[nextIndex];
+      if (nextInstruction.instructions && nextInstruction.instructions.length > 0) {
+        // stepping backwards onto a loop we go to last instruction of loop
+        return _.last(nextInstruction.instructions);
+      }
+
+      // Simply stepping to a previous instruction
+      return nextInstruction;
     }
-    DrawingStateActions.setSelectedInstruction(parent.instructions[index]);
+    console.error('Not a valid step state');
   }
 
   getEditingInstruction() {
