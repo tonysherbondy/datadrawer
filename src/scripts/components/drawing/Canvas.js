@@ -6,6 +6,7 @@ import DrawingStateActions from '../../actions/DrawingStateActions';
 import ScaleInstruction from '../../models/ScaleInstruction';
 import MoveInstruction from '../../models/MoveInstruction';
 import Expression from '../../models/Expression';
+import InstructionTreeNode from '../../models/InstructionTreeNode';
 
 class Canvas extends React.Component {
   constructor(props) {
@@ -206,7 +207,7 @@ class Canvas extends React.Component {
         if (mode === 'scale') {
           let props = shape.getAdjustProps(mode, closeControlPoint, point);
           if (props) {
-            props.id = this.props.instructions.length + 1;
+            props.id = InstructionTreeNode.getNextInstructionId(this.props.instructions);
             this.state.startPoint = closeControlPoint;
             this.setState(this.state);
             InstructionActions.addInstruction(new ScaleInstruction(props));
@@ -214,7 +215,7 @@ class Canvas extends React.Component {
         }
         if (mode === 'move') {
           let props = {
-            id: this.props.instructions.length + 1,
+            id: InstructionTreeNode.getNextInstructionId(this.props.instructions),
             point: closeControlPoint.pointName,
             shape: {id: closeControlPoint.shapeName},
             x: new Expression(point.x - closeControlPoint.x),

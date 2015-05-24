@@ -21,12 +21,6 @@ class App extends React.Component {
     InstructionActions.loadPresetInstructions(name);
   }
 
-  getNewInstructionID() {
-    let {instructions} = this.props;
-    let size = InstructionTreeNode.getListSize(instructions);
-    return `i${size++}`;
-  }
-
   selectNextShape() {
     // Get all available shape ids
     let shapes = _.chain(this.props.instructions)
@@ -108,7 +102,7 @@ class App extends React.Component {
         // TODO Need to decide when we allow invalid instructions,
         // this currently assumes we just add it to the list...
         let instruction = new DrawRectInstruction({
-          id: this.getNewInstructionID()
+          id: InstructionTreeNode.getNextInstructionId(this.props.instructions)
         });
         InstructionActions.addInstruction(instruction);
         break;
@@ -137,7 +131,7 @@ class App extends React.Component {
 
         // Create a new loop instruction with selected instructions as children
         let instruction = new LoopInstruction({
-          id: this.getNewInstructionID(),
+          id: InstructionTreeNode.getNextInstructionId(instructions),
           instructions: selectedInstructions
         });
 
