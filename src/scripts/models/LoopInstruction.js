@@ -1,4 +1,6 @@
 import Instruction from './Instruction';
+import _ from 'lodash';
+import InstructionTreeNode from './InstructionTreeNode';
 
 export default class LoopInstruction extends Instruction {
   constructor({id, instructions, count}) {
@@ -19,16 +21,31 @@ export default class LoopInstruction extends Instruction {
     return new LoopInstruction(this.getCloneProps());
   }
 
-  getJsCode(table) {
-    // loop until maxLength of table
-    let jsCode = '';
+  getLoopCount(table, currentLoopIndex) {
+    // loop until currentLoopIndex, count or max table length
     let count = this.count;
     if (!isFinite(count)) {
       count = table.maxLength;
     }
+    if (_.isNumber(currentLoopIndex)) {
+      count = _.min([count, currentLoopIndex + 1]);
+    }
+    return count;
+  }
+
+  getJsCode(table, currentInstruction, currentLoopIndex) {
+    let jsCode = '';
+    let count = this.getLoopCount(table, currentLoopIndex);
     for (let index = 0; index < count; index++) {
       let validInstructions = this.instructions.filter(i => i.isValid());
-      validInstructions.forEach(instruction => {
+      let instructionsUpToCurrent = validInstructions;
+      let isCurrentWithinLoop = currentInstruction && InstructionTreeNode.findById(this.instructions, currentInstruction.id) !== null;
+      if (isCurrentWithinLoop && index === count - 1) {
+        // Don't draw any instructions after current on the last loop
+        let isAfter = InstructionTreeNode.isInstructionAfter.bind(null, this.instructions, currentInstruction);
+        instructionsUpToCurrent = validInstructions.filter(i => !isAfter(i));
+      }
+      instructionsUpToCurrent.forEach(instruction => {
         jsCode += '\n' + instruction.getJsCode(index);
       });
       jsCode += '\n';

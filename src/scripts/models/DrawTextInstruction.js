@@ -37,10 +37,10 @@ export default class DrawTextInstruction extends DrawLineInstruction {
   }
 
   // TODO This belongs in the UI most likely
-  getUiSentence(variables, variableValues) {
+  getUiSentence(variables, variableValues, shapeNameMap) {
     return (
       <span className='instruction-sentence'>
-        {this.getFromUi(variableValues.shapes)}
+        {this.getFromUi(shapeNameMap)}
       </span>
     );
   }

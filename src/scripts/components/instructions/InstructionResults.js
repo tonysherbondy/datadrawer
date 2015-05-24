@@ -78,8 +78,9 @@ export default class InstructionResults extends React.Component {
     // Get JS from instructions
     let validInstructions = instructions.filter(i => i.isValid());
     let instructionsUpToCurrent = validInstructions;
-    if (this.props.currentInstruction) {
-      let isAfter = InstructionTreeNode.isInstructionAfter.bind(null, instructions, this.props.currentInstruction);
+    let {currentInstruction} = this.props;
+    if (currentInstruction) {
+      let isAfter = InstructionTreeNode.isInstructionAfter.bind(null, instructions, currentInstruction);
       instructionsUpToCurrent = validInstructions.filter(i => !isAfter(i));
     }
     let jsCode = instructionsUpToCurrent.map(instruction => {
@@ -89,7 +90,7 @@ export default class InstructionResults extends React.Component {
       // within the loop though...
       // TODO Loop instructions don't have a shapeName, but perhaps we can just ignore
       if (instruction instanceof LoopInstruction) {
-        return instruction.getJsCode(this.getTable(variableValues));
+        return instruction.getJsCode(this.getTable(variableValues), currentInstruction, this.props.currentLoopIndex);
       }
       return instruction.getJsCode();
     }).join('\n');
