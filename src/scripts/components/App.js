@@ -140,23 +140,25 @@ class App extends React.Component {
         InstructionActions.insertInstruction(instruction, index, parent);
         break;
       }
-      case 37: {
-        console.log('left arrow should do something');
+      case 37: { //left arrow
+        // If we are in a loop decrement the loop counter
+        // don't cycle back around
         e.preventDefault();
         break;
       }
-      case 39: {
-        console.log('right arrow should do something');
+      case 39: { //right arrow
+        // If we are in a loop increment the loop counter
+        // don't cycle back around
         e.preventDefault();
         break;
       }
-      case 38: {
+      case 38: { //up arrow
         let nextInstruction = this.stepFromInstruction(this.getCurrentInstruction(), -1);
         DrawingStateActions.setSelectedInstruction(nextInstruction);
         e.preventDefault();
         break;
       }
-      case 40: {
+      case 40: { //down arrow
         let nextInstruction = this.stepFromInstruction(this.getCurrentInstruction(), 1);
         DrawingStateActions.setSelectedInstruction(nextInstruction);
         e.preventDefault();
@@ -171,6 +173,22 @@ class App extends React.Component {
         break;
     }
   }
+
+  //stepLoopIndex(step) {
+    //let {currentLoopIndex} = this.props.drawingState;
+    //let currentInstruction = this.getCurrentInstruction();
+    //let {instructions} = this.props;
+    //let parent = InstructionTreeNode.findParent(instructions, currentInstruction);
+
+    //// If the current instruction is not in a loop, then index = null
+    //if (!(parent instanceof LoopInstruction)) {
+      //return null;
+    //}
+    //if (!_.isNumber(currentLoopIndex)) {
+      //currentLoopIndex = parent.
+    //}
+
+  //}
 
   // step should either be 1 or -1
   // will move that step amount forward or backwards
@@ -297,6 +315,7 @@ class App extends React.Component {
     if (_.isString(this.props.drawingState.selectedShapeId)) {
       currentInstruction = null;
     }
+
     return (
       <div onKeyDown={this.handleKeyPress} className='main'>
         <h1>Tukey App</h1>
