@@ -30,7 +30,7 @@ export default class InstructionList extends React.Component {
 
       return (
         <li className={itemClass} key={index} onClick={this.handleItemClick.bind(this, instruction)}>
-          {instruction.getUiSentence(this.props.dataVariables, this.props.variableValues)}
+          {instruction.getUiSentence(this.props.dataVariables, this.props.variableValues, this.props.shapeNameMap)}
           <button
             type='button'
             className='delete-instruction'
@@ -72,6 +72,7 @@ export default class InstructionList extends React.Component {
 }
 
 InstructionList.propTypes = {
+  shapeNameMap: React.PropTypes.object.isRequired,
   dataVariables: React.PropTypes.array.isRequired,
   instructions: React.PropTypes.array,
   variableValues: React.PropTypes.object

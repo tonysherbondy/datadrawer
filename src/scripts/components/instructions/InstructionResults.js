@@ -9,6 +9,8 @@ import DrawCanvas from '../../models/DrawCanvas';
 import LoopInstruction from '../../models/LoopInstruction';
 import InstructionList from './InstructionList';
 import evaluateJs from '../../utils/evaluateJs';
+import InstructionTreeNode from '../../models/InstructionTreeNode';
+import DrawInstruction from '../../models/DrawInstruction';
 
 export default class InstructionResults extends React.Component {
 
@@ -64,7 +66,6 @@ export default class InstructionResults extends React.Component {
   computeFromInstructions(instructions) {
     // Compute shapes and variable values
 
-
     // This should be a variableValues map that gets used
     let {variableValues, jsCode: dataJsCode} = this.initVariableValuesWithData();
     // Initialize shape variable values container
@@ -76,7 +77,12 @@ export default class InstructionResults extends React.Component {
 
     // Get JS from instructions
     let validInstructions = instructions.filter(i => i.isValid());
-    let jsCode = validInstructions.map(instruction => {
+    let instructionsUpToCurrent = validInstructions;
+    if (this.props.currentInstruction) {
+      let isAfter = InstructionTreeNode.isInstructionAfter.bind(null, instructions, this.props.currentInstruction);
+      instructionsUpToCurrent = validInstructions.filter(i => !isAfter(i));
+    }
+    let jsCode = instructionsUpToCurrent.map(instruction => {
       // TODO, a loop instructions total iterations can be calculated
       // at this point because loops can only depend on data variables, this will
       // allow us to change our context, loop prefix only affects shape variables
@@ -98,6 +104,19 @@ export default class InstructionResults extends React.Component {
 
     jsCode = dataJsCode + '\n\n' + jsCode;
     return {shapes, variableValues, jsCode};
+  }
+
+  // Create map from shapeId to shapeName, this has to be done so that all possible shapes
+  // even the ones not currently drawn are in the map
+  getShapeNameMap(instructions) {
+    let nameMap = {canvas: 'canvas'};
+    InstructionTreeNode
+      .flatten(instructions)
+      .filter(i => i instanceof DrawInstruction)
+      .forEach(i => {
+        nameMap[i.shapeId] = i.name || i.id;
+      });
+    return nameMap;
   }
 
   getTable(variableValues) {
@@ -134,6 +153,7 @@ export default class InstructionResults extends React.Component {
     let {currentInstruction} = this.props;
     let {selectedInstructions} = this.props;
     let selectedShape = this.getSelectedShape(this.props.selectedShapeId, shapes);
+    let shapeNameMap = this.getShapeNameMap(this.props.instructions);
 
     return (
       <div>
@@ -148,6 +168,7 @@ export default class InstructionResults extends React.Component {
         <InstructionTitle
           dataVariables={this.props.dataVariables}
           variableValues={variableValues}
+          shapeNameMap={shapeNameMap}
           instruction={currentInstruction} />
 
         <Canvas
@@ -169,6 +190,7 @@ export default class InstructionResults extends React.Component {
           selectedInstructions={selectedInstructions}
           dataVariables={this.props.dataVariables}
           variableValues={variableValues}
+          shapeNameMap={shapeNameMap}
           instructions={this.props.instructions} />
       </div>
     );

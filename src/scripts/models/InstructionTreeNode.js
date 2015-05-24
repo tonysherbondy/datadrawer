@@ -140,3 +140,12 @@ InstructionTreeNode.findBetweenRange = function(instructions, instruction1, inst
   // return empty array if we couldn't find a suitable set
   return [];
 };
+
+// Determines if the second instruction comes after the first
+InstructionTreeNode.isInstructionAfter = function(instructions, first, second) {
+  // Assume the flatten is depth first??
+  let all = InstructionTreeNode.flatten(instructions);
+  let firstIndex = all.findIndex(i => i.id === first.id);
+  let secondIndex = all.findIndex(i => i.id === second.id);
+  return secondIndex > firstIndex;
+};

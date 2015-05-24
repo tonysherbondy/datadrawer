@@ -26,8 +26,8 @@ export default class ScaleInstruction extends AdjustInstruction {
   }
 
   // TODO This belongs in the UI most likely
-  getUiSentence(variables, variableValues) {
-    let shapeName = this.getShapeName(variableValues.shapes);
+  getUiSentence(variables, variableValues, shapeNameMap) {
+    let shapeName = this.getShapeName(shapeNameMap);
     return (
       <span className='instruction-sentence'>
         {`Scale ${shapeName}'s ${this.prop} by`}

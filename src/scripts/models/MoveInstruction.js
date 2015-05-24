@@ -52,11 +52,11 @@ export default class MoveInstruction extends AdjustInstruction {
     return `${varName}.moveRelative('${this.point}', ${pointJs}, ${this.isReshape});\n`;
   }
 
-  getUiSentence(variables, variableValues) {
-    let shapeName = this.getShapeName(variableValues.shapes);
+  getUiSentence(variables, variableValues, shapeNameMap) {
+    let shapeName = this.getShapeName(shapeNameMap);
     let fromUi = `Move ${shapeName}'s ${this.point}`;
     let toUi;
-    let pointUi = this.getPointUi(variableValues.shapes, this.to);
+    let pointUi = this.getPointUi(shapeNameMap, this.to);
     if (pointUi) {
       toUi = `, to meet ${pointUi}`;
     } else {

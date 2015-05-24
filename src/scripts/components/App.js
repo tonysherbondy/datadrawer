@@ -120,6 +120,7 @@ class App extends React.Component {
         break;
       }
       case 76: { //l
+        // TODO We allow multiple looping levels, but other assumptions don't support that
         let selectedInstructions = this.getSelectedInstructions();
         let {instructions} = this.props;
 
@@ -140,12 +141,12 @@ class App extends React.Component {
         break;
       }
       case 37: {
-        console.log('left arrow');
+        console.log('left arrow should do something');
         e.preventDefault();
         break;
       }
       case 39: {
-        console.log('right arrow');
+        console.log('right arrow should do something');
         e.preventDefault();
         break;
       }
@@ -304,7 +305,9 @@ class App extends React.Component {
         <button onClick={this.handlePresetClick.bind(this, 'bars')}>Bars</button>
         <button onClick={this.handlePresetClick.bind(this, '')}>Blank</button>
         <InstructionResults
+          // TODO - uhhh, I forgot why we are passing whole drawing state to results :/
           drawingState={this.props.drawingState}
+          currentLoopIndex={this.props.drawingState.currentLoopIndex}
           instructions={this.props.instructions}
           dataVariables={this.props.variables}
           editingInstruction={this.getEditingInstruction()}

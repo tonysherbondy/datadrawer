@@ -4,6 +4,7 @@ let drawingState = {
   mode: 'normal',
   selectedShapeId: null,
   selectedInstructions: null,
+  currentLoopIndex: null,
   editingInstructionId: null
 };
 

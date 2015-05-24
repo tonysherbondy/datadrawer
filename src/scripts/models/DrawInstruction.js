@@ -134,16 +134,15 @@ export default class DrawInstruction extends Instruction {
     return ` until ${this.getPointUi(shapes, this.to)}`;
   }
 
-  getUiSentence(variables, variableValues) {
+  getUiSentence(variables, variableValues, shapeNameMap) {
     if (!this.isValid()) {
       return this.getInvalidUi();
     }
 
-    let {shapes} = variableValues;
-    let fromUi = this.getFromUi(shapes);
+    let fromUi = this.getFromUi(shapeNameMap);
     let toUi;
     if (this.to) {
-      toUi = this.getPointToUi(shapes);
+      toUi = this.getPointToUi(shapeNameMap);
     } else {
       toUi = this.getSizeUi(variables, variableValues);
     }
