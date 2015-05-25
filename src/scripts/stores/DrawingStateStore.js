@@ -12,6 +12,7 @@ function resetState() {
   drawingState.editingInstructionId = null;
   drawingState.selectedInstructions = null;
   drawingState.selectedShapeId = null;
+  drawingState.currentLoopIndex = null;
 }
 
 const DrawingStateStore = biff.createStore({
@@ -47,6 +48,11 @@ const DrawingStateStore = biff.createStore({
     }
     case 'SET_SELECTED_SHAPE': {
       drawingState.selectedShapeId = payload.data.id;
+      DrawingStateStore.emitChange();
+      break;
+    }
+    case 'SET_LOOP_INDEX': {
+      drawingState.currentLoopIndex = payload.data;
       DrawingStateStore.emitChange();
       break;
     }

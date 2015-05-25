@@ -21,21 +21,20 @@ export default class LoopInstruction extends Instruction {
     return new LoopInstruction(this.getCloneProps());
   }
 
-  getLoopCount(table, currentLoopIndex) {
-    // loop until currentLoopIndex, count or max table length
-    let count = this.count;
-    if (!isFinite(count)) {
-      count = table.maxLength;
-    }
-    if (_.isNumber(currentLoopIndex)) {
-      count = _.min([count, currentLoopIndex + 1]);
-    }
-    return count;
+  getMaxLoopCount(table) {
+    // max loop count is either set on count or max table length
+    return _.isNumber(this.count) ? this.count : table.maxLength;
   }
 
   getJsCode(table, currentInstruction, currentLoopIndex) {
+
+    // Either loop the complete number of times or the current loop count
+    let count = this.getMaxLoopCount(table);
+    if (_.isNumber(currentLoopIndex)) {
+      count = _.min([count, currentLoopIndex + 1]);
+    }
+
     let jsCode = '';
-    let count = this.getLoopCount(table, currentLoopIndex);
     for (let index = 0; index < count; index++) {
       let validInstructions = this.instructions.filter(i => i.isValid());
       let instructionsUpToCurrent = validInstructions;

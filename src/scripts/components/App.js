@@ -167,12 +167,14 @@ class App extends React.Component {
       case 37: { //left arrow
         // If we are in a loop decrement the loop counter
         // don't cycle back around
+        this.stepLoopIndex(-1);
         e.preventDefault();
         break;
       }
       case 39: { //right arrow
         // If we are in a loop increment the loop counter
         // don't cycle back around
+        this.stepLoopIndex(1);
         e.preventDefault();
         break;
       }
@@ -202,21 +204,34 @@ class App extends React.Component {
     }
   }
 
-  //stepLoopIndex(step) {
-    //let {currentLoopIndex} = this.props.drawingState;
-    //let currentInstruction = this.getCurrentInstruction();
-    //let {instructions} = this.props;
-    //let parent = InstructionTreeNode.findParent(instructions, currentInstruction);
+  stepLoopIndex(step) {
+    let {currentLoopIndex} = this.props.drawingState;
+    let currentInstruction = this.getCurrentInstruction();
+    let {instructions} = this.props;
+    let parent = InstructionTreeNode.findParent(instructions, currentInstruction);
 
-    //// If the current instruction is not in a loop, then index = null
-    //if (!(parent instanceof LoopInstruction)) {
-      //return null;
-    //}
-    //if (!_.isNumber(currentLoopIndex)) {
-      //currentLoopIndex = parent.
-    //}
+    // If the current instruction is not in a loop, then index = null
+    if (!(parent instanceof LoopInstruction)) {
+      return null;
+    }
 
-  //}
+    let table = this.state.pictureResult.getTable();
+    let count = parent.getMaxLoopCount(table);
+    if (!_.isNumber(currentLoopIndex)) {
+      // If loop index == null is same as last index
+      currentLoopIndex = count - 1;
+    }
+
+    // Step loop index
+    currentLoopIndex += step;
+    if (currentLoopIndex < 0) {
+      currentLoopIndex = 0;
+    } else if (currentLoopIndex > count - 1) {
+      currentLoopIndex = count - 1;
+    }
+
+    DrawingStateActions.setLoopIndex(currentLoopIndex);
+  }
 
   // step should either be 1 or -1
   // will move that step amount forward or backwards

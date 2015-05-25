@@ -29,6 +29,13 @@ const DrawingStateActions = biff.createActions({
     });
   },
 
+  setLoopIndex(index) {
+    this.dispatch({
+      actionType: 'SET_LOOP_INDEX',
+      data: index
+    });
+  },
+
   setSelectedShape(id) {
     this.dispatch({
       actionType: 'SET_SELECTED_SHAPE',
