@@ -8,8 +8,6 @@ import DataTable from './DataTable';
 import InstructionList from './InstructionList';
 import DrawInstruction from '../../models/DrawInstruction';
 import InstructionTreeNode from '../../models/InstructionTreeNode';
-import PictureCompiler from '../../models/PictureCompiler';
-import PictureResult from '../../models/PictureResult';
 
 export default class InstructionResults extends React.Component {
 
@@ -39,7 +37,7 @@ export default class InstructionResults extends React.Component {
   }
 
   render() {
-    let picture = new PictureCompiler(this.props).computeFromInstructions();
+    let {pictureResult} = this.props;
     let {scalars} = this.props.dataVariables.reduce((map, d) => {
       let type = d.isRow ? 'vectors' : 'scalars';
       map[type].push(d);
@@ -48,7 +46,7 @@ export default class InstructionResults extends React.Component {
 
     let {currentInstruction} = this.props;
     let {selectedInstructions} = this.props;
-    let selectedShape = this.getSelectedShape(this.props.selectedShapeId, picture.shapes);
+    let selectedShape = this.getSelectedShape(this.props.selectedShapeId, pictureResult.shapes);
     let shapeNameMap = this.getShapeNameMap(this.props.instructions);
 
     return (
@@ -56,26 +54,26 @@ export default class InstructionResults extends React.Component {
         <DataVariableList
           scalars={scalars}
           dataVariables={this.props.dataVariables}
-          dataValues={picture.variableValues} />
+          dataValues={pictureResult.variableValues} />
 
         <DataTable
-          table={PictureResult.getTable(this.props.dataVariables, picture.variableValues)} />
+          table={pictureResult.getTable()} />
 
         <InstructionTitle
           dataVariables={this.props.dataVariables}
-          variableValues={picture.variableValues}
+          variableValues={pictureResult.variableValues}
           shapeNameMap={shapeNameMap}
           instruction={currentInstruction} />
 
         <Canvas
-          shapes={picture.shapes}
+          shapes={pictureResult.shapes}
           drawingState={this.props.drawingState}
           // TODO - Only need this to create new instruction ID :/
           instructions={this.props.instructions}
           selectedShape={selectedShape}
           editingInstruction={this.props.editingInstruction} />
 
-        <InstructionCode code={picture.jsCode} />
+        <InstructionCode code={pictureResult.jsCode} />
 
         <div>
           Mode: {this.props.drawingState.mode}
@@ -85,7 +83,7 @@ export default class InstructionResults extends React.Component {
           currentInstruction={currentInstruction}
           selectedInstructions={selectedInstructions}
           dataVariables={this.props.dataVariables}
-          variableValues={picture.variableValues}
+          variableValues={pictureResult.variableValues}
           shapeNameMap={shapeNameMap}
           instructions={this.props.instructions} />
       </div>

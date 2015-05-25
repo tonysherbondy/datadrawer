@@ -8,6 +8,12 @@ let drawingState = {
   editingInstructionId: null
 };
 
+function resetState() {
+  drawingState.editingInstructionId = null;
+  drawingState.selectedInstructions = null;
+  drawingState.selectedShapeId = null;
+}
+
 const DrawingStateStore = biff.createStore({
   getDrawingState() {
     return drawingState;
@@ -53,12 +59,15 @@ const DrawingStateStore = biff.createStore({
       DrawingStateStore.emitChange();
       break;
     }
+    case 'LOAD_PRESET_INSTRUCTIONS': {
+      resetState();
+      DrawingStateStore.emitChange();
+      break;
+    }
     case 'REMOVE_INSTRUCTIONS': {
       // TODO - probably only want to remove selected state
       // if we have matching ID, but for now this is safest
-      drawingState.editingInstructionId = null;
-      drawingState.selectedInstructions = null;
-      drawingState.selectedShapeId = null;
+      resetState();
       DrawingStateStore.emitChange();
       break;
     }

@@ -13,7 +13,7 @@ import ScaleInstruction from '../models/ScaleInstruction';
 import Canvas from './drawing/Canvas';
 import InstructionTreeNode from '../models/InstructionTreeNode';
 import LoopInstruction from '../models/LoopInstruction';
-
+import PictureResult from '../models/PictureResult';
 
 class App extends React.Component {
 
@@ -315,6 +315,13 @@ class App extends React.Component {
     if (_.isString(this.props.drawingState.selectedShapeId)) {
       currentInstruction = null;
     }
+    let {currentLoopIndex} = this.props.drawingState;
+    let {instructions} = this.props;
+    let dataVariables = this.props.variables;
+    let pictureResult = new PictureResult({ instructions,
+                                            dataVariables,
+                                            currentInstruction,
+                                            currentLoopIndex });
 
     return (
       <div onKeyDown={this.handleKeyPress} className='main'>
@@ -326,13 +333,15 @@ class App extends React.Component {
         <InstructionResults
           // TODO - uhhh, I forgot why we are passing whole drawing state to results :/
           drawingState={this.props.drawingState}
-          currentLoopIndex={this.props.drawingState.currentLoopIndex}
-          instructions={this.props.instructions}
-          dataVariables={this.props.variables}
           editingInstruction={this.getEditingInstruction()}
           selectedShapeId={this.getSelectedShapeId()}
           selectedInstructions={selectedInstructions}
+          pictureResult={pictureResult}
+          // TODO - do I need all these now that I have PictureResult?
           currentInstruction={currentInstruction}
+          currentLoopIndex={currentLoopIndex}
+          instructions={instructions}
+          dataVariables={dataVariables}
         />
       </div>
     );
