@@ -154,13 +154,17 @@ class App extends React.Component {
       }
       case 38: { //up arrow
         let nextInstruction = this.stepFromInstruction(this.getCurrentInstruction(), -1);
-        DrawingStateActions.setSelectedInstruction(nextInstruction);
+        if (nextInstruction) {
+          DrawingStateActions.setSelectedInstruction(nextInstruction);
+        }
         e.preventDefault();
         break;
       }
       case 40: { //down arrow
         let nextInstruction = this.stepFromInstruction(this.getCurrentInstruction(), 1);
-        DrawingStateActions.setSelectedInstruction(nextInstruction);
+        if (nextInstruction) {
+          DrawingStateActions.setSelectedInstruction(nextInstruction);
+        }
         e.preventDefault();
         break;
       }
@@ -193,6 +197,9 @@ class App extends React.Component {
   // step should either be 1 or -1
   // will move that step amount forward or backwards
   stepFromInstruction(currentInstruction, step) {
+    if (!currentInstruction) {
+      return null;
+    }
     let {instructions} = this.props;
     let {parent, index} = InstructionTreeNode.findParentWithIndex(instructions, currentInstruction);
 
@@ -266,9 +273,14 @@ class App extends React.Component {
     let {selectedInstructions} = this.props.drawingState;
     let {instructions} = this.props;
     if (selectedInstructions && selectedInstructions.length > 0) {
-      return _.compact(selectedInstructions.map(i => {
+      selectedInstructions = _.compact(selectedInstructions.map(i => {
         return InstructionTreeNode.findById(instructions, i.id);
       }));
+
+      // TODO figure out why Sometimes we don't find the instructions that we have selected,
+      if (selectedInstructions.length > 0) {
+        return selectedInstructions;
+      }
     }
     let lastInstruction = _.last(this.props.instructions);
     return lastInstruction ? [lastInstruction] : [];
