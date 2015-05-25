@@ -16,6 +16,30 @@ import LoopInstruction from '../models/LoopInstruction';
 import PictureResult from '../models/PictureResult';
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+    // TODO - the only reason i moved this to state is because i want it
+    // to be computed only once when props change and then use it for functionality
+    // like moving the current steps etc., you could imagine that functionality
+    // actually moving down to the instructions list or something like that instead
+    // then we could just calculate the picture in the render for this app
+    this.state = {
+      pictureResult: this.getPictureResult(props)
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.state = {
+      pictureResult: this.getPictureResult(nextProps)
+    };
+  }
+
+  getPictureResult(props) {
+    return new PictureResult({ instructions: props.instructions,
+                               dataVariables: props.variables,
+                               currentInstruction: this.getCurrentInstruction(props),
+                               currentLoopIndex: props.drawingState.currentLoopIndex });
+  }
 
   handlePresetClick(name) {
     InstructionActions.loadPresetInstructions(name);
@@ -269,9 +293,10 @@ class App extends React.Component {
   }
 
   // Either the one the user selected or the last instruction
-  getSelectedInstructions() {
-    let {selectedInstructions} = this.props.drawingState;
-    let {instructions} = this.props;
+  getSelectedInstructions(props) {
+    props = props || this.props;
+    let {selectedInstructions} = props.drawingState;
+    let {instructions} = props;
     if (selectedInstructions && selectedInstructions.length > 0) {
       selectedInstructions = _.compact(selectedInstructions.map(i => {
         return InstructionTreeNode.findById(instructions, i.id);
@@ -282,12 +307,12 @@ class App extends React.Component {
         return selectedInstructions;
       }
     }
-    let lastInstruction = _.last(this.props.instructions);
+    let lastInstruction = _.last(props.instructions);
     return lastInstruction ? [lastInstruction] : [];
   }
 
-  getCurrentInstruction() {
-    return _.last(this.getSelectedInstructions());
+  getCurrentInstruction(props) {
+    return _.last(this.getSelectedInstructions(props));
   }
 
   // Either the one the user selected or the shape from the selected
@@ -327,13 +352,6 @@ class App extends React.Component {
     if (_.isString(this.props.drawingState.selectedShapeId)) {
       currentInstruction = null;
     }
-    let {currentLoopIndex} = this.props.drawingState;
-    let {instructions} = this.props;
-    let dataVariables = this.props.variables;
-    let pictureResult = new PictureResult({ instructions,
-                                            dataVariables,
-                                            currentInstruction,
-                                            currentLoopIndex });
 
     return (
       <div onKeyDown={this.handleKeyPress} className='main'>
@@ -348,12 +366,12 @@ class App extends React.Component {
           editingInstruction={this.getEditingInstruction()}
           selectedShapeId={this.getSelectedShapeId()}
           selectedInstructions={selectedInstructions}
-          pictureResult={pictureResult}
+          pictureResult={this.state.pictureResult}
           // TODO - do I need all these now that I have PictureResult?
           currentInstruction={currentInstruction}
-          currentLoopIndex={currentLoopIndex}
-          instructions={instructions}
-          dataVariables={dataVariables}
+          currentLoopIndex={this.props.drawingState.currentLoopIndex}
+          instructions={this.props.instructions}
+          dataVariables={this.props.variables}
         />
       </div>
     );
