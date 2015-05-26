@@ -1,4 +1,7 @@
 import biff from '../dispatcher/dispatcher';
+import InstructionStore from './InstructionStore';
+import InstructionTreeNode from '../models/InstructionTreeNode';
+import LoopInstruction from '../models/LoopInstruction';
 
 let drawingState = {
   mode: 'normal',
@@ -13,6 +16,16 @@ function resetState() {
   drawingState.selectedInstructions = null;
   drawingState.selectedShapeId = null;
   drawingState.currentLoopIndex = null;
+}
+
+function setSelectedInstructions(selectedInstructions) {
+  let instructions = InstructionStore.getInstructions();
+  let parent = InstructionTreeNode.findParent(instructions, selectedInstructions[0]);
+  let isInLoop = parent && parent instanceof LoopInstruction;
+  if (!isInLoop) {
+    drawingState.currentLoopIndex = null;
+  }
+  drawingState.selectedInstructions = selectedInstructions;
 }
 
 const DrawingStateStore = biff.createStore({
@@ -36,13 +49,13 @@ const DrawingStateStore = biff.createStore({
       break;
     }
     case 'SET_SELECTED_INSTRUCTION': {
-      drawingState.selectedInstructions = [payload.data];
+      setSelectedInstructions([payload.data]);
       DrawingStateStore.emitChange();
       break;
     }
     case 'SET_SELECTED_INSTRUCTIONS': {
       // TODO - perhaps rename to instructionIds??
-      drawingState.selectedInstructions = payload.data;
+      setSelectedInstructions(payload.data);
       DrawingStateStore.emitChange();
       break;
     }

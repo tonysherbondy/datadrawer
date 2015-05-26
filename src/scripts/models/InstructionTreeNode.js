@@ -51,6 +51,9 @@ InstructionTreeNode.findById = function(instructions, id) {
 };
 
 InstructionTreeNode.findParent = function(instructions, instruction) {
+  if (!instruction) {
+    return null;
+  }
   let all = InstructionTreeNode.flatten(instructions);
   return all.find(i => {
     // find the instruction that has this instruction as a child
