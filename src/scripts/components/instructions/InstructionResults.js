@@ -1,5 +1,4 @@
 import React from 'react';
-import _ from 'lodash';
 import Canvas from '../drawing/Canvas';
 import InstructionTitle from './InstructionTitle';
 import InstructionCode from './InstructionCode';
@@ -8,6 +7,7 @@ import DataTable from './DataTable';
 import InstructionList from './InstructionList';
 import DrawInstruction from '../../models/DrawInstruction';
 import InstructionTreeNode from '../../models/InstructionTreeNode';
+import PictureResult from '../../models/PictureResult';
 
 export default class InstructionResults extends React.Component {
 
@@ -24,18 +24,6 @@ export default class InstructionResults extends React.Component {
     return nameMap;
   }
 
-  getSelectedShape(id, shapes) {
-    if (!_.isString(id)) {
-      return null;
-    }
-    let shape = shapes[id];
-    if (!shape) {
-      // try adding looping index
-      shape = shapes[`${id}_0`];
-    }
-    return shape;
-  }
-
   render() {
     let {pictureResult} = this.props;
     let {scalars} = this.props.dataVariables.reduce((map, d) => {
@@ -46,7 +34,7 @@ export default class InstructionResults extends React.Component {
 
     let {currentInstruction} = this.props;
     let {selectedInstructions} = this.props;
-    let selectedShape = this.getSelectedShape(this.props.selectedShapeId, pictureResult.shapes);
+    let selectedShape = pictureResult.getSelectedShape(this.props.selectedShapeId);
     let shapeNameMap = this.getShapeNameMap(this.props.instructions);
 
     return (
@@ -94,6 +82,7 @@ export default class InstructionResults extends React.Component {
 }
 
 InstructionResults.propTypes = {
+  pictureResult: React.PropTypes.instanceOf(PictureResult).isRequired,
   instructions: React.PropTypes.array,
   dataVariables: React.PropTypes.array
 };

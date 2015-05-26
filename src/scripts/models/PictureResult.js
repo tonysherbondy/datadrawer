@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import evaluateJs from '../utils/evaluateJs';
 import DrawCanvas from './DrawCanvas';
 import InstructionTreeNode from './InstructionTreeNode';
@@ -28,6 +29,13 @@ export default class PictureResult {
       return row.length > max ? row.length : max;
     }, 0);
     return {rows, rowValues, maxLength};
+  }
+
+  getSelectedShape(id) {
+    if (!_.isString(id)) {
+      return null;
+    }
+    return this.shapes[id];
   }
 
   _initVariableValuesWithData() {

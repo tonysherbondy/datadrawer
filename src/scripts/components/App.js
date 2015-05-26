@@ -354,6 +354,12 @@ class App extends React.Component {
     let currentInstruction = this.getCurrentInstruction();
     if (!_.isString(selectedShapeId) && currentInstruction) {
       selectedShapeId = currentInstruction.shapeId;
+      let {currentLoopIndex} = this.props.drawingState;
+      if (_.isNumber(currentLoopIndex)) {
+        // If we have a currentLoopIndex then we specify this loop's index
+        // for the shape
+        selectedShapeId = `${selectedShapeId}_${currentLoopIndex}`;
+      }
     }
     return selectedShapeId;
   }
