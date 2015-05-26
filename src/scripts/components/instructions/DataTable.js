@@ -5,10 +5,12 @@ export default class DataTable extends React.Component {
 
   render() {
     let {rows, rowValues, maxLength} = this.props.table;
+    let {currentLoopIndex} = this.props;
 
     let headerCells = 'i'.repeat(maxLength+1).split('').map((_,index) => {
       let value = index === 0 ? '' : index - 1;
-      return (<th key={index}>{value}</th>);
+      let className = index - 1 === currentLoopIndex ? 'current-loop-column' : '';
+      return (<th key={index} className={className}>{value}</th>);
     });
 
     let rowElements = rows.map((row, index) => {
@@ -43,6 +45,7 @@ export default class DataTable extends React.Component {
 }
 
 DataTable.propTypes = {
+  currentLoopIndex: React.PropTypes.number,
   rowVariables: React.PropTypes.array,
   dataValues: React.PropTypes.object
 };
