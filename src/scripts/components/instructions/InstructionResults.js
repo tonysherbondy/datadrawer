@@ -60,6 +60,7 @@ export default class InstructionResults extends React.Component {
           // TODO - Only need this to create new instruction ID :/
           instructions={this.props.instructions}
           selectedShape={selectedShape}
+          pictureResult={pictureResult}
           editingInstruction={this.props.editingInstruction} />
 
         <InstructionCode code={pictureResult.jsCode} />

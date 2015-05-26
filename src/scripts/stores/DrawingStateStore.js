@@ -26,6 +26,14 @@ function setSelectedInstructions(selectedInstructions) {
     drawingState.currentLoopIndex = null;
   }
   drawingState.selectedInstructions = selectedInstructions;
+  // Remove any selecte shape state when we select instructions
+  drawingState.selectedShapeId = null;
+}
+
+function insertedInstruction(instruction) {
+  drawingState.editingInstructionId = instruction.id;
+  setSelectedInstructions([instruction]);
+  //drawingState.selectedInstructions = [instruction];
 }
 
 const DrawingStateStore = biff.createStore({
@@ -71,10 +79,13 @@ const DrawingStateStore = biff.createStore({
     }
     // Respond to changes to instruction store
     case 'ADD_INSTRUCTION_SUCCESS': {
-      drawingState.editingInstructionId = payload.data.id;
-      drawingState.selectedInstructions = [payload.data];
-      // Remove any selecte shape state when we've just added an instruction
-      drawingState.selectedShapeId = null;
+      insertedInstruction(payload.data);
+      DrawingStateStore.emitChange();
+      break;
+    }
+    case 'INSERT_INSTRUCTION': {
+      let {instruction} = payload.data;
+      insertedInstruction(instruction);
       DrawingStateStore.emitChange();
       break;
     }

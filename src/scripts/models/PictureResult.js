@@ -42,6 +42,10 @@ export default class PictureResult {
               .find(shape => shape.id === id);
   }
 
+  isVisibleToCurrentIndex(shape) {
+    return this.isVisibleToIndex(this.currentLoopIndex, shape);
+  }
+
   isVisibleToIndex(index, shape) {
     // return all shapes that matches index
     // or has no index (thus was drawn outside of loop)

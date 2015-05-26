@@ -37,7 +37,9 @@ class Canvas extends React.Component {
     }
 
     let editingId = editingInstruction.shapeId;
+    let {pictureResult} = this.props;
     let magnets = Object.keys(shapes)
+                    .filter(id => pictureResult.isVisibleToCurrentIndex(shapes[id]))
                     .filter(id => id !== editingId)
                     .map(id => shapes[id].getMagnets());
     return _.flatten(magnets);
