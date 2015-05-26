@@ -47,20 +47,17 @@ class App extends React.Component {
 
   selectNextShape() {
     // Get all available shape ids
-    let shapes = _.chain(this.props.instructions)
-                  .map(i => i.getShapeIds())
-                  .flatten()
-                  .unique()
-                  .value();
+    let shapes = this.state.pictureResult.getAllShapesForLoopIndex(this.props.drawingState.currentLoopIndex);
     let {selectedShapeId} = this.props.drawingState;
 
     // If the selectedShape wasn't found or didn't have one go to first
     // otherwise next
-    let nextIndex = shapes.indexOf(selectedShapeId) + 1;
-    if (nextIndex >= shapes.length || nextIndex < 0) {
-      DrawingStateActions.setSelectedShape(null);
+    let nextIndex = shapes.findIndex(shape => shape.id === selectedShapeId) + 1;
+    let nextShapeId;
+    if (nextIndex >= 0 && nextIndex < shapes.length) {
+      nextShapeId = shapes[nextIndex].id;
     }
-    DrawingStateActions.setSelectedShape(shapes[nextIndex]);
+    DrawingStateActions.setSelectedShapeId(nextShapeId);
   }
 
   handleKeyDown(e) {
@@ -354,12 +351,6 @@ class App extends React.Component {
     let currentInstruction = this.getCurrentInstruction();
     if (!_.isString(selectedShapeId) && currentInstruction) {
       selectedShapeId = currentInstruction.shapeId;
-      let {currentLoopIndex} = this.props.drawingState;
-      if (_.isNumber(currentLoopIndex)) {
-        // If we have a currentLoopIndex then we specify this loop's index
-        // for the shape
-        selectedShapeId = `${selectedShapeId}_${currentLoopIndex}`;
-      }
     }
     return selectedShapeId;
   }

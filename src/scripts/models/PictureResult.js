@@ -35,7 +35,24 @@ export default class PictureResult {
     if (!_.isString(id)) {
       return null;
     }
-    return this.shapes[id];
+    // Get selected shape based on ID for any current loop index
+    let {currentLoopIndex} = this;
+    return _.values(this.shapes)
+              .filter(this.isVisibleToIndex.bind(this,currentLoopIndex))
+              .find(shape => shape.id === id);
+  }
+
+  isVisibleToIndex(index, shape) {
+    // return all shapes that matches index
+    // or has no index (thus was drawn outside of loop)
+    if (!_.isString(shape.index)) {
+      return true;
+    }
+    return parseInt(shape.index, 10) === index;
+  }
+
+  getAllShapesForLoopIndex(index) {
+    return _.values(this.shapes).filter(this.isVisibleToIndex.bind(this,index));
   }
 
   _initVariableValuesWithData() {
