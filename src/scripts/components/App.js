@@ -204,6 +204,20 @@ class App extends React.Component {
     }
   }
 
+  isLoopIndexAtEnd() {
+    let {currentLoopIndex} = this.props.drawingState;
+    let currentInstruction = this.getCurrentInstruction();
+    let {instructions} = this.props;
+    let parent = InstructionTreeNode.findParent(instructions, currentInstruction);
+
+    if (!(parent instanceof LoopInstruction)) {
+      return false;
+    }
+
+    let count = parent.getMaxLoopCount(this.state.pictureResult.getTable());
+    return !_.isNumber(currentLoopIndex) || currentLoopIndex === count - 1;
+  }
+
   stepLoopIndex(step) {
     let {currentLoopIndex} = this.props.drawingState;
     let currentInstruction = this.getCurrentInstruction();
@@ -212,11 +226,11 @@ class App extends React.Component {
 
     // If the current instruction is not in a loop, then index = null
     if (!(parent instanceof LoopInstruction)) {
-      return null;
+      DrawingStateActions.setLoopIndex(null);
+      return;
     }
 
-    let table = this.state.pictureResult.getTable();
-    let count = parent.getMaxLoopCount(table);
+    let count = parent.getMaxLoopCount(this.state.pictureResult.getTable());
     if (!_.isNumber(currentLoopIndex)) {
       // If loop index == null is same as last index
       currentLoopIndex = count - 1;
@@ -255,12 +269,14 @@ class App extends React.Component {
 
       if (nextIndex > parent.instructions.length - 1) {
         // have stepped forward past the end of instructions
-        if (parent.id) {
+        if (parent instanceof LoopInstruction && this.isLoopIndexAtEnd()) {
           // we were in a loop so take a step forward from our parent
           return this.stepFromInstruction(parent, 1);
         } else {
-          // we were not in a loop so try to cycle back to first index
+          // go back to beginning of instruction set because we are either
+          // incrementing a loop or just not in a loop
           nextIndex = 0;
+          this.stepLoopIndex(1);
         }
       }
 
@@ -279,12 +295,13 @@ class App extends React.Component {
 
       if (nextIndex < 0) {
         // have stepped backwards before the beginning of a set of instructions
-        if (parent.id) {
+        if (parent instanceof LoopInstruction && this.props.drawingState.currentLoopIndex === 0) {
           // we were in a loop so take a step backward from our parent
           return this.stepFromInstruction(parent, -1);
         } else {
           // we were not in a loop so cycle to try to step to the last index in this set
           nextIndex = parent.instructions.length - 1;
+          this.stepLoopIndex(-1);
         }
       }
 
