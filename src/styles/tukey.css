@@ -45,12 +45,8 @@ textarea {
   user-select: none;
 }
 
-.sub-instructions-list {
-  background: #efefef;
-}
-
-.instruction-list-item {
-  background: #efefef;
+.sub-instructions-list.selected {
+  background: #ccc;
 }
 
 .instruction-list-item.selected {

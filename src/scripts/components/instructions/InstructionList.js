@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 import InstructionActions from '../../actions/InstructionActions';
 import DrawingStateActions from '../../actions/DrawingStateActions';
 import InstructionTreeNode from '../../models/InstructionTreeNode';
@@ -11,22 +12,23 @@ export default class InstructionList extends React.Component {
 
   render() {
     let {selectedInstructions} = this.props;
-    let getInstructionItems = (instruction, index) => {
+
+    let getSubInstructionsList = (instruction, isSelected) => {
       let subInstructions = (instruction.instructions || []);
-      let subInstructionList;
       if (subInstructions) {
-        subInstructionList = (
-          <ul className='sub-instructions-list'>
+        return (
+          <ul className={classNames('sub-instructions-list', {selected: isSelected})}>
             {subInstructions.map(getInstructionItems)}
           </ul>
         );
       }
+      return undefined;
+    };
 
-      let itemClass = 'instruction-list-item';
+    let getInstructionItems = (instruction, index) => {
       let isSelected = selectedInstructions.findIndex(i => i.id === instruction.id) > -1;
-      if (isSelected) {
-        itemClass += ' selected';
-      }
+      let itemClass = classNames('instruction-list-item', {selected: isSelected});
+      let subInstructionList = getSubInstructionsList(instruction, isSelected);
 
       return (
         <li className={itemClass} key={index} onClick={this.handleItemClick.bind(this, instruction)}>
