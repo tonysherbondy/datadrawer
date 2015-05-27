@@ -33,7 +33,6 @@ function setSelectedInstructions(selectedInstructions) {
 function insertedInstruction(instruction) {
   drawingState.editingInstructionId = instruction.id;
   setSelectedInstructions([instruction]);
-  //drawingState.selectedInstructions = [instruction];
 }
 
 const DrawingStateStore = biff.createStore({

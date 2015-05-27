@@ -12,7 +12,7 @@ export default class InstructionList extends React.Component {
   render() {
     let {selectedInstructions} = this.props;
     let getInstructionItems = (instruction, index) => {
-      let subInstructions = (instruction.instructions || []).filter(i => i.isValid());
+      let subInstructions = (instruction.instructions || []);
       let subInstructionList;
       if (subInstructions) {
         subInstructionList = (
@@ -42,10 +42,9 @@ export default class InstructionList extends React.Component {
       );
     };
 
-    let validInstructions = this.props.instructions.filter(i => i.isValid());
     return (
       <ul className='instructions-list'>
-        {validInstructions.map(getInstructionItems)}
+        {this.props.instructions.map(getInstructionItems)}
       </ul>
     );
   }

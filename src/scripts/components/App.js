@@ -329,9 +329,9 @@ class App extends React.Component {
   }
 
   getEditingInstruction() {
-    return this.props.instructions.find(i => {
-      return i.id === this.props.drawingState.editingInstructionId;
-    });
+    let {instructions} = this.props;
+    let {editingInstructionId} = this.props.drawingState;
+    return InstructionTreeNode.findById(instructions, editingInstructionId);
   }
 
   // Either the one the user selected or the last instruction
