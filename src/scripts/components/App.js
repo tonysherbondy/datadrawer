@@ -125,7 +125,7 @@ class App extends React.Component {
         let instruction = new DrawRectInstruction({
           id: InstructionTreeNode.getNextInstructionId(this.props.instructions)
         });
-        this.insertNewInstructionAfterCurrent(instruction);
+        this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
         break;
       }
       case 83: { //s
@@ -159,6 +159,8 @@ class App extends React.Component {
 
         // Insert loop instruction before previous instruction index
         InstructionActions.insertInstruction(instruction, index, parent);
+        // We need to set the drawing mode to normal because we don't want to edit the newly inserted instruction
+        DrawingStateActions.setDrawingMode('normal');
         break;
       }
       case 37: { //left arrow
@@ -198,19 +200,6 @@ class App extends React.Component {
       default:
         console.log('unknown code', code);
         break;
-    }
-  }
-
-  insertNewInstructionAfterCurrent(instruction) {
-    // TODO We allow multiple looping levels, but other assumptions don't support that
-    let currentInstruction = this.getCurrentInstruction();
-    if (!currentInstruction) {
-      // Just add it to the end of the top of the list
-      InstructionActions.addInstruction(instruction);
-    } else {
-      let {parent, index} = InstructionTreeNode.findParentWithIndex(this.props.instructions, currentInstruction);
-      // Insert into the parent after the current index
-      InstructionActions.insertInstruction(instruction, index + 1, parent);
     }
   }
 

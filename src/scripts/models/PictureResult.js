@@ -4,6 +4,7 @@ import DrawCanvas from './DrawCanvas';
 import InstructionTreeNode from './InstructionTreeNode';
 import LoopInstruction from './LoopInstruction';
 import DrawInstruction from './DrawInstruction';
+import InstructionActions from '../actions/InstructionActions';
 
 // Transforms variables and instructions into shapes, values and javascript
 export default class PictureResult {
@@ -19,6 +20,20 @@ export default class PictureResult {
     // TODO - Only reason we need to export JS is to give it to the JS
     // viewer for debugging
     this.jsCode = jsCode;
+  }
+
+  // TODO - This is the first thing that needs to change instructions, from result thus
+  // making it more like a picture object rather than just result
+  insertNewInstructionAfterCurrent(instruction) {
+    // TODO We allow multiple looping levels, but other assumptions don't support that
+    if (!this.currentInstruction) {
+      // Just add it to the end of the top of the list
+      InstructionActions.addInstruction(instruction);
+    } else {
+      let {parent, index} = InstructionTreeNode.findParentWithIndex(this.instructions, this.currentInstruction);
+      // Insert into the parent after the current index
+      InstructionActions.insertInstruction(instruction, index + 1, parent);
+    }
   }
 
   getTable() {

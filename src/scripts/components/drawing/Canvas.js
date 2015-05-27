@@ -216,7 +216,7 @@ class Canvas extends React.Component {
             props.id = InstructionTreeNode.getNextInstructionId(this.props.instructions);
             this.state.startPoint = closeControlPoint;
             this.setState(this.state);
-            InstructionActions.addInstruction(new ScaleInstruction(props));
+            this.props.pictureResult.insertNewInstructionAfterCurrent(new ScaleInstruction(props));
           }
         }
         if (mode === 'move') {
@@ -231,7 +231,7 @@ class Canvas extends React.Component {
           this.setState(this.state);
           // TODO - for some reason I can't do the below setState??
           //this.setState({startPoint: closeControlPoint});
-          InstructionActions.addInstruction(new MoveInstruction(props));
+          this.props.pictureResult.insertNewInstructionAfterCurrent(new MoveInstruction(props));
 
         }
       }
