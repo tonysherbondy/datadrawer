@@ -19,7 +19,7 @@ export default class DataVariableList extends React.Component {
             variables={this.props.dataVariables}
             variableValues={this.props.dataValues}
             definition={dataVariable.definition} />
-          <div>
+          <div className='dataVariable-value'>
             {value}
           </div>
         </li>

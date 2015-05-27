@@ -39,14 +39,16 @@ export default class InstructionResults extends React.Component {
 
     return (
       <div>
-        <DataVariableList
-          scalars={scalars}
-          dataVariables={this.props.dataVariables}
-          dataValues={pictureResult.variableValues} />
+        <div className="data-container">
+          <DataVariableList
+            scalars={scalars}
+            dataVariables={this.props.dataVariables}
+            dataValues={pictureResult.variableValues} />
 
-        <DataTable
-          currentLoopIndex={this.props.drawingState.currentLoopIndex}
-          table={pictureResult.getTable()} />
+          <DataTable
+            currentLoopIndex={this.props.drawingState.currentLoopIndex}
+            table={pictureResult.getTable()} />
+        </div>
 
         <InstructionTitle
           dataVariables={this.props.dataVariables}

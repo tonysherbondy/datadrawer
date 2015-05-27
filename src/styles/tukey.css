@@ -59,15 +59,40 @@ textarea {
 
 /* table */
 td, th {
-  padding: 5px;
+  padding: 2px;
+  padding-right: 7px;
 }
 
 .data-table {
+  font-size: 10;
   margin-bottom: 40px;
 }
 
 .current-loop-column {
   background-color: darksalmon;
+}
+
+/* fixed left column */
+.table-name-col {
+  position: absolute;
+  width: 130px;
+  left: 0;
+  top: auto;
+}
+
+.table-container {
+  width: 200px;
+  margin-left: 130px;
+  overflow-x:scroll;
+}
+
+/* data variables */
+.dataVariables-list {
+  font-size: 10;
+}
+
+.dataVariable-value {
+  display: inline-block;
 }
 
 /* expressions */

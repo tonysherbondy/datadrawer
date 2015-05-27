@@ -20,7 +20,7 @@ export default class DataTable extends React.Component {
       });
       return (
         <tr key={index}>
-          <td key={0}>
+          <td key={0} className='table-name-col'>
             <VariablePill variable={row} />
           </td>
           {cells}
@@ -29,16 +29,18 @@ export default class DataTable extends React.Component {
     });
 
     return (
-      <table className="data-table">
-        <thead>
-          <tr>
-            {headerCells}
-          </tr>
-        </thead>
-        <tbody>
-          {rowElements}
-        </tbody>
-      </table>
+      <div className="table-container">
+        <table className="data-table">
+          <thead>
+            <tr>
+              {headerCells}
+            </tr>
+          </thead>
+          <tbody>
+            {rowElements}
+          </tbody>
+        </table>
+      </div>
     );
   }
 
