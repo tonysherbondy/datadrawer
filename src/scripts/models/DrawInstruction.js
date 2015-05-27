@@ -82,10 +82,10 @@ export default class DrawInstruction extends Instruction {
     return `${heightJs} + ${y}`;
   }
 
-  getFromValue(shapes) {
+  getFromValue(pictureResult) {
     if (this.from.id) {
       // Must be a shape point
-      let shape = shapes[this.from.id];
+      let shape = pictureResult.getShapeById(this.from.id);
       return shape.getPoint(this.from.point);
     }
     return this.from;

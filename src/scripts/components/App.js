@@ -101,7 +101,7 @@ class App extends React.Component {
           if (point && point.id && magnets.length > 1) {
             // Grab possible magnets for this draw instruction
             let index = magnets.findIndex(m => {
-              return m.shapeName === point.id && m.pointName === point.point;
+              return m.shapeId === point.id && m.pointName === point.point;
             });
             index++;
             if (index === magnets.length) {
@@ -111,7 +111,7 @@ class App extends React.Component {
             if (pointName === 'from') {
               instruction = instruction.getCloneWithFrom(magnetPoint, magnets);
             } else {
-              instruction = instruction.getCloneWithTo(magnetPoint, {}, magnets);
+              instruction = instruction.getCloneWithTo(magnetPoint, this.state.pictureResult, magnets);
             }
             InstructionActions.modifyInstruction(instruction);
           }

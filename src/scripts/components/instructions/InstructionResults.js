@@ -5,24 +5,9 @@ import InstructionCode from './InstructionCode';
 import DataVariableList from './DataVariableList';
 import DataTable from './DataTable';
 import InstructionList from './InstructionList';
-import DrawInstruction from '../../models/DrawInstruction';
-import InstructionTreeNode from '../../models/InstructionTreeNode';
 import PictureResult from '../../models/PictureResult';
 
 export default class InstructionResults extends React.Component {
-
-  // Create map from shapeId to shapeName, this has to be done so that all possible shapes
-  // even the ones not currently drawn are in the map
-  getShapeNameMap(instructions) {
-    let nameMap = {canvas: 'canvas'};
-    InstructionTreeNode
-      .flatten(instructions)
-      .filter(i => i instanceof DrawInstruction)
-      .forEach(i => {
-        nameMap[i.shapeId] = i.name || i.id;
-      });
-    return nameMap;
-  }
 
   render() {
     let {pictureResult} = this.props;
@@ -34,21 +19,19 @@ export default class InstructionResults extends React.Component {
 
     let {currentInstruction} = this.props;
     let {selectedInstructions} = this.props;
-    let selectedShape = pictureResult.getSelectedShape(this.props.selectedShapeId);
-    let shapeNameMap = this.getShapeNameMap(this.props.instructions);
+    let selectedShape = pictureResult.getShapeById(this.props.selectedShapeId);
+    let shapeNameMap = pictureResult.getShapeNameMap();
 
     return (
       <div>
-        <div className="data-container">
-          <DataVariableList
-            scalars={scalars}
-            dataVariables={this.props.dataVariables}
-            dataValues={pictureResult.variableValues} />
+        <DataVariableList
+          scalars={scalars}
+          dataVariables={this.props.dataVariables}
+          dataValues={pictureResult.variableValues} />
 
-          <DataTable
-            currentLoopIndex={this.props.drawingState.currentLoopIndex}
-            table={pictureResult.getTable()} />
-        </div>
+        <DataTable
+          currentLoopIndex={this.props.drawingState.currentLoopIndex}
+          table={pictureResult.getTable()} />
 
         <InstructionTitle
           dataVariables={this.props.dataVariables}
@@ -57,7 +40,6 @@ export default class InstructionResults extends React.Component {
           instruction={currentInstruction} />
 
         <Canvas
-          shapes={pictureResult.shapes}
           drawingState={this.props.drawingState}
           // TODO - Only need this to create new instruction ID :/
           instructions={this.props.instructions}

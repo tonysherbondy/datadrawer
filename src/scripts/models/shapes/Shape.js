@@ -25,7 +25,7 @@ export default class Shape {
     return this.getMagnetNames().map(pointName => {
       return Object.assign({
         pointName,
-        shapeName: this.getShapeName(),
+        shapeId: this.id,
         index: this.index
       }, this.getPoint(pointName));
     });

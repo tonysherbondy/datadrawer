@@ -6,6 +6,7 @@ import DrawingStateActions from '../../actions/DrawingStateActions';
 import ScaleInstruction from '../../models/ScaleInstruction';
 import MoveInstruction from '../../models/MoveInstruction';
 import Expression from '../../models/Expression';
+import PictureResult from '../../models/PictureResult';
 import InstructionTreeNode from '../../models/InstructionTreeNode';
 
 class Canvas extends React.Component {
@@ -27,7 +28,7 @@ class Canvas extends React.Component {
     }
   }
 
-  getMagnets({shapes, editingInstruction}) {
+  getMagnets({editingInstruction}) {
     // All shapes that are not the current editing shape
     // have magnets
     if (!editingInstruction || editingInstruction instanceof ScaleInstruction) {
@@ -38,10 +39,9 @@ class Canvas extends React.Component {
 
     let editingId = editingInstruction.shapeId;
     let {pictureResult} = this.props;
-    let magnets = Object.keys(shapes)
-                    .filter(id => pictureResult.isVisibleToCurrentIndex(shapes[id]))
-                    .filter(id => id !== editingId)
-                    .map(id => shapes[id].getMagnets());
+    let magnets = pictureResult.getAllShapesForCurrentLoopIndex()
+                  .filter(shape => shape.id !== editingId)
+                  .map(shape => shape.getMagnets());
     return _.flatten(magnets);
   }
 
@@ -69,10 +69,14 @@ class Canvas extends React.Component {
   }
 
   getEditingShape() {
-    return this.props.shapes[this.props.editingInstruction.shapeId];
+    let {shapeId} = this.props.editingInstruction;
+    return this.props.pictureResult.getShapeById(shapeId);
   }
 
   drawShape(shape, key, props) {
+    if (shape.index) {
+      key = key + `_${shape.index}`;
+    }
     if (shape.type === 'circle') {
       return (<circle key={key} {...props} />);
 
@@ -95,15 +99,15 @@ class Canvas extends React.Component {
 
   drawShapes() {
     // Filter out canvas
-    let shapes = this.props.shapes;
-    return Object.keys(shapes)
-            .filter(id => id !== 'canvas')
-            .map(id => this.drawShape(shapes[id], id, shapes[id].getRenderProps()));
+    let {pictureResult} = this.props;
+    return pictureResult.getAllShapes()
+            .filter(shape => shape.id !== 'canvas')
+            .map(shape => this.drawShape(shape, shape.id, shape.getRenderProps()));
   }
 
   drawMagnets() {
     let drawMagnet = (magnet) => {
-      let id = `magnet_${magnet.shapeName}_${magnet.pointName}`;
+      let id = `magnet_${magnet.shapeId}_${magnet.pointName}`;
       // TODO probably better way to handle this is to make magnet a component
       return (
         <circle key={id} className='magnet' r='5' cx={magnet.x} cy={magnet.y} />
@@ -113,17 +117,17 @@ class Canvas extends React.Component {
   }
 
   drawCloseMagnetShapeOutline() {
-    if (!this.state.closeMagnet) {
+    let magnet = this.state.closeMagnet;
+    if (!magnet) {
       return null;
     }
-    let magnet = this.state.closeMagnet;
-    let closeShape = this.props.shapes[magnet.shapeName];
+    let closeShape = this.props.pictureResult.getShapeById(magnet.shapeId);
     return this.drawShape(closeShape, `magnet_outline`, closeShape.getMagnetOutlineProps());
   }
 
   drawSelectedShapeControlPoints() {
     let drawControlPoint = (point) => {
-      let id = `control_{point.shapeName}_${point.pointName}`;
+      let id = `control_{point.shapeId}_${point.pointName}`;
       // TODO probably better way to handle this is to make point a component
       return (
         <circle key={id} className='control-point' r='5' cx={point.x} cy={point.y} />
@@ -153,13 +157,13 @@ class Canvas extends React.Component {
         let startPoint = this.state.startPoint;
         let props = shape.getAdjustProps(mode, startPoint, point);
         to = props.to;
-        InstructionActions.modifyInstruction(instruction.getCloneWithTo(to, this.props.shapes, magnets));
+        InstructionActions.modifyInstruction(instruction.getCloneWithTo(to, this.props.pictureResult, magnets));
 
       } else if (mode === 'move') {
         instruction.modifyWithTo(to, this.state.startPoint);
 
       } else {
-        InstructionActions.modifyInstruction(instruction.getCloneWithTo(to, this.props.shapes, magnets));
+        InstructionActions.modifyInstruction(instruction.getCloneWithTo(to, this.props.pictureResult, magnets));
       }
     }
   }
@@ -219,7 +223,7 @@ class Canvas extends React.Component {
           let props = {
             id: InstructionTreeNode.getNextInstructionId(this.props.instructions),
             point: closeControlPoint.pointName,
-            shape: {id: closeControlPoint.shapeName},
+            shape: {id: closeControlPoint.shapeId},
             x: new Expression(point.x - closeControlPoint.x),
             y: new Expression(point.y - closeControlPoint.y)
           };
@@ -247,13 +251,13 @@ class Canvas extends React.Component {
 }
 
 Canvas.propTypes = {
-  shapes: React.PropTypes.object.isRequired
+  pictureResult: React.PropTypes.instanceOf(PictureResult).isRequired
 };
 
 // TODO - shouldn't need this, convert magnet to use same naming convention
 Canvas.convertMagnetToPoint = function(magnet) {
   return {
-    id: magnet.shapeName,
+    id: magnet.shapeId,
     point: magnet.pointName
   };
 };

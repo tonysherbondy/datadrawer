@@ -3,6 +3,7 @@ import evaluateJs from '../utils/evaluateJs';
 import DrawCanvas from './DrawCanvas';
 import InstructionTreeNode from './InstructionTreeNode';
 import LoopInstruction from './LoopInstruction';
+import DrawInstruction from './DrawInstruction';
 
 // Transforms variables and instructions into shapes, values and javascript
 export default class PictureResult {
@@ -31,15 +32,18 @@ export default class PictureResult {
     return {rows, rowValues, maxLength};
   }
 
-  getSelectedShape(id) {
+  getShapeByIdAndIndex(id, index) {
     if (!_.isString(id)) {
       return null;
     }
     // Get selected shape based on ID for any current loop index
-    let {currentLoopIndex} = this;
     return _.values(this.shapes)
-              .filter(this.isVisibleToIndex.bind(this,currentLoopIndex))
-              .find(shape => shape.id === id);
+            .filter(this.isVisibleToIndex.bind(this, index))
+            .find(shape => shape.id === id);
+  }
+
+  getShapeById(id) {
+    return this.getShapeByIdAndIndex(id, this.currentLoopIndex);
   }
 
   isVisibleToCurrentIndex(shape) {
@@ -57,6 +61,27 @@ export default class PictureResult {
 
   getAllShapesForLoopIndex(index) {
     return _.values(this.shapes).filter(this.isVisibleToIndex.bind(this,index));
+  }
+
+  getAllShapesForCurrentLoopIndex() {
+    return this.getAllShapesForLoopIndex(this.currentLoopIndex);
+  }
+
+  getAllShapes() {
+    return _.values(this.shapes);
+  }
+
+  // Create map from shapeId to shapeName, this has to be done so that all possible shapes
+  // even the ones not currently drawn are in the map
+  getShapeNameMap() {
+    let nameMap = {canvas: 'canvas'};
+    InstructionTreeNode
+      .flatten(this.instructions)
+      .filter(i => i instanceof DrawInstruction)
+      .forEach(i => {
+        nameMap[i.shapeId] = i.name || i.id;
+      });
+    return nameMap;
   }
 
   _initVariableValuesWithData() {
