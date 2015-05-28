@@ -3,6 +3,7 @@ import VariablePill from '../VariablePill';
 import ExpressionEditor from '../ExpressionEditor';
 import DataVariableActions from '../../actions/DataVariableActions';
 import DataVariableStore from '../../stores/DataVariableStore';
+import DataVariable from '../../models/DataVariable';
 
 export default class DataVariableList extends React.Component {
 
@@ -39,7 +40,10 @@ export default class DataVariableList extends React.Component {
   }
 
   handleNameChange(variable, newName) {
-    console.log('trying to change name for', variable, 'to', newName);
+    // Clone old variable
+    let newVariable = new DataVariable(variable);
+    newVariable.name = newName;
+    DataVariableActions.modifyVariable(newVariable);
   }
 
   handleDefinitionChange(variable, newDefinition) {

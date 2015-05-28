@@ -4,7 +4,14 @@ import ContentEditable from './ContentEditable';
 export default class VariablePill extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {isEditingName: false};
+    this.state = {
+      isEditingName: false,
+      name: props.variable.name
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({name: nextProps.variable.name});
   }
 
   render() {
@@ -12,7 +19,7 @@ export default class VariablePill extends React.Component {
       return (
         <ContentEditable
           className='variable-pill data-variable-name-editable'
-          html={this.props.variable.name}
+          html={this.state.name}
           onBlur={this.handleBlur.bind(this)}
           onChange={this.handleNameChange.bind(this)} />
       );
@@ -24,7 +31,7 @@ export default class VariablePill extends React.Component {
           draggable='true'
           dataVariableId={this.props.variable.id}
           className="variable-pill">
-          {this.props.variable.name}
+          {this.state.name}
         </span>
 
       );
@@ -40,6 +47,7 @@ export default class VariablePill extends React.Component {
 
   handleBlur() {
     this.setState({isEditingName: false});
+    this.props.handleNameChange(this.state.name);
   }
 
   handleDoubleClick() {
@@ -49,8 +57,7 @@ export default class VariablePill extends React.Component {
   }
 
   handleNameChange(evt) {
-    console.log('evt', evt);
-    console.log('name change', evt.target.value);
+    this.setState({name: evt.target.value});
   }
 
 }
