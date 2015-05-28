@@ -53,4 +53,8 @@ export default class Shape {
       strokeOpacity: this.isGuide ? 0 : 1
     };
   }
+
+  getMagnets() {
+    return [];
+  }
 }
