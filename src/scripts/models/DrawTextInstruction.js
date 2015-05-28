@@ -1,6 +1,8 @@
 import DrawLineInstruction from './DrawLineInstruction';
 import InstructionActions from '../actions/InstructionActions';
 import Expression from './Expression';
+import React from 'react';
+import ExpressionEditor from '../components/ExpressionEditor';
 
 export default class DrawTextInstruction extends DrawLineInstruction {
   constructor(props) {
@@ -61,4 +63,39 @@ export default class DrawTextInstruction extends DrawLineInstruction {
            `}, '${this.shapeId}', ${index});\n`;
   }
 
+  handleTextChange(definition) {
+    let props = this.getCloneProps();
+    props.text = definition;
+    this.modifyInstructionWithProps(props);
+  }
+
+  // TODO - this is only here because I need to place text
+  // value somewhere
+  getUiSentence(variables, variableValues, shapeNameMap) {
+    if (!this.isValid()) {
+      return this.getInvalidUi();
+    }
+
+    let fromUi = this.getFromUi(shapeNameMap);
+    let toUi;
+    if (this.to) {
+      toUi = this.getPointToUi(shapeNameMap);
+    } else {
+      toUi = this.getSizeUi(variables, variableValues);
+    }
+    return (
+      <span className='instruction-sentence'>
+        {fromUi}
+
+        of
+        <ExpressionEditor
+          onChange={this.handleTextChange.bind(this)}
+          variables={variables}
+          variableValues={variableValues}
+          definition={this.text} />
+
+        {toUi}
+      </span>
+    );
+  }
 }
