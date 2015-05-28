@@ -2,6 +2,7 @@ import React from 'react';
 import VariablePill from '../VariablePill';
 import ExpressionEditor from '../ExpressionEditor';
 import DataVariableActions from '../../actions/DataVariableActions';
+import DataVariableStore from '../../stores/DataVariableStore';
 
 export default class DataVariableList extends React.Component {
 
@@ -26,9 +27,12 @@ export default class DataVariableList extends React.Component {
       );
     });
     return (
-      <ul className='dataVariables-list'>
-        {values}
-      </ul>
+      <div className="dataVariables-list-container">
+        <ul className='dataVariables-list'>
+          {values}
+        </ul>
+        <button onClick={this.handleAddVariable.bind(this)}>Add</button>
+      </div>
     );
   }
 
@@ -43,6 +47,14 @@ export default class DataVariableList extends React.Component {
       // some error message that makes us rerender anyway
       this.forceUpdate();
     }
+  }
+
+  handleAddVariable() {
+    let variable = DataVariableStore.generateNewVariable({
+      isRow: false,
+      definition: '42'
+    });
+    DataVariableActions.appendVariable(variable);
   }
 
 }

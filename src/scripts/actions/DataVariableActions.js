@@ -33,6 +33,13 @@ const DataVariableActions = biff.createActions({
     });
   },
 
+  appendVariable(variable) {
+    this.dispatch({
+      actionType: 'APPEND_VARIABLE',
+      data: variable
+    });
+  },
+
   removeDataVariable(index) {
     this.dispatch({
       actionType: 'REMOVE_VARIABLE',

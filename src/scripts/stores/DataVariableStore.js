@@ -97,6 +97,11 @@ let variables = [
 const DataVariableStore = biff.createStore({
   getVariables() {
     return variables;
+  },
+  generateNewVariable({name, isRow, definition}) {
+    let id = `v_${variables.length + 1}`;
+    name = name || id;
+    return new DataVariable({id, name, isRow, definition});
   }
 }, (payload) => {
 
@@ -109,7 +114,7 @@ const DataVariableStore = biff.createStore({
     }
     case 'ADD_DATAVARIABLE_SUCCESS': {
       // TODO maybe the actions handle whether or not there is a cycle??
-      variables = variables.push(payload.data);
+      variables = variables.concat([payload.data]);
       DataVariableStore._setPending(false);
       DataVariableStore.emitChange();
       break;
@@ -130,12 +135,17 @@ const DataVariableStore = biff.createStore({
       }
       break;
     }
+    case 'APPEND_VARIABLE': {
+      variables = variables.concat([payload.data]);
+      DataVariableStore.emitChange();
+      break;
+    }
     case 'REMOVE_DATAVARIABLE': {
-      // TODO probably need to not allow removal of variables that
-      // depend on each other
       DataVariableStore._setPending(false);
       DataVariableStore._clearErrors();
-      variables = variables.delete(payload.data);
+      // TODO probably need to not allow removal of variables that
+      // depend on each other
+      variables = variables.filter(v => v.id === payload.data.id);
       DataVariableStore.emitChange();
       break;
     }

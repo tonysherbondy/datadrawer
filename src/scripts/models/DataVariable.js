@@ -13,6 +13,9 @@ export default class DataVariable {
     if (definition instanceof Expression) {
       this.definition = definition;
     } else {
+      if (definition == null) {
+        definition = 'null';
+      }
       this.definition = new Expression(definition);
     }
   }
