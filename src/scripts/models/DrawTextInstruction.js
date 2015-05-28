@@ -1,12 +1,12 @@
-import React from 'react';
 import DrawLineInstruction from './DrawLineInstruction';
 import InstructionActions from '../actions/InstructionActions';
+import Expression from './Expression';
 
 export default class DrawTextInstruction extends DrawLineInstruction {
   constructor(props) {
     super(props);
     this.name = props.name || 'text';
-    this.text = props.text;
+    this.text = props.text || new Expression(`'yolo'`);
     this.fontSize = props.fontSize;
   }
 
@@ -22,6 +22,31 @@ export default class DrawTextInstruction extends DrawLineInstruction {
     return props;
   }
 
+  getCloneWithFrom(from, magnets) {
+    let props = this.getCloneProps();
+    props.from = from;
+    props.fromMagnets = magnets;
+    return new DrawTextInstruction(props);
+  }
+
+  getCloneWithTo(to, pictureResult, magnets) {
+    let props = this.getCloneProps();
+    // if to is a magnet, we set to otherwise, width & height
+    if (to.id) {
+      props.to = to;
+      props.toMagnets = magnets;
+      props.width = null;
+      props.height = null;
+    } else {
+      let from = this.getFromValue(pictureResult);
+      props.to = null;
+      props.width = new Expression(to.x - from.x);
+      props.height = new Expression(to.y - from.y);
+    }
+    // TODO - Shouldn't we do our own modify here?
+    return new DrawTextInstruction(props);
+  }
+
   getJsCode(index) {
     let {x, y} = this.getFromJs(index);
     let propsJs = super.getPropsJs(index).join(',\n');
@@ -34,15 +59,6 @@ export default class DrawTextInstruction extends DrawLineInstruction {
            `x2: ${this.getToXJs(index)},\n` +
            `y2: ${this.getToYJs(index)},\n` +
            `}, '${this.shapeId}', ${index});\n`;
-  }
-
-  // TODO This belongs in the UI most likely
-  getUiSentence(variables, variableValues, shapeNameMap) {
-    return (
-      <span className='instruction-sentence'>
-        {this.getFromUi(shapeNameMap)}
-      </span>
-    );
   }
 
 }

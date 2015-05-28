@@ -8,6 +8,7 @@ import InstructionResults from './instructions/InstructionResults';
 import InstructionActions from '../actions/InstructionActions';
 import DrawingStateActions from '../actions/DrawingStateActions';
 import DrawRectInstruction from '../models/DrawRectInstruction';
+import DrawTextInstruction from '../models/DrawTextInstruction';
 import DrawInstruction from '../models/DrawInstruction';
 import ScaleInstruction from '../models/ScaleInstruction';
 import Canvas from './drawing/Canvas';
@@ -120,8 +121,6 @@ class App extends React.Component {
       }
       case 82: { //r
         DrawingStateActions.setDrawingMode('rect');
-        // TODO Need to decide when we allow invalid instructions,
-        // this currently assumes we just add it to the list...
         let instruction = new DrawRectInstruction({
           id: InstructionTreeNode.getNextInstructionId(this.props.instructions)
         });
@@ -130,6 +129,14 @@ class App extends React.Component {
       }
       case 83: { //s
         DrawingStateActions.setDrawingMode('scale');
+        break;
+      }
+      case 84: { //t
+        DrawingStateActions.setDrawingMode('text');
+        let instruction = new DrawTextInstruction({
+          id: InstructionTreeNode.getNextInstructionId(this.props.instructions)
+        });
+        this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
         break;
       }
       case 86: { //v
