@@ -1,18 +1,34 @@
 import React from 'react';
+import ContentEditable from './ContentEditable';
 
 export default class VariablePill extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {isEditingName: false};
+  }
 
   render() {
-    return (
-      <span
-        onDragStart={this.handleDragStart.bind(this)}
-        draggable='true'
-        dataVariableId={this.props.variable.id}
-        className="variable-pill">
-        {this.props.variable.name}
-      </span>
+    if (this.state.isEditingName) {
+      return (
+        <ContentEditable
+          className='variable-pill data-variable-name-editable'
+          html={this.props.variable.name}
+          onBlur={this.handleBlur.bind(this)}
+          onChange={this.handleNameChange.bind(this)} />
+      );
+    } else {
+      return (
+        <span
+          onDoubleClick={this.handleDoubleClick.bind(this)}
+          onDragStart={this.handleDragStart.bind(this)}
+          draggable='true'
+          dataVariableId={this.props.variable.id}
+          className="variable-pill">
+          {this.props.variable.name}
+        </span>
 
-    );
+      );
+    }
   }
 
   handleDragStart(evt) {
@@ -20,6 +36,21 @@ export default class VariablePill extends React.Component {
     evt.dataTransfer.setData('text/html',
       `${html}&nbsp;` +
       `<span id="${VariablePill.cursorLocationId}"></span>`);
+  }
+
+  handleBlur() {
+    this.setState({isEditingName: false});
+  }
+
+  handleDoubleClick() {
+    if (this.props.handleNameChange) {
+      this.setState({isEditingName: true});
+    }
+  }
+
+  handleNameChange(evt) {
+    console.log('evt', evt);
+    console.log('name change', evt.target.value);
   }
 
 }

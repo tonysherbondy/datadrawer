@@ -4,14 +4,14 @@ export default class ContentEditable extends React.Component {
 
   render() {
     return (
-      <div
+      <span
         {...this.props}
         onInput={this.emitChange.bind(this)}
-        onBlur={this.emitChange.bind(this)}
+        onBlur={this.handleBlur.bind(this)}
         onKeyDown={this.handleKeyDown.bind(this)}
         contentEditable='true'
         dangerouslySetInnerHTML={{__html: this.props.html}}>
-      </div>
+      </span>
     );
   }
 
@@ -23,6 +23,14 @@ export default class ContentEditable extends React.Component {
     let el = React.findDOMNode(this);
     if ( this.props.html !== el.innerHTML ) {
      el.innerHTML = this.props.html;
+    }
+  }
+
+  handleBlur(evt) {
+    if (this.props.onBlur) {
+      this.props.onBlur(evt);
+    } else {
+      this.emitChange(evt);
     }
   }
 

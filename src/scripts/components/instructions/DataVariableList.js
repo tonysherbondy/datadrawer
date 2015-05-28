@@ -13,7 +13,9 @@ export default class DataVariableList extends React.Component {
 
       return (
         <li className='data-variable-list-item' key={index}>
-          <VariablePill variable={dataVariable} />
+          <VariablePill
+            variable={dataVariable}
+            handleNameChange={this.handleNameChange.bind(this, dataVariable)} />
           <ExpressionEditor
             asVector={true}
             onChange={this.handleDefinitionChange.bind(this, dataVariable)}
@@ -34,6 +36,10 @@ export default class DataVariableList extends React.Component {
         <button onClick={this.handleAddVariable.bind(this)}>Add</button>
       </div>
     );
+  }
+
+  handleNameChange(variable, newName) {
+    console.log('trying to change name for', variable, 'to', newName);
   }
 
   handleDefinitionChange(variable, newDefinition) {
