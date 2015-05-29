@@ -153,3 +153,4 @@ InstructionTreeNode.isInstructionAfter = function(instructions, first, second) {
   let secondIndex = all.findIndex(i => i.id === second.id);
   return secondIndex > firstIndex;
 };
+

@@ -46,11 +46,19 @@ textarea {
 }
 
 .sub-instructions-list.selected {
-  background: #ccc;
+  background: #d0f0ff;
 }
 
 .instruction-list-item.selected {
   background: #999;
+}
+
+.sub-instruction-list-header.selected {
+  background: #999;
+}
+
+.sub-instruction-list-header.sub-item-selected {
+  background: #d0f0ff;
 }
 
 /* table */

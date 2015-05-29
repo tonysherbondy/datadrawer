@@ -15,6 +15,7 @@ import Canvas from './drawing/Canvas';
 import InstructionTreeNode from '../models/InstructionTreeNode';
 import LoopInstruction from '../models/LoopInstruction';
 import PictureResult from '../models/PictureResult';
+import InstructionStepper from '../utils/InstructionStepper';
 
 class App extends React.Component {
   constructor(props) {
@@ -24,15 +25,20 @@ class App extends React.Component {
     // like moving the current steps etc., you could imagine that functionality
     // actually moving down to the instructions list or something like that instead
     // then we could just calculate the picture in the render for this app
-    this.state = {
-      pictureResult: this.getPictureResult(props)
-    };
+    //
+
+    this.state = this._stateForProps(props);
   }
 
   componentWillReceiveProps(nextProps) {
-    this.state = {
-      pictureResult: this.getPictureResult(nextProps)
-    };
+    this.state = this._stateForProps(nextProps);
+  }
+
+  _stateForProps(props) {
+    let pictureResult = this.getPictureResult(props);
+    let stepper = new InstructionStepper(
+      this.props.instructions, pictureResult);
+    return { pictureResult, stepper };
   }
 
   getPictureResult(props) {
@@ -185,18 +191,28 @@ class App extends React.Component {
         break;
       }
       case 38: { //up arrow
-        let nextInstruction = this.stepFromInstruction(this.getCurrentInstruction(), -1);
+        let loopIndex = this.props.drawingState.currentLoopIndex;
+        let {nextInstruction, nextLoopIndex} = this.state.stepper.
+          stepBackwards(this.getCurrentInstruction(), loopIndex);
+
         if (nextInstruction) {
           DrawingStateActions.setSelectedInstruction(nextInstruction);
+          DrawingStateActions.setLoopIndex(nextLoopIndex);
         }
+
         e.preventDefault();
         break;
       }
       case 40: { //down arrow
-        let nextInstruction = this.stepFromInstruction(this.getCurrentInstruction(), 1);
+        let loopIndex = this.props.drawingState.currentLoopIndex;
+        let {nextInstruction, nextLoopIndex} = this.state.stepper.
+          stepForwards(this.getCurrentInstruction(), loopIndex);
+
         if (nextInstruction) {
           DrawingStateActions.setSelectedInstruction(nextInstruction);
+          DrawingStateActions.setLoopIndex(nextLoopIndex);
         }
+
         e.preventDefault();
         break;
       }
@@ -251,77 +267,6 @@ class App extends React.Component {
     }
 
     DrawingStateActions.setLoopIndex(currentLoopIndex);
-  }
-
-  // step should either be 1 or -1
-  // will move that step amount forward or backwards
-  stepFromInstruction(currentInstruction, step) {
-    if (!currentInstruction) {
-      return null;
-    }
-    let {instructions} = this.props;
-    let {parent, index} = InstructionTreeNode.findParentWithIndex(instructions, currentInstruction);
-
-    // Possible States
-    // -- Step from one instruction to the next in same parent
-    // -- Step forwards onto a loop instruction and go to the first instruction of the loop
-    // -- Step forwards at the end of a loop and need to step out of the loop to the next instruction of the parent
-    // -- Step backwards at the beginning of a loop and need to step out of the loop to the previous instruction of the parent
-    // -- Step backwards from a non-loop instruction to a loop instruction and go to the last instruction of the loop
-
-    let nextIndex = index + step;
-    if (step > 0) {
-      // step forwards
-
-      if (nextIndex > parent.instructions.length - 1) {
-        // have stepped forward past the end of instructions
-        if (parent instanceof LoopInstruction && this.isLoopIndexAtEnd()) {
-          // we were in a loop so take a step forward from our parent
-          return this.stepFromInstruction(parent, 1);
-        } else {
-          // go back to beginning of instruction set because we are either
-          // incrementing a loop or just not in a loop
-          nextIndex = 0;
-          this.stepLoopIndex(1);
-        }
-      }
-
-      // Stepping forwards within bounds
-      let nextInstruction = parent.instructions[nextIndex];
-      if (nextInstruction.instructions && nextInstruction.instructions.length > 0) {
-        // stepping forwards onto a loop we go to first instruction of loop
-        return _.first(nextInstruction.instructions);
-      }
-
-      // Normal forward move to the next instruction
-      return nextInstruction;
-
-    } else {
-      // step backwards
-
-      if (nextIndex < 0) {
-        // have stepped backwards before the beginning of a set of instructions
-        if (parent instanceof LoopInstruction && this.props.drawingState.currentLoopIndex === 0) {
-          // we were in a loop so take a step backward from our parent
-          return this.stepFromInstruction(parent, -1);
-        } else {
-          // we were not in a loop so cycle to try to step to the last index in this set
-          nextIndex = parent.instructions.length - 1;
-          this.stepLoopIndex(-1);
-        }
-      }
-
-      // We are stepping backwards within bounds
-      let nextInstruction = parent.instructions[nextIndex];
-      if (nextInstruction.instructions && nextInstruction.instructions.length > 0) {
-        // stepping backwards onto a loop we go to last instruction of loop
-        return _.last(nextInstruction.instructions);
-      }
-
-      // Simply stepping to a previous instruction
-      return nextInstruction;
-    }
-    console.error('Not a valid step state');
   }
 
   getEditingInstruction() {

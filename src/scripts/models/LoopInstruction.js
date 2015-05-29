@@ -38,7 +38,7 @@ export default class LoopInstruction extends Instruction {
     for (let index = 0; index < count; index++) {
       let validInstructions = this.instructions.filter(i => i.isValid());
       let instructionsUpToCurrent = validInstructions;
-      let isCurrentWithinLoop = currentInstruction && InstructionTreeNode.findById(this.instructions, currentInstruction.id) !== null;
+      let isCurrentWithinLoop = currentInstruction && !!InstructionTreeNode.findById(this.instructions, currentInstruction.id);
       if (isCurrentWithinLoop && index === count - 1) {
         // Don't draw any instructions after current on the last loop
         let isAfter = InstructionTreeNode.isInstructionAfter.bind(null, this.instructions, currentInstruction);

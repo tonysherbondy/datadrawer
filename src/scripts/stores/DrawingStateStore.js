@@ -21,10 +21,17 @@ function resetState() {
 function setSelectedInstructions(selectedInstructions) {
   let instructions = InstructionStore.getInstructions();
   let parent = InstructionTreeNode.findParent(instructions, selectedInstructions[0]);
+  // TODO (nhan): this should check whether an ancestor is a loop instruction
+  // instead of the parent
   let isInLoop = parent && parent instanceof LoopInstruction;
   if (!isInLoop) {
     drawingState.currentLoopIndex = null;
+  } else {
+    // TODO (nhan): we need to do something more sophisticated here like change
+    // the currentLoopIndex only if it is null or out of bounds
+    drawingState.currentLoopIndex = 0;
   }
+
   drawingState.selectedInstructions = selectedInstructions;
   // Remove any selecte shape state when we select instructions
   drawingState.selectedShapeId = null;

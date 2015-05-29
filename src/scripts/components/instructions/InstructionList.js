@@ -1,51 +1,134 @@
 import React from 'react';
+import _ from 'lodash';
 import classNames from 'classnames';
 import InstructionActions from '../../actions/InstructionActions';
 import DrawingStateActions from '../../actions/DrawingStateActions';
 import InstructionTreeNode from '../../models/InstructionTreeNode';
+import LoopInstruction from '../../models/LoopInstruction';
+import IfInstruction from '../../models/IfInstruction';
+
+class BlockInstructionItem extends React.Component {
+  render() {
+    let instruction = this.props.instruction;
+    let selectionHandler = this.props.selectionHandler;
+    let deleteHandler = this.props.deleteHandler;
+
+    let selectedIds = _.pluck(this.props.selectedInstructions, 'id');
+    let subInstructionIds = _.pluck(instruction.instructions, 'id');
+    let isSubInstructionSelected =
+      !_.isEmpty(_.intersection(selectedIds, subInstructionIds));
+
+    let headerClass = classNames('sub-instruction-list-header', {
+      'selected': this.props.isSelected,
+      'sub-item-selected': isSubInstructionSelected
+    });
+
+    let subListClass = classNames('sub-instructions-list', {
+      'selected': this.props.isSelected
+    });
+
+    let itemDescription = instruction.getUiSentence(
+      this.props.dataVariables,
+      this.props.variableValues,
+      this.props.shapeNameMap);
+
+     let firstSubInstruction = _.first(instruction.instructions);
+
+    return (
+      <li className='instruction-list-item'>
+        <div
+          className={headerClass}
+          onClick={selectionHandler.bind(null, firstSubInstruction)}>
+          {itemDescription}
+          <button type='button' className='delete-instruction'
+            onClick={deleteHandler.bind(null, instruction)}>
+            <i className='fa fa-close'></i>
+          </button>
+        </div>
+
+        <InstructionList
+          {...this.props}
+          className={subListClass}
+          instructions={instruction.instructions}/>
+
+        <div
+          className={headerClass}
+          onClick={selectionHandler.bind(null, instruction)}>
+          End <br/>
+          Thumbnail placeholder
+        </div>
+      </li>
+    );
+  }
+}
+
+class InstructionItem extends React.Component {
+  render() {
+    let instruction = this.props.instruction;
+    let selectionHandler = this.props.selectionHandler;
+    let deleteHandler = this.props.deleteHandler;
+
+    let itemClass = classNames('instruction-list-item', {
+      selected: this.props.isSelected
+    });
+
+    let itemDescription = instruction.getUiSentence(
+      this.props.dataVariables,
+      this.props.variableValues,
+      this.props.shapeNameMap);
+
+    return (
+      <li className={itemClass}
+        onClick={selectionHandler.bind(null, instruction)}>
+        {itemDescription}
+        <button type='button' className='delete-instruction'
+          onClick={deleteHandler.bind(null, instruction)}>
+          <i className='fa fa-close'></i>
+        </button>
+      </li>
+    );
+  }
+}
+
 
 export default class InstructionList extends React.Component {
-
   removeInstruction(instruction) {
     InstructionActions.removeInstruction(instruction);
   }
 
   render() {
-    let {selectedInstructions} = this.props;
+    let getInstructionItems = (instruction, index) => {
+      let selectedInstructions = this.props.selectedInstructions;
+      let isSelected = _.some(selectedInstructions, {id: instruction.id});
 
-    let getSubInstructionsList = (instruction, isSelected) => {
-      let subInstructions = (instruction.instructions || []);
-      if (subInstructions) {
+      if (instruction instanceof LoopInstruction ||
+          instruction instanceof IfInstruction) {
         return (
-          <ul className={classNames('sub-instructions-list', {selected: isSelected})}>
-            {subInstructions.map(getInstructionItems)}
-          </ul>
+          <BlockInstructionItem
+            key={index}
+            {...this.props}
+            instruction={instruction}
+            selectionHandler={this.handleItemClick.bind(this)}
+            deleteHandler={this.removeInstruction.bind(this)}
+            isSelected={isSelected}/>
+        );
+      } else {
+        return (
+          <InstructionItem
+            key={index}
+            {...this.props}
+            instruction={instruction}
+            selectionHandler={this.handleItemClick.bind(this)}
+            deleteHandler={this.removeInstruction.bind(this)}
+            isSelected={isSelected}/>
         );
       }
-      return undefined;
     };
 
-    let getInstructionItems = (instruction, index) => {
-      let isSelected = selectedInstructions.findIndex(i => i.id === instruction.id) > -1;
-      let itemClass = classNames('instruction-list-item', {selected: isSelected});
-      let subInstructionList = getSubInstructionsList(instruction, isSelected);
-
-      return (
-        <li className={itemClass} key={index} onClick={this.handleItemClick.bind(this, instruction)}>
-          {instruction.getUiSentence(this.props.dataVariables, this.props.variableValues, this.props.shapeNameMap)}
-          <button
-            type='button'
-            className='delete-instruction'
-            onClick={this.removeInstruction.bind(this, instruction)}>
-            <i className="fa fa-close"></i>
-          </button>
-          {subInstructionList}
-        </li>
-      );
-    };
+    let listClass = this.props.className || 'instructions-list';
 
     return (
-      <ul className='instructions-list'>
+      <ul className={listClass}>
         {this.props.instructions.map(getInstructionItems)}
       </ul>
     );
