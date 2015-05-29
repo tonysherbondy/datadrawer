@@ -253,6 +253,9 @@ export default class ExpressionEditor extends React.Component {
     // Set our cursor index to null so that we don't update
     // the cursor even though we aren't focused
     this.setState({cursorFragmentIndex: null});
+    if (this.props.handleBlur) {
+      this.props.handleBlur();
+    }
   }
 
   handleKeyDown(evt) {

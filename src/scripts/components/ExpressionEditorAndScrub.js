@@ -15,7 +15,9 @@ export default class ExpressionEditorAndScrub extends React.Component {
   render() {
     if (this.state.isEditing) {
       return (
-        <ExpressionEditor {...this.props} />
+        <ExpressionEditor
+          {...this.props}
+          handleBlur={this.handleEditorBlur.bind(this)} />
       );
     } else {
       let fragments = this.parseDefinition();
@@ -33,7 +35,7 @@ export default class ExpressionEditorAndScrub extends React.Component {
         }
       });
       return (
-        <span onDoubleClick={this.handleDoubleClick.bind(this)}>{mappedFragments}</span>
+        <span onMouseUp={this.handleMouseUp.bind(this)}>{mappedFragments}</span>
       );
     }
   }
@@ -71,8 +73,12 @@ export default class ExpressionEditorAndScrub extends React.Component {
     return parsedFragments;
   }
 
-  handleDoubleClick() {
+  handleMouseUp() {
     this.setState({isEditing: true});
+  }
+
+  handleEditorBlur() {
+    this.setState({isEditing: false});
   }
 }
 
