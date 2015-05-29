@@ -33,7 +33,7 @@ export default class ExpressionEditorAndScrub extends React.Component {
         }
       });
       return (
-        <span>{mappedFragments}</span>
+        <span onDoubleClick={this.handleDoubleClick.bind(this)}>{mappedFragments}</span>
       );
     }
   }
@@ -69,6 +69,10 @@ export default class ExpressionEditorAndScrub extends React.Component {
     parsedFragments.push(fragment);
 
     return parsedFragments;
+  }
+
+  handleDoubleClick() {
+    this.setState({isEditing: true});
   }
 }
 
