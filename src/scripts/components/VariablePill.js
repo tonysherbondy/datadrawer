@@ -1,5 +1,7 @@
 import React from 'react';
 import ContentEditable from './ContentEditable';
+import DataVariableActions from '../actions/DataVariableActions';
+import DataVariable from '../models/DataVariable';
 
 export default class VariablePill extends React.Component {
   constructor(props) {
@@ -47,13 +49,14 @@ export default class VariablePill extends React.Component {
 
   handleBlur() {
     this.setState({isEditingName: false});
-    this.props.handleNameChange(this.state.name);
+    // Clone old variable and change name
+    let newVariable = new DataVariable(this.props.variable);
+    newVariable.name = this.state.name;
+    DataVariableActions.modifyVariable(newVariable);
   }
 
   handleDoubleClick() {
-    if (this.props.handleNameChange) {
-      this.setState({isEditingName: true});
-    }
+    this.setState({isEditingName: true});
   }
 
   handleNameChange(evt) {

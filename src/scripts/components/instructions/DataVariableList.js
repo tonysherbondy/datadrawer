@@ -3,7 +3,6 @@ import VariablePill from '../VariablePill';
 import ExpressionEditor from '../ExpressionEditor';
 import DataVariableActions from '../../actions/DataVariableActions';
 import DataVariableStore from '../../stores/DataVariableStore';
-import DataVariable from '../../models/DataVariable';
 
 export default class DataVariableList extends React.Component {
 
@@ -14,9 +13,7 @@ export default class DataVariableList extends React.Component {
 
       return (
         <li className='data-variable-list-item' key={index}>
-          <VariablePill
-            variable={dataVariable}
-            handleNameChange={this.handleNameChange.bind(this, dataVariable)} />
+          <VariablePill variable={dataVariable} />
           <ExpressionEditor
             asVector={true}
             onChange={this.handleDefinitionChange.bind(this, dataVariable)}
@@ -37,13 +34,6 @@ export default class DataVariableList extends React.Component {
         <button onClick={this.handleAddVariable.bind(this)}>Add</button>
       </div>
     );
-  }
-
-  handleNameChange(variable, newName) {
-    // Clone old variable
-    let newVariable = new DataVariable(variable);
-    newVariable.name = newName;
-    DataVariableActions.modifyVariable(newVariable);
   }
 
   handleDefinitionChange(variable, newDefinition) {
