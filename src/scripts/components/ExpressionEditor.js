@@ -8,7 +8,7 @@ export default class ExpressionEditor extends React.Component {
     super(props);
     this.state = {
       cursorFragmentIndex: null,
-      cursorOffset: 0,
+      cursorOffset: {start: 0, end: 0},
       fragments: this.getSpaceBufferedFragments(props.definition.fragments),
       showDefinition: false
     };
@@ -134,29 +134,6 @@ export default class ExpressionEditor extends React.Component {
     }
   }
 
-  getCursorNodeOffsetWithinTextFragment(range, element) {
-    let node, offset;
-    if (range.startContainer === element) {
-      // This means the container is not the text
-      if (range.startOffset < element.childNodes.length) {
-        node = element.childNodes[range.startOffset];
-        offset = 0;
-      } else {
-        node = element.childNodes[element.childNodes.length - 1];
-        if (node) {
-          //node is guaranteed to be a text node due to the render function
-          offset = node.length;
-        } else {
-          // this case happens when the editor is empty
-          offset = 0;
-        }
-      }
-    } else { // range starts in child node
-      node = range.startContainer;
-      offset = range.startOffset;
-    }
-    return {node, offset};
-  }
 
 
 
@@ -179,15 +156,16 @@ export default class ExpressionEditor extends React.Component {
     try {
       window.getSelection().removeAllRanges();
       let range = document.createRange();
-      range.setStart(node, offset);
-      range.setEnd(node, offset);
+      range.setStart(node, offset.start);
+      range.setEnd(node, offset.end);
       window.getSelection().addRange(range);
     }
     catch (err) {
+      console.warn('error moving cursor', err);
       // TODO - Perhaps remove this and explore why this fails sometimes
       this.setState({
         cursorFragmentIndex: null,
-        cursorOffset: 0
+        cursorOffset: {start: 0, end: 0}
       });
     }
   }
@@ -197,26 +175,30 @@ export default class ExpressionEditor extends React.Component {
     let fragments = this.state.fragments;
     let fragment = fragments[fragmentIndex];
 
+    let position;
     if (dir === 'right') {
-      if (_.isString(fragment) && offset < fragment.length) {
-        offset++;
+      position = offset.end;
+      if (_.isString(fragment) && position < fragment.length) {
+        position++;
       } else {
         fragmentIndex++;
-        offset = 0;
+        position = 0;
       }
 
     } else {
-      if (_.isString(fragment) && offset > 0) {
-        offset--;
+      position = offset.start;
+      if (_.isString(fragment) && position > 0) {
+        position--;
       } else {
         fragmentIndex--;
-        offset = 0;
+        position = 0;
         let prevFragment = fragments[fragmentIndex];
         if (_.isString(prevFragment)) {
-          offset = prevFragment.length;
+          position = prevFragment.length;
         }
       }
     }
+
     if (fragmentIndex < 0) {
       fragmentIndex = 0;
     } else if (fragmentIndex > fragments.length - 1) {
@@ -225,13 +207,37 @@ export default class ExpressionEditor extends React.Component {
 
     this.setState({
       cursorFragmentIndex: fragmentIndex,
-      cursorOffset: offset
+      cursorOffset: {start: position, end: position}
     });
+  }
+
+  getCursorNodeOffsetWithinTextFragment(range, element) {
+    let node, offset;
+    if (range.startContainer === element) {
+      // This means the container is not the text
+      if (range.startOffset < element.childNodes.length) {
+        node = element.childNodes[range.startOffset];
+        offset = {start: 0, end: 0};
+      } else {
+        node = element.childNodes[element.childNodes.length - 1];
+        if (node) {
+          //node is guaranteed to be a text node due to the render function
+          offset = {start: node.length, end: node.length};
+        } else {
+          // this case happens when the editor is empty
+          offset = {start: 0, end: 0};
+        }
+      }
+    } else { // range starts in child node
+      node = range.startContainer;
+      offset = {start: range.startOffset, end: range.endOffset};
+    }
+    return {node, offset};
   }
 
   getCursorLocation(element) {
     let fragmentIndex = 0;
-    let offset = 0;
+    let offset = {start: 0, end: 0};
 
     let selection = window.getSelection();
     if (selection) {
