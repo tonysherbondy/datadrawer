@@ -14,6 +14,51 @@ export default class ExpressionEditor extends React.Component {
     };
   }
 
+
+  //
+  ////////////////// LIFECYCLE METHODS //////////////////
+  //
+
+  render() {
+    //
+    // TODO - Make this on hover eventually
+    //
+    let html = this.getHtml(this.state.fragments);
+    return (
+      <div
+        className='expression-editor'
+        onInput={this.handleInput.bind(this)}
+        onBlur={this.handleBlur.bind(this)}
+        onKeyDown={this.handleKeyDown.bind(this)}
+        contentEditable='true'
+        dangerouslySetInnerHTML={{__html: html}}
+      ></div>
+    );
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      fragments: this.getSpaceBufferedFragments(nextProps.definition.fragments)
+    });
+  }
+
+  componentDidUpdate() {
+    // Need to manually update the html to have the cursor span, when it doesn't move
+    let html = this.getHtml(this.state.fragments);
+    let innerHtml = React.findDOMNode(this).innerHTML;
+    if (html !== innerHtml) {
+      React.findDOMNode(this).innerHTML = html;
+    }
+    this.updateCursorLocation();
+  }
+
+
+
+
+  //
+  ////////////////// FRAGMENT-HTML MODEL //////////////////
+  //
+
   getSpaceBufferedFragments(fragments) {
     // Can't have a variable pill be the beginning or end of fragments array
     let newFragments = [].concat(fragments);
@@ -33,8 +78,34 @@ export default class ExpressionEditor extends React.Component {
     return newFragments;
   }
 
-  getCursorSpan() {
-    return `<span id='${VariablePill.cursorLocationId}'></span>`;
+  getHtmlFromStringFragment(fragment, fragmentIndex) {
+
+    // Esc any spaces
+    let escSpace = f => f.replace(/ /g, '&nbsp;');
+    fragment = escSpace(fragment);
+
+    // Parse the string into spans around numbers and other parts of the string
+    let r = /\d+(?:\.\d*)?/;
+    let htmlFragments = [];
+    let subIndex = 0;
+    let nextNumber = r.exec(fragment);
+    while(nextNumber) {
+      // Find the number and replace with span
+      nextNumber = _.first(nextNumber);
+      let index = fragment.indexOf(nextNumber);
+      if (index > 0) {
+        htmlFragments.push(fragment.slice(0,index));
+      }
+      let attrs = `class="fragment-number" data-fragment-index=${fragmentIndex}_${subIndex}`;
+      htmlFragments.push(`<span ${attrs}>${nextNumber}</span>`);
+      fragment = fragment.slice(index+nextNumber.length);
+      nextNumber = r.exec(fragment);
+    }
+    // Push the last string fragments on
+    htmlFragments.push(fragment);
+
+    // Esc any spaces
+    return htmlFragments.join('');
   }
 
   getHtml(fragments) {
@@ -42,138 +113,10 @@ export default class ExpressionEditor extends React.Component {
     return fragments.map((fragment, i) => {
       if (_.isString(fragment)) {
         return escSpace(fragment);
+        //return this.getHtmlFromStringFragment(fragment, i);
       }
       return VariablePill.getHtmlStringFromFragment(fragment, i, this.props.variables);
     }).join('');
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      fragments: this.getSpaceBufferedFragments(nextProps.definition.fragments)
-    });
-  }
-
-  componentDidUpdate() {
-    // Need to manually update the html to have the cursor span, when it doesn't move
-    let html = this.getHtml(this.state.fragments);
-    let innerHtml = React.findDOMNode(this).innerHTML;
-    if (html !== innerHtml) {
-      React.findDOMNode(this).innerHTML = html;
-    }
-    this.updateCursorLocation();
-  }
-
-  render() {
-    //
-    // TODO - Make this on hover eventually
-    //
-    let html = this.getHtml(this.state.fragments);
-    return (
-      <div
-        className='expression-editor'
-        onInput={this.handleInput.bind(this)}
-        onBlur={this.handleBlur.bind(this)}
-        onKeyDown={this.handleKeyDown.bind(this)}
-        onClick={this.handleClick.bind(this)}
-        contentEditable='true'
-        dangerouslySetInnerHTML={{__html: html}}
-      ></div>
-    );
-
-  }
-
-  updateCursorLocation() {
-    this.moveCursorTo(this.state.cursorFragmentIndex, this.state.cursorOffset);
-  }
-
-  moveCursorTo(nodeIndex, offset) {
-    if (nodeIndex === null) {
-      return;
-    }
-    let element = React.findDOMNode(this);
-    let node = element.childNodes[nodeIndex];
-
-    try {
-      window.getSelection().removeAllRanges();
-      let range = document.createRange();
-      range.setStart(node, offset);
-      range.setEnd(node, offset);
-      window.getSelection().addRange(range);
-    }
-    catch (err) {
-      // TODO - Perhaps remove this and explore why this fails sometimes
-      this.setState({
-        cursorFragmentIndex: null,
-        cursorOffset: 0
-      });
-    }
-  }
-
-  moveCursorPosition(dir) {
-    let index = this.state.cursorFragmentIndex;
-    let offset = this.state.cursorOffset;
-    let fragments = this.state.fragments;
-    let fragment = fragments[index];
-
-    if (dir === 'right') {
-      if (_.isString(fragment) && offset < fragment.length) {
-        offset++;
-      } else {
-        index++;
-        offset = 0;
-      }
-
-    } else {
-      if (_.isString(fragment) && offset > 0) {
-        offset--;
-      } else {
-        index--;
-        offset = 0;
-        let prevFragment = fragments[index];
-        if (_.isString(prevFragment)) {
-          offset = prevFragment.length;
-        }
-      }
-    }
-    if (index < 0) {
-      index = 0;
-    } else if (index > fragments.length - 1) {
-      index = fragments.length - 1;
-    }
-
-    this.setState({
-      cursorFragmentIndex: index,
-      cursorOffset: offset
-    });
-  }
-
-  handleBlur() {
-    // Set our cursor index to null so that we don't update
-    // the cursor even though we aren't focused
-    this.setState({cursorFragmentIndex: null});
-  }
-
-  handleClick() {
-    let index = this.state.cursorFragmentIndex + 1;
-    index = index === this.state.fragments.length ? 0 : index;
-
-    let location = this.getCursorLocation(React.findDOMNode(this));
-    console.log('click location', location);
-
-    this.setState({
-      cursorFragmentIndex: location.fragmentIndex,
-      cursorOffset: location.offset
-    });
-  }
-
-  handleKeyDown(evt) {
-    if (evt.which === 37 || evt.which === 39) {
-      let dir = evt.which === 37 ? 'left' : 'right';
-      this.moveCursorPosition(dir);
-      evt.preventDefault();
-    }
-    // Don't let this bubble to app that is listening for key presses
-    evt.stopPropagation();
   }
 
   nodeToFragment(node) {
@@ -215,6 +158,77 @@ export default class ExpressionEditor extends React.Component {
     return {node, offset};
   }
 
+
+
+
+  //
+  ////////////////// HANDLE CURSOR LOCATION //////////////////
+  //
+
+  updateCursorLocation() {
+    this.moveCursorTo(this.state.cursorFragmentIndex, this.state.cursorOffset);
+  }
+
+  moveCursorTo(nodeIndex, offset) {
+    if (nodeIndex === null) {
+      return;
+    }
+    let element = React.findDOMNode(this);
+    let node = element.childNodes[nodeIndex];
+
+    try {
+      window.getSelection().removeAllRanges();
+      let range = document.createRange();
+      range.setStart(node, offset);
+      range.setEnd(node, offset);
+      window.getSelection().addRange(range);
+    }
+    catch (err) {
+      // TODO - Perhaps remove this and explore why this fails sometimes
+      this.setState({
+        cursorFragmentIndex: null,
+        cursorOffset: 0
+      });
+    }
+  }
+
+  moveCursorPosition(dir, location) {
+    let {fragmentIndex, offset} = location;
+    let fragments = this.state.fragments;
+    let fragment = fragments[fragmentIndex];
+
+    if (dir === 'right') {
+      if (_.isString(fragment) && offset < fragment.length) {
+        offset++;
+      } else {
+        fragmentIndex++;
+        offset = 0;
+      }
+
+    } else {
+      if (_.isString(fragment) && offset > 0) {
+        offset--;
+      } else {
+        fragmentIndex--;
+        offset = 0;
+        let prevFragment = fragments[fragmentIndex];
+        if (_.isString(prevFragment)) {
+          offset = prevFragment.length;
+        }
+      }
+    }
+    if (fragmentIndex < 0) {
+      fragmentIndex = 0;
+    } else if (fragmentIndex > fragments.length - 1) {
+      fragmentIndex = fragments.length - 1;
+    }
+
+    this.setState({
+      cursorFragmentIndex: fragmentIndex,
+      cursorOffset: offset
+    });
+  }
+
   getCursorLocation(element) {
     let fragmentIndex = 0;
     let offset = 0;
@@ -249,6 +263,31 @@ export default class ExpressionEditor extends React.Component {
       }
     }
     return {fragmentIndex, offset};
+  }
+
+
+
+
+
+
+  //
+  ////////////////// HANDLE EVENTS //////////////////
+  //
+  handleBlur() {
+    // Set our cursor index to null so that we don't update
+    // the cursor even though we aren't focused
+    this.setState({cursorFragmentIndex: null});
+  }
+
+  handleKeyDown(evt) {
+    if (evt.which === 37 || evt.which === 39) {
+      let dir = evt.which === 37 ? 'left' : 'right';
+      let location = this.getCursorLocation(React.findDOMNode(this));
+      this.moveCursorPosition(dir, location);
+      evt.preventDefault();
+    }
+    // Don't let this bubble to app that is listening for key presses
+    evt.stopPropagation();
   }
 
   // This expects nodes back so that we can process the
