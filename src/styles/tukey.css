@@ -89,6 +89,8 @@ td, th {
 
 .dataVariable-value {
   display: inline-block;
+  color: darkgray;
+  margin-left: 10px;
 }
 
 /* expressions */

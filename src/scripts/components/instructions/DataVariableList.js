@@ -1,6 +1,6 @@
 import React from 'react';
 import VariablePill from '../VariablePill';
-import ExpressionEditor from '../ExpressionEditor';
+import ExpressionEditorAndScrub from '../ExpressionEditorAndScrub';
 import DataVariableActions from '../../actions/DataVariableActions';
 import DataVariableStore from '../../stores/DataVariableStore';
 
@@ -14,7 +14,7 @@ export default class DataVariableList extends React.Component {
       return (
         <li className='data-variable-list-item' key={index}>
           <VariablePill variable={dataVariable} />
-          <ExpressionEditor
+          <ExpressionEditorAndScrub
             asVector={true}
             onChange={this.handleDefinitionChange.bind(this, dataVariable)}
             variables={this.props.dataVariables}

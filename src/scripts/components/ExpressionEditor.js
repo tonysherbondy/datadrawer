@@ -78,42 +78,12 @@ export default class ExpressionEditor extends React.Component {
     return newFragments;
   }
 
-  getHtmlFromStringFragment(fragment, fragmentIndex) {
-
-    // Esc any spaces
-    let escSpace = f => f.replace(/ /g, '&nbsp;');
-    fragment = escSpace(fragment);
-
-    // Parse the string into spans around numbers and other parts of the string
-    let r = /\d+(?:\.\d*)?/;
-    let htmlFragments = [];
-    let subIndex = 0;
-    let nextNumber = r.exec(fragment);
-    while(nextNumber) {
-      // Find the number and replace with span
-      nextNumber = _.first(nextNumber);
-      let index = fragment.indexOf(nextNumber);
-      if (index > 0) {
-        htmlFragments.push(fragment.slice(0,index));
-      }
-      let attrs = `class="fragment-number" data-fragment-index=${fragmentIndex}_${subIndex}`;
-      htmlFragments.push(`<span ${attrs}>${nextNumber}</span>`);
-      fragment = fragment.slice(index+nextNumber.length);
-      nextNumber = r.exec(fragment);
-    }
-    // Push the last string fragments on
-    htmlFragments.push(fragment);
-
-    // Esc any spaces
-    return htmlFragments.join('');
-  }
 
   getHtml(fragments) {
     let escSpace = f => f.replace(/ /g, '&nbsp;');
     return fragments.map((fragment, i) => {
       if (_.isString(fragment)) {
         return escSpace(fragment);
-        //return this.getHtmlFromStringFragment(fragment, i);
       }
       return VariablePill.getHtmlStringFromFragment(fragment, i, this.props.variables);
     }).join('');
