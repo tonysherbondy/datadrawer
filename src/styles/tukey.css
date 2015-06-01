@@ -101,6 +101,11 @@ td, th {
 }
 
 /* data variables */
+.expression-scrubbable {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
 .dataVariables-list {
   font-size: 10;
   // no-select stuff
