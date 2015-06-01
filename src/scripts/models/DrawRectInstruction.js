@@ -1,8 +1,8 @@
 import React from 'react';
 import DrawInstruction from './DrawInstruction';
-import ExpressionEditor from '../components/ExpressionEditor';
 import InstructionActions from '../actions/InstructionActions';
 import Expression from './Expression';
+import ExpressionEditorAndScrub from '../components/ExpressionEditorAndScrub';
 
 export default class DrawRectInstruction extends DrawInstruction {
   constructor(props) {
@@ -97,14 +97,14 @@ export default class DrawRectInstruction extends DrawInstruction {
   getSizeUi(variables, variableValues) {
     return (
       <span className="to-expression">
-        <ExpressionEditor
+        <ExpressionEditorAndScrub
           onChange={this.handleWidthChange.bind(this)}
           variables={variables}
           variableValues={variableValues}
           definition={this.width} />
          horizontally
 
-        <ExpressionEditor
+        <ExpressionEditorAndScrub
           onChange={this.handleHeightChange.bind(this)}
           variables={variables}
           variableValues={variableValues}
