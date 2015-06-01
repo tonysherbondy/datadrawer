@@ -1,8 +1,8 @@
 import React from 'react';
 import AdjustInstruction from './AdjustInstruction';
-import ExpressionEditor from '../components/ExpressionEditor';
 import InstructionActions from '../actions/InstructionActions';
 import Expression from './Expression';
+import ExpressionEditorAndScrub from '../components/ExpressionEditorAndScrub';
 
 export default class MoveInstruction extends AdjustInstruction {
   constructor(props) {
@@ -73,14 +73,14 @@ export default class MoveInstruction extends AdjustInstruction {
   getSizeUi(variables, variableValues) {
     return (
       <span className="size-ui">
-        <ExpressionEditor
+        <ExpressionEditorAndScrub
           onChange={this.handleXChange.bind(this)}
           variables={variables}
           variableValues={variableValues}
           definition={this.x} />
          horizontally
 
-        <ExpressionEditor
+        <ExpressionEditorAndScrub
           onChange={this.handleYChange.bind(this)}
           variables={variables}
           variableValues={variableValues}

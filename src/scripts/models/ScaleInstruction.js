@@ -1,6 +1,6 @@
 import React from 'react';
 import AdjustInstruction from './AdjustInstruction';
-import ExpressionEditor from '../components/ExpressionEditor';
+import ExpressionEditorAndScrub from '../components/ExpressionEditorAndScrub';
 import InstructionActions from '../actions/InstructionActions';
 
 export default class ScaleInstruction extends AdjustInstruction {
@@ -31,7 +31,7 @@ export default class ScaleInstruction extends AdjustInstruction {
     return (
       <span className='instruction-sentence'>
         {`Scale ${shapeName}'s ${this.prop} by`}
-        <ExpressionEditor
+        <ExpressionEditorAndScrub
           onChange={this.handleToChange.bind(this)}
           variables={variables}
           variableValues={variableValues}
