@@ -3,6 +3,7 @@ import _ from 'lodash';
 import ExpressionEditor from './ExpressionEditor';
 import Expression from '../models/Expression';
 import VariablePill from './VariablePill';
+import DataVariable from '../models/DataVariable';
 
 export default class ExpressionEditorAndScrub extends React.Component {
   constructor(props) {
@@ -90,6 +91,10 @@ export default class ExpressionEditorAndScrub extends React.Component {
       // Convert number to string
       if (_.isNumber(f)) {
         f = '' + f;
+      } else if (f instanceof DataVariable) {
+        // Convert variable into simple reference to variable
+        // mainly need this for the asVector property
+        f = {id: f.id, asVector: this.props.asVector};
       }
 
       let last = _.last(joined);
@@ -108,7 +113,6 @@ export default class ExpressionEditorAndScrub extends React.Component {
     if (this.scrubState && this.scrubState.hasChanged) {
       return;
     }
-    console.log('handlemouseup');
     this.setState({isEditing: true});
   }
 
