@@ -73,6 +73,7 @@ textarea {
 
 /* table */
 td, th {
+  width: 100px;
   padding: 2px;
   padding-right: 7px;
   overflow: hidden;
@@ -80,6 +81,13 @@ td, th {
 
 .data-table {
   font-size: 10;
+  // no-select stuff
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .current-loop-column {
