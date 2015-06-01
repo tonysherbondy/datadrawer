@@ -124,9 +124,10 @@ export default class ExpressionEditorAndScrub extends React.Component {
 
   handleScrubMouseDown(fragmentIndex, evt) {
     let fragments = this.parseDefinition();
+    let startValue = fragments[fragmentIndex];
     this.scrubState = {
       startX: evt.screenX,
-      startValue: fragments[fragmentIndex],
+      startValue,
       fragmentIndex
     };
     this.scrubMouseMoveHandler = this.handleScrubMouseMove.bind(this);
@@ -137,9 +138,11 @@ export default class ExpressionEditorAndScrub extends React.Component {
 
   handleScrubMouseMove(evt) {
     let fragments = this.parseDefinition();
-    let {fragmentIndex} = this.scrubState;
-    let delta = evt.screenX - this.scrubState.startX;
-    let newValue = this.scrubState.startValue + delta;
+    let {fragmentIndex, startValue, startX} = this.scrubState;
+    let scaleValuePerPixels = 2 * Math.abs(startValue) / 100;
+    let delta = evt.screenX - startX;
+    let newValue = startValue + delta * scaleValuePerPixels;
+    newValue = Math.round(newValue * 100) / 100;
 
     this.scrubState.hasChanged = true;
     if (this.props.onChange) {
