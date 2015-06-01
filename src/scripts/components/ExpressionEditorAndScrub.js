@@ -48,7 +48,6 @@ export default class ExpressionEditorAndScrub extends React.Component {
   }
 
   componentWillUnmount() {
-    console.log('will unmount');
     window.removeEventListener('mousemove', this.scrubMouseMoveHandler);
     window.removeEventListener('mouseup', this.scrubMouseUpHandler);
   }
@@ -86,6 +85,24 @@ export default class ExpressionEditorAndScrub extends React.Component {
     return parsedFragments;
   }
 
+  getDefinitionFromParsed(fragments) {
+    return fragments.reduce((joined, f) => {
+      // Convert number to string
+      if (_.isNumber(f)) {
+        f = '' + f;
+      }
+
+      let last = _.last(joined);
+      if (!_.isString(last) || !_.isString(f)) {
+        // If the last wasn't a string or the next is a variable
+        return joined.concat([f]);
+      }
+
+      // last and current are strings
+      return _.initial(joined).concat(last + f);
+    }, []);
+  }
+
   handleMouseUp() {
     // Only switch to editor if we haven't scrubbed a value
     if (this.scrubState && this.scrubState.hasChanged) {
@@ -100,8 +117,10 @@ export default class ExpressionEditorAndScrub extends React.Component {
   }
 
   handleScrubMouseDown(fragmentIndex, evt) {
+    let fragments = this.parseDefinition();
     this.scrubState = {
       startX: evt.screenX,
+      startValue: fragments[fragmentIndex],
       fragmentIndex
     };
     this.scrubMouseMoveHandler = this.handleScrubMouseMove.bind(this);
@@ -112,15 +131,18 @@ export default class ExpressionEditorAndScrub extends React.Component {
 
   handleScrubMouseMove(evt) {
     let fragments = this.parseDefinition();
-    let original = fragments[this.scrubState.fragmentIndex];
+    let {fragmentIndex} = this.scrubState;
     let delta = evt.screenX - this.scrubState.startX;
-    let newValue = original + delta;
+    let newValue = this.scrubState.startValue + delta;
+
     this.scrubState.hasChanged = true;
-    console.log('scrubbing', newValue);
+    if (this.props.onChange) {
+      fragments[fragmentIndex] = newValue;
+      this.props.onChange(this.getDefinitionFromParsed(fragments));
+    }
   }
 
   handleScrubMouseUp() {
-    console.log('scrub mouse up');
     window.removeEventListener('mousemove', this.scrubMouseMoveHandler);
     window.removeEventListener('mouseup', this.scrubMouseUpHandler);
     this.scrubState = null;
