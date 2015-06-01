@@ -4,18 +4,22 @@ import Flux from '../dispatcher/dispatcher';
 import InstructionStore from '../stores/InstructionStore';
 import DataVariableStore from '../stores/DataVariableStore';
 import DrawingStateStore from '../stores/DrawingStateStore';
-import InstructionResults from './instructions/InstructionResults';
 import InstructionActions from '../actions/InstructionActions';
 import DrawingStateActions from '../actions/DrawingStateActions';
 import DrawRectInstruction from '../models/DrawRectInstruction';
 import DrawTextInstruction from '../models/DrawTextInstruction';
 import DrawInstruction from '../models/DrawInstruction';
 import ScaleInstruction from '../models/ScaleInstruction';
-import Canvas from './drawing/Canvas';
 import InstructionTreeNode from '../models/InstructionTreeNode';
 import LoopInstruction from '../models/LoopInstruction';
 import PictureResult from '../models/PictureResult';
 import InstructionStepper from '../utils/InstructionStepper';
+
+import InstructionList from './instructions/InstructionList';
+import DataVariableList from './instructions/DataVariableList';
+import DataTable from './instructions/DataTable';
+import InstructionTitle from './instructions/InstructionTitle';
+import Canvas from './drawing/Canvas';
 
 class App extends React.Component {
   constructor(props) {
@@ -336,26 +340,69 @@ class App extends React.Component {
       currentInstruction = null;
     }
 
+
+    let pictureResult = this.state.pictureResult;
+    let shapeNameMap = pictureResult.getShapeNameMap();
+    let selectedShape = pictureResult.getShapeById(this.getSelectedShapeId());
+
+    let {scalars} = this.props.variables.reduce((map, d) => {
+      let type = d.isRow ? 'vectors' : 'scalars';
+      map[type].push(d);
+      return map;
+    }, {scalars: [], vectors: []});
+
     return (
       <div onKeyDown={this.handleKeyPress} className='main'>
-        <h1>Tukey App</h1>
-        <button onClick={this.handlePresetClick.bind(this, 'rando')}>Rando</button>
-        <button onClick={this.handlePresetClick.bind(this, 'scatter')}>Scatter</button>
-        <button onClick={this.handlePresetClick.bind(this, 'bars')}>Bars</button>
-        <button onClick={this.handlePresetClick.bind(this, '')}>Blank</button>
-        <InstructionResults
-          // TODO - uhhh, I forgot why we are passing whole drawing state to results :/
-          drawingState={this.props.drawingState}
-          editingInstruction={this.getEditingInstruction()}
-          selectedShapeId={this.getSelectedShapeId()}
-          selectedInstructions={selectedInstructions}
-          pictureResult={this.state.pictureResult}
-          // TODO - do I need all these now that I have PictureResult?
-          currentInstruction={currentInstruction}
-          currentLoopIndex={this.props.drawingState.currentLoopIndex}
-          instructions={this.props.instructions}
-          dataVariables={this.props.variables}
-        />
+        <div className='top-bar'>
+          <h1>Tukey App</h1>
+          <button onClick={this.handlePresetClick.bind(this, 'rando')}>Rando</button>
+          <button onClick={this.handlePresetClick.bind(this, 'scatter')}>Scatter</button>
+          <button onClick={this.handlePresetClick.bind(this, 'bars')}>Bars</button>
+          <button onClick={this.handlePresetClick.bind(this, '')}>Blank</button>
+        </div>
+
+        <div className='editor-area'>
+          <div className='left-panel'>
+            <div className='left-panel-header'>Data</div>
+            <DataVariableList
+              scalars={scalars}
+              dataVariables={this.props.variables}
+              dataValues={pictureResult.variableValues} />
+
+            <DataTable
+              currentLoopIndex={this.props.drawingState.currentLoopIndex}
+              table={pictureResult.getTable()}
+              dataVariables={this.props.variables}
+              dataValues={pictureResult.variableValues} />
+
+            <div className='left-panel-header'>Steps</div>
+            <InstructionList
+              currentInstruction={currentInstruction}
+              selectedInstructions={selectedInstructions}
+              dataVariables={this.props.variables}
+              variableValues={pictureResult.variableValues}
+              shapeNameMap={shapeNameMap}
+              instructions={this.props.instructions} />
+          </div>
+
+          <div className='drawing-area'>
+            <div className='canvas-container'>
+              <InstructionTitle
+                dataVariables={this.props.variables}
+                variableValues={pictureResult.variableValues}
+                shapeNameMap={shapeNameMap}
+                instruction={currentInstruction} />
+              <Canvas
+                drawingState={this.props.drawingState}
+                // TODO - Only need this to create new instruction ID :/
+                instructions={this.props.instructions}
+                selectedShape={selectedShape}
+                pictureResult={pictureResult}
+                editingInstruction={this.getEditingInstruction()} />
+              <div>Mode: {this.props.drawingState.mode}</div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

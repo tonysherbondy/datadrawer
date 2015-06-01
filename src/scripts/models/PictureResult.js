@@ -160,7 +160,7 @@ export default class PictureResult {
     this.variableValues = variableValues;
 
     // Treat canvas like another shape
-    let canvasDraw = new DrawCanvas({width: 400, height: 400});
+    let canvasDraw = new DrawCanvas({width: 800, height: 600});
     let canvasJs = canvasDraw.getJsCode();
 
     // Get JS from instructions

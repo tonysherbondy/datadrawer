@@ -2,11 +2,13 @@
 /* TODO split css into modules */
 
 /* drawing */
+.drawing-area {
+}
+
 .canvas {
-  box-shadow: 0px 0px 5px rgba(0,0,0,0.25);
-  width: 400px;
-  height: 400px;
-  margin-left: 20px;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.25);
+  width: 800px;
+  height: 600px;
 }
 
 .magnet {
@@ -19,30 +21,75 @@
   stroke: white;
 }
 
-textarea {
-  width: 400px;
-  height: 400px;
+
+.top-bar {
+  border-width: 0 0 1px 0;
+  border-style: solid;
+  border-color: #ccc;
+  box-shadow: inset 0px -8px 8px -8px rgba(0,0,0,0.25);
+  padding: 0 0 5px 0;
 }
+
+.editor-area {
+  overflow: auto;
+}
+
+.left-panel {
+  width: 300px;
+  float: left;
+  border-width: 0 1px 0 0;
+  border-style: solid;
+  border-color: #ccc;
+}
+
+.left-panel-header {
+  border-width: 1px 0 1px 0;
+  border-style: solid;
+  border-color: #ccc;
+  text-align: center;
+  padding: 3px;
+  color: #606060;
+  background-color: #cdf;
+  box-shadow: inset 0px -5px 20px -5px rgba(0,0,0,0.3);
+}
+
+.drawing-area {
+  overflow: auto;
+  padding: 40px 0px 0px 20px;
+}
+
+.canvas-container {
+  margin: 0 auto;
+  width: 800px;
+}
+
+.instruction-title {
+  text-align: center;
+}
+
 
 /* instructions */
 .instructions-list {
   list-style-type: none;
   position: relative;
-  margin-left: 20px;
-  top: 100px;
-  width: 400px;
-  padding: 30px 30px 10px 30px;
   background: #efefef;
-  box-shadow: 0px 0px 5px rgba(0,0,0,0.25);
   color: black;
 
-  // no-select stuff
+  /*// no-select stuff*/
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  padding: 0px 0px 0px 20px;
+  font-size: 0.7em;
+}
+
+/*TODO: get rid of sub-instructions-list*/
+.sub-instructions-list {
+  list-style-type: none;
+  padding: 0px 0px 0px 20px;
 }
 
 .instruction-sentence {
@@ -103,7 +150,6 @@ td, th {
 }
 
 .table-container {
-  width: 200px;
   margin-left: 130px;
   margin-bottom: 40px;
   overflow-x:scroll;
