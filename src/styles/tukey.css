@@ -75,11 +75,11 @@ textarea {
 td, th {
   padding: 2px;
   padding-right: 7px;
+  overflow: hidden;
 }
 
 .data-table {
   font-size: 10;
-  margin-bottom: 40px;
 }
 
 .current-loop-column {
@@ -97,6 +97,7 @@ td, th {
 .table-container {
   width: 200px;
   margin-left: 130px;
+  margin-bottom: 40px;
   overflow-x:scroll;
 }
 
@@ -129,6 +130,7 @@ td, th {
   margin: 0px 5px 0px 5px;
   padding: 0px 5px 0px 5px;
   border-radius: 5px;
+  white-space: nowrap;
 }
 
 .expression-editor {

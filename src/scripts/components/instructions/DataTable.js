@@ -1,5 +1,7 @@
 import React from 'react';
 import VariablePill from '../VariablePill';
+import DataVariableActions from '../../actions/DataVariableActions';
+import DataVariableStore from '../../stores/DataVariableStore';
 
 export default class DataTable extends React.Component {
 
@@ -40,8 +42,17 @@ export default class DataTable extends React.Component {
             {rowElements}
           </tbody>
         </table>
+        <button onClick={this.handleAddVariable.bind(this)}>Add</button>
       </div>
     );
+  }
+
+  handleAddVariable() {
+    let variable = DataVariableStore.generateNewVariable({
+      isRow: true,
+      definition: '[42]'
+    });
+    DataVariableActions.appendVariable(variable);
   }
 
 }
