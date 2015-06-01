@@ -66,7 +66,7 @@ export default class ExpressionEditorAndScrub extends React.Component {
     }
 
     // Parse the string into spans around numbers and other parts of the string
-    let r = /\d+(?:\.\d*)?/;
+    let r = /-?\d+(?:\.\d*)?/;
     let parsedFragments = [];
     let nextNumber = r.exec(fragment);
     while(nextNumber) {
@@ -87,7 +87,7 @@ export default class ExpressionEditorAndScrub extends React.Component {
   }
 
   getDefinitionFromParsed(fragments) {
-    return fragments.reduce((joined, f) => {
+    let newFragments = fragments.reduce((joined, f) => {
       // Convert number to string
       if (_.isNumber(f)) {
         f = '' + f;
@@ -106,6 +106,8 @@ export default class ExpressionEditorAndScrub extends React.Component {
       // last and current are strings
       return _.initial(joined).concat(last + f);
     }, []);
+
+    return new Expression(newFragments);
   }
 
   handleMouseUp() {
