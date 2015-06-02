@@ -1,7 +1,7 @@
 import React from 'react';
 import DrawInstruction from './DrawInstruction';
 import InstructionActions from '../actions/InstructionActions';
-import ExpressionEditor from '../components/ExpressionEditor';
+import ExpressionEditorAndScrub from '../components/ExpressionEditorAndScrub';
 import {distanceBetweenPoints} from '../utils/utils';
 import Expression from '../models/Expression';
 
@@ -75,7 +75,7 @@ export default class DrawCircleInstruction extends DrawInstruction {
     return (
       <span className="size-ui">
         , with radius
-        <ExpressionEditor
+        <ExpressionEditorAndScrub
           onChange={this.handleRadiusChange.bind(this)}
           variables={variables}
           variableValues={variableValues}
