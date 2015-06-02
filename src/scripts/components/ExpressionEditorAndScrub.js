@@ -21,7 +21,7 @@ export default class ExpressionEditorAndScrub extends React.Component {
       return (
         <ExpressionEditor
           {...this.props}
-          handleBlur={this.handleEditorBlur.bind(this)} />
+          handleEnterKey={this.handleEnterKey.bind(this)} />
       );
     } else {
       let fragments = this.parseDefinition();
@@ -118,8 +118,9 @@ export default class ExpressionEditorAndScrub extends React.Component {
     this.setState({isEditing: true});
   }
 
-  handleEditorBlur() {
+  handleEnterKey(evt) {
     this.setState({isEditing: false});
+    evt.stopPropagation();
   }
 
   handleScrubMouseDown(fragmentIndex, evt) {

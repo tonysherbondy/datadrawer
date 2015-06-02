@@ -264,6 +264,11 @@ export default class ExpressionEditor extends React.Component {
       let location = this.getCursorLocation(React.findDOMNode(this));
       this.moveCursorPosition(dir, location);
       evt.preventDefault();
+    } else if (evt.which === 13) {
+      // Let handler know when enter is pressed
+      if (this.props.handleEnterKey) {
+        this.props.handleEnterKey(evt);
+      }
     }
     // Don't let this bubble to app that is listening for key presses
     evt.stopPropagation();
