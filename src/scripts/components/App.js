@@ -7,6 +7,7 @@ import DrawingStateStore from '../stores/DrawingStateStore';
 import InstructionActions from '../actions/InstructionActions';
 import DrawingStateActions from '../actions/DrawingStateActions';
 import DrawRectInstruction from '../models/DrawRectInstruction';
+import DrawCircleInstruction from '../models/DrawCircleInstruction';
 import DrawTextInstruction from '../models/DrawTextInstruction';
 import DrawInstruction from '../models/DrawInstruction';
 import ScaleInstruction from '../models/ScaleInstruction';
@@ -155,6 +156,10 @@ class App extends React.Component {
       }
       case 67: { //c
         DrawingStateActions.setDrawingMode('circle');
+        let instruction = new DrawCircleInstruction({
+          id: InstructionTreeNode.getNextInstructionId(this.props.instructions)
+        });
+        this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
         break;
       }
       case 76: { //l

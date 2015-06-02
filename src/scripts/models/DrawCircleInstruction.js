@@ -2,12 +2,14 @@ import React from 'react';
 import DrawInstruction from './DrawInstruction';
 import InstructionActions from '../actions/InstructionActions';
 import ExpressionEditor from '../components/ExpressionEditor';
+import {distanceBetweenPoints} from '../utils/utils';
+import Expression from '../models/Expression';
 
 export default class DrawCircleInstruction extends DrawInstruction {
   constructor(props) {
     super(props);
     this.name = props.name || 'circle';
-    this.radius = props.radius;
+    this.radius = props.radius || new Expression(1);
   }
 
   modifyInstructionWithProps(props) {
@@ -18,6 +20,31 @@ export default class DrawCircleInstruction extends DrawInstruction {
     let props = super.getCloneProps();
     props.radius = this.radius;
     return props;
+  }
+
+  getCloneWithFrom(from, magnets) {
+    let props = this.getCloneProps();
+    props.from = from;
+    props.fromMagnets = magnets;
+    // TODO - Shouldn't we do our own modify here?
+    return new DrawCircleInstruction(props);
+  }
+
+  getCloneWithTo(to, pictureResult, magnets) {
+    let props = this.getCloneProps();
+    // TODO - if to is a magnet, we set to otherwise, width & height
+    if (to.id) {
+      props.to = to;
+      props.toMagnets = magnets;
+      props.radius = null;
+    } else {
+      let from = this.getFromValue(pictureResult);
+      props.to = null;
+      let radius = Math.round(distanceBetweenPoints(to, from) * 100) / 100;
+      props.radius = new Expression(radius);
+    }
+    // TODO - Shouldn't we do our own modify here?
+    return new DrawCircleInstruction(props);
   }
 
   getRadiusJs(index) {
