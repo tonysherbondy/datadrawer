@@ -1,11 +1,15 @@
+import React from 'react';
 import Instruction from './Instruction';
 import _ from 'lodash';
 import InstructionTreeNode from './InstructionTreeNode';
+import Expression from '../models/Expression';
+import ExpressionEditor from '../components/ExpressionEditor';
+import InstructionActions from '../actions/InstructionActions';
 
 export default class LoopInstruction extends Instruction {
   constructor({id, instructions, count}) {
     super({id, shapeId: null});
-    this.count = count;
+    this.count = count || 'max';
     this.instructions = instructions;
   }
 
@@ -21,9 +25,15 @@ export default class LoopInstruction extends Instruction {
     return new LoopInstruction(this.getCloneProps());
   }
 
+  modifyInstructionWithProps(props) {
+    InstructionActions.modifyInstruction(new LoopInstruction(props));
+  }
+
   getMaxLoopCount(table) {
     // max loop count is either set on count or max table length
-    return _.isNumber(this.count) ? this.count : table.maxLength;
+    let max = _.isNumber(this.count) ? this.count : table.maxLength;
+    // Don't let the maximum be greater than the table length
+    return _.min([max, table.maxLength]);
   }
 
   getJsCode(table, currentInstruction, currentLoopIndex) {
@@ -52,16 +62,28 @@ export default class LoopInstruction extends Instruction {
     return jsCode;
   }
 
-  getCountUi() {
-    if (isFinite(this.count)) {
-      return this.count;
-    }
-    // TODO - Need read only variables to make this work
-    return '# of columns';
+  getUiSentence(variables, variableValues) {
+    // TODO support different ranges by checking range property
+    let definition = new Expression(this.count || `'# of columns'`);
+    return (
+      <span className='instruction-sentence'>
+        {`Repeat from 1 to `}
+        <ExpressionEditor
+          onChange={this.handleCountChange.bind(this, variables)}
+          variables={variables}
+          variableValues={variableValues}
+          definition={definition} />
+      </span>
+    );
   }
 
-  getUiSentence() {
-    // TODO support different ranges by checking range property
-    return `Repeat from 1 to ${this.getCountUi()}`;
+  handleCountChange(variables, definition) {
+    let count = definition.evaluate(variables);
+    if (!_.isNumber(count)) {
+      count = 'max';
+    }
+    let props = this.getCloneProps();
+    props.count = count;
+    this.modifyInstructionWithProps(props);
   }
 }
