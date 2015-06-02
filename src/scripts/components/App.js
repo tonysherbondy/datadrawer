@@ -8,6 +8,7 @@ import InstructionActions from '../actions/InstructionActions';
 import DrawingStateActions from '../actions/DrawingStateActions';
 import DrawRectInstruction from '../models/DrawRectInstruction';
 import DrawCircleInstruction from '../models/DrawCircleInstruction';
+import DrawLineInstruction from '../models/DrawLineInstruction';
 import DrawTextInstruction from '../models/DrawTextInstruction';
 import DrawInstruction from '../models/DrawInstruction';
 import ScaleInstruction from '../models/ScaleInstruction';
@@ -152,6 +153,14 @@ class App extends React.Component {
       }
       case 86: { //v
         DrawingStateActions.setDrawingMode('move');
+        break;
+      }
+      case 88: { //x
+        DrawingStateActions.setDrawingMode('line');
+        let instruction = new DrawLineInstruction({
+          id: InstructionTreeNode.getNextInstructionId(this.props.instructions)
+        });
+        this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
         break;
       }
       case 67: { //c
