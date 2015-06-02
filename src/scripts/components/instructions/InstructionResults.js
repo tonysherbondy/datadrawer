@@ -31,6 +31,8 @@ export default class InstructionResults extends React.Component {
 
         <DataTable
           currentLoopIndex={this.props.drawingState.currentLoopIndex}
+          dataVariables={this.props.dataVariables}
+          dataValues={pictureResult.variableValues}
           table={pictureResult.getTable()} />
 
         <InstructionTitle

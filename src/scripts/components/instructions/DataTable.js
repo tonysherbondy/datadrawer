@@ -32,7 +32,7 @@ export default class DataTable extends React.Component {
       // For the hovered row, show the editable expression
       if (this.state.hoveredRowIndex === index) {
         let maxCols = _.max(rowValues.map(r => r.length));
-        let editableExpression = this.getEditableExpression(row, rows, this.props.dataValues);
+        let editableExpression = this.getEditableExpression(row);
         cells = (
           <td key={`hovered_${index}`} colSpan={maxCols}>{editableExpression}</td>
         );
@@ -64,7 +64,9 @@ export default class DataTable extends React.Component {
     );
   }
 
-  getEditableExpression(variable, variables, variableValues) {
+  getEditableExpression(variable) {
+    let variables = this.props.dataVariables;
+    let variableValues = this.props.dataValues;
     return (
       <ExpressionEditorAndScrub
         asVector={true}
@@ -93,7 +95,6 @@ export default class DataTable extends React.Component {
   }
 
   handleMouseEnterData(index) {
-    console.log('row enter', index);
     this.setState({hoveredRowIndex: index});
   }
 
@@ -109,11 +110,7 @@ export default class DataTable extends React.Component {
 
 DataTable.propTypes = {
   currentLoopIndex: React.PropTypes.number,
-  rowVariables: React.PropTypes.array,
-  dataValues: React.PropTypes.object
-};
-
-DataTable.defaultProps = {
-  rowVariables: [],
-  dataValues: {}
+  table: React.PropTypes.object.isRequired,
+  dataVariables: React.PropTypes.array.isRequired,
+  dataValues: React.PropTypes.object.isRequired
 };
