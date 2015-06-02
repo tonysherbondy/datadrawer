@@ -75,7 +75,7 @@
   background: #efefef;
   color: black;
 
-  /*// no-select stuff*/
+  /* no-select stuff */
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -93,7 +93,7 @@
 }
 
 .instruction-sentence {
-  // no-select stuff
+  /* no-select stuff */
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -128,7 +128,7 @@ td, th {
 
 .data-table {
   font-size: 10;
-  // no-select stuff
+  /* no-select stuff */
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -163,7 +163,9 @@ td, th {
 
 .dataVariables-list {
   font-size: 10;
-  // no-select stuff
+  list-style-type: none;
+  padding: 0px 0px 0px 20px;
+  /* no-select stuff */
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
