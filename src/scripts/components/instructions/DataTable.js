@@ -17,7 +17,7 @@ export default class DataTable extends React.Component {
     let {rows, rowValues, maxLength} = this.props.table;
     let {currentLoopIndex} = this.props;
 
-    let headerCells = 'i'.repeat(maxLength+1).split('').map((dummy, index) => {
+    let headerCells = 'i'.repeat(maxLength + 1).split('').map((dummy, index) => {
       let value = index === 0 ? '' : index - 1;
       let className = index - 1 === currentLoopIndex ? 'current-loop-column' : '';
       return (<th key={index} className={className}>{value}</th>);

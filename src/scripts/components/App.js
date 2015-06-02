@@ -1,5 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
+import classNames from 'classnames';
 import Flux from '../dispatcher/dispatcher';
 import InstructionStore from '../stores/InstructionStore';
 import DataVariableStore from '../stores/DataVariableStore';
@@ -21,6 +22,7 @@ import InstructionList from './instructions/InstructionList';
 import DataVariableList from './instructions/DataVariableList';
 import DataTable from './instructions/DataTable';
 import InstructionTitle from './instructions/InstructionTitle';
+import InstructionCode from './instructions/InstructionCode';
 import Canvas from './drawing/Canvas';
 
 class App extends React.Component {
@@ -31,13 +33,13 @@ class App extends React.Component {
     // like moving the current steps etc., you could imagine that functionality
     // actually moving down to the instructions list or something like that instead
     // then we could just calculate the picture in the render for this app
-    //
 
     this.state = this._stateForProps(props);
+    this.state.isDebugging = false;
   }
 
   componentWillReceiveProps(nextProps) {
-    this.state = this._stateForProps(nextProps);
+    this.setState(this._stateForProps(nextProps));
   }
 
   _stateForProps(props) {
@@ -238,6 +240,10 @@ class App extends React.Component {
         DrawingStateActions.setDrawingMode('normal');
         break;
       }
+      case 112: { // F1 to enter debug mode
+        this.setState({isDebugging: !this.state.isDebugging});
+        break;
+      }
       default:
         console.log('unknown code', code);
         break;
@@ -414,6 +420,9 @@ class App extends React.Component {
                 pictureResult={pictureResult}
                 editingInstruction={this.getEditingInstruction()} />
               <div>Mode: {this.props.drawingState.mode}</div>
+              <InstructionCode
+                className={classNames({'hidden': !this.state.isDebugging})}
+                code={pictureResult.jsCode} />
             </div>
           </div>
         </div>

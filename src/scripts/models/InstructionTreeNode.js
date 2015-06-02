@@ -123,9 +123,9 @@ InstructionTreeNode.findBetweenRange = function(instructions, instruction1, inst
     let i2 = curInstructions.findIndex(findById2);
     if (i1 > -1 && i2 > -1) {
       if (i1 > i2) {
-        return _.range(i2, i1+1).map(idx => curInstructions[idx]);
+        return _.range(i2, i1 + 1).map(idx => curInstructions[idx]);
       }
-      return _.range(i1, i2+1).map(idx => curInstructions[idx]);
+      return _.range(i1, i2 + 1).map(idx => curInstructions[idx]);
     }
 
     return [];

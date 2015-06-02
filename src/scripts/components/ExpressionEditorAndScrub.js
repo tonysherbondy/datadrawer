@@ -77,7 +77,7 @@ export default class ExpressionEditorAndScrub extends React.Component {
         parsedFragments.push(fragment.slice(0, index));
       }
       parsedFragments.push(+nextNumber);
-      fragment = fragment.slice(index+nextNumber.length);
+      fragment = fragment.slice(index + nextNumber.length);
       nextNumber = r.exec(fragment);
     }
     // Push the last string fragments on

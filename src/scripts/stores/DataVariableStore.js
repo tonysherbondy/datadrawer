@@ -129,7 +129,7 @@ const DataVariableStore = biff.createStore({
       let index = variables.findIndex(v => v.id === payload.data.id);
       if (index > -1) {
         let before = variables.slice(0,index);
-        let after = variables.slice(index+1, variables.length);
+        let after = variables.slice(index + 1, variables.length);
         variables = [...before, payload.data, ...after];
         DataVariableStore.emitChange();
       }
