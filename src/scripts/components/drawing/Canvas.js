@@ -201,7 +201,7 @@ class Canvas extends React.Component {
         InstructionActions.modifyInstruction(instruction.getCloneWithFrom(point, magnets));
       } else {
 
-        if (this.props.drawingState.mode === 'path') {
+        if (this.props.drawingState.mode === 'path' && !event.shiftKey) {
           // if we are drawing a path and our instruction is valid
           // we need to add another point
           InstructionActions.modifyInstruction(instruction.getCloneWithAddedPoint(point, this.props.pictureResult, magnets));

@@ -90,16 +90,23 @@ export default class DrawPathInstruction extends DrawInstruction {
     // An array of points, each with a flag indicating whether
     // we draw a line or just move to that point
     let {x, y} = this.getFromJs(index);
+    let prevXJs = `${x}`;
+    let prevYJs = `${y}`;
     let allTosJs = this.to.map(to => {
       let isLine = to.isLine;
+      let xJs, yJs;
       if (to.id) {
         let toPt = this.getPointVarJs(to, index);
-        return `{x: ${toPt}.x - ${x}, y: ${toPt}.y - ${y}, isLine: ${isLine}},`;
+        xJs = `${toPt}.x - (${prevXJs})`;
+        yJs = `${toPt}.y - (${prevYJs})`;
       } else {
-        let xJs = to.x.getJsCode(index);
-        let yJs = to.y.getJsCode(index);
-        return `{x: ${xJs}, y: ${yJs}, isLine: ${isLine}},`;
+        xJs = to.x.getJsCode(index);
+        yJs = to.y.getJsCode(index);
       }
+      // Update previous X and Y js
+      prevXJs = `${prevXJs} + ${xJs}`;
+      prevYJs = `${prevYJs} + ${yJs}`;
+      return `{x: ${xJs}, y: ${yJs}, isLine: ${isLine}},`;
     });
     return ['['].concat(allTosJs, [']']).join('\n');
   }
