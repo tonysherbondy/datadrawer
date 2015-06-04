@@ -1,7 +1,9 @@
 import _ from 'lodash';
+import React from 'react';
 import DrawInstruction from './DrawInstruction';
 import InstructionActions from '../actions/InstructionActions';
 import Expression from './Expression';
+import ExpressionEditorAndScrub from '../components/ExpressionEditorAndScrub';
 
 export default class DrawPathInstruction extends DrawInstruction {
   constructor(props) {
@@ -75,6 +77,41 @@ export default class DrawPathInstruction extends DrawInstruction {
            `points: ${this.getToJs(index)},\n` +
            `isClosed: ${this.isClosed},\n` +
            `}, '${this.shapeId}', ${index});\n`;
+  }
+
+  getToUi(variables, variableValues, shapeNameMap) {
+    return this.to.map((to, index) => {
+      if (to.id) {
+        return ` until ${this.getPointUi(shapeNameMap, to)}`;
+      } else {
+        return (
+          <span key={index} className="to-expression">
+            to (
+            <ExpressionEditorAndScrub
+              onChange={this.handleToXChange.bind(this, index)}
+              variables={variables}
+              variableValues={variableValues}
+              definition={to.x} />
+                ,
+
+            <ExpressionEditorAndScrub
+              onChange={this.handleToYChange.bind(this, index)}
+              variables={variables}
+              variableValues={variableValues}
+              definition={to.y} />
+            )
+          </span>
+        );
+      }
+    });
+  }
+
+  handleToXChange(index, definition) {
+    console.log('handle x change', definition);
+  }
+
+  handleToYChange(index, definition) {
+    console.log('handle y change', definition);
   }
 
   //getUiSentence(variables, variableValues) {

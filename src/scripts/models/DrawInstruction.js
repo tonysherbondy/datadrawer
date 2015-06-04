@@ -102,6 +102,14 @@ export default class DrawInstruction extends Instruction {
     );
   }
 
+  getToUi(variables, variableValues, shapeNameMap) {
+    if (this.to) {
+      return this.getPointToUi(shapeNameMap);
+    } else {
+      return this.getSizeUi(variables, variableValues);
+    }
+  }
+
   getPointToUi(shapes) {
     return ` until ${this.getPointUi(shapes, this.to)}`;
   }
@@ -112,12 +120,7 @@ export default class DrawInstruction extends Instruction {
     }
 
     let fromUi = this.getFromUi(shapeNameMap);
-    let toUi;
-    if (this.to) {
-      toUi = this.getPointToUi(shapeNameMap);
-    } else {
-      toUi = this.getSizeUi(variables, variableValues);
-    }
+    let toUi = this.getToUi(variables, variableValues, shapeNameMap);
     return (
       <span className='instruction-sentence'>
         {fromUi}
