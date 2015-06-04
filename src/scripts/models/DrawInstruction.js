@@ -54,34 +54,6 @@ export default class DrawInstruction extends Instruction {
     };
   }
 
-  getToXJs(index) {
-    let {x} = this.getFromJs(index);
-    // This can be one of the following, a point specified by the to parameter,
-    // a number or a variable
-    if (this.to) {
-      let toPt = this.getPointVarJs(this.to, index);
-      // TODO Probably will need some util function to handle the fact
-      // that we might get negative distances
-      return `${toPt}.x`;
-    }
-    let widthJs = this.width.getJsCode(index);
-    return `${widthJs} + ${x}`;
-  }
-
-  getToYJs(index) {
-    let {y} = this.getFromJs(index);
-    // This can be one of the following, a point specified by the to parameter,
-    // a number or a variable
-    if (this.to) {
-      let toPt = this.getPointVarJs(this.to, index);
-      // TODO Probably will need some util function to handle the fact
-      // that we might get negative distances
-      return `${toPt}.y`;
-    }
-    let heightJs = this.height.getJsCode(index);
-    return `${heightJs} + ${y}`;
-  }
-
   getFromValue(pictureResult) {
     if (this.from.id) {
       // Must be a shape point

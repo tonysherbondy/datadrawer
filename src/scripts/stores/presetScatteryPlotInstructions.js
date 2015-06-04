@@ -133,8 +133,8 @@ const instructions = [
         stroke: 'rgba(238, 141, 40, 1)',
         from: {id: 'canvas', point: 'center'},
         to: [
-          {x: -40, y: -15, isLine: true},
-          {x: 0, y: 30, isLine: true}
+          {x: new Expression(-40), y: new Expression(-15), isLine: true},
+          {x: new Expression(0), y: new Expression(30), isLine: true}
         ],
         isClosed: true
       }),
