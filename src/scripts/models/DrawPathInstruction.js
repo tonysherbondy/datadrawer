@@ -1,10 +1,12 @@
+import _ from 'lodash';
 import DrawInstruction from './DrawInstruction';
 import InstructionActions from '../actions/InstructionActions';
+import Expression from './Expression';
 
 export default class DrawPathInstruction extends DrawInstruction {
   constructor(props) {
     super(props);
-    this.to = props.to;
+    this.to = props.to || [this.getLinePt(1, 1)];
     this.name = props.name || 'path';
     this.isClosed = props.isClosed;
   }
@@ -27,22 +29,24 @@ export default class DrawPathInstruction extends DrawInstruction {
     return new DrawPathInstruction(props);
   }
 
-  //getCloneWithTo(to, pictureResult, magnets) {
-    //let props = this.getCloneProps();
-    //// TODO - if to is a magnet, we set to otherwise, width & height
-    //if (to.id) {
-      //props.to = to;
-      //props.toMagnets = magnets;
-      //props.radius = null;
-    //} else {
-      //let from = this.getFromValue(pictureResult);
-      //props.to = null;
-      //let radius = Math.round(distanceBetweenPoints(to, from) * 100) / 100;
-      //props.radius = new Expression(radius);
-    //}
-    //// TODO - Shouldn't we do our own modify here?
-    //return new DrawCircleInstruction(props);
-  //}
+  // Update the last to point in the array
+  getCloneWithTo(to, pictureResult, magnets) {
+    let props = this.getCloneProps();
+    let newPt = to;
+    if (to.id) {
+      newPt.isLine = true;
+      props.toMagnets = magnets;
+    } else {
+      let from = this.getFromValue(pictureResult);
+      newPt = this.getLinePt(to.x - from.x, to.y - from.y);
+    }
+    props.to = _.initial(props.to).concat([newPt]);
+    return new DrawPathInstruction(props);
+  }
+
+  getLinePt(x, y) {
+    return {x: new Expression(x), y: new Expression(y), isLine: true};
+  }
 
   getToJs(index) {
     // An array of points, each with a flag indicating whether
@@ -51,7 +55,7 @@ export default class DrawPathInstruction extends DrawInstruction {
     let allTosJs = this.to.map(to => {
       let isLine = to.isLine;
       if (to.id) {
-        let toPt = this.getPointVarJs(this.to, index);
+        let toPt = this.getPointVarJs(to, index);
         return `{x: ${toPt}.x - ${x}, y: ${toPt}.y - ${y}, isLine: ${isLine}},`;
       } else {
         let xJs = to.x.getJsCode(index);

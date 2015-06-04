@@ -9,6 +9,7 @@ import InstructionActions from '../actions/InstructionActions';
 import DrawingStateActions from '../actions/DrawingStateActions';
 import DrawRectInstruction from '../models/DrawRectInstruction';
 import DrawCircleInstruction from '../models/DrawCircleInstruction';
+import DrawPathInstruction from '../models/DrawPathInstruction';
 import DrawLineInstruction from '../models/DrawLineInstruction';
 import DrawTextInstruction from '../models/DrawTextInstruction';
 import DrawInstruction from '../models/DrawInstruction';
@@ -78,6 +79,14 @@ class App extends React.Component {
   handleKeyDown(e) {
     let code = e.keyCode || e.which;
     switch (code) {
+      case 65: { //a
+        DrawingStateActions.setDrawingMode('path');
+        let instruction = new DrawPathInstruction({
+          id: InstructionTreeNode.getNextInstructionId(this.props.instructions)
+        });
+        this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
+        break;
+      }
       case 71: { //g
         // Toggle guide setting on selected shape
         let drawInstruction = this.getDrawInstructionForSelectedShape();
