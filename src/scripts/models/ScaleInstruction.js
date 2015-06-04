@@ -46,4 +46,13 @@ export default class ScaleInstruction extends AdjustInstruction {
     this.modifyInstructionWithProps(props);
   }
 
+  serialize() {
+    var serialized = this.getCloneProps();
+    for (var prop in serialized) {
+      if (serialized.hasOwnProperty(prop) && serialized[prop] === undefined) {
+        delete serialized[prop];
+      }
+    }
+    return serialized;
+  }
 }

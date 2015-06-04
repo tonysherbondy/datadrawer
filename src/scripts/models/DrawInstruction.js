@@ -36,6 +36,41 @@ export default class DrawInstruction extends Instruction {
                                  strokeWidth, fill});
   }
 
+  serialize() {
+    var json = super.serialize();
+
+    if (this.from !== undefined) {
+      json.from = this.from;
+    }
+    if (this.to !== undefined) {
+      json.to = this.to;
+    }
+    if (this.isGuide !== undefined) {
+      json.isGuide = this.isGuide;
+    }
+    if (this.strokeWidth !== undefined) {
+      json.strokeWidth = this.strokeWidth;
+    }
+    if (this.stroke !== undefined) {
+      json.stroke = this.stroke;
+    }
+    if (this.fill !== undefined) {
+      json.fill = this.fill;
+    }
+
+    return json;
+  }
+
+  serializeOld() {
+    var serialized = this.getCloneProps();
+    for (var prop in serialized) {
+      if (serialized.hasOwnProperty(prop) && serialized[prop] === undefined) {
+        delete serialized[prop];
+      }
+    }
+    return serialized;
+  }
+
   isValid() {
     return !!this.from;
   }

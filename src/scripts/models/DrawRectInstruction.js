@@ -126,4 +126,20 @@ export default class DrawRectInstruction extends DrawInstruction {
     this.modifyInstructionWithProps(props);
   }
 
+  serialize() {
+    var json = super.serialize();
+
+    if (this.name !== undefined) {
+      json.name = 'rect';
+    }
+    if (this.width !== undefined) {
+      json.width = this.width;
+    }
+    if (this.height !== undefined) {
+      json.height = this.height;
+    }
+
+    return json;
+  }
+
 }

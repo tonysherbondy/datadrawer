@@ -86,4 +86,12 @@ export default class LoopInstruction extends Instruction {
     props.count = count;
     this.modifyInstructionWithProps(props);
   }
+
+  serialize() {
+    var serialized = super.serialize();
+
+    serialized.type = 'loop';
+
+    return serialized;
+  }
 }

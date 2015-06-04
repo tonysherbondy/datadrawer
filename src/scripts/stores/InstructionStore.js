@@ -3,6 +3,8 @@ import scatterPreset from './presetScatteryPlotInstructions';
 import randoPreset from './randoPresetInstructions';
 import barsPreset from './barsPresetInstructions';
 import InstructionTreeNode from '../models/InstructionTreeNode';
+//import DrawRectInstruction from '../models/DrawRectInstruction';
+import Instruction from '../models/Instruction';
 import firebaseConnection from '../Syncing';
 
 let presetInstructions = {
@@ -34,6 +36,7 @@ const InstructionStore = biff.createStore({
     }
     case 'ADD_INSTRUCTION_SUCCESS': {
       instructions = instructions.concat([payload.data]);
+      firebaseConnection.child('instructions').set(instructions.map((i) => i.serialize()));
       InstructionStore._setPending(false);
       InstructionStore.emitChange();
       break;
@@ -51,18 +54,21 @@ const InstructionStore = biff.createStore({
       payload.data.forEach(iToRemove => {
         instructions = InstructionTreeNode.removeById(instructions, iToRemove.id);
       });
+      firebaseConnection.child('instructions').set(instructions.map((i) => i.serialize()));
       InstructionStore.emitChange();
       break;
     }
     case 'MODIFY_INSTRUCTION': {
       let instruction = payload.data;
       instructions = InstructionTreeNode.replaceById(instructions, instruction.id, instruction);
+      firebaseConnection.child('instructions').set(instructions.map((i) => i.serialize()));
       InstructionStore.emitChange();
       break;
     }
     case 'INSERT_INSTRUCTION': {
       let {instruction, index, parent} = payload.data;
       instructions = InstructionTreeNode.insertInstruction(instructions, instruction, index, parent);
+      firebaseConnection.child('instructions').set(instructions.map((i) => i.serialize()));
       InstructionStore.emitChange();
       break;
     }
@@ -83,6 +89,32 @@ const InstructionStore = biff.createStore({
 
 firebaseConnection.child('name').on('value', function(dataSnapshot) {
   name = dataSnapshot.val();
+  InstructionStore.emitChange();
+});
+
+firebaseConnection.child('instructions').on('value', function(dataSnapshot) {
+  var instructionsFromFirebase = dataSnapshot.val();
+  if (instructionsFromFirebase === null || (instructionsFromFirebase.length === 1 && instructionsFromFirebase[0] === null)) {
+    return;
+  }
+  while (instructions.length > 0) {
+    instructions.pop();
+  }
+  dataSnapshot.val().forEach((serializedInstruction) => {
+    if (serializedInstruction) {
+      let instruction = Instruction.deserialize(serializedInstruction);
+      if (instruction) {
+        instructions.push(instruction);
+      }
+//      let instructionName = serializedInstruction.name;
+//      if (instructionName === 'rect') {
+//        let instruction = new DrawRectInstruction(serializedInstruction);
+//        instructions.push(instruction);
+//      } else {
+//        console.log('Unhandled instruction: ' + instructionName);
+//      }
+    }
+  });
   InstructionStore.emitChange();
 });
 

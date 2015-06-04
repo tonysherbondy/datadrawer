@@ -1,6 +1,7 @@
 import Expression from './Expression';
 import _ from 'lodash';
 import InstructionTreeNode from './InstructionTreeNode';
+import DrawRectInstruction from './DrawRectInstruction';
 
 export default class Instruction extends InstructionTreeNode {
   constructor({id, shapeId}) {
@@ -17,6 +18,10 @@ export default class Instruction extends InstructionTreeNode {
   }
 
   getCloneProps() {
+    return {id: this.id, shapeId: this.shapeId};
+  }
+
+  serialize() {
     return {id: this.id, shapeId: this.shapeId};
   }
 
@@ -74,3 +79,13 @@ export default class Instruction extends InstructionTreeNode {
   }
 
 }
+
+Instruction.deserialize = function(payload) {
+  var type = payload.name;
+  if (type === 'rect') {
+    return DrawRectInstruction.deserialize(payload);
+  } else {
+    console.log('Unhandled instruction: ' + type);
+    return null;
+  }
+};
