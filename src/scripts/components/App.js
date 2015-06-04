@@ -82,7 +82,8 @@ class App extends React.Component {
       case 65: { //a
         DrawingStateActions.setDrawingMode('path');
         let instruction = new DrawPathInstruction({
-          id: InstructionTreeNode.getNextInstructionId(this.props.instructions)
+          id: InstructionTreeNode.getNextInstructionId(this.props.instructions),
+          isClosed: true
         });
         this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
         break;

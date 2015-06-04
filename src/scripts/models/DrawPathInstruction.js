@@ -34,18 +34,52 @@ export default class DrawPathInstruction extends DrawInstruction {
   }
 
   // Update the last to point in the array
-  getCloneWithTo(to, pictureResult, magnets) {
-    let props = this.getCloneProps();
+  getNewToPtFromMouse(to, pictureResult, isNew) {
     let newPt = to;
     if (to.id) {
       newPt.isLine = true;
-      props.toMagnets = magnets;
     } else {
-      let from = this.getFromValue(pictureResult);
-      newPt = this.getLinePt(to.x - from.x, to.y - from.y);
+      let prevPt = this.getPrevPointValue(pictureResult, isNew);
+      newPt = this.getLinePt(to.x - prevPt.x, to.y - prevPt.y);
+    }
+    return newPt;
+  }
+
+  getPrevPointValue(pictureResult, isNew) {
+    // Get our own shape on the canvas because this point is drawn relative
+    // to the previous value on the canvas
+    let shape = pictureResult.getShapeById(this.shapeId);
+    // Index to prev to last point
+    let index = this.to.length - 2;
+    if (isNew) {
+      // If the To pt has been added the last point of the path is the previous
+      index++;
+    }
+    if (index < 0) {
+      return shape.getPoint('from');
+    }
+    return shape.getAbsPointPosition(index);
+  }
+
+  getCloneWithTo(to, pictureResult, magnets) {
+    let newPt = this.getNewToPtFromMouse(to, pictureResult);
+    let props = this.getCloneProps();
+    if (magnets) {
+      props.toMagnets = magnets;
     }
     props.to = _.initial(props.to).concat([newPt]);
     return new DrawPathInstruction(props);
+  }
+
+  getCloneWithAddedPoint(to, pictureResult, magnets) {
+    let newPt = this.getNewToPtFromMouse(to, pictureResult, true);
+    let props = this.getCloneProps();
+    if (magnets) {
+      props.toMagnets = magnets;
+    }
+    props.to = [...props.to, newPt];
+    return new DrawPathInstruction(props);
+
   }
 
   getLinePt(x, y) {

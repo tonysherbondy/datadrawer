@@ -44,17 +44,25 @@ export default class PathShape extends Shape {
     return ['from'].concat(this.points.map((p,i) => `point_${i}`));
   }
 
+  getAbsPointPosition(index) {
+    if (index < 0 || index >= this.points.length) {
+      console.error('Bad index for path position');
+    }
+    let prevPt = index === 0 ? this.from : this.getAbsPointPosition(index - 1);
+    let {x, y} = this.points[index];
+    return {
+      x: prevPt.x + x,
+      y: prevPt.y + y
+    };
+  }
+
   getPoint(name) {
     // Point names are either from or point_index
     if (name === 'from') {
       return this.from;
     } else {
       let index = parseInt(name.split('_')[1], 10);
-      let point = this.points[index];
-      return {
-        x: this.from.x + point.x,
-        y: this.from.y + point.y
-      };
+      return this.getAbsPointPosition(index);
     }
   }
 

@@ -200,9 +200,16 @@ class Canvas extends React.Component {
         // TODO - treat this as actually immutable
         InstructionActions.modifyInstruction(instruction.getCloneWithFrom(point, magnets));
       } else {
-        // If we click when we have a valid editing instruction we are ending
-        // the instruction editing
-        DrawingStateActions.setDrawingMode('normal');
+
+        if (this.props.drawingState.mode === 'path') {
+          // if we are drawing a path and our instruction is valid
+          // we need to add another point
+          InstructionActions.modifyInstruction(instruction.getCloneWithAddedPoint(point, this.props.pictureResult, magnets));
+        } else {
+          // If we click when we have a valid editing instruction we are ending
+          // the instruction editing
+          DrawingStateActions.setDrawingMode('normal');
+        }
       }
     } else {
       // No active instruction so let's see if we are about to do an adjust instruction
