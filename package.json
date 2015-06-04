@@ -34,6 +34,7 @@
     "colr-convert": "^1.0.4",
     "csscolorparser": "^1.0.2",
     "font-awesome": "^4.3.0",
+    "immutable": "^3.7.3",
     "lodash": "^3.7.0",
     "react": "^0.13.2",
     "react-colorpickr": "^1.4.0"

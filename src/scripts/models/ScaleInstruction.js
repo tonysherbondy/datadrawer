@@ -1,15 +1,15 @@
 import React from 'react';
 import AdjustInstruction from './AdjustInstruction';
 import ExpressionEditorAndScrub from '../components/ExpressionEditorAndScrub';
-import InstructionActions from '../actions/InstructionActions';
+import PictureActions from '../actions/PictureActions';
 
 export default class ScaleInstruction extends AdjustInstruction {
   constructor(props) {
     super(props);
   }
 
-  modifyInstructionWithProps(props) {
-    InstructionActions.modifyInstruction(new ScaleInstruction(props));
+  modifyInstructionWithProps(picture, props) {
+    PictureActions.modifyInstruction(new ScaleInstruction(props));
   }
 
   getCloneWithTo(to) {
@@ -26,24 +26,24 @@ export default class ScaleInstruction extends AdjustInstruction {
   }
 
   // TODO This belongs in the UI most likely
-  getUiSentence(variables, variableValues, shapeNameMap) {
+  getUiSentence(picture, variableValues, shapeNameMap) {
     let shapeName = this.getShapeName(shapeNameMap);
     return (
       <span className='instruction-sentence'>
         {`Scale ${shapeName}'s ${this.prop} by`}
         <ExpressionEditorAndScrub
-          onChange={this.handleToChange.bind(this)}
-          variables={variables}
+          picture={picture}
+          onChange={this.handleToChange.bind(this, picture)}
           variableValues={variableValues}
           definition={this.to} />
       </span>
     );
   }
 
-  handleToChange(definition) {
+  handleToChange(picture, definition) {
     let props = this.getCloneProps();
     props.to = definition;
-    this.modifyInstructionWithProps(props);
+    this.modifyInstructionWithProps(picture, props);
   }
 
 }

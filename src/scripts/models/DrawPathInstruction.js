@@ -3,9 +3,9 @@ import React from 'react';
 import Addons from 'react/addons';
 let {update} = Addons.addons;
 import DrawInstruction from './DrawInstruction';
-import InstructionActions from '../actions/InstructionActions';
 import Expression from './Expression';
 import ExpressionEditorAndScrub from '../components/ExpressionEditorAndScrub';
+import PictureActions from '../actions/PictureActions';
 
 export default class DrawPathInstruction extends DrawInstruction {
   constructor(props) {
@@ -15,8 +15,8 @@ export default class DrawPathInstruction extends DrawInstruction {
     this.isClosed = props.isClosed;
   }
 
-  modifyInstructionWithProps(props) {
-    InstructionActions.modifyInstruction(new DrawPathInstruction(props));
+  modifyInstructionWithProps(picture, props) {
+    PictureActions.modifyInstruction(picture, new DrawPathInstruction(props));
   }
 
   getCloneProps() {
@@ -122,7 +122,7 @@ export default class DrawPathInstruction extends DrawInstruction {
            `}, '${this.shapeId}', ${index});\n`;
   }
 
-  getToUi(variables, variableValues, shapeNameMap) {
+  getToUi(picture, variableValues, shapeNameMap) {
     return this.to.map((to, index) => {
       if (to.id) {
         return ` until ${this.getPointUi(shapeNameMap, to)}`;
@@ -131,15 +131,15 @@ export default class DrawPathInstruction extends DrawInstruction {
           <span key={index} className="to-expression">
             to (
             <ExpressionEditorAndScrub
-              onChange={this.handleToXChange.bind(this, index)}
-              variables={variables}
+              picture={picture}
+              onChange={this.handleToXChange.bind(this, picture, index)}
               variableValues={variableValues}
               definition={to.x} />
                 ,
 
             <ExpressionEditorAndScrub
-              onChange={this.handleToYChange.bind(this, index)}
-              variables={variables}
+              picture={picture}
+              onChange={this.handleToYChange.bind(this, picture, index)}
               variableValues={variableValues}
               definition={to.y} />
             )
@@ -149,18 +149,18 @@ export default class DrawPathInstruction extends DrawInstruction {
     });
   }
 
-  handleToXChange(index, definition) {
+  handleToXChange(picture, index, definition) {
     let setUpdate = {};
     setUpdate[index] = {x: {$set: definition}};
     let props = update(this.getCloneProps(), {to: setUpdate});
-    this.modifyInstructionWithProps(props);
+    this.modifyInstructionWithProps(picture, props);
   }
 
-  handleToYChange(index, definition) {
+  handleToYChange(picture, index, definition) {
     let setUpdate = {};
     setUpdate[index] = {y: {$set: definition}};
     let props = update(this.getCloneProps(), {to: setUpdate});
-    this.modifyInstructionWithProps(props);
+    this.modifyInstructionWithProps(picture, props);
   }
 
 }

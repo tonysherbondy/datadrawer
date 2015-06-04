@@ -1,7 +1,8 @@
+import _ from 'lodash';
 import biff from '../dispatcher/dispatcher';
-import InstructionStore from './InstructionStore';
 import InstructionTreeNode from '../models/InstructionTreeNode';
 import LoopInstruction from '../models/LoopInstruction';
+import PictureStore from './PictureStore';
 
 let drawingState = {
   mode: 'normal',
@@ -10,7 +11,8 @@ let drawingState = {
   currentLoopIndex: null,
   editingInstructionId: null,
   dataPopupPosition: null,
-  showDataPopup: false
+  showDataPopup: false,
+  activePicture: null
 };
 
 function resetState() {
@@ -21,7 +23,7 @@ function resetState() {
 }
 
 function setSelectedInstructions(selectedInstructions) {
-  let instructions = InstructionStore.getInstructions();
+  let instructions = drawingState.activePicture.instructions;
   let parent = InstructionTreeNode.findParent(instructions, selectedInstructions[0]);
   // TODO (nhan): this should check whether an ancestor is a loop instruction
   // instead of the parent
@@ -46,10 +48,15 @@ function insertedInstruction(instruction) {
 
 const DrawingStateStore = biff.createStore({
   getDrawingState() {
+    // TODO (nhan): This logic might be better placed in the App
+    if (!drawingState.activePicture) {
+      drawingState.activePicture = _.first(PictureStore.getPictures());
+    } else {
+      drawingState.activePicture = PictureStore.getPicture(drawingState.activePicture.id);
+    }
     return drawingState;
   }
 }, (payload) => {
-
   switch (payload.actionType) {
     case 'SHOW_DATA_POPUP': {
       drawingState.dataPopupPosition = payload.data;
@@ -57,8 +64,21 @@ const DrawingStateStore = biff.createStore({
       DrawingStateStore.emitChange();
       break;
     }
+
     case 'HIDE_DATA_POPUP': {
       drawingState.showDataPopup = false;
+      DrawingStateStore.emitChange();
+      break;
+    }
+
+    case 'ADD_NEW_PICTURE': {
+      // TODO (nhan): can probably get rid of this dependency on PictureStore
+      drawingState.activePicture = _.last(PictureStore.getPictures());
+      break;
+    }
+
+    case 'SET_ACTIVE_PICTURE': {
+      drawingState.activePicture = payload.picture;
       DrawingStateStore.emitChange();
       break;
     }
@@ -97,14 +117,13 @@ const DrawingStateStore = biff.createStore({
       break;
     }
     // Respond to changes to instruction store
-    case 'ADD_INSTRUCTION_SUCCESS': {
-      insertedInstruction(payload.data);
+    case 'ADD_INSTRUCTION': {
+      insertedInstruction(payload.instruction);
       DrawingStateStore.emitChange();
       break;
     }
     case 'INSERT_INSTRUCTION': {
-      let {instruction} = payload.data;
-      insertedInstruction(instruction);
+      insertedInstruction(payload.instruction);
       DrawingStateStore.emitChange();
       break;
     }

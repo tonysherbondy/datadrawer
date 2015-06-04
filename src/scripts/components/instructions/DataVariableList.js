@@ -1,8 +1,7 @@
 import React from 'react';
 import VariablePill from '../VariablePill';
 import ExpressionEditorAndScrub from '../ExpressionEditorAndScrub';
-import DataVariableActions from '../../actions/DataVariableActions';
-import DataVariableStore from '../../stores/DataVariableStore';
+import PictureActions from '../../actions/PictureActions';
 
 export default class DataVariableList extends React.Component {
 
@@ -13,11 +12,11 @@ export default class DataVariableList extends React.Component {
 
       return (
         <li className='data-variable-list-item' key={index}>
-          <VariablePill variable={dataVariable} />
+          <VariablePill picture={this.props.picture} variable={dataVariable} />
           <ExpressionEditorAndScrub
+            picture={this.props.picture}
             asVector={true}
             onChange={this.handleDefinitionChange.bind(this, dataVariable)}
-            variables={this.props.dataVariables}
             variableValues={this.props.dataValues}
             definition={dataVariable.definition} />
           <div className='dataVariable-value'>
@@ -39,8 +38,8 @@ export default class DataVariableList extends React.Component {
   handleDefinitionChange(variable, newDefinition) {
     let newVariable = variable.cloneWithDefinition(newDefinition);
     // Make sure the new variable hasn't introduced cycle
-    if (!newVariable.hasCycle(this.props.dataVariables)) {
-      DataVariableActions.modifyVariable(newVariable);
+    if (!newVariable.hasCycle(this.props.picture.variables)) {
+      PictureActions.modifyVariable(this.props.picture, newVariable);
     } else {
       // Force rerender
       // TODO - Right now this is a hack, probably a better way to do this is to flash
@@ -50,11 +49,11 @@ export default class DataVariableList extends React.Component {
   }
 
   handleAddVariable() {
-    let variable = DataVariableStore.generateNewVariable({
+    let variable = this.props.picture.generateNewVariable({
       isRow: false,
       definition: '42'
     });
-    DataVariableActions.appendVariable(variable);
+    PictureActions.addVariable(this.props.picture, variable);
   }
 
 }

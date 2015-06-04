@@ -20,6 +20,7 @@ export default class ColorExpressionEditor extends React.Component {
     return (
       <div className="color-expression-editor" onClick={this.handleClick.bind(this)} style={{backgroundColor: color}}>
         <Popover
+          picture={this.props.picture}
           handleClose={this.handlePopoverClose.bind(this)}
           position={this.state.popoverPosition}
           isShown={this.state.isPopoverShown}>

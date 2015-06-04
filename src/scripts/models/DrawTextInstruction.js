@@ -1,5 +1,5 @@
 import DrawLineInstruction from './DrawLineInstruction';
-import InstructionActions from '../actions/InstructionActions';
+import PictureActions from '../actions/PictureActions';
 import Expression from './Expression';
 import React from 'react';
 import ExpressionEditor from '../components/ExpressionEditor';
@@ -12,8 +12,8 @@ export default class DrawTextInstruction extends DrawLineInstruction {
     this.fontSize = props.fontSize;
   }
 
-  modifyInstructionWithProps(props) {
-    InstructionActions.modifyInstruction(new DrawTextInstruction(props));
+  modifyInstructionWithProps(picture, props) {
+    PictureActions.modifyInstruction(picture, new DrawTextInstruction(props));
   }
 
   getCloneProps() {
@@ -63,25 +63,25 @@ export default class DrawTextInstruction extends DrawLineInstruction {
            `}, '${this.shapeId}', ${index});\n`;
   }
 
-  handleTextChange(definition) {
+  handleTextChange(picture, definition) {
     let props = this.getCloneProps();
     props.text = definition;
-    this.modifyInstructionWithProps(props);
+    this.modifyInstructionWithProps(picture, props);
   }
 
   // TODO - this is only here because I need to place text
   // value somewhere
-  getUiSentence(variables, variableValues, shapeNameMap) {
+  getUiSentence(picture, variableValues, shapeNameMap) {
     if (!this.isValid()) {
       return this.getInvalidUi();
     }
 
-    let fromUi = this.getFromUi(shapeNameMap);
+    let fromUi = this.getFromUi(picture, shapeNameMap);
     let toUi;
     if (this.to) {
       toUi = this.getPointToUi(shapeNameMap);
     } else {
-      toUi = this.getSizeUi(variables, variableValues);
+      toUi = this.getSizeUi(picture, variableValues);
     }
     return (
       <span className='instruction-sentence'>
@@ -89,8 +89,8 @@ export default class DrawTextInstruction extends DrawLineInstruction {
 
         of
         <ExpressionEditor
-          onChange={this.handleTextChange.bind(this)}
-          variables={variables}
+          picture={picture}
+          onChange={this.handleTextChange.bind(this, picture)}
           variableValues={variableValues}
           definition={this.text} />
 

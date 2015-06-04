@@ -1,6 +1,13 @@
 import biff from '../dispatcher/dispatcher';
 
 const DrawingStateActions = biff.createActions({
+  setActivePicture(picture) {
+    this.dispatch({
+      actionType: 'SET_ACTIVE_PICTURE',
+      picture: picture
+    });
+  },
+
   setDrawingMode(name) {
     this.dispatch({
       actionType: 'SET_DRAWING_MODE',

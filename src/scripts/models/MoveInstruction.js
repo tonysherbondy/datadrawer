@@ -1,6 +1,6 @@
 import React from 'react';
 import AdjustInstruction from './AdjustInstruction';
-import InstructionActions from '../actions/InstructionActions';
+import PictureActions from '../actions/PictureActions';
 import Expression from './Expression';
 import ExpressionEditorAndScrub from '../components/ExpressionEditorAndScrub';
 
@@ -12,8 +12,8 @@ export default class MoveInstruction extends AdjustInstruction {
     this.isReshape = props.isReshape;
   }
 
-  modifyInstructionWithProps(props) {
-    InstructionActions.modifyInstruction(new MoveInstruction(props));
+  modifyInstructionWithProps(picture, props) {
+    PictureActions.modifyInstruction(picture, new MoveInstruction(props));
   }
 
   getCloneProps() {
@@ -25,7 +25,7 @@ export default class MoveInstruction extends AdjustInstruction {
     return props;
   }
 
-  modifyWithTo(to, start) {
+  modifyWithTo(picture, to, start) {
     let props = this.getCloneProps();
     if (to.id) {
       props.to = to;
@@ -36,15 +36,15 @@ export default class MoveInstruction extends AdjustInstruction {
       props.x = new Expression(to.x - start.x);
       props.y = new Expression(to.y - start.y);
     }
-    this.modifyInstructionWithProps(props);
+    this.modifyInstructionWithProps(picture, props);
   }
 
   getJsCode(index) {
     let varName = this.getShapeVarName(this.shape, index);
     if (this.to) {
       // When setting to a variable we will move the point = to the variable
-      let pointJs = this.getPointVarJs(this.to, index);
-      return `${varName}.moveToPoint('${this.point}', ${pointJs}, ${this.isReshape});\n`;
+      let toPointJs = this.getPointVarJs(this.to, index);
+      return `${varName}.moveToPoint('${this.point}', ${toPointJs}, ${this.isReshape});\n`;
     }
     let xJs = this.x.getJsCode(index);
     let yJs = this.y.getJsCode(index);
@@ -52,7 +52,7 @@ export default class MoveInstruction extends AdjustInstruction {
     return `${varName}.moveRelative('${this.point}', ${pointJs}, ${this.isReshape});\n`;
   }
 
-  getUiSentence(variables, variableValues, shapeNameMap) {
+  getUiSentence(picture, variableValues, shapeNameMap) {
     let shapeName = this.getShapeName(shapeNameMap);
     let fromUi = `Move ${shapeName}'s ${this.point}`;
     let toUi;
@@ -60,7 +60,7 @@ export default class MoveInstruction extends AdjustInstruction {
     if (pointUi) {
       toUi = `, to meet ${pointUi}`;
     } else {
-      toUi = this.getSizeUi(variables, variableValues);
+      toUi = this.getSizeUi(picture, variableValues);
     }
     return (
       <span className='instruction-sentence'>
@@ -70,19 +70,19 @@ export default class MoveInstruction extends AdjustInstruction {
     );
   }
 
-  getSizeUi(variables, variableValues) {
+  getSizeUi(picture, variableValues) {
     return (
       <span className="size-ui">
         <ExpressionEditorAndScrub
-          onChange={this.handleXChange.bind(this)}
-          variables={variables}
+          picture={picture}
+          onChange={this.handleXChange.bind(this, picture)}
           variableValues={variableValues}
           definition={this.x} />
          horizontally
 
         <ExpressionEditorAndScrub
-          onChange={this.handleYChange.bind(this)}
-          variables={variables}
+          picture={picture}
+          onChange={this.handleYChange.bind(this, picture)}
           variableValues={variableValues}
           definition={this.y} />
         vertically.
@@ -90,16 +90,16 @@ export default class MoveInstruction extends AdjustInstruction {
     );
   }
 
-  handleXChange(definition) {
+  handleXChange(picture, definition) {
     let props = this.getCloneProps();
     props.x = definition;
-    this.modifyInstructionWithProps(props);
+    this.modifyInstructionWithProps(picture, props);
   }
 
-  handleYChange(definition) {
+  handleYChange(picture, definition) {
     let props = this.getCloneProps();
     props.y = definition;
-    this.modifyInstructionWithProps(props);
+    this.modifyInstructionWithProps(picture, props);
   }
 
 }

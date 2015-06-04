@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import {distanceBetweenPoints} from '../../utils/utils';
-import InstructionActions from '../../actions/InstructionActions';
+import PictureActions from '../../actions/PictureActions';
 import DrawingStateActions from '../../actions/DrawingStateActions';
 import ScaleInstruction from '../../models/ScaleInstruction';
 import MoveInstruction from '../../models/MoveInstruction';
@@ -147,7 +147,9 @@ class Canvas extends React.Component {
       this.setState(this.state);
     }
 
+    let picture = this.props.drawingState.activePicture;
     let instruction = this.props.editingInstruction;
+
     if (instruction && instruction.isValid()) {
       let {point} = this.getEventPoint(event);
       let {mode} = this.props.drawingState;
@@ -157,13 +159,13 @@ class Canvas extends React.Component {
         let startPoint = this.state.startPoint;
         let props = shape.getAdjustProps(mode, startPoint, point);
         to = props.to;
-        InstructionActions.modifyInstruction(instruction.getCloneWithTo(to, this.props.pictureResult, magnets));
+        PictureActions.modifyInstruction(picture, instruction.getCloneWithTo(to, this.props.pictureResult, magnets));
 
       } else if (mode === 'move') {
-        instruction.modifyWithTo(to, this.state.startPoint);
+        instruction.modifyWithTo(picture, to, this.state.startPoint);
 
       } else {
-        InstructionActions.modifyInstruction(instruction.getCloneWithTo(to, this.props.pictureResult, magnets));
+        PictureActions.modifyInstruction(picture, instruction.getCloneWithTo(to, this.props.pictureResult, magnets));
       }
     }
   }
@@ -193,18 +195,20 @@ class Canvas extends React.Component {
     let {point, magnets} = this.getEventPoint(event);
     // TODO - probably need to use setState if we don't want any
     // ui glitches
+    let picture = this.props.drawingState.activePicture;
+    let instructions = picture.instructions;
     let instruction = this.props.editingInstruction;
     if (instruction) {
       if (!instruction.isValid()) {
         // This has to be a draw instruction, set the from
         // TODO - treat this as actually immutable
-        InstructionActions.modifyInstruction(instruction.getCloneWithFrom(point, magnets));
+        PictureActions.modifyInstruction(picture, instruction.getCloneWithFrom(point, magnets));
       } else {
 
         if (this.props.drawingState.mode === 'path' && !event.shiftKey) {
           // if we are drawing a path and our instruction is valid
           // we need to add another point
-          InstructionActions.modifyInstruction(instruction.getCloneWithAddedPoint(point, this.props.pictureResult, magnets));
+          PictureActions.modifyInstruction(picture, instruction.getCloneWithAddedPoint(point, this.props.pictureResult, magnets));
         } else {
           // If we click when we have a valid editing instruction we are ending
           // the instruction editing
@@ -228,7 +232,7 @@ class Canvas extends React.Component {
         if (mode === 'scale') {
           let props = shape.getAdjustProps(mode, closeControlPoint, point);
           if (props) {
-            props.id = InstructionTreeNode.getNextInstructionId(this.props.instructions);
+            props.id = InstructionTreeNode.getNextInstructionId(instructions);
             this.state.startPoint = closeControlPoint;
             this.setState(this.state);
             this.props.pictureResult.insertNewInstructionAfterCurrent(new ScaleInstruction(props));
@@ -237,7 +241,7 @@ class Canvas extends React.Component {
 
         if (mode === 'move') {
           let props = {
-            id: InstructionTreeNode.getNextInstructionId(this.props.instructions),
+            id: InstructionTreeNode.getNextInstructionId(instructions),
             point: closeControlPoint.pointName,
             shape: {id: closeControlPoint.shapeId},
             x: new Expression(point.x - closeControlPoint.x),
@@ -256,7 +260,14 @@ class Canvas extends React.Component {
 
   render() {
     return (
-      <svg ref='canvas' className="canvas" onClick={this.handleClick.bind(this)} onMouseMove={this.handleMouseMove.bind(this)}>
+      <svg
+        width='800'
+        height='600'
+        viewBox='0 0 800 600'
+        ref='canvas'
+        className={this.props.className}
+        onClick={this.handleClick.bind(this)}
+        onMouseMove={this.handleMouseMove.bind(this)}>
         {this.drawShapes()}
         {this.drawMagnets()}
         {this.drawCloseMagnetShapeOutline()}

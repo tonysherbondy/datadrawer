@@ -72,7 +72,7 @@ export default class DrawInstruction extends Instruction {
     );
   }
 
-  getNameEditable() {
+  getNameEditable(picture) {
     if (!this.name) {
       console.error('Must set name on draw instruction');
     }
@@ -81,19 +81,19 @@ export default class DrawInstruction extends Instruction {
       <ContentEditable
         className='name-editable'
         html={this.name}
-        onChange={this.handleShapeNameChange.bind(this)} />
+        onChange={this.handleShapeNameChange.bind(this, picture)} />
     );
   }
 
-  getInvalidUi() {
+  getInvalidUi(picture) {
     return (
       <span className='instruction-sentence'>
-        Draw a {this.getNameEditable()} ...
+        Draw a {this.getNameEditable(picture)} ...
       </span>
     );
   }
 
-  getFromUi(shapes) {
+  getFromUi(picture, shapes) {
     let pointUi = this.getPointUi(shapes, this.from);
     if (pointUi === null) {
       pointUi = `(${this.from.x}, ${this.from.y})`;
@@ -103,11 +103,11 @@ export default class DrawInstruction extends Instruction {
     );
   }
 
-  getToUi(variables, variableValues, shapeNameMap) {
+  getToUi(picture, variableValues, shapeNameMap) {
     if (this.to) {
       return this.getPointToUi(shapeNameMap);
     } else {
-      return this.getSizeUi(variables, variableValues);
+      return this.getSizeUi(picture, variableValues);
     }
   }
 
@@ -115,13 +115,14 @@ export default class DrawInstruction extends Instruction {
     return ` until ${this.getPointUi(shapes, this.to)}`;
   }
 
-  getUiSentence(variables, variableValues, shapeNameMap) {
+  getUiSentence(picture, variableValues, shapeNameMap) {
     if (!this.isValid()) {
-      return this.getInvalidUi();
+      return this.getInvalidUi(picture);
     }
 
-    let fromUi = this.getFromUi(shapeNameMap);
-    let toUi = this.getToUi(variables, variableValues, shapeNameMap);
+    let fromUi = this.getFromUi(picture, shapeNameMap);
+    let toUi = this.getToUi(picture, variableValues, shapeNameMap);
+
     return (
       <span className='instruction-sentence'>
         {fromUi}
@@ -130,11 +131,11 @@ export default class DrawInstruction extends Instruction {
     );
   }
 
-  handleShapeNameChange(evt) {
+  handleShapeNameChange(picture, evt) {
     // Only draw instructions can change shape name for now
     let props = this.getCloneProps();
     props.name = evt.target.value;
-    this.modifyInstructionWithProps(props);
+    this.modifyInstructionWithProps(picture, props);
   }
 
 }

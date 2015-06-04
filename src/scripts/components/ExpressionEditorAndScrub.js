@@ -38,7 +38,7 @@ export default class ExpressionEditorAndScrub extends React.Component {
           return fragment;
         } else {
           return (
-            <VariablePill variable={fragment} key={index} />
+            <VariablePill picture={this.props.picture} variable={fragment} key={index} />
           );
         }
       });
@@ -61,7 +61,7 @@ export default class ExpressionEditorAndScrub extends React.Component {
 
   parseFragment(fragment) {
     if (!_.isString(fragment)) {
-      let variable = this.props.variables.find(v => v.id === fragment.id);
+      let variable = this.props.picture.variables.find(v => v.id === fragment.id);
       return [variable];
     }
 
@@ -162,7 +162,6 @@ export default class ExpressionEditorAndScrub extends React.Component {
 ExpressionEditorAndScrub.propTypes = {
   asVector: React.PropTypes.bool,
   variableValues: React.PropTypes.object.isRequired,
-  variables: React.PropTypes.array.isRequired,
   definition: React.PropTypes.instanceOf(Expression).isRequired
 };
 

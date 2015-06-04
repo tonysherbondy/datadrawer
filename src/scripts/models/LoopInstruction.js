@@ -4,7 +4,7 @@ import _ from 'lodash';
 import InstructionTreeNode from './InstructionTreeNode';
 import Expression from '../models/Expression';
 import ExpressionEditor from '../components/ExpressionEditor';
-import InstructionActions from '../actions/InstructionActions';
+import PictureActions from '../actions/PictureActions';
 
 export default class LoopInstruction extends Instruction {
   constructor({id, instructions, count}) {
@@ -25,8 +25,8 @@ export default class LoopInstruction extends Instruction {
     return new LoopInstruction(this.getCloneProps());
   }
 
-  modifyInstructionWithProps(props) {
-    InstructionActions.modifyInstruction(new LoopInstruction(props));
+  modifyInstructionWithProps(picture, props) {
+    PictureActions.modifyInstruction(picture, new LoopInstruction(props));
   }
 
   getMaxLoopCount(table) {
@@ -62,28 +62,28 @@ export default class LoopInstruction extends Instruction {
     return jsCode;
   }
 
-  getUiSentence(variables, variableValues) {
+  getUiSentence(picture, variableValues) {
     // TODO support different ranges by checking range property
     let definition = new Expression(this.count || `'# of columns'`);
     return (
       <span className='instruction-sentence'>
         {`Repeat from 1 to `}
         <ExpressionEditor
-          onChange={this.handleCountChange.bind(this, variables)}
-          variables={variables}
+          picture={picture}
+          onChange={this.handleCountChange.bind(this, picture)}
           variableValues={variableValues}
           definition={definition} />
       </span>
     );
   }
 
-  handleCountChange(variables, definition) {
-    let count = definition.evaluate(variables);
+  handleCountChange(picture, definition) {
+    let count = definition.evaluate(picture.variables);
     if (!_.isNumber(count)) {
       count = 'max';
     }
     let props = this.getCloneProps();
     props.count = count;
-    this.modifyInstructionWithProps(props);
+    this.modifyInstructionWithProps(picture, props);
   }
 }

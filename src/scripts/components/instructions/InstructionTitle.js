@@ -6,7 +6,10 @@ export default class InstructionTitle extends React.Component {
     let titleUi = '';
     let instruction = this.props.instruction;
     if (instruction) {
-      titleUi = instruction.getUiSentence(this.props.dataVariables, this.props.variableValues, this.props.shapeNameMap);
+      titleUi = instruction.getUiSentence(
+        this.props.picture,
+        this.props.variableValues,
+        this.props.shapeNameMap);
     }
     return (
       <div className="instruction-title">

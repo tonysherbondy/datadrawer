@@ -2,10 +2,9 @@ import React from 'react';
 import _ from 'lodash';
 import classNames from 'classnames';
 import Flux from '../dispatcher/dispatcher';
-import InstructionStore from '../stores/InstructionStore';
-import DataVariableStore from '../stores/DataVariableStore';
+import PictureStore from '../stores/PictureStore';
 import DrawingStateStore from '../stores/DrawingStateStore';
-import InstructionActions from '../actions/InstructionActions';
+import PictureActions from '../actions/PictureActions';
 import DrawingStateActions from '../actions/DrawingStateActions';
 import DrawRectInstruction from '../models/DrawRectInstruction';
 import DrawCircleInstruction from '../models/DrawCircleInstruction';
@@ -46,21 +45,17 @@ class App extends React.Component {
   }
 
   _stateForProps(props) {
-    let pictureResult = this.getPictureResult(props);
-    let stepper = new InstructionStepper(
-      this.props.instructions, pictureResult);
+    let picture = props.drawingState.activePicture;
+
+    let pictureResult = new PictureResult({
+      picture: picture,
+      currentInstruction: this.getCurrentInstruction(props),
+      currentLoopIndex: props.drawingState.currentLoopIndex
+    });
+
+    let stepper = new InstructionStepper(pictureResult);
+
     return { pictureResult, stepper };
-  }
-
-  getPictureResult(props) {
-    return new PictureResult({ instructions: props.instructions,
-                               dataVariables: props.variables,
-                               currentInstruction: this.getCurrentInstruction(props),
-                               currentLoopIndex: props.drawingState.currentLoopIndex });
-  }
-
-  handlePresetClick(name) {
-    InstructionActions.loadPresetInstructions(name);
   }
 
   selectNextShape() {
@@ -80,11 +75,18 @@ class App extends React.Component {
 
   handleKeyDown(e) {
     let code = e.keyCode || e.which;
+
+    // TODO: (nhan) for now there should always be an active picture
+    // probably want to move this logic and some of the key handling logic
+    // to a more specific component
+    let activePicture = this.props.drawingState.activePicture;
+    let activeInstructions = activePicture.instructions;
+
     switch (code) {
       case 65: { //a
         DrawingStateActions.setDrawingMode('path');
         let instruction = new DrawPathInstruction({
-          id: InstructionTreeNode.getNextInstructionId(this.props.instructions),
+          id: InstructionTreeNode.getNextInstructionId(activeInstructions),
           isClosed: true
         });
         this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
@@ -96,7 +98,7 @@ class App extends React.Component {
         if (drawInstruction) {
           drawInstruction = drawInstruction.clone();
           drawInstruction.isGuide = !drawInstruction.isGuide;
-          InstructionActions.modifyInstruction(drawInstruction);
+          PictureActions.modifyInstruction(activePicture, drawInstruction);
         }
         break;
       }
@@ -140,7 +142,7 @@ class App extends React.Component {
             } else {
               instruction = instruction.getCloneWithTo(magnetPoint, this.state.pictureResult, magnets);
             }
-            InstructionActions.modifyInstruction(instruction);
+            PictureActions.modifyInstruction(activePicture, instruction);
           }
         }
         break;
@@ -148,7 +150,7 @@ class App extends React.Component {
       case 82: { //r
         DrawingStateActions.setDrawingMode('rect');
         let instruction = new DrawRectInstruction({
-          id: InstructionTreeNode.getNextInstructionId(this.props.instructions)
+          id: InstructionTreeNode.getNextInstructionId(activeInstructions)
         });
         this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
         break;
@@ -160,7 +162,7 @@ class App extends React.Component {
       case 84: { //t
         DrawingStateActions.setDrawingMode('text');
         let instruction = new DrawTextInstruction({
-          id: InstructionTreeNode.getNextInstructionId(this.props.instructions)
+          id: InstructionTreeNode.getNextInstructionId(activeInstructions)
         });
         this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
         break;
@@ -172,7 +174,7 @@ class App extends React.Component {
       case 88: { //x
         DrawingStateActions.setDrawingMode('line');
         let instruction = new DrawLineInstruction({
-          id: InstructionTreeNode.getNextInstructionId(this.props.instructions)
+          id: InstructionTreeNode.getNextInstructionId(activeInstructions)
         });
         this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
         break;
@@ -180,7 +182,7 @@ class App extends React.Component {
       case 67: { //c
         DrawingStateActions.setDrawingMode('circle');
         let instruction = new DrawCircleInstruction({
-          id: InstructionTreeNode.getNextInstructionId(this.props.instructions)
+          id: InstructionTreeNode.getNextInstructionId(activeInstructions)
         });
         this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
         break;
@@ -188,22 +190,22 @@ class App extends React.Component {
       case 76: { //l
         // TODO We allow multiple looping levels, but other assumptions don't support that
         let selectedInstructions = this.getSelectedInstructions();
-        let {instructions} = this.props;
 
         // Get the parent and index of first instruction
-        let {parent, index} = InstructionTreeNode.findParentWithIndex(instructions, selectedInstructions[0]);
+        let {parent, index} = InstructionTreeNode.findParentWithIndex(
+          activeInstructions, selectedInstructions[0]);
 
         // Remove selected instructions from list
-        InstructionActions.removeInstructions(selectedInstructions);
+        PictureActions.removeInstructions(activePicture, selectedInstructions);
 
         // Create a new loop instruction with selected instructions as children
         let instruction = new LoopInstruction({
-          id: InstructionTreeNode.getNextInstructionId(instructions),
+          id: InstructionTreeNode.getNextInstructionId(activeInstructions),
           instructions: selectedInstructions
         });
 
         // Insert loop instruction before previous instruction index
-        InstructionActions.insertInstruction(instruction, index, parent);
+        PictureActions.insertInstruction(activePicture, instruction, index, parent);
         // We need to set the drawing mode to normal because we don't want to edit the newly inserted instruction
         DrawingStateActions.setDrawingMode('normal');
         break;
@@ -265,7 +267,7 @@ class App extends React.Component {
   isLoopIndexAtEnd() {
     let {currentLoopIndex} = this.props.drawingState;
     let currentInstruction = this.getCurrentInstruction();
-    let {instructions} = this.props;
+    let {instructions} = this.props.drawingState.activePicture;
     let parent = InstructionTreeNode.findParent(instructions, currentInstruction);
 
     if (!(parent instanceof LoopInstruction)) {
@@ -279,7 +281,7 @@ class App extends React.Component {
   stepLoopIndex(step) {
     let {currentLoopIndex} = this.props.drawingState;
     let currentInstruction = this.getCurrentInstruction();
-    let {instructions} = this.props;
+    let {instructions} = this.props.drawingState.activePicture;
     let parent = InstructionTreeNode.findParent(instructions, currentInstruction);
 
     // If the current instruction is not in a loop, then index = null
@@ -306,7 +308,7 @@ class App extends React.Component {
   }
 
   getEditingInstruction() {
-    let {instructions} = this.props;
+    let {instructions} = this.props.drawingState.activePicture;
     let {editingInstructionId} = this.props.drawingState;
     return InstructionTreeNode.findById(instructions, editingInstructionId);
   }
@@ -315,7 +317,7 @@ class App extends React.Component {
   getSelectedInstructions(props) {
     props = props || this.props;
     let {selectedInstructions} = props.drawingState;
-    let {instructions} = props;
+    let {instructions} = props.drawingState.activePicture;
     if (selectedInstructions && selectedInstructions.length > 0) {
       selectedInstructions = _.compact(selectedInstructions.map(i => {
         return InstructionTreeNode.findById(instructions, i.id);
@@ -326,7 +328,7 @@ class App extends React.Component {
         return selectedInstructions;
       }
     }
-    let lastInstruction = _.last(props.instructions);
+    let lastInstruction = _.last(props.drawingState.activePicture.instructions);
     return lastInstruction ? [lastInstruction] : [];
   }
 
@@ -347,7 +349,7 @@ class App extends React.Component {
 
   getDrawInstructionForSelectedShape() {
     let selectedShapeId = this.getSelectedShapeId();
-    return this.props.instructions.find(i => {
+    return this.props.drawingState.activePicture.instructions.find(i => {
       return i.shapeId === selectedShapeId && i instanceof DrawInstruction;
     });
   }
@@ -362,6 +364,48 @@ class App extends React.Component {
     window.removeEventListener('keydown');
   }
 
+  changeActivePicture(picture) {
+    DrawingStateActions.setActivePicture(picture);
+  }
+
+
+  getThumbnailsBar() {
+    let getThumbnailForPicture = (picture) => {
+      let drawingState = {
+        mode: 'normal',
+        selectedShapeId: null,
+        selectedInstructions: null,
+        currentLoopIndex: null,
+        editingInstructionId: null,
+        activePicture: picture
+      };
+
+      let pictureResult = new PictureResult({ picture });
+      let isActivePicture =
+        picture.id === this.props.drawingState.activePicture.id;
+      let className = classNames('picture-thumbnail', {
+        'active-picture-thumbnail': isActivePicture
+      });
+
+      return (
+        <a key={picture.id}
+          href='#'
+          onClick={this.changeActivePicture.bind(this, picture)}>
+          <Canvas
+            className={className}
+            drawingState={drawingState}
+            pictureResult={pictureResult}/>
+        </a>);
+    };
+    return (
+      <div>
+        {this.props.pictures.map(getThumbnailForPicture)}
+        <a href='#' onClick={PictureActions.addNewPicture}>
+          <div className='picture-thumbnail new-picture-button'>New Picture</div>
+        </a>
+      </div>);
+  }
+
   render() {
     // Selected instructions were selected by user or are the last instruction in set of all
     let selectedInstructions = this.getSelectedInstructions();
@@ -373,11 +417,12 @@ class App extends React.Component {
     }
 
 
+    let activePicture = this.props.drawingState.activePicture;
     let pictureResult = this.state.pictureResult;
     let shapeNameMap = pictureResult.getShapeNameMap();
     let selectedShape = pictureResult.getShapeById(this.getSelectedShapeId());
 
-    let {scalars} = this.props.variables.reduce((map, d) => {
+    let {scalars} = activePicture.variables.reduce((map, d) => {
       let type = d.isRow ? 'vectors' : 'scalars';
       map[type].push(d);
       return map;
@@ -385,49 +430,48 @@ class App extends React.Component {
 
     return (
       <div className='main'>
+        {/* TODO: (nhan): move this to component */}
         <div className='top-bar'>
-          <h1>Tukey App</h1>
-          <button onClick={this.handlePresetClick.bind(this, 'rando')}>Rando</button>
-          <button onClick={this.handlePresetClick.bind(this, 'scatter')}>Scatter</button>
-          <button onClick={this.handlePresetClick.bind(this, 'bars')}>Bars</button>
-          <button onClick={this.handlePresetClick.bind(this, '')}>Blank</button>
+          {this.getThumbnailsBar()}
         </div>
 
         <div className='editor-area'>
           <div className='left-panel'>
             <div className='left-panel-header'>Data</div>
             <DataVariableList
+              picture={activePicture}
               scalars={scalars}
-              dataVariables={this.props.variables}
+              dataVariables={activePicture.variables}
               dataValues={pictureResult.variableValues} />
 
             <DataTable
+              picture={activePicture}
               currentLoopIndex={this.props.drawingState.currentLoopIndex}
               table={pictureResult.getTable()}
-              dataVariables={this.props.variables}
+              dataVariables={activePicture.variables}
               dataValues={pictureResult.variableValues} />
 
             <div className='left-panel-header'>Steps</div>
             <InstructionList
+              picture={activePicture}
               currentInstruction={currentInstruction}
               selectedInstructions={selectedInstructions}
-              dataVariables={this.props.variables}
               variableValues={pictureResult.variableValues}
               shapeNameMap={shapeNameMap}
-              instructions={this.props.instructions} />
+              instructions={activePicture.instructions} />
           </div>
 
           <div className='drawing-area'>
             <div className='canvas-container'>
               <InstructionTitle
-                dataVariables={this.props.variables}
+                picture={activePicture}
+                dataVariables={activePicture.variables}
                 variableValues={pictureResult.variableValues}
                 shapeNameMap={shapeNameMap}
                 instruction={currentInstruction} />
               <Canvas
+                className='canvas'
                 drawingState={this.props.drawingState}
-                // TODO - Only need this to create new instruction ID :/
-                instructions={this.props.instructions}
                 selectedShape={selectedShape}
                 pictureResult={pictureResult}
                 editingInstruction={this.getEditingInstruction()} />
@@ -439,13 +483,15 @@ class App extends React.Component {
           </div>
 
           <Popover
+            picture={activePicture}
             handleClose={this.handlePopoverClose.bind(this)}
             position={this.props.drawingState.dataPopupPosition}
             isShown={this.props.drawingState.showDataPopup}>
-
-            <ShapeDataList shape={selectedShape} pictureResult={pictureResult} />
+            <ShapeDataList
+              picture={activePicture}
+              shape={selectedShape}
+              pictureResult={pictureResult} />
           </Popover>
-
         </div>
       </div>
     );
@@ -457,25 +503,19 @@ class App extends React.Component {
 }
 
 App.propTypes = {
-  drawingState: React.PropTypes.object,
-  instructions: React.PropTypes.array,
-  variables: React.PropTypes.array,
-  pending: React.PropTypes.bool,
-  errors: React.PropTypes.array
+  drawingState: React.PropTypes.object
 };
 
 App.defaultProps = {
-  instructions: []
 };
 
-let stores = [InstructionStore, DrawingStateStore, DataVariableStore];
+let stores = [PictureStore, DrawingStateStore];
+
 let propsAccessor = () => ({
-  drawingState: DrawingStateStore.getDrawingState(),
-  instructions: InstructionStore.getInstructions(),
-  variables: DataVariableStore.getVariables(),
-  pending: InstructionStore.getPending(),
-  errors: InstructionStore.getErrors()
+  pictures: PictureStore.getPictures(),
+  drawingState: DrawingStateStore.getDrawingState()
 });
+
 App = Flux.connect(App, stores, propsAccessor);
 
 

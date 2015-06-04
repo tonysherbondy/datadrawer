@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import classNames from 'classnames';
-import InstructionActions from '../../actions/InstructionActions';
+import PictureActions from '../../actions/PictureActions';
 import DrawingStateActions from '../../actions/DrawingStateActions';
 import InstructionTreeNode from '../../models/InstructionTreeNode';
 import LoopInstruction from '../../models/LoopInstruction';
@@ -28,7 +28,7 @@ class BlockInstructionItem extends React.Component {
     });
 
     let itemDescription = instruction.getUiSentence(
-      this.props.dataVariables,
+      this.props.picture,
       this.props.variableValues,
       this.props.shapeNameMap);
 
@@ -73,7 +73,7 @@ class InstructionItem extends React.Component {
     });
 
     let itemDescription = instruction.getUiSentence(
-      this.props.dataVariables,
+      this.props.picture,
       this.props.variableValues,
       this.props.shapeNameMap);
 
@@ -93,7 +93,7 @@ class InstructionItem extends React.Component {
 
 export default class InstructionList extends React.Component {
   removeInstruction(instruction) {
-    InstructionActions.removeInstruction(instruction);
+    PictureActions.removeInstruction(this.props.picture, instruction);
   }
 
   render() {
@@ -157,7 +157,7 @@ export default class InstructionList extends React.Component {
 
 InstructionList.propTypes = {
   shapeNameMap: React.PropTypes.object.isRequired,
-  dataVariables: React.PropTypes.array.isRequired,
+  picture: React.PropTypes.object.isRequired,
   instructions: React.PropTypes.array,
   variableValues: React.PropTypes.object
 };

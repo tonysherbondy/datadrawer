@@ -1,14 +1,51 @@
-import DrawCircleInstruction from '../models/DrawCircleInstruction';
 import DrawRectInstruction from '../models/DrawRectInstruction';
-import LoopInstruction from '../models/LoopInstruction';
 import ScaleInstruction from '../models/ScaleInstruction';
-import Expression from '../models/Expression';
-import DrawLineInstruction from '../models/DrawLineInstruction';
 import MoveInstruction from '../models/MoveInstruction';
+import LoopInstruction from '../models/LoopInstruction';
+import DrawLineInstruction from '../models/DrawLineInstruction';
 import DrawPathInstruction from '../models/DrawPathInstruction';
+import DrawCircleInstruction from '../models/DrawCircleInstruction';
 import RotateInstruction from '../models/RotateInstruction';
+import Expression from '../models/Expression';
+import DataVariable from '../models/DataVariable';
+import Picture from '../models/Picture';
 
-// Crazy scatterish plot
+let variables = [
+  new DataVariable({
+    id: 'd3',
+    name: 'gamma',
+    definition: [{id: 'd1'}, '+', {id: 'd2'}]
+  }),
+  new DataVariable({
+    id: 'd1',
+    name: 'alpha',
+    definition: ['42']
+  }),
+  new DataVariable({
+    id: 'd2',
+    name: 'beta',
+    definition: [{id: 'd1'}]
+  }),
+  new DataVariable({
+    id: 'sx',
+    name: 'sx',
+    isRow: true,
+    definition: ['[0.08, 0.32, 0.7, 0.97, 0.81, 0.44, 0.18, 0.24]']
+  }),
+  new DataVariable({
+    id: 'sy',
+    name: 'sy',
+    isRow: true,
+    definition: ['[0.27, 0.63, 0.93, 0.65, 0.42, 0.12, 0.2, 0.37]']
+  }),
+  new DataVariable({
+    id: 'swidth',
+    name: 'swidth',
+    isRow: true,
+    definition: ['[0.04, 0.04, 0.11, 0.1, 0.09, 0.1, 0.07, 0.1]']
+  })
+];
+
 const instructions = [
   new DrawCircleInstruction({
     id: 'i0',
@@ -175,4 +212,4 @@ const instructions = [
   })
 ];
 
-export default instructions;
+export default new Picture('scatter', instructions, variables);

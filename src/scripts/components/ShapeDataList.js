@@ -27,15 +27,16 @@ export default class ShapeDataList extends React.Component {
         if (expression.isColor()) {
           return (
             <ColorExpressionEditor
+              picture={this.props.picture}
               pictureResult={this.props.pictureResult}
-              onChange={this.handleDefinitionChange.bind(this, instruction, property)}
+              onChange={this.handleDefinitionChange.bind(this, this.props.picture, instruction, property)}
               definition={expression} />
           );
         } else {
           return (
             <ExpressionEditorAndScrub
-              onChange={this.handleDefinitionChange.bind(this, instruction, property)}
-              variables={this.props.pictureResult.dataVariables}
+              picture={this.props.picture}
+              onChange={this.handleDefinitionChange.bind(this, this.props.picture, instruction, property)}
               variableValues={this.props.pictureResult.variableValues}
               definition={expression} />
           );
@@ -61,10 +62,10 @@ export default class ShapeDataList extends React.Component {
   getDrawInstruction(id) {
     return this.props.pictureResult.getDrawInstructionForShapeId(id);
   }
-  handleDefinitionChange(instruction, property, definition) {
+  handleDefinitionChange(picture, instruction, property, definition) {
     let props = instruction.getCloneProps();
     props[property] = definition;
-    instruction.modifyInstructionWithProps(props);
+    instruction.modifyInstructionWithProps(picture, props);
   }
 }
 

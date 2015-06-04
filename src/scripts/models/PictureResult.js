@@ -4,15 +4,16 @@ import DrawCanvas from './DrawCanvas';
 import InstructionTreeNode from './InstructionTreeNode';
 import LoopInstruction from './LoopInstruction';
 import DrawInstruction from './DrawInstruction';
-import InstructionActions from '../actions/InstructionActions';
+import PictureActions from '../actions/PictureActions';
 
 // Transforms variables and instructions into shapes, values and javascript
 export default class PictureResult {
   constructor(props) {
-    this.dataVariables = props.dataVariables;
+    this.picture = props.picture;
+    this.instructions = props.picture.instructions;
+    this.dataVariables = props.picture.variables;
     this.currentInstruction = props.currentInstruction;
     this.currentLoopIndex = props.currentLoopIndex;
-    this.instructions = props.instructions;
     // Compute will assign shapes, variableValues and js
     let {shapes, variableValues, jsCode} = this._compute();
     this.shapes = shapes;
@@ -28,11 +29,11 @@ export default class PictureResult {
     // TODO We allow multiple looping levels, but other assumptions don't support that
     if (!this.currentInstruction) {
       // Just add it to the end of the top of the list
-      InstructionActions.addInstruction(instruction);
+      PictureActions.addInstruction(this.picture, instruction);
     } else {
       let {parent, index} = InstructionTreeNode.findParentWithIndex(this.instructions, this.currentInstruction);
       // Insert into the parent after the current index
-      InstructionActions.insertInstruction(instruction, index + 1, parent);
+      PictureActions.insertInstruction(this.picture, instruction, index + 1, parent);
     }
   }
 

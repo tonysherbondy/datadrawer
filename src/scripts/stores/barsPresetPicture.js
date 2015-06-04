@@ -6,8 +6,45 @@ import DrawTextInstruction from '../models/DrawTextInstruction';
 import DrawLineInstruction from '../models/DrawLineInstruction';
 import IfInstruction from '../models/IfInstruction';
 import Expression from '../models/Expression';
+import DataVariable from '../models/DataVariable';
+import Picture from '../models/Picture';
 
-// Bar Chart Plot
+let variables = [
+  // Bar Chart Data
+  new DataVariable({
+    id: 'numberEnergies',
+    name: 'number of energies',
+    definition: [{id: 'energy_in_mwh', asVector: true}, '.length']
+  }),
+  new DataVariable({
+    id: 'top_mwh',
+    name: 'Top MWh',
+    definition: ['40']
+  }),
+  new DataVariable({
+    id: 'max_energy_in_mwh',
+    name: 'Max energy in MWh',
+    definition: ['_.max(', {id: 'energy_in_mwh', asVector: true}, ')']
+  }),
+  new DataVariable({
+    id: 'barWidth',
+    name: 'barWidth',
+    definition: ['1 / ', {id: 'numberEnergies'}]
+  }),
+  new DataVariable({
+    id: 'energy_in_mwh',
+    name: 'Energy in MWh',
+    isRow: true,
+    definition: ['[7.2, 29.47, 26.50, 28.2, 0.61, 6.36, 10.32, 16.08, 18.6, 19.08, 18.6]']
+  }),
+  new DataVariable({
+    id: 'norm_energy_in_mwh',
+    name: 'Norm energy in MWh',
+    isRow: true,
+    definition: [{id: 'energy_in_mwh', asVector: true}, '.map(function(d) { return d / ', {id: 'top_mwh'}, '});']
+  })
+];
+
 const instructions = [
   new DrawRectInstruction({
     id: 'rect1',
@@ -81,4 +118,4 @@ const instructions = [
   })
 ];
 
-export default instructions;
+export default new Picture('bars', instructions, variables);

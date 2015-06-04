@@ -1,8 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import VariablePill from '../VariablePill';
-import DataVariableActions from '../../actions/DataVariableActions';
-import DataVariableStore from '../../stores/DataVariableStore';
+import PictureActions from '../../actions/PictureActions';
 import ExpressionEditorAndScrub from '../ExpressionEditorAndScrub';
 
 export default class DataTable extends React.Component {
@@ -40,7 +39,7 @@ export default class DataTable extends React.Component {
       return (
         <tr key={index}>
           <td key={0} className='table-name-col'>
-            <VariablePill variable={row} />
+            <VariablePill picture={this.props.picture} variable={row} />
           </td>
           {cells}
         </tr>
@@ -69,9 +68,9 @@ export default class DataTable extends React.Component {
     let variableValues = this.props.dataValues;
     return (
       <ExpressionEditorAndScrub
+        picture={this.props.picture}
         asVector={true}
         onChange={this.handleDefinitionChange.bind(this, variable)}
-        variables={variables}
         variableValues={variableValues}
         definition={variable.definition} />
     );
@@ -81,7 +80,7 @@ export default class DataTable extends React.Component {
     let newVariable = variable.cloneWithDefinition(newDefinition);
     // Make sure the new variable hasn't introduced cycle
     if (!newVariable.hasCycle(this.props.dataVariables)) {
-      DataVariableActions.modifyVariable(newVariable);
+      PictureActions.modifyVariable(this.props.picture, newVariable);
     } else {
       // Force rerender
       // TODO - Right now this is a hack, probably a better way to do this is to flash
@@ -99,11 +98,11 @@ export default class DataTable extends React.Component {
   }
 
   handleAddVariable() {
-    let variable = DataVariableStore.generateNewVariable({
+    let variable = this.props.picture.generateNewVariable({
       isRow: true,
       definition: '[42]'
     });
-    DataVariableActions.appendVariable(variable);
+    PictureActions.addVariable(this.props.picture, variable);
   }
 
 }

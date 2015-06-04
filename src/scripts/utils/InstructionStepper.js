@@ -66,9 +66,9 @@ let expandInstructions = function(instructionsList) {
 };
 
 export default class InstructionsStepper {
-  constructor(instructionsList, pictureResult) {
-    this.originalList = instructionsList;
-    this.expandedList = expandInstructions(instructionsList);
+  constructor(pictureResult) {
+    this.originalList = pictureResult.instructions;
+    this.expandedList = expandInstructions(this.originalList);
     this.pictureResult = pictureResult;
   }
 

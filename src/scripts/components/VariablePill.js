@@ -1,6 +1,6 @@
 import React from 'react';
 import ContentEditable from './ContentEditable';
-import DataVariableActions from '../actions/DataVariableActions';
+import PictureActions from '../actions/PictureActions';
 import DataVariable from '../models/DataVariable';
 
 export default class VariablePill extends React.Component {
@@ -22,7 +22,7 @@ export default class VariablePill extends React.Component {
         <ContentEditable
           className='variable-pill data-variable-name-editable'
           html={this.state.name}
-          onBlur={this.handleBlur.bind(this)}
+          onBlur={this.handleBlur.bind(this, this.props.picture)}
           onChange={this.handleNameChange.bind(this)} />
       );
     } else {
@@ -47,12 +47,12 @@ export default class VariablePill extends React.Component {
       `<span id="${VariablePill.cursorLocationId}"></span>`);
   }
 
-  handleBlur() {
+  handleBlur(picture) {
     this.setState({isEditingName: false});
     // Clone old variable and change name
     let newVariable = new DataVariable(this.props.variable);
     newVariable.name = this.state.name;
-    DataVariableActions.modifyVariable(newVariable);
+    PictureActions.modifyVariable(picture, newVariable);
   }
 
   handleDoubleClick() {

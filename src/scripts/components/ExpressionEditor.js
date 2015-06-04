@@ -85,7 +85,7 @@ export default class ExpressionEditor extends React.Component {
       if (_.isString(fragment)) {
         return escSpace(fragment);
       }
-      return VariablePill.getHtmlStringFromFragment(fragment, i, this.props.variables);
+      return VariablePill.getHtmlStringFromFragment(fragment, i, this.props.picture.variables);
     }).join('');
   }
 
@@ -315,6 +315,6 @@ ExpressionEditor.defaultProps = {
 ExpressionEditor.propTypes = {
   asVector: React.PropTypes.bool,
   variableValues: React.PropTypes.object.isRequired,
-  variables: React.PropTypes.array.isRequired,
+  picture: React.PropTypes.object.isRequired,
   definition: React.PropTypes.instanceOf(Expression).isRequired
 };
