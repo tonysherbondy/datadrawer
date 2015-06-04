@@ -1,5 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
+import Addons from 'react/addons';
+let {update} = Addons.addons;
 import DrawInstruction from './DrawInstruction';
 import InstructionActions from '../actions/InstructionActions';
 import Expression from './Expression';
@@ -107,25 +109,17 @@ export default class DrawPathInstruction extends DrawInstruction {
   }
 
   handleToXChange(index, definition) {
-    console.log('handle x change', definition);
+    let setUpdate = {};
+    setUpdate[index] = {x: {$set: definition}};
+    let props = update(this.getCloneProps(), {to: setUpdate});
+    this.modifyInstructionWithProps(props);
   }
 
   handleToYChange(index, definition) {
-    console.log('handle y change', definition);
+    let setUpdate = {};
+    setUpdate[index] = {y: {$set: definition}};
+    let props = update(this.getCloneProps(), {to: setUpdate});
+    this.modifyInstructionWithProps(props);
   }
 
-  //getUiSentence(variables, variableValues) {
-    //let allTosUi = this.to.map(to => {
-      //if (to.id) {
-      //return `to (to.id)`;
-      //}
-      //return `to (${to.x}, ${to.y})`;
-    //});
-    //return (
-      //<span className='instruction-sentence'>
-        //{this.getFromUi(variableValues.shapes)}
-        //{' ' + allTosUi.join(' ')}
-      //</span>
-    //);
-  //}
 }
