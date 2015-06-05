@@ -26,7 +26,6 @@
   cursor: pointer;
 }
 
-
 .top-bar {
   border-width: 0 0 1px 0;
   border-style: solid;
@@ -174,7 +173,7 @@ td, th {
   margin-right: 5px;
 }
 
-.dataVariables-list {
+.dataVariables-list, .shape-data-list {
   font-size: 10;
   list-style-type: none;
   padding: 0px 0px 0px 20px;

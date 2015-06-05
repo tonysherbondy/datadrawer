@@ -61,6 +61,13 @@ export default class PictureResult {
     return this.getShapeByIdAndIndex(id, this.currentLoopIndex);
   }
 
+  getDrawInstructionForShapeId(shapeId) {
+    return InstructionTreeNode.find(this.instructions, i => {
+      // TODO may need to account for looping
+      return i instanceof DrawInstruction && i.shapeId === shapeId;
+    });
+  }
+
   isVisibleToCurrentIndex(shape) {
     return this.isVisibleToIndex(this.currentLoopIndex, shape);
   }

@@ -438,8 +438,10 @@ class App extends React.Component {
           </div>
 
           <Popover
+            shape={selectedShape}
+            pictureResult={pictureResult}
             position={this.props.drawingState.dataPopupPosition}
-            show={this.props.drawingState.showDataPopup} />
+            isShown={this.props.drawingState.showDataPopup} />
 
         </div>
       </div>
