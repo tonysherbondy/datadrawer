@@ -24,7 +24,7 @@ export default class Popover extends React.Component {
       let name = `${instructionName}'s ${property}`;
       let id = `${instruction.id}_${property}`;
       let variable = {id, name};
-      let value = 'hello';
+      let value = shape[property];
       return (
         <li className='shape-data-list-item' key={property}>
           <VariablePill variable={variable} />
