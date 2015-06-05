@@ -220,8 +220,8 @@ class Canvas extends React.Component {
         if (mode === 'normal') {
           // Show a popup for changing data about the shape
           DrawingStateActions.showDataPopup({
-            left: event.screenX,
-            top: event.screenY
+            left: event.pageX + 10,
+            top: event.pageY + 10
           });
         }
 

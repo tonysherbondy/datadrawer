@@ -11,7 +11,10 @@ export default class Popover extends React.Component {
     });
     return (
       <div className={cName} style={this.props.position}>
-        <div className="close-x" onClick={this.handleClose.bind(this)}>X</div>
+        <div className="left-panel-header">Data</div>
+        <i
+          onClick={this.handleClose.bind(this)}
+          className="close-x fa fa-times"></i>
         Dat popover do
       </div>
     );

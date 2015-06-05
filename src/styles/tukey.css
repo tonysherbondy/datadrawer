@@ -229,17 +229,16 @@ td, th {
 /* popover */
 .popover {
   position: absolute;
-  left: 100px;
-  top: 200px;
   width: 300px;
   height: 300px;
-  background-color: darkgray;
+  background-color: rgb(244, 244, 244);
+  box-shadow: 3px 3px 10px darkgray;
 }
 
 .close-x {
   position: absolute;
   right: 10px;
-  top: 0px;
+  top: 5px;
   cursor: pointer;
 }
 
