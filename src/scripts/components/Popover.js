@@ -6,6 +6,7 @@ import PictureResult from '../models/PictureResult';
 import VariablePill from './VariablePill';
 import ExpressionEditorAndScrub from './ExpressionEditorAndScrub';
 
+// TODO - Refactor into popover + contents
 export default class Popover extends React.Component {
 
   renderShapeData() {
@@ -14,6 +15,9 @@ export default class Popover extends React.Component {
       return 'No shape selected.';
     }
     let instruction = this.getDrawInstruction(shape.id);
+    if (!instruction) {
+      return 'Cannot modify shape.';
+    }
     let instructionName = instruction.name;
     let props = ['strokeWidth', 'stroke', 'fill'];
     let propsUi = props.map(property => {
@@ -67,7 +71,9 @@ export default class Popover extends React.Component {
   }
 
   handleDefinitionChange(instruction, property, definition) {
-    console.log('handle definition', definition);
+    let props = instruction.getCloneProps();
+    props[property] = definition;
+    instruction.modifyInstructionWithProps(props);
   }
 
 }
