@@ -8,7 +8,9 @@ let drawingState = {
   selectedShapeId: null,
   selectedInstructions: null,
   currentLoopIndex: null,
-  editingInstructionId: null
+  editingInstructionId: null,
+  dataPopupPosition: null,
+  showDataPopup: false
 };
 
 function resetState() {
@@ -49,6 +51,17 @@ const DrawingStateStore = biff.createStore({
 }, (payload) => {
 
   switch (payload.actionType) {
+    case 'SHOW_DATA_POPUP': {
+      drawingState.dataPopupPosition = payload.data;
+      drawingState.showDataPopup = true;
+      DrawingStateStore.emitChange();
+      break;
+    }
+    case 'HIDE_DATA_POPUP': {
+      drawingState.showDataPopup = false;
+      DrawingStateStore.emitChange();
+      break;
+    }
     case 'SET_DRAWING_MODE': {
       drawingState.mode = payload.data;
       if (drawingState.mode === 'normal') {

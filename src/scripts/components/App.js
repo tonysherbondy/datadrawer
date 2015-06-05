@@ -25,6 +25,7 @@ import DataTable from './instructions/DataTable';
 import InstructionTitle from './instructions/InstructionTitle';
 import InstructionCode from './instructions/InstructionCode';
 import Canvas from './drawing/Canvas';
+import Popover from './Popover';
 
 class App extends React.Component {
   constructor(props) {
@@ -382,7 +383,7 @@ class App extends React.Component {
     }, {scalars: [], vectors: []});
 
     return (
-      <div onKeyDown={this.handleKeyPress} className='main'>
+      <div className='main'>
         <div className='top-bar'>
           <h1>Tukey App</h1>
           <button onClick={this.handlePresetClick.bind(this, 'rando')}>Rando</button>
@@ -435,6 +436,11 @@ class App extends React.Component {
                 code={pictureResult.jsCode} />
             </div>
           </div>
+
+          <Popover
+            position={{top: 100, left: 10}}
+            show={this.props.drawingState.showDataPopup} />
+
         </div>
       </div>
     );

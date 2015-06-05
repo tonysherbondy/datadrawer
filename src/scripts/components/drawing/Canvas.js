@@ -217,6 +217,11 @@ class Canvas extends React.Component {
       let shape = this.props.selectedShape;
       if (closeControlPoint && shape) {
         let mode = this.props.drawingState.mode;
+        if (mode === 'normal') {
+          // Show a popup for changing data about the shape
+          DrawingStateActions.showDataPopup();
+        }
+
         if (mode === 'scale') {
           let props = shape.getAdjustProps(mode, closeControlPoint, point);
           if (props) {
@@ -226,6 +231,7 @@ class Canvas extends React.Component {
             this.props.pictureResult.insertNewInstructionAfterCurrent(new ScaleInstruction(props));
           }
         }
+
         if (mode === 'move') {
           let props = {
             id: InstructionTreeNode.getNextInstructionId(this.props.instructions),

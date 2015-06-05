@@ -41,6 +41,20 @@ const DrawingStateActions = biff.createActions({
       actionType: 'SET_SELECTED_SHAPE',
       data: {id}
     });
+  },
+
+  showDataPopup(position) {
+    this.dispatch({
+      actionType: 'SHOW_DATA_POPUP',
+      data: position
+    });
+  },
+
+  hideDataPopup() {
+    this.dispatch({
+      actionType: 'HIDE_DATA_POPUP',
+      data: null
+    });
   }
 });
 
