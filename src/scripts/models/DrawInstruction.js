@@ -1,6 +1,7 @@
 import React from 'react';
 import Instruction from './Instruction';
 import ContentEditable from '../components/ContentEditable';
+import Expression from './Expression';
 
 export default class DrawInstruction extends Instruction {
   constructor(props) {
@@ -13,17 +14,17 @@ export default class DrawInstruction extends Instruction {
     this.toMagnets = props.toMagnets;
     this.isGuide = !!props.isGuide;
     this.name = props.name;
-    this.strokeWidth = props.strokeWidth || 1;
-    this.stroke = props.stroke || 'black';
-    this.fill = props.fill || 'rgba(0, 0, 0, 0.2)';
+    this.strokeWidth = props.strokeWidth || new Expression(1);
+    this.stroke = props.stroke || new Expression(`'black'`);
+    this.fill = props.fill || new Expression(`'rgba(0, 0, 0, 0.2)'`);
   }
 
   getPropsJs(index) {
     return super.getPropsJs(index).concat([
      `name: '${this.name}'`,
-     `fill: '${this.fill}'`,
-     `stroke: '${this.stroke}'`,
-     `strokeWidth: ${this.strokeWidth}`,
+     `fill: ${this.fill.getJsCode(index)}`,
+     `stroke: ${this.stroke.getJsCode(index)}`,
+     `strokeWidth: ${this.strokeWidth.getJsCode(index)}`,
      `isGuide: ${this.isGuide}`
     ]);
   }

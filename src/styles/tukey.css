@@ -186,7 +186,7 @@ td, th {
   user-select: none;
 }
 
-.dataVariable-value {
+.dataVariable-value, .shape-data-value {
   display: inline-block;
   color: darkgray;
   margin-left: 10px;

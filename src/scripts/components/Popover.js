@@ -4,6 +4,7 @@ import DrawingStateActions from '../actions/DrawingStateActions';
 import Shape from '../models/shapes/Shape';
 import PictureResult from '../models/PictureResult';
 import VariablePill from './VariablePill';
+import ExpressionEditorAndScrub from './ExpressionEditorAndScrub';
 
 export default class Popover extends React.Component {
 
@@ -19,10 +20,18 @@ export default class Popover extends React.Component {
       let name = `${instructionName}'s ${property}`;
       let id = `${instruction.id}_${property}`;
       let variable = {id, name};
+      let value = 'hello';
       return (
         <li className='shape-data-list-item' key={property}>
           <VariablePill variable={variable} />
-          {instruction[property]}
+          <ExpressionEditorAndScrub
+            onChange={this.handleDefinitionChange.bind(this, instruction, property)}
+            variables={this.props.pictureResult.dataVariables}
+            variableValues={this.props.pictureResult.variableValues}
+            definition={instruction[property]} />
+          <div className='shape-data-value'>
+            {value}
+          </div>
         </li>
       );
     });
@@ -55,6 +64,10 @@ export default class Popover extends React.Component {
 
   handleClose() {
     DrawingStateActions.hideDataPopup();
+  }
+
+  handleDefinitionChange(instruction, property, definition) {
+    console.log('handle definition', definition);
   }
 
 }
