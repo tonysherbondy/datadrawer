@@ -219,7 +219,10 @@ class Canvas extends React.Component {
         let mode = this.props.drawingState.mode;
         if (mode === 'normal') {
           // Show a popup for changing data about the shape
-          DrawingStateActions.showDataPopup();
+          DrawingStateActions.showDataPopup({
+            left: event.screenX,
+            top: event.screenY
+          });
         }
 
         if (mode === 'scale') {

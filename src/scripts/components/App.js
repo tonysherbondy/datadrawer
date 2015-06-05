@@ -438,7 +438,7 @@ class App extends React.Component {
           </div>
 
           <Popover
-            position={{top: 100, left: 10}}
+            position={this.props.drawingState.dataPopupPosition}
             show={this.props.drawingState.showDataPopup} />
 
         </div>
