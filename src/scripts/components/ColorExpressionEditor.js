@@ -2,6 +2,7 @@ import React from 'react';
 import Expression from '../models/Expression';
 import PictureResult from '../models/PictureResult';
 import Popover from './Popover';
+import ColorPicker from './ColorPicker';
 
 export default class ColorExpressionEditor extends React.Component {
   constructor(props) {
@@ -22,10 +23,14 @@ export default class ColorExpressionEditor extends React.Component {
           handleClose={this.handlePopoverClose.bind(this)}
           position={this.state.popoverPosition}
           isShown={this.state.isPopoverShown}>
-          Color Popover
+          <ColorPicker color={color} handleChange={this.handleColorChange.bind(this)} />
         </Popover>
       </div>
     );
+  }
+
+  handleColorChange(color) {
+    console.log('handle color change', color);
   }
 
   handleClick() {

@@ -227,8 +227,6 @@ td, th {
 /* popover */
 .popover {
   position: absolute;
-  width: 300px;
-  height: 300px;
   background-color: rgb(244, 244, 244);
   box-shadow: 3px 3px 10px darkgray;
 }

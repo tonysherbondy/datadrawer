@@ -25,13 +25,15 @@ module.exports = {
     noParse: [
       /\/babel-core\/browser-polyfill\.js$/
     ],
-    preLoaders: [
-      {
-        test: /\.jsx?$/,
-        loader: 'eslint',
-        include: path.join(__dirname, 'src')
-      }
-    ],
+    preLoaders: [{
+      test: /\.jsx?$/,
+      loader: 'eslint',
+      include: path.join(__dirname, 'src')
+    }, {
+      test: /\.jsx?$/,
+      loaders: ['babel'],
+      include: path.join(__dirname, 'node_modules', 'react-colorpickr')
+    }],
     loaders: [{
       test: /\.jsx?$/,
       loaders: ['react-hot', 'babel'],
