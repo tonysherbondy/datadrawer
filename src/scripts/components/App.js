@@ -26,6 +26,7 @@ import InstructionTitle from './instructions/InstructionTitle';
 import InstructionCode from './instructions/InstructionCode';
 import Canvas from './drawing/Canvas';
 import Popover from './Popover';
+import ShapeDataList from './ShapeDataList';
 
 class App extends React.Component {
   constructor(props) {
@@ -438,14 +439,20 @@ class App extends React.Component {
           </div>
 
           <Popover
-            shape={selectedShape}
-            pictureResult={pictureResult}
+            handleClose={this.handlePopoverClose.bind(this)}
             position={this.props.drawingState.dataPopupPosition}
-            isShown={this.props.drawingState.showDataPopup} />
+            isShown={this.props.drawingState.showDataPopup}>
+
+            <ShapeDataList shape={selectedShape} pictureResult={pictureResult} />
+          </Popover>
 
         </div>
       </div>
     );
+  }
+
+  handlePopoverClose() {
+    DrawingStateActions.hideDataPopup();
   }
 }
 
