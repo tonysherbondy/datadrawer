@@ -15,7 +15,7 @@ export default class DrawInstruction extends Instruction {
     this.isGuide = !!props.isGuide;
     this.name = props.name;
     this.strokeWidth = props.strokeWidth || new Expression(1);
-    this.stroke = props.stroke || new Expression(`'black'`);
+    this.stroke = props.stroke || new Expression(`'#000000'`);
     this.fill = props.fill || new Expression(`'rgba(0, 0, 0, 0.2)'`);
   }
 

@@ -241,3 +241,10 @@ td, th {
   cursor: pointer;
 }
 
+.color-expression-editor {
+  display: inline-block;
+  cursor: pointer;
+  width: 10px;
+  height: 10px;
+}
+

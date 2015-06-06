@@ -5,6 +5,7 @@ import Shape from '../models/shapes/Shape';
 import PictureResult from '../models/PictureResult';
 import VariablePill from './VariablePill';
 import ExpressionEditorAndScrub from './ExpressionEditorAndScrub';
+import ColorExpressionEditor from './ColorExpressionEditor';
 
 // TODO - Refactor into popover + contents
 export default class Popover extends React.Component {
@@ -25,14 +26,27 @@ export default class Popover extends React.Component {
       let id = `${instruction.id}_${property}`;
       let variable = {id, name};
       let value = shape[property];
+      let getExpressionEditor = expression => {
+        if (expression.isColor()) {
+          return (
+            <ColorExpressionEditor
+              pictureResult={this.props.pictureResult}
+              definition={expression} />
+          );
+        } else {
+          return (
+            <ExpressionEditorAndScrub
+              onChange={this.handleDefinitionChange.bind(this, instruction, property)}
+              variables={this.props.pictureResult.dataVariables}
+              variableValues={this.props.pictureResult.variableValues}
+              definition={expression} />
+          );
+        }
+      };
       return (
         <li className='shape-data-list-item' key={property}>
           <VariablePill variable={variable} />
-          <ExpressionEditorAndScrub
-            onChange={this.handleDefinitionChange.bind(this, instruction, property)}
-            variables={this.props.pictureResult.dataVariables}
-            variableValues={this.props.pictureResult.variableValues}
-            definition={instruction[property]} />
+          {getExpressionEditor(instruction[property])}
           <div className='shape-data-value'>
             {value}
           </div>

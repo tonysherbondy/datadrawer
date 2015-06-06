@@ -33,6 +33,15 @@ export default class Expression {
     }
   }
 
+  isColor() {
+    let isRGB = f => f.slice(1, 4) === 'rgb';
+    let isHex = f => f.length === 9 && f[1] === '#';
+    let fragment = _.first(this.fragments);
+    return this.fragments.length === 1 &&
+           _.isString(fragment) &&
+           (isRGB(fragment) || isHex(fragment));
+  }
+
   normalizeFragments(fragments) {
     // Can only be strings or objects with id
     return fragments.map(f => {
