@@ -30,7 +30,19 @@ export default class ColorExpressionEditor extends React.Component {
   }
 
   handleColorChange(color) {
-    console.log('handle color change', color);
+
+    // Only update the app if the expression is valid
+    let {r, g, b, a} = color;
+    a = a / 100;
+    let colorFragment = `'rgba(${r}, ${g}, ${b}, ${a})'`;
+    let newExpression = new Expression(colorFragment);
+    let value = newExpression.evaluate(this.props.pictureResult.variableValues);
+    if (value instanceof Error) {
+      console.log('Invalid Expression', value.message);
+    } else {
+      this.props.onChange(newExpression);
+    }
+
   }
 
   handleClick() {
@@ -47,6 +59,7 @@ export default class ColorExpressionEditor extends React.Component {
 }
 
 ColorExpressionEditor.propTypes = {
+  onChange: React.PropTypes.func.isRequired,
   definition: React.PropTypes.instanceOf(Expression).isRequired,
   pictureResult: React.PropTypes.instanceOf(PictureResult).isRequired
 };

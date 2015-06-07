@@ -10,7 +10,7 @@ export default class ColorPicker extends React.Component {
         <ReactColorPicker
           reset={true}
           value={this.props.color}
-          onChange={this.handleChange} />
+          onChange={this.props.handleChange} />
       </div>
     );
   }

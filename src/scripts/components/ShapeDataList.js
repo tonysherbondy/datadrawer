@@ -28,6 +28,7 @@ export default class ShapeDataList extends React.Component {
           return (
             <ColorExpressionEditor
               pictureResult={this.props.pictureResult}
+              onChange={this.handleDefinitionChange.bind(this, instruction, property)}
               definition={expression} />
           );
         } else {

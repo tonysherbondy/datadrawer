@@ -1,6 +1,7 @@
 var React = require('react');
 var colorParser = require('csscolorparser').parseCSSColor;
 
+// TODO - Remove use of localStorage
 //var store = require('store');
 var store = {get: function() {}, set: function() {}};
 
