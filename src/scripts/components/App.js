@@ -205,7 +205,10 @@ class App extends React.Component {
         });
 
         // Insert loop instruction before previous instruction index
-        PictureActions.insertInstruction(activePicture, instruction, index, parent);
+        // TODO - need to grab the new activePicture because the one we were pointing to before has changed
+        // since we removed the pictures, really this needs to be done with a replace operation because otherwise we
+        // should wait async for the return of the remove
+        PictureActions.insertInstruction(this.props.drawingState.activePicture, instruction, index, parent);
         // We need to set the drawing mode to normal because we don't want to edit the newly inserted instruction
         DrawingStateActions.setDrawingMode('normal');
         break;
