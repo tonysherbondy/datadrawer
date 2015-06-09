@@ -207,34 +207,47 @@ class Canvas extends React.Component {
       let shape = this.props.selectedShape;
       if (closeControlPoint && shape) {
         let mode = this.props.drawingState.mode;
-        if (mode === 'normal') {
-          // Show a popup for changing data about the shape
-          DrawingStateActions.showDataPopup({
-            left: event.pageX + 10,
-            top: event.pageY + 10
-          });
-        }
-
-        if (mode === 'scale') {
-          let props = shape.getAdjustProps(mode, closeControlPoint, point);
-          if (props) {
-            props.id = InstructionTreeNode.getNextInstructionId(instructions);
-            this.setState({startPoint: closeControlPoint});
-            this.props.pictureResult.insertNewInstructionAfterCurrent(new ScaleInstruction(props));
+        switch(mode) {
+          case 'normal': {
+            // Show a popup for changing data about the shape
+            DrawingStateActions.showDataPopup({
+              left: event.pageX + 10,
+              top: event.pageY + 10
+            });
+            break;
           }
-        }
-
-        if (mode === 'move') {
-          let props = {
-            id: InstructionTreeNode.getNextInstructionId(instructions),
-            point: closeControlPoint.pointName,
-            shape: {id: closeControlPoint.shapeId},
-            x: new Expression(point.x - closeControlPoint.x),
-            y: new Expression(point.y - closeControlPoint.y)
-          };
-          this.setState({startPoint: closeControlPoint});
-          this.props.pictureResult.insertNewInstructionAfterCurrent(new MoveInstruction(props));
-
+          case 'scale': {
+            let props = shape.getAdjustProps(mode, closeControlPoint, point);
+            if (props) {
+              props.id = InstructionTreeNode.getNextInstructionId(instructions);
+              this.setState({startPoint: closeControlPoint});
+              this.props.pictureResult.insertNewInstructionAfterCurrent(new ScaleInstruction(props));
+            }
+            break;
+          }
+          case 'rotate': {
+            console.log('should rotate');
+            //let props = shape.getAdjustProps(mode, closeControlPoint, point);
+            //if (props) {
+              //props.id = InstructionTreeNode.getNextInstructionId(this.props.instructions);
+              //this.state.startPoint = closeControlPoint;
+              //this.setState(this.state);
+              //this.props.pictureResult.insertNewInstructionAfterCurrent(new ScaleInstruction(props));
+            //}
+            break;
+          }
+          case 'move': {
+            let props = {
+              id: InstructionTreeNode.getNextInstructionId(instructions),
+              point: closeControlPoint.pointName,
+              shape: {id: closeControlPoint.shapeId},
+              x: new Expression(point.x - closeControlPoint.x),
+              y: new Expression(point.y - closeControlPoint.y)
+            };
+            this.setState({startPoint: closeControlPoint});
+            this.props.pictureResult.insertNewInstructionAfterCurrent(new MoveInstruction(props));
+            break;
+          }
         }
       }
     }

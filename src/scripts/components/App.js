@@ -234,6 +234,17 @@ class App extends React.Component {
     });
 
     manager = manager.registerHandler({
+      keyCode: 69,
+      keyDescription: 'e',
+      description: 'rotate',
+      group: 'adjust',
+      keyDown: () => {
+        DrawingStateActions.setDrawingMode('rotate');
+        console.log('Should be doing rotation');
+      }
+    });
+
+    manager = manager.registerHandler({
       keyCode: 76,
       keyDescription: 'l',
       description: 'loop',
