@@ -13,24 +13,15 @@ class Canvas extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      magnets: this.getMagnets(props),
       closeMagnet: null,
-      selectedShapePoints: null,
       startPoint: null
     };
   }
 
-  componentWillReceiveProps(newProps) {
-    if (newProps) {
-      this.state.magnets = this.getMagnets(newProps);
-      this.state.selectedShapePoints = this.getSelectedShapePoints(newProps);
-      this.setState(this.state);
-    }
-  }
-
-  getMagnets({editingInstruction}) {
+  getMagnets() {
     // All shapes that are not the current editing shape
     // have magnets
+    let {editingInstruction, pictureResult} = this.props;
     if (!editingInstruction || editingInstruction instanceof ScaleInstruction) {
       // Only draw magnets when we are currently drawing
       // Also, no magnets for scale
@@ -38,14 +29,14 @@ class Canvas extends React.Component {
     }
 
     let editingId = editingInstruction.shapeId;
-    let {pictureResult} = this.props;
     let magnets = pictureResult.getAllShapesForCurrentLoopIndex()
                   .filter(shape => shape.id !== editingId)
                   .map(shape => shape.getMagnets());
     return _.flatten(magnets);
   }
 
-  getSelectedShapePoints({selectedShape}) {
+  getSelectedShapePoints() {
+    let {selectedShape} = this.props;
     if (!selectedShape) {
       return null;
     }
@@ -61,11 +52,11 @@ class Canvas extends React.Component {
   }
 
   getCloseMagnets(point, threshold = 20) {
-    return this.getClosePoints(point, this.state.magnets, threshold);
+    return this.getClosePoints(point, this.getMagnets(), threshold);
   }
 
   getCloseSelectedShapePoint(point, threshold = 5) {
-    return this.getClosePoints(point, this.state.selectedShapePoints, threshold);
+    return this.getClosePoints(point, this.getSelectedShapePoints(), threshold);
   }
 
   getEditingShape() {
@@ -113,7 +104,7 @@ class Canvas extends React.Component {
         <circle key={id} className='magnet' r='5' cx={magnet.x} cy={magnet.y} />
       );
     };
-    return this.state.magnets.map(drawMagnet);
+    return this.getMagnets().map(drawMagnet);
   }
 
   drawCloseMagnetShapeOutline() {
@@ -133,19 +124,14 @@ class Canvas extends React.Component {
         <circle key={id} className='control-point' r='5' cx={point.x} cy={point.y} />
       );
     };
-    return (this.state.selectedShapePoints || []).map(drawControlPoint);
+    return (this.getSelectedShapePoints() || []).map(drawControlPoint);
   }
 
   handleMouseMove(event) {
     let {x, y} = this.getPositionOfEvent(event);
     let magnets = this.getCloseMagnets({x, y});
-    if (magnets.length > 0) {
-      this.state.closeMagnet = magnets[0];
-      this.setState(this.state);
-    } else {
-      this.state.closeMagnet = null;
-      this.setState(this.state);
-    }
+    // Can just set to first because it is protected from out of bound lookup
+    this.setState({closeMagnet: _.first(magnets) || null});
 
     let picture = this.props.drawingState.activePicture;
     let instruction = this.props.editingInstruction;
@@ -233,8 +219,7 @@ class Canvas extends React.Component {
           let props = shape.getAdjustProps(mode, closeControlPoint, point);
           if (props) {
             props.id = InstructionTreeNode.getNextInstructionId(instructions);
-            this.state.startPoint = closeControlPoint;
-            this.setState(this.state);
+            this.setState({startPoint: closeControlPoint});
             this.props.pictureResult.insertNewInstructionAfterCurrent(new ScaleInstruction(props));
           }
         }
@@ -247,10 +232,7 @@ class Canvas extends React.Component {
             x: new Expression(point.x - closeControlPoint.x),
             y: new Expression(point.y - closeControlPoint.y)
           };
-          this.state.startPoint = closeControlPoint;
-          this.setState(this.state);
-          // TODO - for some reason I can't do the below setState??
-          //this.setState({startPoint: closeControlPoint});
+          this.setState({startPoint: closeControlPoint});
           this.props.pictureResult.insertNewInstructionAfterCurrent(new MoveInstruction(props));
 
         }

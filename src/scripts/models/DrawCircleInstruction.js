@@ -77,7 +77,7 @@ export default class DrawCircleInstruction extends DrawInstruction {
         , with radius
         <ExpressionEditorAndScrub
           picture={picture}
-          onChange={this.handleRadiusChange.bind(picture, this)}
+          onChange={this.handleRadiusChange.bind(this, picture)}
           variableValues={variableValues}
           definition={this.radius} />
       </span>
