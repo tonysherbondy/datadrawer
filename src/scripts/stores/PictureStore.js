@@ -9,6 +9,12 @@ let pictures = OrderedMap();
 pictures = pictures.set(barsPicture.id, barsPicture);
 pictures = pictures.set(scatterPicture.id, scatterPicture);
 
+if (pictures.size === 0) {
+  // Can't have an empty picture list as we always need one picture
+  let p = new Picture(guid(), [], []);
+  pictures = pictures.set(p.id, p);
+}
+
 const PictureStore = biff.createStore({
   getPictures() {
     return pictures.valueSeq().toArray();

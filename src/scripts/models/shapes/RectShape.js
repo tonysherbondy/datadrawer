@@ -221,6 +221,10 @@ export default class RectShape extends Shape {
       let oppV = opp[axis];
       let startV = startPoint[axis];
       let roundTo = Math.round((toV - oppV) / (startV - oppV) * 100) / 100;
+      // Only support positive scales
+      if (roundTo < 0) {
+        roundTo = 0;
+      }
       return {
         prop,
         to: new Expression(roundTo)
