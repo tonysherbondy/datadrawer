@@ -45,6 +45,9 @@ export default class ContentEditable extends React.Component {
   }
 
   handleKeyDown(evt) {
+    if (this.props.onKeyDown) {
+      this.props.onKeyDown(evt);
+    }
     // Don't let this bubble to app that is listening for key presses
     evt.stopPropagation();
   }

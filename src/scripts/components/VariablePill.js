@@ -23,7 +23,8 @@ export default class VariablePill extends React.Component {
           ref="theContentEditable"
           className='variable-pill data-variable-name-editable'
           html={this.state.name}
-          onBlur={this.handleBlur.bind(this, this.props.picture)}
+          onKeyDown={this.handleKeyDown.bind(this)}
+          onBlur={this.handleBlur.bind(this)}
           onChange={this.handleNameChange.bind(this)} />
       );
     } else {
@@ -48,12 +49,8 @@ export default class VariablePill extends React.Component {
       `<span id="${VariablePill.cursorLocationId}"></span>`);
   }
 
-  handleBlur(picture) {
+  handleBlur() {
     this.setState({isEditingName: false});
-    // Clone old variable and change name
-    let newVariable = new DataVariable(this.props.variable);
-    newVariable.name = this.state.name;
-    PictureActions.modifyVariable(picture, newVariable);
   }
 
   handleDoubleClick() {
@@ -62,8 +59,20 @@ export default class VariablePill extends React.Component {
     });
   }
 
+  handleKeyDown(evt) {
+    if (evt.which === 13) {
+      // Cancel editing on enter key press
+      this.setState({isEditingName: false});
+    }
+  }
+
   handleNameChange(evt) {
-    this.setState({name: evt.target.value});
+    let name = evt.target.value;
+    this.setState({name});
+    // Clone old variable and change name
+    let newVariable = new DataVariable(this.props.variable);
+    newVariable.name = name;
+    PictureActions.modifyVariable(this.props.picture, newVariable);
   }
 
 }
