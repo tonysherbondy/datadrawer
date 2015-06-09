@@ -99,7 +99,7 @@ export default class DrawInstruction extends Instruction {
       pointUi = `(${this.from.x}, ${this.from.y})`;
     }
     return (
-      <span>Draw {this.getNameEditable()} from {pointUi}</span>
+      <span>Draw {this.getNameEditable(picture)} from {pointUi}</span>
     );
   }
 

@@ -9,7 +9,7 @@ export default class ScaleInstruction extends AdjustInstruction {
   }
 
   modifyInstructionWithProps(picture, props) {
-    PictureActions.modifyInstruction(new ScaleInstruction(props));
+    PictureActions.modifyInstruction(picture, new ScaleInstruction(props));
   }
 
   getCloneWithTo(to) {
