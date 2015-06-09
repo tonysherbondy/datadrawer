@@ -31,9 +31,9 @@ function setSelectedInstructions(selectedInstructions) {
   if (!isInLoop) {
     drawingState.currentLoopIndex = null;
   } else {
-    // TODO (nhan): we need to do something more sophisticated here like change
-    // the currentLoopIndex only if it is null or out of bounds
-    drawingState.currentLoopIndex = 0;
+    // If we did not have a valid index before set it to zero, otherwise leave it alone
+    let {currentLoopIndex} = drawingState;
+    drawingState.currentLoopIndex = _.isNumber(currentLoopIndex) ? currentLoopIndex : 0;
   }
 
   drawingState.selectedInstructions = selectedInstructions;
