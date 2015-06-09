@@ -149,6 +149,27 @@
   background: #d0f0ff;
 }
 
+.keyboard-controls-list {
+  float: right;
+  padding: 10px;
+}
+
+.keyboard-control-description {
+  text-align: right;
+  width: 150px;
+}
+
+.keyboard-control-key {
+  width: 50px;
+  text-align: left;
+}
+
+
+
+.active-key {
+  background: #d0f0ff;
+}
+
 /* table */
 td, th {
   width: 100px;

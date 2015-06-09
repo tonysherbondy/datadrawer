@@ -22,10 +22,13 @@ const DrawingStateActions = biff.createActions({
     });
   },
 
-  setSelectedInstruction(instruction) {
+  setSelectedInstruction(instruction, loopIndex) {
     this.dispatch({
       actionType: 'SET_SELECTED_INSTRUCTION',
-      data: instruction
+      data: instruction,
+      // TODO: (nhan) this is perf hack for now so that we don't rerender
+      // everytime we step forward  inside a loop
+      loopIndex: loopIndex
     });
   },
 

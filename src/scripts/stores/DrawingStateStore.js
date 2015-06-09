@@ -97,6 +97,12 @@ const DrawingStateStore = biff.createStore({
     }
     case 'SET_SELECTED_INSTRUCTION': {
       setSelectedInstructions([payload.data]);
+      // TODO: (nhan) this is a perf hack for now so that we don't emit
+      // multiple changes in case we need to set both (e.g. when stepping
+      // to next instruction inside a loop);
+      if (payload.loopIndex) {
+        drawingState.currentLoopIndex = payload.loopIndex;
+      }
       DrawingStateStore.emitChange();
       break;
     }

@@ -17,7 +17,9 @@ import InstructionTreeNode from '../models/InstructionTreeNode';
 import LoopInstruction from '../models/LoopInstruction';
 import PictureResult from '../models/PictureResult';
 import InstructionStepper from '../utils/InstructionStepper';
+import KeyEventManager from '../utils/KeyEventManager';
 
+import KeyboardControlsList from './KeyboardControlsList';
 import InstructionList from './instructions/InstructionList';
 import DataVariableList from './instructions/DataVariableList';
 import DataTable from './instructions/DataTable';
@@ -38,6 +40,7 @@ class App extends React.Component {
 
     this.state = this._stateForProps(props);
     this.state.isDebugging = false;
+    this.keyEventManager = this._registerKeyEvents(new KeyEventManager());
   }
 
   componentWillReceiveProps(nextProps) {
@@ -58,55 +61,57 @@ class App extends React.Component {
     return { pictureResult, stepper };
   }
 
-  selectNextShape() {
-    // Get all available shape ids
-    let shapes = this.state.pictureResult.getAllShapesForLoopIndex(this.props.drawingState.currentLoopIndex);
-    let {selectedShapeId} = this.props.drawingState;
-
-    // If the selectedShape wasn't found or didn't have one go to first
-    // otherwise next
-    let nextIndex = shapes.findIndex(shape => shape.id === selectedShapeId) + 1;
-    let nextShapeId;
-    if (nextIndex >= 0 && nextIndex < shapes.length) {
-      nextShapeId = shapes[nextIndex].id;
-    }
-    DrawingStateActions.setSelectedShapeId(nextShapeId);
-  }
-
-  handleKeyDown(e) {
-    let code = e.keyCode || e.which;
-
+  _registerKeyEvents(manager) {
     // TODO: (nhan) for now there should always be an active picture
     // probably want to move this logic and some of the key handling logic
     // to a more specific component
-    let activePicture = this.props.drawingState.activePicture;
-    let activeInstructions = activePicture.instructions;
+    //let activePicture = this.props.drawingState.activePicture;
+    //let activeInstructions = activePicture.instructions;
 
-    switch (code) {
-      case 65: { //a
+    manager = manager.registerHandler({
+      keyCode: 65,
+      keyDescription: 'a',
+      description: 'path',
+      keyDown: () => {
         DrawingStateActions.setDrawingMode('path');
         let instruction = new DrawPathInstruction({
-          id: InstructionTreeNode.getNextInstructionId(activeInstructions),
+          id: InstructionTreeNode.getNextInstructionId(this.props.drawingState.activePicture.instructions),
           isClosed: true
         });
         this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
-        break;
       }
-      case 71: { //g
+    });
+
+    manager = manager.registerHandler({
+      keyCode: 71,
+      keyDescription: 'g',
+      description: 'guide',
+      keyDown: () => {
         // Toggle guide setting on selected shape
         let drawInstruction = this.getDrawInstructionForSelectedShape();
         if (drawInstruction) {
           drawInstruction = drawInstruction.clone();
           drawInstruction.isGuide = !drawInstruction.isGuide;
-          PictureActions.modifyInstruction(activePicture, drawInstruction);
+          PictureActions.modifyInstruction(this.props.drawingState.activePicture, drawInstruction);
         }
-        break;
       }
-      case 78: { //n
-        if (e.shiftKey) {
-          this.selectNextShape();
-          return;
-        }
+    });
+
+    manager = manager.registerHandler({
+      keyCode: 78,
+      shiftKey: true,
+      keyDescription: 'Shift+n',
+      description: 'next shape',
+      keyDown: () => {
+        this.selectNextShape();
+      }
+    });
+
+    manager = manager.registerHandler({
+      keyCode: 78,
+      keyDescription: 'n',
+      description: 'next snap point',
+      keyDown: () => {
         // Edit the selected instruction by cycling through overlapping
         // magnet points
         // Toggle guide setting on selected shape
@@ -142,65 +147,100 @@ class App extends React.Component {
             } else {
               instruction = instruction.getCloneWithTo(magnetPoint, this.state.pictureResult, magnets);
             }
-            PictureActions.modifyInstruction(activePicture, instruction);
+            PictureActions.modifyInstruction(this.props.drawingState.activePicture, instruction);
           }
         }
-        break;
       }
-      case 82: { //r
+    });
+
+    manager = manager.registerHandler({
+      keyCode: 82,
+      keyDescription: 'r',
+      description: 'rect',
+      keyDown: () => {
         DrawingStateActions.setDrawingMode('rect');
         let instruction = new DrawRectInstruction({
-          id: InstructionTreeNode.getNextInstructionId(activeInstructions)
+          id: InstructionTreeNode.getNextInstructionId(this.props.drawingState.activePicture.instructions)
         });
         this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
-        break;
       }
-      case 83: { //s
+    });
+
+    manager = manager.registerHandler({
+      keyCode: 83,
+      keyDescription: 's',
+      description: 'scale',
+      keyDown: () => {
         DrawingStateActions.setDrawingMode('scale');
-        break;
       }
-      case 84: { //t
+    });
+
+    manager = manager.registerHandler({
+      keyCode: 84,
+      keyDescription: 't',
+      description: 'text',
+      keyDown: () => {
         DrawingStateActions.setDrawingMode('text');
         let instruction = new DrawTextInstruction({
-          id: InstructionTreeNode.getNextInstructionId(activeInstructions)
+          id: InstructionTreeNode.getNextInstructionId(this.props.drawingState.activePicture.instructions)
         });
         this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
-        break;
       }
-      case 86: { //v
+    });
+
+    manager = manager.registerHandler({
+      keyCode: 86,
+      keyDescription: 'v',
+      description: 'move',
+      keyDown: () => {
         DrawingStateActions.setDrawingMode('move');
-        break;
       }
-      case 88: { //x
+    });
+
+    manager = manager.registerHandler({
+      keyCode: 88,
+      keyDescription: 'x',
+      description: 'line',
+      keyDown: () => {
         DrawingStateActions.setDrawingMode('line');
         let instruction = new DrawLineInstruction({
-          id: InstructionTreeNode.getNextInstructionId(activeInstructions)
+          id: InstructionTreeNode.getNextInstructionId(this.props.drawingState.activePicture.instructions)
         });
         this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
-        break;
       }
-      case 67: { //c
+    });
+
+    manager = manager.registerHandler({
+      keyCode: 67,
+      keyDescription: 'c',
+      description: 'circle',
+      keyDown: () => {
         DrawingStateActions.setDrawingMode('circle');
         let instruction = new DrawCircleInstruction({
-          id: InstructionTreeNode.getNextInstructionId(activeInstructions)
+          id: InstructionTreeNode.getNextInstructionId(this.props.drawingState.activePicture.instructions)
         });
         this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
-        break;
       }
-      case 76: { //l
+    });
+
+    manager = manager.registerHandler({
+      keyCode: 76,
+      keyDescription: 'l',
+      description: 'loop',
+      keyDown: () => {
         // TODO We allow multiple looping levels, but other assumptions don't support that
         let selectedInstructions = this.getSelectedInstructions();
 
         // Get the parent and index of first instruction
         let {parent, index} = InstructionTreeNode.findParentWithIndex(
-          activeInstructions, selectedInstructions[0]);
+          this.props.drawingState.activePicture.instructions, selectedInstructions[0]);
 
         // Remove selected instructions from list
-        PictureActions.removeInstructions(activePicture, selectedInstructions);
+        PictureActions.removeInstructions(this.props.drawingState.activePicture, selectedInstructions);
 
         // Create a new loop instruction with selected instructions as children
         let instruction = new LoopInstruction({
-          id: InstructionTreeNode.getNextInstructionId(activeInstructions),
+          id: InstructionTreeNode.getNextInstructionId(this.props.drawingState.activePicture.instructions),
           instructions: selectedInstructions
         });
 
@@ -211,60 +251,101 @@ class App extends React.Component {
         PictureActions.insertInstruction(this.props.drawingState.activePicture, instruction, index, parent);
         // We need to set the drawing mode to normal because we don't want to edit the newly inserted instruction
         DrawingStateActions.setDrawingMode('normal');
-        break;
       }
-      case 37: { //left arrow
-        // If we are in a loop decrement the loop counter
-        // don't cycle back around
+    });
+
+    manager = manager.registerHandler({
+      keyCode: 37,
+      keyDescription: '\u2190', // left-arrow
+      description: 'next loop step',
+      keyDown: (e) => {
         this.stepLoopIndex(-1);
         e.preventDefault();
-        break;
       }
-      case 39: { //right arrow
-        // If we are in a loop increment the loop counter
-        // don't cycle back around
+    });
+
+    manager = manager.registerHandler({
+      keyCode: 39,
+      keyDescription: '\u2192', // right-arrow
+      description: 'prev loop step',
+      keyDown: (e) => {
         this.stepLoopIndex(1);
         e.preventDefault();
-        break;
       }
-      case 38: { //up arrow
+    });
+
+    manager = manager.registerHandler({
+      keyCode: 38,
+      keyDescription: '\u2191', // up-arrow
+      description: 'prev instruction',
+      keyDown: (e) => {
         let loopIndex = this.props.drawingState.currentLoopIndex;
         let {nextInstruction, nextLoopIndex} = this.state.stepper.
           stepBackwards(this.getCurrentInstruction(), loopIndex);
 
         if (nextInstruction) {
-          DrawingStateActions.setSelectedInstruction(nextInstruction);
-          DrawingStateActions.setLoopIndex(nextLoopIndex);
+          DrawingStateActions.setSelectedInstruction(nextInstruction, nextLoopIndex);
         }
 
         e.preventDefault();
-        break;
       }
-      case 40: { //down arrow
+    });
+
+    manager = manager.registerHandler({
+      keyCode: 40,
+      keyDescription: '\u2193', // down-arrow
+      description: 'prev instruction',
+      keyDown: (e) => {
         let loopIndex = this.props.drawingState.currentLoopIndex;
         let {nextInstruction, nextLoopIndex} = this.state.stepper.
           stepForwards(this.getCurrentInstruction(), loopIndex);
 
         if (nextInstruction) {
-          DrawingStateActions.setSelectedInstruction(nextInstruction);
-          DrawingStateActions.setLoopIndex(nextLoopIndex);
+          DrawingStateActions.setSelectedInstruction(nextInstruction, nextLoopIndex);
         }
 
         e.preventDefault();
-        break;
       }
-      case 27: { //esc
+    });
+
+    manager = manager.registerHandler({
+      keyCode: 27,
+      keyDescription: 'esc',
+      description: 'cancel drawing mode',
+      keyDown: () => {
         DrawingStateActions.setDrawingMode('normal');
-        break;
       }
-      case 112: { // F1 to enter debug mode
+    });
+
+    manager = manager.registerHandler({
+      keyCode: 112,
+      keyDescription: 'F1',
+      description: 'debug mode',
+      keyDown: () => {
         this.setState({isDebugging: !this.state.isDebugging});
-        break;
       }
-      default:
-        console.log('unknown code', code);
-        break;
+    });
+
+    return manager;
+  }
+
+  selectNextShape() {
+    // Get all available shape ids
+    let shapes = this.state.pictureResult.getAllShapesForLoopIndex(this.props.drawingState.currentLoopIndex);
+    let {selectedShapeId} = this.props.drawingState;
+
+    // If the selectedShape wasn't found or didn't have one go to first
+    // otherwise next
+    let nextIndex = shapes.findIndex(shape => shape.id === selectedShapeId) + 1;
+    let nextShapeId;
+    if (nextIndex >= 0 && nextIndex < shapes.length) {
+      nextShapeId = shapes[nextIndex].id;
     }
+    DrawingStateActions.setSelectedShapeId(nextShapeId);
+  }
+
+  handleKeyDown(e) {
+    this.keyEventManager.handleKeyDown(e);
   }
 
   isLoopIndexAtEnd() {
@@ -419,6 +500,8 @@ class App extends React.Component {
       currentInstruction = null;
     }
 
+    //console.log('renderering with currentInstruction: ', currentInstruction,
+                //'index ', this.props.drawingState.currentLoopIndex);
 
     let activePicture = this.props.drawingState.activePicture;
     let pictureResult = this.state.pictureResult;
@@ -464,6 +547,11 @@ class App extends React.Component {
               instructions={activePicture.instructions} />
           </div>
 
+          <KeyboardControlsList
+            className='keyboard-controls-list'
+            keyEventManager={this.keyEventManager}
+            drawingMode={this.props.drawingState.mode}/>
+
           <div className='drawing-area'>
             <div className='canvas-container'>
               <InstructionTitle
@@ -484,6 +572,7 @@ class App extends React.Component {
                 code={pictureResult.jsCode} />
             </div>
           </div>
+
 
           <Popover
             picture={activePicture}
