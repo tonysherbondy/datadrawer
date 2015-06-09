@@ -20,6 +20,7 @@ export default class VariablePill extends React.Component {
     if (this.state.isEditingName) {
       return (
         <ContentEditable
+          ref="theContentEditable"
           className='variable-pill data-variable-name-editable'
           html={this.state.name}
           onBlur={this.handleBlur.bind(this, this.props.picture)}
@@ -56,7 +57,9 @@ export default class VariablePill extends React.Component {
   }
 
   handleDoubleClick() {
-    this.setState({isEditingName: true});
+    this.setState({isEditingName: true}, () => {
+      React.findDOMNode(this.refs.theContentEditable).focus();
+    });
   }
 
   handleNameChange(evt) {
