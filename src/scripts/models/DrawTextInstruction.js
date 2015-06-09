@@ -2,7 +2,7 @@ import DrawLineInstruction from './DrawLineInstruction';
 import PictureActions from '../actions/PictureActions';
 import Expression from './Expression';
 import React from 'react';
-import ExpressionEditor from '../components/ExpressionEditor';
+import ExpressionEditorAndScrub from '../components/ExpressionEditorAndScrub';
 
 export default class DrawTextInstruction extends DrawLineInstruction {
   constructor(props) {
@@ -88,7 +88,7 @@ export default class DrawTextInstruction extends DrawLineInstruction {
         {fromUi}
 
         of
-        <ExpressionEditor
+        <ExpressionEditorAndScrub
           picture={picture}
           onChange={this.handleTextChange.bind(this, picture)}
           variableValues={variableValues}
