@@ -64,8 +64,7 @@ export default class DataTable extends React.Component {
 
         <input
           type='file'
-          onChange={this.handleUpload.bind(this)}
-          value='Upload CSV' />
+          onChange={this.handleUpload.bind(this)} />
       </div>
     );
   }
