@@ -72,6 +72,7 @@ class App extends React.Component {
       keyCode: 65,
       keyDescription: 'a',
       description: 'path',
+      group: 'draw',
       keyDown: () => {
         DrawingStateActions.setDrawingMode('path');
         let instruction = new DrawPathInstruction({
@@ -86,6 +87,7 @@ class App extends React.Component {
       keyCode: 71,
       keyDescription: 'g',
       description: 'guide',
+      group: 'modifiers',
       keyDown: () => {
         // Toggle guide setting on selected shape
         let drawInstruction = this.getDrawInstructionForSelectedShape();
@@ -102,6 +104,7 @@ class App extends React.Component {
       shiftKey: true,
       keyDescription: 'Shift+n',
       description: 'next shape',
+      group: 'modifiers',
       keyDown: () => {
         this.selectNextShape();
       }
@@ -111,6 +114,7 @@ class App extends React.Component {
       keyCode: 78,
       keyDescription: 'n',
       description: 'next snap point',
+      group: 'modifiers',
       keyDown: () => {
         // Edit the selected instruction by cycling through overlapping
         // magnet points
@@ -157,6 +161,7 @@ class App extends React.Component {
       keyCode: 82,
       keyDescription: 'r',
       description: 'rect',
+      group: 'draw',
       keyDown: () => {
         DrawingStateActions.setDrawingMode('rect');
         let instruction = new DrawRectInstruction({
@@ -170,6 +175,7 @@ class App extends React.Component {
       keyCode: 83,
       keyDescription: 's',
       description: 'scale',
+      group: 'adjust',
       keyDown: () => {
         DrawingStateActions.setDrawingMode('scale');
       }
@@ -179,6 +185,7 @@ class App extends React.Component {
       keyCode: 84,
       keyDescription: 't',
       description: 'text',
+      group: 'draw',
       keyDown: () => {
         DrawingStateActions.setDrawingMode('text');
         let instruction = new DrawTextInstruction({
@@ -192,6 +199,7 @@ class App extends React.Component {
       keyCode: 86,
       keyDescription: 'v',
       description: 'move',
+      group: 'adjust',
       keyDown: () => {
         DrawingStateActions.setDrawingMode('move');
       }
@@ -201,6 +209,7 @@ class App extends React.Component {
       keyCode: 88,
       keyDescription: 'x',
       description: 'line',
+      group: 'draw',
       keyDown: () => {
         DrawingStateActions.setDrawingMode('line');
         let instruction = new DrawLineInstruction({
@@ -214,6 +223,7 @@ class App extends React.Component {
       keyCode: 67,
       keyDescription: 'c',
       description: 'circle',
+      group: 'draw',
       keyDown: () => {
         DrawingStateActions.setDrawingMode('circle');
         let instruction = new DrawCircleInstruction({
@@ -227,6 +237,7 @@ class App extends React.Component {
       keyCode: 76,
       keyDescription: 'l',
       description: 'loop',
+      group: 'flow',
       keyDown: () => {
         // TODO We allow multiple looping levels, but other assumptions don't support that
         let selectedInstructions = this.getSelectedInstructions();

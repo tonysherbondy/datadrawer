@@ -1,5 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
+import _ from 'lodash';
 
 
 export default class KeyboardControlsList extends React.Component {
@@ -22,10 +23,23 @@ export default class KeyboardControlsList extends React.Component {
       );
     };
 
+    let groups = _.groupBy(this.props.keyEventManager.handlers, (h) => {
+      return h.group ? h.group : 'other';
+    });
+
     return (
-      <table className={this.props.className}>
-        {this.props.keyEventManager.handlers.map(getControlListingForHandler)}
-      </table>
+      <div className={this.props.className}>
+        {
+          Object.keys(groups).map(function (group) {
+            return (
+              <table key={group} className='keyboard-control-group'>
+                <tr><td><u>{group.toUpperCase()}</u></td></tr>
+                {groups[group].map(getControlListingForHandler)}
+              </table>
+            );
+          })
+        }
+      </div>
     );
   }
 }
