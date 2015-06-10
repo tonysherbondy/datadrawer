@@ -147,7 +147,7 @@ export default class DataTable extends React.Component {
             isRow: true,
             definition: jsonVal
           });
-          PictureActions.addVariable(variable);
+          PictureActions.addVariable(this.props.picture, variable);
         });
       },
 
