@@ -4,6 +4,7 @@ import VariablePill from '../VariablePill';
 import PictureActions from '../../actions/PictureActions';
 import ExpressionEditorAndScrub from '../ExpressionEditorAndScrub';
 import Papa from 'papaparse';
+import Expression from '../../models/Expression';
 
 export default class DataTable extends React.Component {
   constructor(props) {
@@ -138,16 +139,26 @@ export default class DataTable extends React.Component {
           }
         }
 
-        rowMap.forEach((value, key, rm) => {
-          console.log(rowMap === rm);
+        rowMap.forEach((value, key) => {
+          // First see if we already have a variable with this rows name
+          let {picture} = this.props;
+          let variable = picture.variables.find(v => v.name === key);
           let jsonVal = JSON.stringify(value);
           console.log('json val:', jsonVal);
-          let variable = this.props.picture.generateNewVariable({
-            name: key,
-            isRow: true,
-            definition: jsonVal
-          });
-          PictureActions.addVariable(this.props.picture, variable);
+
+          if (variable) {
+            // Modify the existing variable with this definition
+            variable = variable.cloneWithDefinition(new Expression(jsonVal));
+            PictureActions.modifyVariable(picture, variable);
+          } else {
+            // Create a new variable
+            variable = this.props.picture.generateNewVariable({
+              name: key,
+              isRow: true,
+              definition: jsonVal
+            });
+            PictureActions.addVariable(this.props.picture, variable);
+          }
         });
       },
 
