@@ -1,19 +1,22 @@
-import Instruction from './Instruction';
+import AdjustInstruction from './AdjustInstruction';
+import PictureActions from '../actions/PictureActions';
+import Expression from './Expression';
 
-export default class RotateInstruction extends Instruction {
-  constructor({id, shape, point, to}) {
-    super({id, shapeId: shape.id});
-    this.point = point;
-    this.to = to;
-    this.shape = shape;
+export default class RotateInstruction extends AdjustInstruction {
+
+  modifyInstructionWithProps(picture, props) {
+    PictureActions.modifyInstruction(picture, new RotateInstruction(props));
   }
 
-  getToJs(index) {
-    // The to is either a dataVariable or hardcoded value
-    if (this.to.id) {
-      return this.getDataOrShapePropJs(this.to, index);
-    }
-    return this.to;
+  modifyWithTo(picture, to, start) {
+    PictureActions.modifyInstruction(picture, this.getCloneWithTo(to, start));
+  }
+
+  getCloneWithTo(to, startPoint) {
+    let props = this.getCloneProps();
+    let degreesPerPixel = 180 / 100;
+    props.to = new Expression((to.x - startPoint.x) * degreesPerPixel);
+    return new RotateInstruction(props);
   }
 
   getPointJs(index) {
@@ -36,7 +39,7 @@ export default class RotateInstruction extends Instruction {
   }
 
   getJsCode(index) {
-    let paramsJs = `${this.getToJs(index)}, ${this.getPointJs(index)}`;
+    let paramsJs = `${this.to.getJsCode(index)}, ${this.getPointJs(index)}`;
     let varName = this.getShapeVarName(this.shape, index);
     return `${varName}.rotateAroundPoint(${paramsJs});`;
   }
@@ -56,7 +59,7 @@ export default class RotateInstruction extends Instruction {
     return `(${x.id ? x.id : x}, ${y.id ? y.id : y})`;
   }
 
-  // TODO This belongs in the UI most likely
+  // TODO Expression-ize this thing
   getUiSentence() {
     let to = this.to;
     return `Rotate ${this.shape.id} around ${this.getPointUi()} by ${to.id ? to.id : to}`;

@@ -6,29 +6,31 @@ export default class CircleShape extends Shape {
     this.cx = props.cx;
     this.cy = props.cy;
     this.r = props.r;
-    // TODO - should probably be in a base shape class
-    this.fill = props.fill;
-    this.stroke = props.stroke;
-    this.strokeWidth = props.strokeWidth;
-    this.isGuide = props.isGuide;
     this.type = 'circle';
   }
 
   getPoint(name) {
+    let point;
     switch (name) {
       case 'center':
-        return {x: this.cx, y: this.cy};
+        point = {x: this.cx, y: this.cy};
+        break;
       case 'left':
-        return {x: this.cx - this.r, y: this.cy};
+        point = {x: this.cx - this.r, y: this.cy};
+        break;
       case 'right':
-        return {x: this.cx + this.r, y: this.cy};
+        point = {x: this.cx + this.r, y: this.cy};
+        break;
       case 'top':
-        return {x: this.cx, y: this.cy - this.r};
+        point = {x: this.cx, y: this.cy - this.r};
+        break;
       case 'bottom':
-        return {x: this.cx, y: this.cy + this.r};
+        point = {x: this.cx, y: this.cy + this.r};
+        break;
       default:
-        console.error('Unknown point', name);
+        return console.error('Unknown point', name);
     }
+    return this.rotatePoint(point);
   }
 
   getMagnetNames() {
@@ -61,15 +63,8 @@ export default class CircleShape extends Shape {
   }
 
   getRenderProps() {
-    let {cx, cy, r, stroke, strokeWidth, fill} = this;
-    return {
-      cx, cy, r,
-
-      // TODO there should definitely be a base shape for this
-      stroke, strokeWidth, fill,
-      fillOpacity: this.isGuide ? 0 : 1,
-      strokeOpacity: this.isGuide ? 0 : 1
-    };
+    let {cx, cy, r} = this;
+    return Object.assign(super.getRenderProps(), {cx, cy, r});
   }
 
 }

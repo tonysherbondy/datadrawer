@@ -31,9 +31,6 @@ export default class TextShape extends LineShape {
       textAnchor: 'middle',
       transform,
       style: this.getStyle(),
-
-      // TODO there should definitely be a base shape for this
-      fillOpacity: this.isGuide ? 0 : 1,
       strokeOpacity: this.isGuide ? 0 : 1
     };
   }

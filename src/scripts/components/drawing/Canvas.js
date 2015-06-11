@@ -5,6 +5,7 @@ import PictureActions from '../../actions/PictureActions';
 import DrawingStateActions from '../../actions/DrawingStateActions';
 import ScaleInstruction from '../../models/ScaleInstruction';
 import MoveInstruction from '../../models/MoveInstruction';
+import RotateInstruction from '../../models/RotateInstruction';
 import Expression from '../../models/Expression';
 import PictureResult from '../../models/PictureResult';
 import InstructionTreeNode from '../../models/InstructionTreeNode';
@@ -139,16 +140,19 @@ class Canvas extends React.Component {
     if (instruction && instruction.isValid()) {
       let {point} = this.getEventPoint(event);
       let {mode} = this.props.drawingState;
+      let startPoint = this.state.startPoint;
       let to = point;
       if (mode === 'scale') {
         let shape = this.props.selectedShape;
-        let startPoint = this.state.startPoint;
-        let props = shape.getAdjustProps(mode, startPoint, point);
+        let props = shape.getScaleAdjustProps(startPoint, point);
         to = props.to;
         PictureActions.modifyInstruction(picture, instruction.getCloneWithTo(to, this.props.pictureResult, magnets));
 
+      } else if (mode === 'rotate') {
+        instruction.modifyWithTo(picture, to, startPoint);
+
       } else if (mode === 'move') {
-        instruction.modifyWithTo(picture, to, this.state.startPoint);
+        instruction.modifyWithTo(picture, to, startPoint);
 
       } else {
         PictureActions.modifyInstruction(picture, instruction.getCloneWithTo(to, this.props.pictureResult, magnets));
@@ -217,7 +221,7 @@ class Canvas extends React.Component {
             break;
           }
           case 'scale': {
-            let props = shape.getAdjustProps(mode, closeControlPoint, point);
+            let props = shape.getScaleAdjustProps(closeControlPoint, point);
             if (props) {
               props.id = InstructionTreeNode.getNextInstructionId(instructions);
               this.setState({startPoint: closeControlPoint});
@@ -226,14 +230,18 @@ class Canvas extends React.Component {
             break;
           }
           case 'rotate': {
-            console.log('should rotate');
-            //let props = shape.getAdjustProps(mode, closeControlPoint, point);
-            //if (props) {
-              //props.id = InstructionTreeNode.getNextInstructionId(this.props.instructions);
-              //this.state.startPoint = closeControlPoint;
-              //this.setState(this.state);
-              //this.props.pictureResult.insertNewInstructionAfterCurrent(new ScaleInstruction(props));
-            //}
+            // For now we set the anchor point of rotation to the control point you clicked, but
+            // eventually could be any point
+            let {shapeId, pointName} = closeControlPoint;
+            // 180 degrees per 100 pixels
+            let props = {
+              id: InstructionTreeNode.getNextInstructionId(instructions),
+              shape: {id: shapeId},
+              point: {id: shapeId, point: pointName}
+            };
+            this.setState({startPoint: closeControlPoint});
+            let newInstruction = (new RotateInstruction(props)).getCloneWithTo(point, closeControlPoint);
+            this.props.pictureResult.insertNewInstructionAfterCurrent(newInstruction);
             break;
           }
           case 'move': {

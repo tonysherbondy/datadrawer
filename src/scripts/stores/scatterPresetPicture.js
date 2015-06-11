@@ -185,7 +185,7 @@ const instructions = [
         id: 'irotate1',
         shape: {id: 'shape_i11'},
         point: {id: 'shape_i11', point: 'from'},
-        to: {id: 'shape_i5', prop: 'angle'}
+        to: new Expression({id: 'shape_i5', prop: 'angle'})
       }),
       new ScaleInstruction({
         id: 'i12',

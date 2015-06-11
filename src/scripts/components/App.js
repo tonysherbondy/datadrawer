@@ -240,7 +240,6 @@ class App extends React.Component {
       group: 'adjust',
       keyDown: () => {
         DrawingStateActions.setDrawingMode('rotate');
-        console.log('Should be doing rotation');
       }
     });
 

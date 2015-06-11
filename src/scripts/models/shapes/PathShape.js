@@ -6,13 +6,6 @@ export default class PathShape extends Shape {
     this.from = props.from;
     this.points = props.points;
     this.isClosed = props.isClosed;
-
-    // TODO - should probably be in a base shape class
-    this.fill = props.fill;
-    this.stroke = props.stroke;
-    this.strokeWidth = props.strokeWidth;
-    this.isGuide = props.isGuide;
-    this.transform = '';
     this.type = 'path';
   }
 
@@ -29,15 +22,8 @@ export default class PathShape extends Shape {
   }
 
   getRenderProps() {
-    let {stroke, strokeWidth, fill, transform} = this;
-    return {
-      d: this.getD(),
-
-      // TODO there should definitely be a base shape for this
-      stroke, strokeWidth, fill, transform,
-      fillOpacity: this.isGuide ? 0 : 1,
-      strokeOpacity: this.isGuide ? 0 : 1
-    };
+    let d = this.getD();
+    return Object.assign(super.getRenderProps(), {d});
   }
 
   getMagnetNames() {
@@ -58,12 +44,14 @@ export default class PathShape extends Shape {
 
   getPoint(name) {
     // Point names are either from or point_index
+    let point;
     if (name === 'from') {
-      return this.from;
+      point = this.from;
     } else {
       let index = parseInt(name.split('_')[1], 10);
-      return this.getAbsPointPosition(index);
+      point = this.getAbsPointPosition(index);
     }
+    return this.rotatePoint(point);
   }
 
   scalePropByPoint(prop, point, value) {
@@ -92,7 +80,4 @@ export default class PathShape extends Shape {
     }
   }
 
-  rotateAroundPoint(value, point) {
-    this.transform = `rotate(${value} ${point.x} ${point.y})`;
-  }
 }

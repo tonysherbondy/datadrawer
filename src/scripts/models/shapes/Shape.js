@@ -3,6 +3,12 @@ export default class Shape {
     this.id = props.id;
     this.index = props.index;
     this.name = props.name || props.id;
+
+    this.fill = props.fill;
+    this.stroke = props.stroke;
+    this.strokeWidth = props.strokeWidth;
+    this.isGuide = props.isGuide;
+    this.rotation = props.rotation;
   }
 
   // Default is rect points
@@ -23,12 +29,28 @@ export default class Shape {
 
   getMagnets() {
     return this.getMagnetNames().map(pointName => {
+      let point = this.getPoint(pointName);
       return Object.assign({
         pointName,
         shapeId: this.id,
         index: this.index
-      }, this.getPoint(pointName));
+      }, point);
     });
+  }
+
+  rotatePoint(point) {
+    if (!this.rotation) {
+      return point;
+    }
+    let {value, point: aboutPoint} = this.rotation;
+    let {x: cx, y: cy} = aboutPoint;
+    let {x, y} = point;
+    let radians = (Math.PI / 180) * value;
+    let cos = Math.cos(radians);
+    let sin = Math.sin(radians);
+    let nx = (cos * (x - cx)) - (sin * (y - cy)) + cx;
+    let ny = (sin * (x - cx)) + (cos * (y - cy)) + cy;
+    return {x: nx, y: ny};
   }
 
 
@@ -42,13 +64,18 @@ export default class Shape {
     });
   }
 
-  getRenderProps() {
-    let {x, y, width, height, stroke, strokeWidth, fill} = this;
-    return {
-      x, y, width, height,
+  rotateAroundPoint(value, point) {
+    this.rotation = {value, point};
+  }
 
-      // TODO there should definitely be a base shape for this
-      stroke, strokeWidth, fill,
+  getRenderProps() {
+    let {stroke, strokeWidth, fill, rotation} = this;
+    let transform = rotation ? `rotate(${rotation.value} ${rotation.point.x} ${rotation.point.y})` : '';
+    return {
+      stroke,
+      strokeWidth,
+      fill,
+      transform,
       fillOpacity: this.isGuide ? 0 : 1,
       strokeOpacity: this.isGuide ? 0 : 1
     };

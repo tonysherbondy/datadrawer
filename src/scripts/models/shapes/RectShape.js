@@ -6,11 +6,6 @@ export default class RectShape extends Shape {
     super(props);
     let {x, y, width, height} = props;
     this.setCanonicalRect({x, y, width, height});
-    // TODO - should probably be in a base shape class
-    this.fill = props.fill;
-    this.stroke = props.stroke;
-    this.strokeWidth = props.strokeWidth;
-    this.isGuide = props.isGuide;
     this.type = 'rect';
   }
 
@@ -84,31 +79,42 @@ export default class RectShape extends Shape {
 
   getPoint(name) {
     let {x, y, width: w, height: h} = this;
+    let point;
     switch (name) {
       case 'topLeft':
-        return {x, y};
+        point = {x, y};
+        break;
       case 'left':
-        return {x, y: y + h / 2};
+        point = {x, y: y + h / 2};
+        break;
       case 'bottomLeft':
-        return {x, y: y + h};
+        point = {x, y: y + h};
+        break;
 
       case 'top':
-        return {x: x + w / 2, y};
+        point = {x: x + w / 2, y};
+        break;
       case 'center':
-        return {x: x + w / 2, y: y + h / 2};
+        point = {x: x + w / 2, y: y + h / 2};
+        break;
       case 'bottom':
-        return {x: x + w / 2, y: y + h};
+        point = {x: x + w / 2, y: y + h};
+        break;
 
       case 'topRight':
-        return {x: x + w, y};
+        point = {x: x + w, y};
+        break;
       case 'right':
-        return {x: x + w, y: y + h / 2};
+        point = {x: x + w, y: y + h / 2};
+        break;
       case 'bottomRight':
-        return {x: x + w, y: y + h};
+        point = {x: x + w, y: y + h};
+        break;
 
       default:
-        console.error('Unknown point', name);
+        return console.error('Unknown point', name);
     }
+    return this.rotatePoint(point);
   }
 
   moveRelative(name, value) {
@@ -201,9 +207,13 @@ export default class RectShape extends Shape {
     this.setCanonicalRect({x, y, width, height});
   }
 
-  getAdjustProps(mode, startPoint, toPoint) {
+  getScaleAdjustProps(startPoint, toPoint) {
+    // Output:
+    // - Shape id
+    // - The name of point we are scaling from
+    // - The amount to scale the canonical axis from that point,
+    //    e.g., for 'bottom' we would scale 'y' axis
     // Input:
-    //  - mode of adjust (scale or move)
     //  - Name of point to adjust.
     //  - Position from where we started the scale
     //  - Position we ended the scale
@@ -216,10 +226,14 @@ export default class RectShape extends Shape {
     };
 
     function getAxisProps(opp, axis) {
+      // Input:
+      // - opp: point opposite the scaling point, e.g., for top point it would be bottom
+      // - axis: one of ['x', 'y']
       prop = axis === 'y' ? 'height' : 'width';
       let toV = toPoint[axis];
       let oppV = opp[axis];
       let startV = startPoint[axis];
+      // Ratio of (current length on axis) to (starting length on axis), rounded to two digits
       let roundTo = Math.round((toV - oppV) / (startV - oppV) * 100) / 100;
       // Only support positive scales
       if (roundTo < 0) {
@@ -252,15 +266,8 @@ export default class RectShape extends Shape {
   }
 
   getRenderProps() {
-    let {x, y, width, height, stroke, strokeWidth, fill} = this;
-    return {
-      x, y, width, height,
-
-      // TODO there should definitely be a base shape for this
-      stroke, strokeWidth, fill,
-      fillOpacity: this.isGuide ? 0 : 1,
-      strokeOpacity: this.isGuide ? 0 : 1
-    };
+    let {x, y, width, height} = this;
+    return Object.assign(super.getRenderProps(), {x, y, width, height});
   }
 
 }

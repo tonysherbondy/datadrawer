@@ -7,10 +7,6 @@ export default class LineShape extends Shape {
     this.y1 = props.y1;
     this.x2 = props.x2;
     this.y2 = props.y2;
-    // TODO - should probably be in a base shape class
-    this.stroke = props.stroke;
-    this.strokeWidth = props.strokeWidth;
-    this.isGuide = props.isGuide;
     this.type = 'line';
   }
 
@@ -32,16 +28,21 @@ export default class LineShape extends Shape {
 
   getPoint(name) {
     let {x1, y1, x2, y2} = this;
+    let point;
     switch (name) {
       case 'left':
-        return {x: x1, y: y1};
+        point = {x: x1, y: y1};
+        break;
       case 'center':
-        return {x: (x1 + x2) / 2, y: (y1 + y2) / 2};
+        point = {x: (x1 + x2) / 2, y: (y1 + y2) / 2};
+        break;
       case 'right':
-        return {x: x2, y: y2};
+        point = {x: x2, y: y2};
+        break;
       default:
-        console.error('Unknown point', name);
+        return console.error('Unknown point', name);
     }
+    return this.rotatePoint(point);
   }
 
   getProp(name) {
@@ -121,14 +122,8 @@ export default class LineShape extends Shape {
   }
 
   getRenderProps() {
-    let {x1, y1, x2, y2, stroke, strokeWidth} = this;
-    return {
-      x1, y1, x2, y2, stroke, strokeWidth,
-
-      // TODO there should definitely be a base shape for this
-      fillOpacity: this.isGuide ? 0 : 1,
-      strokeOpacity: this.isGuide ? 0 : 1
-    };
+    let {x1, y1, x2, y2} = this;
+    return Object.assign(super.getRenderProps(), {x1, y1, x2, y2});
   }
 
 }

@@ -4,9 +4,6 @@ import ExpressionEditorAndScrub from '../components/ExpressionEditorAndScrub';
 import PictureActions from '../actions/PictureActions';
 
 export default class ScaleInstruction extends AdjustInstruction {
-  constructor(props) {
-    super(props);
-  }
 
   modifyInstructionWithProps(picture, props) {
     PictureActions.modifyInstruction(picture, new ScaleInstruction(props));
