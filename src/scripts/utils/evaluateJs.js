@@ -52,14 +52,31 @@ function evaluationUtils(variables) {
 }
 
 // Evaluate JS and MOST LIKELY mutate variables passed in
-export default function evalutateJs(jsCode, variables) {
+export default function evalutateJs(jsCode, variables, pictureFunctionsStrings, currentPictureId) {
   try {
     if (!_) {
       console.warn('Lodash required for evaluation environment!');
     }
+
+
+    console.log('before setup: ', currentPictureId);
     /* eslint-disable */
     let utils = evaluationUtils(variables);
+
+    // evaluate function declarations here
+
+    let pictureFunctions = {};
+
+    for (let pictureId in pictureFunctionsStrings) {
+      pictureFunctions[pictureId] = eval(pictureFunctionsStrings[pictureId]);
+    }
+
+    if (currentPictureId) {
+      console.log('break here');
+    }
+    console.log('before eval: ', currentPictureId);
     return eval(jsCode);
+    console.log('after eval: ', currentPictureId);
     /* eslint-enable */
 
   } catch (error) {

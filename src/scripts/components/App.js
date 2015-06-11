@@ -7,6 +7,7 @@ import DrawingStateStore from '../stores/DrawingStateStore';
 import PictureActions from '../actions/PictureActions';
 import DrawingStateActions from '../actions/DrawingStateActions';
 import DrawRectInstruction from '../models/DrawRectInstruction';
+import DrawPictureInstruction from '../models/DrawPictureInstruction';
 import DrawCircleInstruction from '../models/DrawCircleInstruction';
 import DrawPathInstruction from '../models/DrawPathInstruction';
 import DrawLineInstruction from '../models/DrawLineInstruction';
@@ -52,6 +53,7 @@ class App extends React.Component {
 
     let pictureResult = new PictureResult({
       picture: picture,
+      allPictures: props.pictures,
       currentInstruction: this.getCurrentInstruction(props),
       currentLoopIndex: props.drawingState.currentLoopIndex
     });
@@ -164,6 +166,20 @@ class App extends React.Component {
       keyDown: () => {
         DrawingStateActions.setDrawingMode('rect');
         let instruction = new DrawRectInstruction({
+          id: InstructionTreeNode.getNextInstructionId(this.props.drawingState.activePicture.instructions)
+        });
+        this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
+      }
+    });
+
+    manager = manager.registerHandler({
+      keyCode: 80,
+      keyDescription: 'p',
+      description: 'picture',
+      group: 'draw',
+      keyDown: () => {
+        DrawingStateActions.setDrawingMode('picture');
+        let instruction = new DrawPictureInstruction({
           id: InstructionTreeNode.getNextInstructionId(this.props.drawingState.activePicture.instructions)
         });
         this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
@@ -511,7 +527,10 @@ class App extends React.Component {
         activePicture: picture
       };
 
-      let pictureResult = new PictureResult({ picture });
+      let pictureResult = new PictureResult({
+        picture: picture,
+        allPictures: this.props.pictures
+      });
       let isActivePicture =
         picture.id === this.props.drawingState.activePicture.id;
       let className = classNames('picture-thumbnail', {

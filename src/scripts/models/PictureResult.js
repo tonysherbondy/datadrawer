@@ -10,6 +10,7 @@ import PictureActions from '../actions/PictureActions';
 export default class PictureResult {
   constructor(props) {
     this.picture = props.picture;
+    this.allPictures = props.allPictures;
     this.instructions = props.picture.instructions;
     this.dataVariables = props.picture.variables;
     this.currentInstruction = props.currentInstruction;
@@ -156,6 +157,57 @@ export default class PictureResult {
     return {jsCode, variableValues};
   }
 
+  _compilePictures() {
+    /*
+     *
+     * for each picture
+     *   let ret[picture.id] = '(function() {... compiled code for picture ...}'
+     *     in compiled code assume there is an object in the scope that is
+     *     named pictureFunctions whose members are the code for the given picture
+     *
+     *     when encountering a picture instruction
+     *       the code should be
+     *       'pictureFunctions[picture.id]()'
+     * return
+     */
+
+    return this.allPictures.map(picture => {
+      return {
+        id: picture.id,
+        compiledCode: this._compilePicture(picture)
+      };
+    }).reduce(function(pictureFunctions, compiledPicture) {
+      pictureFunctions[compiledPicture.id] = compiledPicture.compiledCode;
+      return pictureFunctions;
+    }, {});
+  }
+
+  _compilePicture(picture) {
+    let instructions = picture.instructions;
+    // Get JS from instructions
+    let validInstructions = instructions.filter(i => i.isValid());
+    let instructionsUpToCurrent = validInstructions;
+    //let currentInstruction = this.currentInstruction;
+    //if (currentInstruction) {
+      //let isAfter = InstructionTreeNode.isInstructionAfter.bind(null, instructions, currentInstruction);
+      //instructionsUpToCurrent = validInstructions.filter(i => !isAfter(i));
+    //}
+    let jsCode = instructionsUpToCurrent.map(instruction => {
+      // TODO, a loop instructions total iterations can be calculated
+      // at this point because loops can only depend on data variables, this will
+      // allow us to change our context, loop prefix only affects shape variables
+      // within the loop though...
+      // TODO Loop instructions don't have a shapeName, but perhaps we can just ignore
+      if (instruction instanceof LoopInstruction) {
+        let table = this.getTable();
+        return instruction.getJsCode(table, null, this.currentLoopIndex);
+      }
+      return instruction.getJsCode();
+    }).join('\n');
+
+    return `(function() {\n${jsCode}\n})`;
+  }
+
   _compute() {
     let instructions = this.instructions;
     // Compute shapes and variable values
@@ -171,30 +223,12 @@ export default class PictureResult {
     let canvasDraw = new DrawCanvas({width: 800, height: 600});
     let canvasJs = canvasDraw.getJsCode();
 
-    // Get JS from instructions
-    let validInstructions = instructions.filter(i => i.isValid());
-    let instructionsUpToCurrent = validInstructions;
-    let currentInstruction = this.currentInstruction;
-    if (currentInstruction) {
-      let isAfter = InstructionTreeNode.isInstructionAfter.bind(null, instructions, currentInstruction);
-      instructionsUpToCurrent = validInstructions.filter(i => !isAfter(i));
-    }
-    let jsCode = instructionsUpToCurrent.map(instruction => {
-      // TODO, a loop instructions total iterations can be calculated
-      // at this point because loops can only depend on data variables, this will
-      // allow us to change our context, loop prefix only affects shape variables
-      // within the loop though...
-      // TODO Loop instructions don't have a shapeName, but perhaps we can just ignore
-      if (instruction instanceof LoopInstruction) {
-        let table = this.getTable();
-        return instruction.getJsCode(table, currentInstruction, this.currentLoopIndex);
-      }
-      return instruction.getJsCode();
-    }).join('\n');
+    let pictureFunctions = this._compilePictures(this.allPictures);
 
-    jsCode = canvasJs + '\n' + jsCode;
+    //let currentPictureCode = pictureFunctions[this.picture.id] + '();';
+    let jsCode = canvasJs + `pictureFunctions['${this.picture.id}'](); \n`;
 
-    evaluateJs(jsCode, variableValues);
+    evaluateJs(jsCode, variableValues, pictureFunctions, this.picture.id);
 
     // TODO we will need to filter by draw instructions
     // TODO we should probably actually traverse by variables in the variables.shape scope
