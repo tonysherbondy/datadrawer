@@ -1,5 +1,4 @@
 import Shape from './Shape';
-import Expression from '../Expression';
 
 export default class RectShape extends Shape {
   constructor(props) {
@@ -217,52 +216,30 @@ export default class RectShape extends Shape {
     //  - Name of point to adjust.
     //  - Position from where we started the scale
     //  - Position we ended the scale
-    let prop = '';
-    let {pointName} = startPoint;
-    let props = {
-      shape: {id: this.id},
-      point: pointName,
-      to: new Expression(0)
-    };
-
-    function getAxisProps(opp, axis) {
-      // Input:
-      // - opp: point opposite the scaling point, e.g., for top point it would be bottom
-      // - axis: one of ['x', 'y']
-      prop = axis === 'y' ? 'height' : 'width';
-      let toV = toPoint[axis];
-      let oppV = opp[axis];
-      let startV = startPoint[axis];
-      // Ratio of (current length on axis) to (starting length on axis), rounded to two digits
-      let roundTo = Math.round((toV - oppV) / (startV - oppV) * 100) / 100;
-      // Only support positive scales
-      if (roundTo < 0) {
-        roundTo = 0;
-      }
-      return {
-        prop,
-        to: new Expression(roundTo)
-      };
-    }
-
-    switch (pointName) {
+    let anchorPoint, axis;
+    switch (startPoint.pointName) {
       case 'top':
-        props = Object.assign(props, getAxisProps(this.getPoint('bottom'), 'y'));
+        anchorPoint = this.getPoint('bottom');
+        axis = 'y';
         break;
       case 'bottom':
-        props = Object.assign(props, getAxisProps(this.getPoint('top'), 'y'));
+        anchorPoint = this.getPoint('top');
+        axis = 'y';
         break;
       case 'left':
-        props = Object.assign(props, getAxisProps(this.getPoint('right'), 'x'));
+        anchorPoint = this.getPoint('right');
+        axis = 'x';
         break;
       case 'right':
-        props = Object.assign(props, getAxisProps(this.getPoint('left'), 'x'));
+        anchorPoint = this.getPoint('left');
+        axis = 'x';
         break;
       default:
-        console.warn(`Don't know how to scale from ${pointName}`);
+        console.warn(`Don't know how to scale from ${startPoint.pointName}`);
         return null;
     }
-    return props;
+    let prop = axis === 'y' ? 'height' : 'width';
+    return this.getScalePropsForAxis(startPoint, toPoint, anchorPoint, axis, prop);
   }
 
   getRenderProps() {

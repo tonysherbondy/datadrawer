@@ -37,6 +37,13 @@ export default class CircleShape extends Shape {
     return ['left', 'top', 'center', 'bottom', 'right'];
   }
 
+  getScaleAdjustProps(startPoint, toPoint) {
+    let anchorPoint = this.getPoint('center');
+    let {pointName: name} = startPoint;
+    let axis = name === 'top' || name === 'bottom' ? 'y' : 'x';
+    return this.getScalePropsForAxis(startPoint, toPoint, anchorPoint, axis, 'r');
+  }
+
   scalePropByPoint(prop, point, value) {
     // We only have radius so this is simple
     this.r *= value;

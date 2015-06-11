@@ -1,3 +1,5 @@
+import Expression from '../Expression';
+
 export default class Shape {
   constructor(props) {
     this.id = props.id;
@@ -51,6 +53,37 @@ export default class Shape {
     let nx = (cos * (x - cx)) - (sin * (y - cy)) + cx;
     let ny = (sin * (x - cx)) + (cos * (y - cy)) + cy;
     return {x: nx, y: ny};
+  }
+
+  getScalePropsForAxis(startPoint, toPoint, anchorPoint, axis, prop) {
+    // Input:
+    // - startPoint: Point where the scale operation started
+    // - toPoint: Point where the scale operation ends
+    // - anchorPoint: point to anchor the scale from
+    //      e.g., if we are scaling from the top point, then the anchor would be
+    //            bottom for rect or center for circle
+    // - axis: one of ['x', 'y']
+    // Output:
+    // - props: property for scale that has
+    // -- shapeId
+    // -- point: name of point we are scaling
+    // -- prop: property to scale, e.g., 'height', 'width', 'radius'
+    // -- to: Expression describing how much to scale by (range [0, 1])
+    let toV = toPoint[axis];
+    let anchorV = anchorPoint[axis];
+    let startV = startPoint[axis];
+    // Ratio of (current length on axis) to (starting length on axis), rounded to two digits
+    let roundTo = Math.round((toV - anchorV) / (startV - anchorV) * 100) / 100;
+    // Only support positive scales
+    if (roundTo < 0) {
+      roundTo = 0;
+    }
+    return {
+      prop,
+      shape: {id: this.id},
+      point: startPoint.pointName,
+      to: new Expression(roundTo)
+    };
   }
 
 
