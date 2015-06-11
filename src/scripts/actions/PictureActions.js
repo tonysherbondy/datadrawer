@@ -67,6 +67,20 @@ const PictureActions = biff.createActions({
       picture: picture,
       variable: variable
     });
+  },
+
+  undoChange(picture) {
+    this.dispatch({
+      actionType: 'UNDO_CHANGE_TO_PICTURE',
+      picture: picture
+    });
+  },
+
+  redoChange(picture) {
+    this.dispatch({
+      actionType: 'REDO_CHANGE_TO_PICTURE',
+      picture: picture
+    });
   }
 });
 

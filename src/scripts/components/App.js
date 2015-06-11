@@ -329,6 +329,29 @@ class App extends React.Component {
     });
 
     manager = manager.registerHandler({
+      keyCode: 90,
+      metaKey: true,
+      keyDescription: '\u2318 + z',
+      description: 'undo',
+      keyDown: () => {
+        console.log('undo');
+        PictureActions.undoChange(this.props.drawingState.activePicture);
+      }
+    });
+
+    manager = manager.registerHandler({
+      keyCode: 90,
+      metaKey: true,
+      shiftKey: true,
+      keyDescription: '\u2318 + \u21e7 + z',
+      description: 'redo',
+      keyDown: () => {
+        console.log('redo');
+        PictureActions.redoChange(this.props.drawingState.activePicture);
+      }
+    });
+
+    manager = manager.registerHandler({
       keyCode: 112,
       keyDescription: 'F1',
       description: 'debug mode',
