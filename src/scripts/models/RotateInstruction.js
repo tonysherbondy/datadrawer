@@ -1,6 +1,8 @@
+import React from 'react';
 import AdjustInstruction from './AdjustInstruction';
 import PictureActions from '../actions/PictureActions';
 import Expression from './Expression';
+import ExpressionEditorAndScrub from '../components/ExpressionEditorAndScrub';
 
 export default class RotateInstruction extends AdjustInstruction {
 
@@ -44,24 +46,24 @@ export default class RotateInstruction extends AdjustInstruction {
     return `${varName}.rotateAroundPoint(${paramsJs});`;
   }
 
-  getToUi() {
-    if (this.to.id) {
-      return this.to.id;
-    }
-    return this.to;
+  getUiSentence(picture, variableValues, shapeNameMap) {
+    let shapeName = this.getShapeName(shapeNameMap);
+    let pointUi = this.getPointUi(shapeNameMap, this.point);
+    return (
+      <span className='instruction-sentence'>
+        {`Rotate ${shapeName} about ${pointUi} by`}
+        <ExpressionEditorAndScrub
+          picture={picture}
+          onChange={this.handleToChange.bind(this, picture)}
+          variableValues={variableValues}
+          definition={this.to} />
+      </span>
+    );
   }
 
-  getPointUi() {
-    if (this.point.id) {
-      return this.point.id;
-    }
-    let {x, y} = this.point;
-    return `(${x.id ? x.id : x}, ${y.id ? y.id : y})`;
-  }
-
-  // TODO Expression-ize this thing
-  getUiSentence() {
-    let to = this.to;
-    return `Rotate ${this.shape.id} around ${this.getPointUi()} by ${to.id ? to.id : to}`;
+  handleToChange(picture, definition) {
+    let props = this.getCloneProps();
+    props.to = definition;
+    this.modifyInstructionWithProps(picture, props);
   }
 }
