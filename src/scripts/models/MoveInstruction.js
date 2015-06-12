@@ -57,10 +57,12 @@ export default class MoveInstruction extends AdjustInstruction {
   getUiSentence(picture, variableValues, shapeNameMap) {
     let shapeName = this.getShapeName(shapeNameMap);
     let moveOrReshape = this.isReshape ? 'Reshape' : 'Move';
+    let pointWithAxis = this.point + (this.axis ? `(${this.axis} only)` : '');
     let fromUi = (
       <span>
         <button onClick={this.handleMoveOrReshapeToggle.bind(this, picture)}>{moveOrReshape}</button>
-        {`${shapeName}'s ${this.point}`}
+        {`${shapeName}'s`}
+        <button onClick={this.handleMoveAxisToggle.bind(this, picture)}>{pointWithAxis}</button>
       </span>
     );
     let toUi;
@@ -101,6 +103,18 @@ export default class MoveInstruction extends AdjustInstruction {
   handleMoveOrReshapeToggle(picture) {
     let props = this.getCloneProps();
     props.isReshape = !props.isReshape;
+    this.modifyInstructionWithProps(picture, props);
+  }
+
+  handleMoveAxisToggle(picture) {
+    let props = this.getCloneProps();
+    if (this.axis === 'x') {
+      props.axis = 'y';
+    } else if (this.axis === 'y') {
+      props.axis = null;
+    } else {
+      props.axis = 'x';
+    }
     this.modifyInstructionWithProps(picture, props);
   }
 
