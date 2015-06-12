@@ -245,10 +245,13 @@ class Canvas extends React.Component {
             break;
           }
           case 'move': {
+            // Holding shift while clicking on the control point will
+            // make the move a reshape
             let props = {
               id: InstructionTreeNode.getNextInstructionId(instructions),
               point: closeControlPoint.pointName,
               shape: {id: closeControlPoint.shapeId},
+              isReshape: event.shiftKey,
               x: new Expression(point.x - closeControlPoint.x),
               y: new Expression(point.y - closeControlPoint.y)
             };

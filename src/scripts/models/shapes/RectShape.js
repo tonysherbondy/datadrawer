@@ -116,15 +116,26 @@ export default class RectShape extends Shape {
     return this.rotatePoint(point);
   }
 
-  moveRelative(name, value) {
-    // Doesn't matter what point we move, the distance applies
-    // to the center
-    this.x += value.x;
-    this.y += value.y;
+  moveRelative(name, value, isReshape, axis) {
+    console.log('need to use axis', axis);
+
+    let {x, y, width, height} = this;
+    if (isReshape) {
+      // Construct a moveToPoint that we will reshape to
+      let newPoint = this.getPoint(name);
+      newPoint.x += value.x;
+      newPoint.y += value.y;
+      this.moveToPoint(name, newPoint, isReshape, axis);
+    } else {
+      // Doesn't matter what point we move, the distance applies
+      // to the center
+      this.x += value.x;
+      this.y += value.y;
+    }
   }
 
   // Move the shape so that a particular point is set to value
-  moveToPoint(name, value, isReshape) {
+  moveToPoint(name, value, isReshape, axis) {
     let {x, y, width, height} = this;
 
     function left() {
@@ -161,6 +172,7 @@ export default class RectShape extends Shape {
       }
     }
 
+    let original = {x, y, width, height};
     switch (name) {
 
       case 'left':
@@ -202,6 +214,16 @@ export default class RectShape extends Shape {
       default:
         console.error('Unknown point', name);
         return;
+    }
+
+    // If we specified an axis to pay attention to then we only we reset
+    // the other axis change to the original value
+    if (axis === 'y') {
+      x = original.x;
+      width = original.width;
+    } else if (axis === 'x') {
+      y = original.y;
+      height = original.height;
     }
     this.setCanonicalRect({x, y, width, height});
   }

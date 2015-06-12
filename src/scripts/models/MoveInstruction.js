@@ -10,6 +10,7 @@ export default class MoveInstruction extends AdjustInstruction {
     this.x = props.x;
     this.y = props.y;
     this.isReshape = props.isReshape;
+    this.axis = props.axis;
   }
 
   modifyInstructionWithProps(picture, props) {
@@ -18,10 +19,11 @@ export default class MoveInstruction extends AdjustInstruction {
 
   getCloneProps() {
     let props = super.getCloneProps();
-    let {x, y, isReshape} = this;
+    let {x, y, isReshape, axis} = this;
     props.x = x;
     props.y = y;
     props.isReshape = isReshape;
+    props.axis = axis;
     return props;
   }
 
@@ -44,12 +46,12 @@ export default class MoveInstruction extends AdjustInstruction {
     if (this.to) {
       // When setting to a variable we will move the point = to the variable
       let toPointJs = this.getPointVarJs(this.to, index);
-      return `${varName}.moveToPoint('${this.point}', ${toPointJs}, ${this.isReshape});\n`;
+      return `${varName}.moveToPoint('${this.point}', ${toPointJs}, ${this.isReshape}, ${this.axis});\n`;
     }
     let xJs = this.x.getJsCode(index);
     let yJs = this.y.getJsCode(index);
     let pointJs = `{x: ${xJs}, y: ${yJs}}`;
-    return `${varName}.moveRelative('${this.point}', ${pointJs}, ${this.isReshape});\n`;
+    return `${varName}.moveRelative('${this.point}', ${pointJs}, ${this.isReshape}, ${this.axis});\n`;
   }
 
   getUiSentence(picture, variableValues, shapeNameMap) {
