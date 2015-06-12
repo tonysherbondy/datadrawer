@@ -155,6 +155,7 @@ const instructions = [
         shape: {id: 'shape_i10'},
         point: 'top',
         isReshape: true,
+        axis: 'y',
         to: {id: 'canvas', point: 'top'}
       }),
       new MoveInstruction({
@@ -162,6 +163,7 @@ const instructions = [
         shape: {id: 'shape_i10'},
         point: 'bottom',
         isReshape: true,
+        axis: 'y',
         to: {id: 'canvas', point: 'bottom'}
       }),
       new DrawPathInstruction({

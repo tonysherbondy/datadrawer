@@ -149,8 +149,8 @@ export default class RectShape extends Shape {
       x -= dx;
     }
 
-    function right() {
-      let dx = value.x - (x + width);
+    function right(distFraction = 1) {
+      let dx = value.x - (x + width * distFraction);
       if (isReshape) {
         width += dx;
       } else {
@@ -166,8 +166,8 @@ export default class RectShape extends Shape {
       y -= dy;
     }
 
-    function bottom() {
-      let dy = value.y - (y + height);
+    function bottom(distFraction = 1) {
+      let dy = value.y - (y + height * distFraction);
       if (isReshape) {
         height += dy;
       } else {
@@ -179,6 +179,9 @@ export default class RectShape extends Shape {
     switch (name) {
 
       case 'left':
+        if (!isReshape) {
+          bottom(0.5);
+        }
         left();
         break;
       case 'center':
@@ -187,6 +190,9 @@ export default class RectShape extends Shape {
         y = value.y - height / 2;
         break;
       case 'right':
+        if (!isReshape) {
+          bottom(0.5);
+        }
         right();
         break;
 
@@ -196,6 +202,9 @@ export default class RectShape extends Shape {
         break;
       case 'top':
         top();
+        if (!isReshape) {
+          right(0.5);
+        }
         break;
       case 'topRight':
         top();
@@ -208,6 +217,9 @@ export default class RectShape extends Shape {
         break;
       case 'bottom':
         bottom();
+        if (!isReshape) {
+          right(0.5);
+        }
         break;
       case 'bottomRight':
         bottom();
