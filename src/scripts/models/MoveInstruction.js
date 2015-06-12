@@ -43,15 +43,17 @@ export default class MoveInstruction extends AdjustInstruction {
 
   getJsCode(index) {
     let varName = this.getShapeVarName(this.shape, index);
+    let axisString = this.axis ? `'${this.axis}'` : this.axis;
+
     if (this.to) {
       // When setting to a variable we will move the point = to the variable
       let toPointJs = this.getPointVarJs(this.to, index);
-      return `${varName}.moveToPoint('${this.point}', ${toPointJs}, ${this.isReshape}, ${this.axis});\n`;
+      return `${varName}.moveToPoint('${this.point}', ${toPointJs}, ${this.isReshape}, ${axisString});\n`;
     }
     let xJs = this.x.getJsCode(index);
     let yJs = this.y.getJsCode(index);
     let pointJs = `{x: ${xJs}, y: ${yJs}}`;
-    return `${varName}.moveRelative('${this.point}', ${pointJs}, ${this.isReshape}, ${this.axis});\n`;
+    return `${varName}.moveRelative('${this.point}', ${pointJs}, ${this.isReshape}, ${axisString});\n`;
   }
 
   getUiSentence(picture, variableValues, shapeNameMap) {

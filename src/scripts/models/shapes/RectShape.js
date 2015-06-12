@@ -117,9 +117,6 @@ export default class RectShape extends Shape {
   }
 
   moveRelative(name, value, isReshape, axis) {
-    console.log('need to use axis', axis);
-
-    let {x, y, width, height} = this;
     if (isReshape) {
       // Construct a moveToPoint that we will reshape to
       let newPoint = this.getPoint(name);
@@ -129,8 +126,14 @@ export default class RectShape extends Shape {
     } else {
       // Doesn't matter what point we move, the distance applies
       // to the center
-      this.x += value.x;
-      this.y += value.y;
+      if (axis === 'x') {
+        this.x += value.x;
+      } else if (axis === 'y') {
+        this.y += value.y;
+      } else {
+        this.x += value.x;
+        this.y += value.y;
+      }
     }
   }
 
