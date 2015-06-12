@@ -4,6 +4,7 @@ import RectShape from '../models/shapes/RectShape';
 import LineShape from '../models/shapes/LineShape';
 import PathShape from '../models/shapes/PathShape';
 import TextShape from '../models/shapes/TextShape';
+import DrawCanvas from '../models/DrawCanvas';
 
 function evaluationUtils(variables) {
   return {
@@ -47,36 +48,63 @@ function evaluationUtils(variables) {
     },
     line(params, name, index) {
       variables.shapes[this.getNewShapeName(name, index)] = new LineShape(params);
+    },
+    picture(params, name, index) {
+      // this should be the variables for the referenced picture,
+      // but we'll use the same variables as the outer picture for now
+      let subPictureVariables = _.cloneDeep(variables);
+      subPictureVariables.shapes = {};
+
+      let utils = evaluationUtils(subPictureVariables);
+
+      let canvasDraw = new DrawCanvas({width: params.width, height: params.height});
+      let canvasJs = canvasDraw.getJsCode();
+
+      /* eslint-disable */
+      eval(canvasJs + params.pictureFunctions[params.pictureId])();
+      /* eslint-enable */
+
+      let pictureShape = new RectShape(params);
+      pictureShape.type = 'picture';
+
+      //let pictureKey = `picture_${params.pictureId}`;
+
+      //pictureShape[pictureKey] = {};
+      //pictureShape[pictureKey].shapes = subPictureVariables.shapes;
+
+      pictureShape.shapes = subPictureVariables.shapes;
+
+      variables.shapes[this.getNewShapeName(name, index)] = pictureShape;
     }
   };
 }
 
 // Evaluate JS and MOST LIKELY mutate variables passed in
-export default function evalutateJs(jsCode, variables, pictureFunctionsStrings, currentPictureId) {
+export default function evalutateJs(jsCode, variables, pictureFunctions, currentPictureId) {
   try {
     if (!_) {
       console.warn('Lodash required for evaluation environment!');
     }
 
 
-    console.log('before setup: ', currentPictureId);
+    //console.log('before setup: ', currentPictureId);
     /* eslint-disable */
     let utils = evaluationUtils(variables);
 
     // evaluate function declarations here
 
-    let pictureFunctions = {};
+    //let pictureFunctions = {};
 
-    for (let pictureId in pictureFunctionsStrings) {
-      pictureFunctions[pictureId] = eval(pictureFunctionsStrings[pictureId]);
-    }
+    //for (let pictureId in pictureFunctionsStrings) {
+    //  pictureFunctions[pictureId] = eval(pictureFunctionsStrings[pictureId]);
+    //}
 
     if (currentPictureId) {
       console.log('break here');
     }
-    console.log('before eval: ', currentPictureId);
+    //console.log('before eval: ', currentPictureId);
     return eval(jsCode);
-    console.log('after eval: ', currentPictureId);
+    //console.log('after eval: ', currentPictureId);
     /* eslint-enable */
 
   } catch (error) {

@@ -87,8 +87,15 @@ export default class DrawPictureInstruction extends DrawInstruction {
   getJsCode(index) {
     let {x, y} = this.getFromJs(index);
     let propsJs = super.getPropsJs(index).join(',\n');
-    return `pictureFunctions['${this.pictureId}']();`;
-    // loop up compiled function corresponding to pictureId and call it
+    return `utils.picture({\n` +
+           `${propsJs},\n` +
+           `x: ${x},\n` +
+           `y: ${y},\n` +
+           `width: ${this.getWidthJs(index)},\n` +
+           `height: ${this.getHeightJs(index)},\n` +
+           `pictureId: '${this.pictureId}',\n` +
+           `pictureFunctions: pictureFunctions\n` +
+           `}, '${this.shapeId}', ${index});\n`;
   }
 
   getFromUi(picture, shapes) {

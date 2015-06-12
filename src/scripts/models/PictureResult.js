@@ -226,7 +226,8 @@ export default class PictureResult {
     let pictureFunctions = this._compilePictures(this.allPictures);
 
     //let currentPictureCode = pictureFunctions[this.picture.id] + '();';
-    let jsCode = canvasJs + `pictureFunctions['${this.picture.id}'](); \n`;
+    let rootPictureFunctionString = pictureFunctions[this.picture.id];
+    let jsCode = canvasJs + rootPictureFunctionString + '(); \n';
 
     evaluateJs(jsCode, variableValues, pictureFunctions, this.picture.id);
 
