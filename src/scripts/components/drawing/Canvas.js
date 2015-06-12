@@ -86,12 +86,20 @@ class Canvas extends React.Component {
         </text>
       );
     } else if (shape.type === 'picture') {
+      // TODO: (nhan) factor this out into a seperate picture component
       let shapeElements = _.values(shape.shapes)
         .filter(subShape => subShape.id !== 'canvas')
         .map((subShape) =>
           this.drawShape(subShape, subShape.id, subShape.getRenderProps()));
+
+      let xScale = props.width / 800;
+      let yScale = props.height / 600;
+      let scaleTransform = `scale(${xScale} ${yScale})`;
+
+      let transform = `${props.transform} translate(${props.x}, ${props.y}) scale(${xScale} ${yScale})`;
+
       return (
-        <g key={key} transform={`translate(${props.x}, ${props.y})`} >{shapeElements}</g>
+        <g key={key} transform={transform}>{shapeElements}</g>
       );
     }
     console.error('Unknown type', shape.type);

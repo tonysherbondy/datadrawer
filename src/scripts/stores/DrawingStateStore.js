@@ -100,7 +100,7 @@ const DrawingStateStore = biff.createStore({
       // TODO: (nhan) this is a perf hack for now so that we don't emit
       // multiple changes in case we need to set both (e.g. when stepping
       // to next instruction inside a loop);
-      if (payload.loopIndex) {
+      if (payload.loopIndex !== null && payload.loopIndex !== undefined) {
         drawingState.currentLoopIndex = payload.loopIndex;
       }
       DrawingStateStore.emitChange();

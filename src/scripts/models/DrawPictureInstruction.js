@@ -4,6 +4,8 @@ import PictureActions from '../actions/PictureActions';
 import Expression from './Expression';
 import ExpressionEditorAndScrub from '../components/ExpressionEditorAndScrub';
 
+// TODO: (nhan) most of the code for the geometry of the picture was copied-
+// pasted from DrawRectInstruction.  Should probably abstract this out.
 export default class DrawPictureInstruction extends DrawInstruction {
   constructor(props) {
     super(props);
@@ -93,9 +95,8 @@ export default class DrawPictureInstruction extends DrawInstruction {
            `y: ${y},\n` +
            `width: ${this.getWidthJs(index)},\n` +
            `height: ${this.getHeightJs(index)},\n` +
-           `pictureId: '${this.pictureId}',\n` +
-           `pictureFunctions: pictureFunctions\n` +
-           `}, '${this.shapeId}', ${index});\n`;
+           `pictureId: '${this.pictureId}'\n` +
+           `}, '${this.shapeId}', ${index}, depth);\n`;
   }
 
   getFromUi(picture, shapes) {

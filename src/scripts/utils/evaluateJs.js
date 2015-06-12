@@ -49,29 +49,26 @@ function evaluationUtils(variables) {
     line(params, name, index) {
       variables.shapes[this.getNewShapeName(name, index)] = new LineShape(params);
     },
-    picture(params, name, index) {
-      // this should be the variables for the referenced picture,
-      // but we'll use the same variables as the outer picture for now
-      let subPictureVariables = _.cloneDeep(variables);
+    picture(params, name, index, depth) {
+      depth = depth;
+      // Need to do a deep clone here since we don't want to mutate the original variables
+      // TODO: (nhan) a clone won't be necessary here once we switch to immutable data structures
+      let subPictureVariables = _.cloneDeep(variables.pictureVariablesMap[params.pictureId]);
+      subPictureVariables.pictureCodeMap = variables.pictureCodeMap;
+      subPictureVariables.pictureVariablesMap = variables.pictureVariablesMap;
       subPictureVariables.shapes = {};
 
       let utils = evaluationUtils(subPictureVariables);
-
-      let canvasDraw = new DrawCanvas({width: params.width, height: params.height});
+      let canvasDraw = new DrawCanvas({width: 800, height: 600});
       let canvasJs = canvasDraw.getJsCode();
 
       /* eslint-disable */
-      eval(canvasJs + params.pictureFunctions[params.pictureId])();
+      eval(canvasJs + variables.pictureCodeMap[params.pictureId] + '(depth + 1);');
       /* eslint-enable */
 
+      // TODO: (nhan) write a separate picture shape to encapsulate this logic
       let pictureShape = new RectShape(params);
       pictureShape.type = 'picture';
-
-      //let pictureKey = `picture_${params.pictureId}`;
-
-      //pictureShape[pictureKey] = {};
-      //pictureShape[pictureKey].shapes = subPictureVariables.shapes;
-
       pictureShape.shapes = subPictureVariables.shapes;
 
       variables.shapes[this.getNewShapeName(name, index)] = pictureShape;
@@ -80,31 +77,19 @@ function evaluationUtils(variables) {
 }
 
 // Evaluate JS and MOST LIKELY mutate variables passed in
-export default function evalutateJs(jsCode, variables, pictureFunctions, currentPictureId) {
+export default function evalutateJs(jsCode, variables) {
   try {
     if (!_) {
       console.warn('Lodash required for evaluation environment!');
     }
 
-
-    //console.log('before setup: ', currentPictureId);
-    /* eslint-disable */
+    // TODO: this repeats some logic from the picture util above, we should
+    // probably refactor this so that what we are evaling here is a
+    // utils.picture(...) command
     let utils = evaluationUtils(variables);
 
-    // evaluate function declarations here
-
-    //let pictureFunctions = {};
-
-    //for (let pictureId in pictureFunctionsStrings) {
-    //  pictureFunctions[pictureId] = eval(pictureFunctionsStrings[pictureId]);
-    //}
-
-    if (currentPictureId) {
-      console.log('break here');
-    }
-    //console.log('before eval: ', currentPictureId);
+    /* eslint-disable */
     return eval(jsCode);
-    //console.log('after eval: ', currentPictureId);
     /* eslint-enable */
 
   } catch (error) {

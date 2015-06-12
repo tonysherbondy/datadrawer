@@ -12,7 +12,6 @@ export default class PictureResult {
     this.picture = props.picture;
     this.allPictures = props.allPictures;
     this.instructions = props.picture.instructions;
-    this.dataVariables = props.picture.variables;
     this.currentInstruction = props.currentInstruction;
     this.currentLoopIndex = props.currentLoopIndex;
     // Compute will assign shapes, variableValues and js
@@ -38,10 +37,15 @@ export default class PictureResult {
     }
   }
 
-  getTable() {
-    let rows = this.dataVariables.filter(v => v.isRow);
+  getTable(pictureId) {
+    pictureId = pictureId ? pictureId : this.picture.id;
+    let picture = _.find(this.allPictures, {id: pictureId});
+    let variables = picture.variables;
+    let variableValues = this.pictureVariablesMap[pictureId];
+
+    let rows = variables.filter(v => v.isRow);
     let rowValues = rows.map(row => {
-      return row.getValue(this.variableValues);
+      return row.getValue(variableValues);
     });
     let maxLength = rowValues.reduce((max, row) => {
       return row.length > max ? row.length : max;
@@ -108,11 +112,11 @@ export default class PictureResult {
     return nameMap;
   }
 
-  _initVariableValuesWithData() {
+  _initVariableValuesWithData(picture) {
     // Take the immutable dataVariable definitions
     let varDoneMap = {};
     let isDone = v => varDoneMap[v.id];
-    let variables = this.dataVariables;
+    let variables = picture.variables;
     let toJsQueue = [];
     let jsLines = [];
 
@@ -158,27 +162,14 @@ export default class PictureResult {
   }
 
   _compilePictures() {
-    /*
-     *
-     * for each picture
-     *   let ret[picture.id] = '(function() {... compiled code for picture ...}'
-     *     in compiled code assume there is an object in the scope that is
-     *     named pictureFunctions whose members are the code for the given picture
-     *
-     *     when encountering a picture instruction
-     *       the code should be
-     *       'pictureFunctions[picture.id]()'
-     * return
-     */
-
     return this.allPictures.map(picture => {
       return {
         id: picture.id,
         compiledCode: this._compilePicture(picture)
       };
-    }).reduce(function(pictureFunctions, compiledPicture) {
-      pictureFunctions[compiledPicture.id] = compiledPicture.compiledCode;
-      return pictureFunctions;
+    }).reduce(function(pictureCodeMap, compiledPicture) {
+      pictureCodeMap[compiledPicture.id] = compiledPicture.compiledCode;
+      return pictureCodeMap;
     }, {});
   }
 
@@ -187,11 +178,16 @@ export default class PictureResult {
     // Get JS from instructions
     let validInstructions = instructions.filter(i => i.isValid());
     let instructionsUpToCurrent = validInstructions;
-    //let currentInstruction = this.currentInstruction;
-    //if (currentInstruction) {
-      //let isAfter = InstructionTreeNode.isInstructionAfter.bind(null, instructions, currentInstruction);
-      //instructionsUpToCurrent = validInstructions.filter(i => !isAfter(i));
-    //}
+
+    let currentInstruction;
+    if (picture.id === this.picture.id) {
+      currentInstruction = this.currentInstruction;
+      if (currentInstruction) {
+        let isAfter = InstructionTreeNode.isInstructionAfter.bind(null, instructions, currentInstruction);
+        instructionsUpToCurrent = validInstructions.filter(i => !isAfter(i));
+      }
+    }
+
     let jsCode = instructionsUpToCurrent.map(instruction => {
       // TODO, a loop instructions total iterations can be calculated
       // at this point because loops can only depend on data variables, this will
@@ -199,44 +195,62 @@ export default class PictureResult {
       // within the loop though...
       // TODO Loop instructions don't have a shapeName, but perhaps we can just ignore
       if (instruction instanceof LoopInstruction) {
-        let table = this.getTable();
-        return instruction.getJsCode(table, null, this.currentLoopIndex);
+        let table = this.getTable(picture.id);
+        return instruction.getJsCode(table, currentInstruction, this.currentLoopIndex);
       }
       return instruction.getJsCode();
     }).join('\n');
 
-    return `(function() {\n${jsCode}\n})`;
+    return '(function(depth) {' +
+      //'console.log("drawing eval code ", depth);' +
+      'if (depth > 4) { return; } ' +
+      `\n${jsCode}\n})`;
+  }
+
+  _initVariablesForAllPictures() {
+    return this.allPictures.map(picture => {
+      return {
+        id: picture.id,
+        variables: this._initVariableValuesWithData(picture).variableValues
+      };
+    }).reduce(function(pictureVariablesMap, variablesForPicture) {
+      pictureVariablesMap[variablesForPicture.id] = variablesForPicture.variables;
+      return pictureVariablesMap;
+    }, {});
   }
 
   _compute() {
     let instructions = this.instructions;
     // Compute shapes and variable values
+    let pictureVariablesMap = this._initVariablesForAllPictures();
 
-    // This should be a variableValues map that gets used
-    let {variableValues, jsCode: dataJsCode} = this._initVariableValuesWithData();
-    // Initialize shape variable values container
-    variableValues.shapes = {};
     // need to set this in order to get table for loop:/
-    this.variableValues = variableValues;
+    this.pictureVariablesMap = pictureVariablesMap;
 
+    // TODO: (nhan) these two weird looking lines are needed right now since
+    // old code was written to expect variables for THIS picture in variableValues
+    // this should change once we rework the compilation pipeline
+    let variableValues = pictureVariablesMap[this.picture.id];
+    variableValues.pictureVariablesMap = pictureVariablesMap;
+
+    variableValues.pictureCodeMap = this._compilePictures(this.allPictures);
+    variableValues.shapes = {};
+
+    // TODO: (nhan) this should be moved to utils.picture(...)
     // Treat canvas like another shape
     let canvasDraw = new DrawCanvas({width: 800, height: 600});
     let canvasJs = canvasDraw.getJsCode();
 
-    let pictureFunctions = this._compilePictures(this.allPictures);
+    let rootPictureCodeString = variableValues.pictureCodeMap[this.picture.id];
+    let jsCode = canvasJs + rootPictureCodeString + '(0); \n';
 
-    //let currentPictureCode = pictureFunctions[this.picture.id] + '();';
-    let rootPictureFunctionString = pictureFunctions[this.picture.id];
-    let jsCode = canvasJs + rootPictureFunctionString + '(); \n';
-
-    evaluateJs(jsCode, variableValues, pictureFunctions, this.picture.id);
+    evaluateJs(jsCode, variableValues);
 
     // TODO we will need to filter by draw instructions
     // TODO we should probably actually traverse by variables in the variables.shape scope
     let shapes = variableValues.shapes;
 
-    jsCode = dataJsCode + '\n\n' + jsCode;
-
+    //jsCode = dataJsCode + '\n\n' + jsCode;
     return {shapes, variableValues, jsCode};
   }
 }
