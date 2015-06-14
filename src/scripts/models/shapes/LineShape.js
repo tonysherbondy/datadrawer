@@ -62,25 +62,26 @@ export default class LineShape extends Shape {
   }
 
   // Move the shape relatively by this value
-  moveRelative(name, value, isReshape) {
+  moveRelative(name, value, isReshape, axis) {
     let {x, y} = value;
+    let {x1, x2, y1, y2} = this;
     if (isReshape) {
       switch (name) {
         case 'left': {
-          this.x1 += x;
-          this.y1 += y;
+          x1 += x;
+          y1 += y;
           break;
         }
         case 'center': {
-          this.x1 += x;
-          this.y1 += y;
-          this.x2 += x;
-          this.y2 += y;
+          x1 += x;
+          y1 += y;
+          x2 += x;
+          y2 += y;
           break;
         }
         case 'right': {
-          this.x2 += x;
-          this.y2 += y;
+          x2 += x;
+          y2 += y;
           break;
         }
         default: {
@@ -88,37 +89,46 @@ export default class LineShape extends Shape {
         }
       }
     } else {
-      this.x1 += x;
-      this.y1 += y;
-      this.x2 += x;
-      this.y2 += y;
+      x1 += x;
+      y1 += y;
+      x2 += x;
+      y2 += y;
     }
+    if (axis === 'x') {
+      y1 = this.y1;
+      y2 = this.y2;
+    } else if (axis === 'y') {
+      x1 = this.x1;
+      x2 = this.x2;
+    }
+    this.x1 = x1;
+    this.x2 = x2;
+    this.y1 = y1;
+    this.y2 = y2;
   }
 
   // Move the shape so that a particular point is set to value
-  moveToPoint(name, value) {
-    let dx = this.x2 - this.x1;
-    let dy = this.y2 - this.y1;
+  moveToPoint(name, value, isReshape, axis) {
     let {x, y} = value;
+    let dx, dy;
     switch (name) {
       case 'left':
-        this.x1 = x;
-        this.y1 = y;
+        dx = x - this.x1;
+        dy = y - this.y1;
         break;
       case 'center':
-        this.x1 = x - dx / 2;
-        this.y1 = y - dy / 2;
+        dx = x - (this.x1 / 2 + this.x2 / 2);
+        dy = y - (this.y1 / 2 + this.y2 / 2);
         break;
       case 'right':
-        this.x1 = x - dx;
-        this.y1 = y - dy;
+        dx = x - this.x2;
+        dy = y - this.y2;
         break;
       default:
         console.error('Unknown point', name);
         return;
     }
-    this.x2 = this.x1 + dx;
-    this.y2 = this.y1 + dy;
+    this.moveRelative(name, {x: dx, y: dy}, isReshape, axis);
   }
 
   getRenderProps() {

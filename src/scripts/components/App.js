@@ -92,9 +92,8 @@ class App extends React.Component {
         // Toggle guide setting on selected shape
         let drawInstruction = this.getDrawInstructionForSelectedShape();
         if (drawInstruction) {
-          drawInstruction = drawInstruction.clone();
-          drawInstruction.isGuide = !drawInstruction.isGuide;
-          PictureActions.modifyInstruction(this.props.drawingState.activePicture, drawInstruction);
+          let picture = this.props.drawingState.activePicture;
+          drawInstruction.modifyProps(picture, {isGuide: !drawInstruction.isGuide});
         }
       }
     });
@@ -256,12 +255,15 @@ class App extends React.Component {
         let {parent, index} = InstructionTreeNode.findParentWithIndex(
           this.props.drawingState.activePicture.instructions, selectedInstructions[0]);
 
+        // Need to generate the loops ID before we remove the instructions from the list
+        let loopId = InstructionTreeNode.getNextInstructionId(this.props.drawingState.activePicture.instructions);
+
         // Remove selected instructions from list
         PictureActions.removeInstructions(this.props.drawingState.activePicture, selectedInstructions);
 
         // Create a new loop instruction with selected instructions as children
         let instruction = new LoopInstruction({
-          id: InstructionTreeNode.getNextInstructionId(this.props.drawingState.activePicture.instructions),
+          id: loopId,
           instructions: selectedInstructions
         });
 
@@ -477,7 +479,8 @@ class App extends React.Component {
 
   getDrawInstructionForSelectedShape() {
     let selectedShapeId = this.getSelectedShapeId();
-    return this.props.drawingState.activePicture.instructions.find(i => {
+    let {instructions} = this.props.drawingState.activePicture;
+    return InstructionTreeNode.find(instructions, i => {
       return i.shapeId === selectedShapeId && i instanceof DrawInstruction;
     });
   }
