@@ -12,7 +12,8 @@ let drawingState = {
   editingInstructionId: null,
   dataPopupPosition: null,
   showDataPopup: false,
-  activePicture: null
+  activePicture: null,
+  pictureForPictureTool: null
 };
 
 function resetState() {
@@ -87,6 +88,11 @@ const DrawingStateStore = biff.createStore({
       if (drawingState.mode === 'normal') {
         drawingState.editingInstructionId = null;
       }
+
+      if (drawingState.mode !== 'picture') {
+        drawingState.pictureForPictureTool = null;
+      }
+
       DrawingStateStore.emitChange();
       break;
     }
@@ -142,6 +148,11 @@ const DrawingStateStore = biff.createStore({
       // TODO - probably only want to remove selected state
       // if we have matching ID, but for now this is safest
       resetState();
+      DrawingStateStore.emitChange();
+      break;
+    }
+    case 'SET_PICTURE_FOR_PICTURE_TOOL': {
+      drawingState.pictureForPictureTool = payload.picture;
       DrawingStateStore.emitChange();
       break;
     }

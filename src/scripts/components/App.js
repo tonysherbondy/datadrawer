@@ -179,10 +179,11 @@ class App extends React.Component {
       group: 'draw',
       keyDown: () => {
         DrawingStateActions.setDrawingMode('picture');
-        let instruction = new DrawPictureInstruction({
-          id: InstructionTreeNode.getNextInstructionId(this.props.drawingState.activePicture.instructions)
-        });
-        this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
+        //let instruction = new DrawPictureInstruction({
+          //id: InstructionTreeNode.getNextInstructionId(this.props.drawingState.activePicture.instructions)
+          //pictureId: picture.id
+        //});
+        //this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
       }
     });
 
@@ -511,8 +512,17 @@ class App extends React.Component {
     window.removeEventListener('keydown');
   }
 
-  changeActivePicture(picture) {
-    DrawingStateActions.setActivePicture(picture);
+  handleThumbnailClick(picture) {
+    if (this.props.drawingState.mode === 'picture') {
+      DrawingStateActions.setPictureForPictureTool(picture);
+      let instruction = new DrawPictureInstruction({
+        id: InstructionTreeNode.getNextInstructionId(this.props.drawingState.activePicture.instructions),
+        pictureId: picture.id
+      });
+      this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
+    } else {
+      DrawingStateActions.setActivePicture(picture);
+    }
   }
 
 
@@ -533,14 +543,21 @@ class App extends React.Component {
       });
       let isActivePicture =
         picture.id === this.props.drawingState.activePicture.id;
+
+
+      let isPictureForPictureTool =
+        this.props.drawingState.pictureForPictureTool
+        && picture.id === this.props.drawingState.pictureForPictureTool.id;
+
       let className = classNames('picture-thumbnail', {
-        'active-picture-thumbnail': isActivePicture
+        'active-picture-thumbnail': isActivePicture,
+        'picture-for-picture-tool-thumbnail': isPictureForPictureTool
       });
 
       return (
         <a key={picture.id}
           href='#'
-          onClick={this.changeActivePicture.bind(this, picture)}>
+          onClick={this.handleThumbnailClick.bind(this, picture)}>
           <Canvas
             className={className}
             drawingState={drawingState}

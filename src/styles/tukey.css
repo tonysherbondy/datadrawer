@@ -34,6 +34,11 @@
   border: 2px solid rgb(38, 137, 220);
 }
 
+.picture-for-picture-tool-thumbnail {
+  margin: 8px;
+  border: 2px solid rgb(220, 137, 38);
+}
+
 .magnet {
   fill: rgb(231, 238, 80);
   stroke: darkgray;

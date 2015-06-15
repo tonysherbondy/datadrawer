@@ -53,6 +53,13 @@ const DrawingStateActions = biff.createActions({
     });
   },
 
+  setPictureForPictureTool(picture) {
+    this.dispatch({
+      actionType: 'SET_PICTURE_FOR_PICTURE_TOOL',
+      picture: picture
+    });
+  },
+
   showDataPopup(position) {
     this.dispatch({
       actionType: 'SHOW_DATA_POPUP',
