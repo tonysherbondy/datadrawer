@@ -59,9 +59,7 @@ class App extends React.Component {
       currentLoopIndex: props.drawingState.currentLoopIndex
     });
 
-    let stepper = new InstructionStepper(pictureResult);
-
-    return { pictureResult, stepper };
+    return { pictureResult };
   }
 
   _registerKeyEvents(manager) {
@@ -318,7 +316,8 @@ class App extends React.Component {
       description: 'prev instruction',
       keyDown: (e) => {
         let loopIndex = this.props.drawingState.currentLoopIndex;
-        let {nextInstruction, nextLoopIndex} = this.state.stepper.
+        let stepper = new InstructionStepper(this.state.pictureResult);
+        let {nextInstruction, nextLoopIndex} = stepper.
           stepBackwards(this.getCurrentInstruction(), loopIndex);
 
         if (nextInstruction) {
@@ -335,7 +334,8 @@ class App extends React.Component {
       description: 'prev instruction',
       keyDown: (e) => {
         let loopIndex = this.props.drawingState.currentLoopIndex;
-        let {nextInstruction, nextLoopIndex} = this.state.stepper.
+        let stepper = new InstructionStepper(this.state.pictureResult);
+        let {nextInstruction, nextLoopIndex} = stepper.
           stepForwards(this.getCurrentInstruction(), loopIndex);
 
         if (nextInstruction) {
