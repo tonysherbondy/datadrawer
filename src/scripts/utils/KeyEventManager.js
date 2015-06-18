@@ -8,7 +8,7 @@ let modifierKeysMatch = function(handler, event) {
     (!!handler.shiftKey === !!event.shiftKey);
 };
 
-class KeyEventManager {
+export default class KeyEventManager {
   constructor(eventMap, activeHandlers) {
     if (eventMap instanceof OrderedMap ) {
       this.eventMap = eventMap;
@@ -66,5 +66,3 @@ class KeyEventManager {
     return new KeyEventManager(eventMap);
   }
 }
-
-export default KeyEventManager;

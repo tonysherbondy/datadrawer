@@ -19,7 +19,7 @@ import LoopInstruction from '../models/LoopInstruction';
 import PictureResult from '../models/PictureResult';
 import InstructionStepper from '../utils/InstructionStepper';
 import KeyEventManager from '../utils/KeyEventManager';
-
+import ThumbnailsBar from './ThumbnailsBar';
 import KeyboardControlsList from './KeyboardControlsList';
 import InstructionList from './instructions/InstructionList';
 import DataVariableList from './instructions/DataVariableList';
@@ -533,54 +533,6 @@ class App extends React.Component {
     }
   }
 
-
-  getThumbnailsBar() {
-    let getThumbnailForPicture = (picture) => {
-      let drawingState = {
-        mode: 'normal',
-        selectedShapeId: null,
-        selectedInstructions: null,
-        currentLoopIndex: null,
-        editingInstructionId: null,
-        activePicture: picture
-      };
-
-      let pictureResult = new PictureResult({
-        picture: picture,
-        allPictures: this.props.pictures
-      });
-      let isActivePicture =
-        picture.id === this.props.drawingState.activePicture.id;
-
-
-      let isPictureForPictureTool =
-        this.props.drawingState.pictureForPictureTool
-        && picture.id === this.props.drawingState.pictureForPictureTool.id;
-
-      let className = classNames('picture-thumbnail', {
-        'active-picture-thumbnail': isActivePicture,
-        'picture-for-picture-tool-thumbnail': isPictureForPictureTool
-      });
-
-      return (
-        <a key={picture.id}
-          href='#'
-          onClick={this.handleThumbnailClick.bind(this, picture)}>
-          <Canvas
-            className={className}
-            drawingState={drawingState}
-            pictureResult={pictureResult}/>
-        </a>);
-    };
-    return (
-      <div>
-        {this.props.pictures.map(getThumbnailForPicture)}
-        <a href='#' onClick={PictureActions.addNewPicture}>
-          <div className='picture-thumbnail new-picture-button'>New Picture</div>
-        </a>
-      </div>);
-  }
-
   render() {
     // Selected instructions were selected by user or are the last instruction in set of all
     let selectedInstructions = this.getSelectedInstructions();
@@ -590,9 +542,6 @@ class App extends React.Component {
     if (_.isString(this.props.drawingState.selectedShapeId)) {
       currentInstruction = null;
     }
-
-    //console.log('renderering with currentInstruction: ', currentInstruction,
-                //'index ', this.props.drawingState.currentLoopIndex);
 
     let activePicture = this.props.drawingState.activePicture;
     let pictureResult = this.state.pictureResult;
@@ -607,10 +556,12 @@ class App extends React.Component {
 
     return (
       <div className='main'>
-        {/* TODO: (nhan): move this to component */}
-        <div className='top-bar'>
-          {this.getThumbnailsBar()}
-        </div>
+        <ThumbnailsBar
+          pictures={this.props.pictures}
+          activePicture={this.props.drawingState.activePicture}
+          pictureForPictureTool={this.props.drawingState.pictureForPictureTool}
+          onThumbnailClick={this.handleThumbnailClick.bind(this)}
+        />
 
         <div className='editor-area'>
           <div className='left-panel'>
