@@ -5,7 +5,7 @@ import Expression from './Expression';
 import ExpressionEditorAndScrub from '../components/ExpressionEditorAndScrub';
 
 export default class MoveInstruction extends AdjustInstruction {
-  constructor(props) {
+  constructor(props={}) {
     super(props);
     this.x = props.x;
     this.y = props.y;

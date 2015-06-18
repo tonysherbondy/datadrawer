@@ -6,7 +6,7 @@ import {distanceBetweenPoints} from '../utils/utils';
 import Expression from '../models/Expression';
 
 export default class DrawCircleInstruction extends DrawInstruction {
-  constructor(props) {
+  constructor(props={}) {
     super(props);
     this.name = props.name || 'circle';
     this.radius = props.radius || new Expression(1);

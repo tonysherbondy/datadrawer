@@ -7,7 +7,7 @@ import ExpressionEditorAndScrub from '../components/ExpressionEditorAndScrub';
 // TODO: (nhan) most of the code for the geometry of the picture was copied-
 // pasted from DrawRectInstruction.  Should probably abstract this out.
 export default class DrawPictureInstruction extends DrawInstruction {
-  constructor(props) {
+  constructor(props={}) {
     super(props);
     this.name = props.name || 'picture';
     this.pictureId = props.pictureId || 'bars';

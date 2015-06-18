@@ -76,10 +76,7 @@ class App extends React.Component {
       group: 'draw',
       keyDown: () => {
         DrawingStateActions.setDrawingMode('path');
-        let instruction = new DrawPathInstruction({
-          id: InstructionTreeNode.getNextInstructionId(this.props.drawingState.activePicture.instructions),
-          isClosed: true
-        });
+        let instruction = new DrawPathInstruction();
         this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
       }
     });
@@ -164,9 +161,7 @@ class App extends React.Component {
       group: 'draw',
       keyDown: () => {
         DrawingStateActions.setDrawingMode('rect');
-        let instruction = new DrawRectInstruction({
-          id: InstructionTreeNode.getNextInstructionId(this.props.drawingState.activePicture.instructions)
-        });
+        let instruction = new DrawRectInstruction();
         this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
       }
     });
@@ -198,9 +193,7 @@ class App extends React.Component {
       group: 'draw',
       keyDown: () => {
         DrawingStateActions.setDrawingMode('text');
-        let instruction = new DrawTextInstruction({
-          id: InstructionTreeNode.getNextInstructionId(this.props.drawingState.activePicture.instructions)
-        });
+        let instruction = new DrawTextInstruction();
         this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
       }
     });
@@ -222,9 +215,7 @@ class App extends React.Component {
       group: 'draw',
       keyDown: () => {
         DrawingStateActions.setDrawingMode('line');
-        let instruction = new DrawLineInstruction({
-          id: InstructionTreeNode.getNextInstructionId(this.props.drawingState.activePicture.instructions)
-        });
+        let instruction = new DrawLineInstruction();
         this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
       }
     });
@@ -236,9 +227,7 @@ class App extends React.Component {
       group: 'draw',
       keyDown: () => {
         DrawingStateActions.setDrawingMode('circle');
-        let instruction = new DrawCircleInstruction({
-          id: InstructionTreeNode.getNextInstructionId(this.props.drawingState.activePicture.instructions)
-        });
+        let instruction = new DrawCircleInstruction();
         this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
       }
     });
@@ -266,19 +255,13 @@ class App extends React.Component {
         let {parent, index} = InstructionTreeNode.findParentWithIndex(
           this.props.drawingState.activePicture.instructions, selectedInstructions[0]);
 
-        // Need to generate the loops ID before we remove the instructions from the list
-        let loopId = InstructionTreeNode.getNextInstructionId(this.props.drawingState.activePicture.instructions);
-
         // TODO - this should simply call an action that is changePicture and feed it a new picture that it makes
         // based on removing and inserting new instructions
         // Remove selected instructions from list
         PictureActions.removeInstructions(this.props.drawingState.activePicture, selectedInstructions);
 
         // Create a new loop instruction with selected instructions as children
-        let instruction = new LoopInstruction({
-          id: loopId,
-          instructions: selectedInstructions
-        });
+        let instruction = new LoopInstruction({instructions: selectedInstructions});
 
         // Insert loop instruction before previous instruction index
         // TODO - need to grab the new activePicture because the one we were pointing to before has changed
@@ -523,7 +506,6 @@ class App extends React.Component {
     if (this.props.drawingState.mode === 'picture') {
       DrawingStateActions.setPictureForPictureTool(picture);
       let instruction = new DrawPictureInstruction({
-        id: InstructionTreeNode.getNextInstructionId(this.props.drawingState.activePicture.instructions),
         pictureId: picture.id,
         variables: _.cloneDeep(picture.variables)
       });

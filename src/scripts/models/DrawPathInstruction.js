@@ -8,11 +8,11 @@ import ExpressionEditorAndScrub from '../components/ExpressionEditorAndScrub';
 import PictureActions from '../actions/PictureActions';
 
 export default class DrawPathInstruction extends DrawInstruction {
-  constructor(props) {
+  constructor(props={}) {
     super(props);
     this.to = props.to || [this.getLinePt(1, 1)];
     this.name = props.name || 'path';
-    this.isClosed = props.isClosed;
+    this.isClosed = _.isBoolean(props.isClosed) ? props.isClosed : true;
   }
 
   modifyInstructionWithProps(picture, props) {

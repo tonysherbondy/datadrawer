@@ -1,11 +1,12 @@
 import Expression from './Expression';
 import _ from 'lodash';
 import InstructionTreeNode from './InstructionTreeNode';
+import {guid} from '../utils/utils';
 
 export default class Instruction extends InstructionTreeNode {
   constructor({id, shapeId}) {
     super();
-    this.id = id;
+    this.id = id || guid();
     this.shapeId = shapeId;
   }
 

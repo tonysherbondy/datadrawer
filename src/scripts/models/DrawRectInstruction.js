@@ -5,7 +5,7 @@ import Expression from './Expression';
 import ExpressionEditorAndScrub from '../components/ExpressionEditorAndScrub';
 
 export default class DrawRectInstruction extends DrawInstruction {
-  constructor(props) {
+  constructor(props={}) {
     super(props);
     this.name = props.name || 'rect';
     this.width = props.width || new Expression(1);

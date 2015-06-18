@@ -5,7 +5,7 @@ import React from 'react';
 import ExpressionEditorAndScrub from '../components/ExpressionEditorAndScrub';
 
 export default class DrawTextInstruction extends DrawLineInstruction {
-  constructor(props) {
+  constructor(props={}) {
     super(props);
     this.name = props.name || 'text';
     this.text = props.text || new Expression(`'yolo'`);

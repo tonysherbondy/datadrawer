@@ -8,7 +8,6 @@ import MoveInstruction from '../../models/MoveInstruction';
 import RotateInstruction from '../../models/RotateInstruction';
 import Expression from '../../models/Expression';
 import PictureResult from '../../models/PictureResult';
-import InstructionTreeNode from '../../models/InstructionTreeNode';
 
 class Canvas extends React.Component {
   constructor(props) {
@@ -239,7 +238,6 @@ class Canvas extends React.Component {
           case 'scale': {
             let props = shape.getScaleAdjustProps(closeControlPoint, point);
             if (props) {
-              props.id = InstructionTreeNode.getNextInstructionId(instructions);
               this.setState({startPoint: closeControlPoint});
               this.props.pictureResult.insertNewInstructionAfterCurrent(new ScaleInstruction(props));
             }
@@ -251,7 +249,6 @@ class Canvas extends React.Component {
             let {shapeId, pointName} = closeControlPoint;
             // 180 degrees per 100 pixels
             let props = {
-              id: InstructionTreeNode.getNextInstructionId(instructions),
               shape: {id: shapeId},
               point: {id: shapeId, point: pointName}
             };
@@ -264,7 +261,6 @@ class Canvas extends React.Component {
             // Holding shift while clicking on the control point will
             // make the move a reshape
             let props = {
-              id: InstructionTreeNode.getNextInstructionId(instructions),
               point: closeControlPoint.pointName,
               shape: {id: closeControlPoint.shapeId},
               isReshape: event.shiftKey,

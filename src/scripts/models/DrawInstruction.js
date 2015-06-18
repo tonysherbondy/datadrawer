@@ -2,10 +2,13 @@ import React from 'react';
 import Instruction from './Instruction';
 import ContentEditable from '../components/ContentEditable';
 import Expression from './Expression';
+import {guid} from '../utils/utils';
 
 export default class DrawInstruction extends Instruction {
-  constructor(props) {
-    super({id: props.id, shapeId: `shape_${props.id}`});
+  constructor(props = {}) {
+    // Don't call super as that would reset our Id
+    let id = props.id || guid();
+    super({id, shapeId: `shape_${id}`});
     // Every draw instruction has a from, that can either be an explicit
     // point or reference to another point, refPoint
     this.from = props.from;

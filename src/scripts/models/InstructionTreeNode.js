@@ -32,11 +32,6 @@ InstructionTreeNode.getListSize = function(instructions) {
   return node.getSize() - 1;
 };
 
-InstructionTreeNode.getNextInstructionId = function(instructions) {
-  let size = InstructionTreeNode.getListSize(instructions);
-  return `i${size++}`;
-};
-
 InstructionTreeNode.flatten = function(instructions) {
   let node = new InstructionTreeNode({instructions});
   return node.getAllInstructions();
