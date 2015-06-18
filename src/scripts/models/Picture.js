@@ -46,7 +46,6 @@ export default class Picture {
     return new Picture(this._id, this._instructions, variables);
   }
 
-
   addInstruction(instruction) {
     // TODO: check that instruction doesn't exist
     let instructions = this._instructions.set(instruction.id, instruction);
@@ -80,23 +79,4 @@ export default class Picture {
     return new DataVariable({id, name, isRow, definition});
   }
 
-  //updateInstruction(instruction) {
-    //let instructions = this._instructions.set(instruction.id, instruction);
-    //return new Picture(this._id, instructions, this._variables);
-  //}
-
-  //removeInstruction(instruction) {
-    //let instructions = this._instructions.delete(instruction.id);
-    //return new Picture(this._id, instructions, this._variables);
-  //}
-
-  //removeInstruction(instructionsToRemove) {
-    //let instructions = this._instructions.withMutations(_instructions => {
-      //return instructionsToRemove.reduce((updatedInstructions, instruction) => {
-        //return updatedInstructions.delete(instruction.id);
-      //}, _instructions);
-    //});
-
-    //return new Picture(this._id, instructions, this._variables);
-  //}
 }

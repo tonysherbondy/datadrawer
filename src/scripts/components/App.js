@@ -41,6 +41,7 @@ class App extends React.Component {
 
     this.state = this._stateForProps(props);
     this.state.isDebugging = false;
+    this.state.hideKeyMap = false;
     this.keyEventManager = this._registerKeyEvents(new KeyEventManager());
   }
 
@@ -179,11 +180,6 @@ class App extends React.Component {
       group: 'draw',
       keyDown: () => {
         DrawingStateActions.setDrawingMode('picture');
-        //let instruction = new DrawPictureInstruction({
-          //id: InstructionTreeNode.getNextInstructionId(this.props.drawingState.activePicture.instructions)
-          //pictureId: picture.id
-        //});
-        //this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
       }
     });
 
@@ -275,6 +271,8 @@ class App extends React.Component {
         // Need to generate the loops ID before we remove the instructions from the list
         let loopId = InstructionTreeNode.getNextInstructionId(this.props.drawingState.activePicture.instructions);
 
+        // TODO - this should simply call an action that is changePicture and feed it a new picture that it makes
+        // based on removing and inserting new instructions
         // Remove selected instructions from list
         PictureActions.removeInstructions(this.props.drawingState.activePicture, selectedInstructions);
 
@@ -386,6 +384,15 @@ class App extends React.Component {
       description: 'debug mode',
       keyDown: () => {
         this.setState({isDebugging: !this.state.isDebugging});
+      }
+    });
+
+    manager = manager.registerHandler({
+      keyCode: 113,
+      keyDescription: 'F2',
+      description: 'hide this list',
+      keyDown: () => {
+        this.setState({hideKeyMap: !this.state.hideKeyMap});
       }
     });
 
@@ -517,7 +524,8 @@ class App extends React.Component {
       DrawingStateActions.setPictureForPictureTool(picture);
       let instruction = new DrawPictureInstruction({
         id: InstructionTreeNode.getNextInstructionId(this.props.drawingState.activePicture.instructions),
-        pictureId: picture.id
+        pictureId: picture.id,
+        variables: _.cloneDeep(picture.variables)
       });
       this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
     } else {
@@ -631,7 +639,7 @@ class App extends React.Component {
           </div>
 
           <KeyboardControlsList
-            className='keyboard-controls-list'
+            className={classNames('keyboard-controls-list', {'hidden': this.state.hideKeyMap})}
             keyEventManager={this.keyEventManager}
             drawingMode={this.props.drawingState.mode}/>
 
