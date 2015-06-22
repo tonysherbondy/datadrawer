@@ -4,7 +4,6 @@ import DrawCanvas from './DrawCanvas';
 import InstructionTreeNode from './InstructionTreeNode';
 import LoopInstruction from './LoopInstruction';
 import DrawInstruction from './DrawInstruction';
-import PictureActions from '../actions/PictureActions';
 
 // Transforms variables and instructions into shapes, values and javascript
 export default class PictureResult {
@@ -21,10 +20,6 @@ export default class PictureResult {
     // TODO - Only reason we need to export JS is to give it to the JS
     // viewer for debugging
     this.jsCode = jsCode;
-  }
-
-  insertNewInstructionAfterCurrent(instruction) {
-    PictureActions.insertInstructionAfterInstruction(this.picture, instruction, this.currentInstruction);
   }
 
   getTable(pictureId) {

@@ -241,7 +241,10 @@ class Canvas extends React.Component {
             let props = shape.getScaleAdjustProps(closeControlPoint, point);
             if (props) {
               this.setState({startPoint: closeControlPoint});
-              this.props.pictureResult.insertNewInstructionAfterCurrent(new ScaleInstruction(props));
+              PictureActions.insertInstructionAfterInstruction(
+                this.props.pictureResult.picture,
+                new ScaleInstruction(props),
+                this.props.currentInstruction);
             }
             break;
           }
@@ -256,7 +259,10 @@ class Canvas extends React.Component {
             };
             this.setState({startPoint: closeControlPoint});
             let newInstruction = (new RotateInstruction(props)).getCloneWithTo(point, closeControlPoint);
-            this.props.pictureResult.insertNewInstructionAfterCurrent(newInstruction);
+            PictureActions.insertInstructionAfterInstruction(
+              this.props.pictureResult.picture,
+              newInstruction,
+              this.props.currentInstruction);
             break;
           }
           case 'move': {
@@ -270,7 +276,10 @@ class Canvas extends React.Component {
               y: new Expression(point.y - closeControlPoint.y)
             };
             this.setState({startPoint: closeControlPoint});
-            this.props.pictureResult.insertNewInstructionAfterCurrent(new MoveInstruction(props));
+            PictureActions.insertInstructionAfterInstruction(
+              this.props.pictureResult.picture,
+              new MoveInstruction(props),
+              this.props.currentInstruction);
             break;
           }
         }
