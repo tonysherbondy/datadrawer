@@ -76,8 +76,10 @@ class App extends React.Component {
       group: 'draw',
       keyDown: () => {
         DrawingStateActions.setDrawingMode('path');
-        let instruction = new DrawPathInstruction();
-        this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
+        PictureActions.insertInstructionAfterInstruction(
+          this.props.drawingState.activePicture,
+          new DrawPathInstruction(),
+          this.getCurrentInstruction(this.props));
       }
     });
 
@@ -161,8 +163,10 @@ class App extends React.Component {
       group: 'draw',
       keyDown: () => {
         DrawingStateActions.setDrawingMode('rect');
-        let instruction = new DrawRectInstruction();
-        this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
+        PictureActions.insertInstructionAfterInstruction(
+          this.props.drawingState.activePicture,
+          new DrawRectInstruction(),
+          this.getCurrentInstruction(this.props));
       }
     });
 
@@ -193,8 +197,10 @@ class App extends React.Component {
       group: 'draw',
       keyDown: () => {
         DrawingStateActions.setDrawingMode('text');
-        let instruction = new DrawTextInstruction();
-        this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
+        PictureActions.insertInstructionAfterInstruction(
+          this.props.drawingState.activePicture,
+          new DrawTextInstruction(),
+          this.getCurrentInstruction(this.props));
       }
     });
 
@@ -215,8 +221,10 @@ class App extends React.Component {
       group: 'draw',
       keyDown: () => {
         DrawingStateActions.setDrawingMode('line');
-        let instruction = new DrawLineInstruction();
-        this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
+        PictureActions.insertInstructionAfterInstruction(
+          this.props.drawingState.activePicture,
+          new DrawLineInstruction(),
+          this.getCurrentInstruction(this.props));
       }
     });
 
@@ -227,8 +235,10 @@ class App extends React.Component {
       group: 'draw',
       keyDown: () => {
         DrawingStateActions.setDrawingMode('circle');
-        let instruction = new DrawCircleInstruction();
-        this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
+        PictureActions.insertInstructionAfterInstruction(
+          this.props.drawingState.activePicture,
+          new DrawCircleInstruction(),
+          this.getCurrentInstruction(this.props));
       }
     });
 
@@ -509,7 +519,9 @@ class App extends React.Component {
         pictureId: picture.id,
         variables: _.cloneDeep(picture.variables)
       });
-      this.state.pictureResult.insertNewInstructionAfterCurrent(instruction);
+      PictureActions.insertInstructionAfterInstruction(
+        this.props.drawingState.activePicture, instruction,
+        this.getCurrentInstruction(this.props));
     } else {
       DrawingStateActions.setActivePicture(picture);
     }
@@ -587,6 +599,7 @@ class App extends React.Component {
               <Canvas
                 className='canvas'
                 drawingState={this.props.drawingState}
+                currentInstruction={currentInstruction}
                 selectedShape={selectedShape}
                 pictureResult={pictureResult}
                 editingInstruction={this.getEditingInstruction()} />

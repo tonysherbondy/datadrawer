@@ -144,6 +144,15 @@ const PictureStore = biff.createStore({
       break;
     }
 
+    case 'INSERT_INSTRUCTION_AFTER_INSTRUCTION': {
+      let {picture, instruction, instructionToInsert} = payload;
+      picture = picture.insertInstructionAfterInstruction(
+        instructionToInsert, instruction);
+      updatePicture(picture);
+      PictureStore.emitChange();
+      break;
+    }
+
     case 'UNDO_CHANGE_TO_PICTURE': {
       pictures = pictures.update(payload.picture.id, history => history.undo());
       PictureStore.emitChange();

@@ -139,6 +139,11 @@ const DrawingStateStore = biff.createStore({
       DrawingStateStore.emitChange();
       break;
     }
+    case 'INSERT_INSTRUCTION_AFTER_INSTRUCTION': {
+      insertedInstruction(payload.instructionToInsert);
+      DrawingStateStore.emitChange();
+      break;
+    }
     case 'LOAD_PRESET_INSTRUCTIONS': {
       resetState();
       DrawingStateStore.emitChange();

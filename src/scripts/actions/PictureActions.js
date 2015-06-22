@@ -2,25 +2,15 @@ import biff from '../dispatcher/dispatcher';
 
 const PictureActions = biff.createActions({
   addNewPicture() {
-    this.dispatch({
-      actionType: 'ADD_NEW_PICTURE'
-    });
+    this.dispatch({actionType: 'ADD_NEW_PICTURE'});
   },
 
   addInstruction(picture, instruction) {
-    this.dispatch({
-      actionType: 'ADD_INSTRUCTION',
-      picture: picture,
-      instruction: instruction
-    });
+    this.dispatch({actionType: 'ADD_INSTRUCTION', picture, instruction});
   },
 
   modifyInstruction(picture, instruction) {
-    this.dispatch({
-      actionType: 'MODIFY_INSTRUCTION',
-      picture: picture,
-      instruction: instruction
-    });
+    this.dispatch({actionType: 'MODIFY_INSTRUCTION', picture, instruction});
   },
 
   removeInstruction(picture, instruction) {
@@ -28,59 +18,51 @@ const PictureActions = biff.createActions({
   },
 
   removeInstructions(picture, instructions) {
-    this.dispatch({
-      actionType: 'REMOVE_INSTRUCTIONS',
-      picture: picture,
-      instructions: instructions
-    });
+    this.dispatch({actionType: 'REMOVE_INSTRUCTIONS', picture, instructions});
   },
 
   insertInstruction(picture, instruction, index, parent) {
     this.dispatch({
       actionType: 'INSERT_INSTRUCTION',
-      picture: picture,
-      instruction: instruction,
-      index: index,
-      parent: parent
+      picture,
+      instruction,
+      index,
+      parent
     });
+  },
+
+  insertInstructionAfterInstruction(picture, instructionToInsert, instruction) {
+    if (!instruction) {
+      // If no current instruction, simply add the instruction to end
+      PictureActions.addInstruction(picture, instructionToInsert);
+    } else {
+      this.dispatch({
+        actionType: 'INSERT_INSTRUCTION_AFTER_INSTRUCTION',
+        picture,
+        instruction,
+        instructionToInsert
+      });
+    }
   },
 
   addVariable(picture, variable) {
-    this.dispatch({
-      actionType: 'ADD_VARIABLE',
-      picture: picture,
-      variable: variable
-    });
+    this.dispatch({actionType: 'ADD_VARIABLE', picture, variable});
   },
 
   modifyVariable(picture, variable) {
-    this.dispatch({
-      actionType: 'MODIFY_VARIABLE',
-      picture: picture,
-      variable: variable
-    });
+    this.dispatch({actionType: 'MODIFY_VARIABLE', picture, variable});
   },
 
   removeVariable(picture, variable) {
-    this.dispatch({
-      actionType: 'REMOVE_VARIABLE',
-      picture: picture,
-      variable: variable
-    });
+    this.dispatch({actionType: 'REMOVE_VARIABLE', picture, variable});
   },
 
   undoChange(picture) {
-    this.dispatch({
-      actionType: 'UNDO_CHANGE_TO_PICTURE',
-      picture: picture
-    });
+    this.dispatch({actionType: 'UNDO_CHANGE_TO_PICTURE', picture});
   },
 
   redoChange(picture) {
-    this.dispatch({
-      actionType: 'REDO_CHANGE_TO_PICTURE',
-      picture: picture
-    });
+    this.dispatch({actionType: 'REDO_CHANGE_TO_PICTURE', picture});
   }
 });
 

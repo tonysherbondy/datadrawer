@@ -8,6 +8,8 @@ import MoveInstruction from '../../models/MoveInstruction';
 import RotateInstruction from '../../models/RotateInstruction';
 import Expression from '../../models/Expression';
 import PictureResult from '../../models/PictureResult';
+import Instruction from '../../models/Instruction';
+import Shape from '../../models/shapes/Shape';
 
 class Canvas extends React.Component {
   constructor(props) {
@@ -296,7 +298,11 @@ class Canvas extends React.Component {
 }
 
 Canvas.propTypes = {
-  pictureResult: React.PropTypes.instanceOf(PictureResult).isRequired
+  drawingState: React.PropTypes.object.isRequired,
+  pictureResult: React.PropTypes.instanceOf(PictureResult).isRequired,
+  currentInstruction: React.PropTypes.instanceOf(Instruction),
+  editingInstruction: React.PropTypes.instanceOf(Instruction),
+  selectedShape: React.PropTypes.instanceOf(Shape)
 };
 
 // TODO - shouldn't need this, convert magnet to use same naming convention

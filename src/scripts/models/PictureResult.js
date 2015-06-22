@@ -23,18 +23,8 @@ export default class PictureResult {
     this.jsCode = jsCode;
   }
 
-  // TODO - This is the first thing that needs to change instructions, from result thus
-  // making it more like a picture object rather than just result
   insertNewInstructionAfterCurrent(instruction) {
-    // TODO We allow multiple looping levels, but other assumptions don't support that
-    if (!this.currentInstruction) {
-      // Just add it to the end of the top of the list
-      PictureActions.addInstruction(this.picture, instruction);
-    } else {
-      let {parent, index} = InstructionTreeNode.findParentWithIndex(this.instructions, this.currentInstruction);
-      // Insert into the parent after the current index
-      PictureActions.insertInstruction(this.picture, instruction, index + 1, parent);
-    }
+    PictureActions.insertInstructionAfterInstruction(this.picture, instruction, this.currentInstruction);
   }
 
   getTable(pictureId) {

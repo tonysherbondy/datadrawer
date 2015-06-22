@@ -27,7 +27,7 @@ export default class Picture {
     or removeInstruction. (Tried to set to ${v})`; }
 
   get variables() { return this._variables.valueSeq().toArray(); }
-  set instructions(v) { throw `Use addVariable, updateVariable, \
+  set variables(v) { throw `Use addVariable, updateVariable, \
     or removeVariable.  (Tried to set to ${v})`; }
 
   addVariable(variable) {
@@ -70,6 +70,11 @@ export default class Picture {
     let instructions = this.instructions;
     instructions = InstructionTreeNode.insertInstruction(instructions, instruction, index, parent);
     return new Picture(this._id, instructions, this._variables);
+  }
+
+  insertInstructionAfterInstruction(instructionToInsert, instruction) {
+    let {parent, index} = InstructionTreeNode.findParentWithIndex(this.instructions, instruction);
+    return this.insertInstructionAtIndexWithParent(index + 1, parent, instructionToInsert);
   }
 
   //TODO: this should be done automatically for you by the store
