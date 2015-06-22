@@ -58,10 +58,10 @@ export default class DrawInstruction extends Instruction {
     };
   }
 
-  getFromValue(pictureResult) {
+  getFromValue(shapes, currentLoopIndex) {
     if (this.from.id) {
       // Must be a shape point
-      let shape = pictureResult.getShapeById(this.from.id);
+      let shape = shapes.getShapeByIdAndIndex(this.from.id, currentLoopIndex);
       return shape.getPoint(this.from.point);
     }
     return this.from;

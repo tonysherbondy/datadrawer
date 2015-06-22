@@ -42,6 +42,7 @@ InstructionTreeNode.find = function(instructions, func) {
 };
 
 InstructionTreeNode.findById = function(instructions, id) {
+  if (id === undefined || id === null) { return null; }
   return InstructionTreeNode.flatten(instructions).find(i => i.id === id);
 };
 

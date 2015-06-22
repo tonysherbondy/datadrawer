@@ -32,7 +32,7 @@ export default class DrawRectInstruction extends DrawInstruction {
     return new DrawRectInstruction(props);
   }
 
-  getCloneWithTo(to, pictureResult, magnets) {
+  getCloneWithTo(to, shapes, currentLoopIndex, magnets) {
     let props = this.getCloneProps();
     // TODO - if to is a magnet, we set to otherwise, width & height
     if (to.id) {
@@ -41,7 +41,7 @@ export default class DrawRectInstruction extends DrawInstruction {
       props.width = null;
       props.height = null;
     } else {
-      let from = this.getFromValue(pictureResult);
+      let from = this.getFromValue(shapes, currentLoopIndex);
       props.to = null;
       props.width = new Expression(to.x - from.x);
       props.height = new Expression(to.y - from.y);

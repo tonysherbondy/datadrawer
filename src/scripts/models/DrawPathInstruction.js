@@ -34,21 +34,21 @@ export default class DrawPathInstruction extends DrawInstruction {
   }
 
   // Update the last to point in the array
-  getNewToPtFromMouse(to, pictureResult, isNew) {
+  getNewToPtFromMouse(to, shapes, currentLoopIndex, isNew) {
     let newPt = to;
     if (to.id) {
       newPt.isLine = true;
     } else {
-      let prevPt = this.getPrevPointValue(pictureResult, isNew);
+      let prevPt = this.getPrevPointValue(shapes, currentLoopIndex, isNew);
       newPt = this.getLinePt(to.x - prevPt.x, to.y - prevPt.y);
     }
     return newPt;
   }
 
-  getPrevPointValue(pictureResult, isNew) {
+  getPrevPointValue(shapes, currentLoopIndex, isNew) {
     // Get our own shape on the canvas because this point is drawn relative
     // to the previous value on the canvas
-    let shape = pictureResult.getShapeById(this.shapeId);
+    let shape = shapes.getShapeByIdAndIndex(this.shapeId, currentLoopIndex);
     // Index to prev to last point
     let index = this.to.length - 2;
     if (isNew) {
@@ -61,8 +61,8 @@ export default class DrawPathInstruction extends DrawInstruction {
     return shape.getAbsPointPosition(index);
   }
 
-  getCloneWithTo(to, pictureResult, magnets) {
-    let newPt = this.getNewToPtFromMouse(to, pictureResult);
+  getCloneWithTo(to, shapes, currentLoopIndex, magnets) {
+    let newPt = this.getNewToPtFromMouse(to, shapes, currentLoopIndex);
     let props = this.getCloneProps();
     if (magnets) {
       props.toMagnets = magnets;
@@ -71,8 +71,8 @@ export default class DrawPathInstruction extends DrawInstruction {
     return new DrawPathInstruction(props);
   }
 
-  getCloneWithAddedPoint(to, pictureResult, magnets) {
-    let newPt = this.getNewToPtFromMouse(to, pictureResult, true);
+  getCloneWithAddedPoint(to, shapes, currentLoopIndex, magnets) {
+    let newPt = this.getNewToPtFromMouse(to, shapes, currentLoopIndex, true);
     let props = this.getCloneProps();
     if (magnets) {
       props.toMagnets = magnets;

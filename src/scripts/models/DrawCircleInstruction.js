@@ -30,7 +30,7 @@ export default class DrawCircleInstruction extends DrawInstruction {
     return new DrawCircleInstruction(props);
   }
 
-  getCloneWithTo(to, pictureResult, magnets) {
+  getCloneWithTo(to, shapes, currentLoopIndex, magnets) {
     let props = this.getCloneProps();
     // TODO - if to is a magnet, we set to otherwise, width & height
     if (to.id) {
@@ -38,7 +38,7 @@ export default class DrawCircleInstruction extends DrawInstruction {
       props.toMagnets = magnets;
       props.radius = null;
     } else {
-      let from = this.getFromValue(pictureResult);
+      let from = this.getFromValue(shapes, currentLoopIndex);
       props.to = null;
       let radius = Math.round(distanceBetweenPoints(to, from) * 100) / 100;
       props.radius = new Expression(radius);

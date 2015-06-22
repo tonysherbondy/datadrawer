@@ -5,9 +5,13 @@ import LineShape from '../models/shapes/LineShape';
 import PathShape from '../models/shapes/PathShape';
 import TextShape from '../models/shapes/TextShape';
 import DrawCanvas from '../models/DrawCanvas';
+import PictureShape from '../models/shapes/PictureShape';
 
-function evaluationUtils(variables) {
+function evaluationUtils(variables, picturesJs) {
   return {
+    // Initialize global function call depth
+    depth: 0,
+    maxDepth: 4,
     distanceBetweenPoints: function(a,b) {
       let x = a.x - b.x;
       let y = a.y - b.y;
@@ -25,7 +29,8 @@ function evaluationUtils(variables) {
     },
     getShapeVariable(name, index=0) {
       // TODO, perhaps the looping shapes should be an array like data
-      let variable = variables.shapes[name] || variables.shapes[`${name}_${index}`];
+      let {shapes} = variables.picture;
+      let variable = shapes[name] || shapes[`${name}_${index}`];
       if (!variable) {
         console.error('Unable to find shape variable', name);
       }
@@ -35,58 +40,63 @@ function evaluationUtils(variables) {
       return isFinite(index) ? `${name}_${index}` : name;
     },
     circle(params, name, index) {
-      variables.shapes[this.getNewShapeName(name, index)] = new CircleShape(params);
+      variables.picture.shapes[this.getNewShapeName(name, index)] = new CircleShape(params);
     },
     rect(params, name, index) {
-      variables.shapes[this.getNewShapeName(name, index)] = new RectShape(params);
+      variables.picture.shapes[this.getNewShapeName(name, index)] = new RectShape(params);
     },
     path(params, name, index) {
-      variables.shapes[this.getNewShapeName(name, index)] = new PathShape(params);
+      variables.picture.shapes[this.getNewShapeName(name, index)] = new PathShape(params);
     },
     text(params, name, index) {
-      variables.shapes[this.getNewShapeName(name, index)] = new TextShape(params);
+      variables.picture.shapes[this.getNewShapeName(name, index)] = new TextShape(params);
     },
     line(params, name, index) {
-      variables.shapes[this.getNewShapeName(name, index)] = new LineShape(params);
+      variables.picture.shapes[this.getNewShapeName(name, index)] = new LineShape(params);
     },
-    picture(params, name, index, depth) {
-      depth = depth;
-      // Need to do a deep clone here since we don't want to mutate the original variables
-      // TODO: (nhan) a clone won't be necessary here once we switch to immutable data structures
-      let subPictureVariables = _.cloneDeep(variables.pictureVariablesMap[params.pictureId]);
-      subPictureVariables.pictureCodeMap = variables.pictureCodeMap;
-      subPictureVariables.pictureVariablesMap = variables.pictureVariablesMap;
-      subPictureVariables.shapes = {};
+    picture(params, name, index, utils) {
+      if (utils.depth > utils.maxDepth) {
+        return;
+      }
+      // Besides updating depth, the utils context will be the same for the next eval'd JS
+      utils.depth++;
 
-      let utils = evaluationUtils(subPictureVariables);
+      // Store previous picture context where shape calls would be stored
+      let prevPicture = variables.picture;
+
+      // Create new picture context
+      let picture = new PictureShape(params);
+      variables.picture = picture;
+
+      // Canvas for this picture
+      // TODO maybe this should be the size of the picture?
       let canvasDraw = new DrawCanvas({width: 800, height: 600});
       let canvasJs = canvasDraw.getJsCode();
 
+      // Call picture code
       /* eslint-disable */
-      eval(canvasJs + variables.pictureCodeMap[params.pictureId] + '(depth + 1);');
+      eval(canvasJs + picturesJs[params.pictureId]);
       /* eslint-enable */
 
-      // TODO: (nhan) write a separate picture shape to encapsulate this logic
-      let pictureShape = new RectShape(params);
-      pictureShape.type = 'picture';
-      pictureShape.shapes = subPictureVariables.shapes;
-
-      variables.shapes[this.getNewShapeName(name, index)] = pictureShape;
+      // Pop back to previous picture context if it existed
+      // This allows the first picture to remain
+      if (prevPicture) {
+        // Store new picture in previous picture
+        prevPicture.shapes[this.getNewShapeName(name, index)] = picture;
+        variables.picture = prevPicture;
+      }
     }
   };
 }
 
 // Evaluate JS and MOST LIKELY mutate variables passed in
-export default function evalutateJs(jsCode, variables) {
+export default function evalutateJs(jsCode, variables, picturesJs) {
   try {
     if (!_) {
       console.warn('Lodash required for evaluation environment!');
     }
 
-    // TODO: this repeats some logic from the picture util above, we should
-    // probably refactor this so that what we are evaling here is a
-    // utils.picture(...) command
-    let utils = evaluationUtils(variables);
+    let utils = evaluationUtils(variables, picturesJs);
 
     /* eslint-disable */
     return eval(jsCode);

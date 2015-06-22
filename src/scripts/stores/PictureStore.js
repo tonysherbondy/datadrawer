@@ -3,6 +3,7 @@ import Immutable from 'immutable';
 import Picture from '../models/Picture';
 import barsPicture from './barsPresetPicture';
 import scatterPicture from './scatterPresetPicture';
+import simplePicture from './simplePreset';
 import {guid} from '../utils/utils';
 
 let OrderedMap = Immutable.OrderedMap;
@@ -61,6 +62,7 @@ let updatePicture = function(picture) {
   pictures = pictures.update(picture.id, history => history.append(picture));
 };
 
+addPicture(simplePicture);
 addPicture(barsPicture);
 addPicture(scatterPicture);
 

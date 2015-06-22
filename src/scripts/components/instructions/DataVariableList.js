@@ -6,7 +6,13 @@ import PictureActions from '../../actions/PictureActions';
 export default class DataVariableList extends React.Component {
 
   render() {
-    let values = this.props.scalars.map((dataVariable, index) => {
+    let {scalars} = this.props.dataVariables.reduce((map, d) => {
+      let type = d.isRow ? 'vectors' : 'scalars';
+      map[type].push(d);
+      return map;
+    }, {scalars: [], vectors: []});
+
+    let values = scalars.map((dataVariable, index) => {
       let value = dataVariable.getValue(this.props.dataValues);
       value = Math.round(value * 100) / 100;
 

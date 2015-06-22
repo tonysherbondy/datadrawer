@@ -33,13 +33,7 @@ export default class Instruction extends InstructionTreeNode {
 
   getShapeName(shapes, shapeId) {
     shapeId = shapeId || this.shapeId;
-    let name = shapes[shapeId];
-    // TODO - don't have to do this anymore??
-    //if (!shape) {
-      //// That means we have a looped shape
-      //shape = shapes[`${shapeId}_0`];
-    //}
-    return name;
+    return shapes[shapeId];
   }
 
   getIndexString(index) {

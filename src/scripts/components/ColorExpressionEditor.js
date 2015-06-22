@@ -1,6 +1,5 @@
 import React from 'react';
 import Expression from '../models/Expression';
-import PictureResult from '../models/PictureResult';
 import Popover from './Popover';
 import ColorPicker from './ColorPicker';
 
@@ -14,9 +13,8 @@ export default class ColorExpressionEditor extends React.Component {
   }
 
   render() {
-    let {variableValues} = this.props.pictureResult;
     // TODO - might need index for evaluate
-    let color = this.props.definition.evaluate(variableValues);
+    let color = this.props.definition.evaluate(this.props.variableValues);
     return (
       <div className="color-expression-editor" onClick={this.handleClick.bind(this)} style={{backgroundColor: color}}>
         <Popover
@@ -37,7 +35,7 @@ export default class ColorExpressionEditor extends React.Component {
     a = a / 100;
     let colorFragment = `'rgba(${r}, ${g}, ${b}, ${a})'`;
     let newExpression = new Expression(colorFragment);
-    let value = newExpression.evaluate(this.props.pictureResult.variableValues);
+    let value = newExpression.evaluate(this.props.variableValues);
     if (value instanceof Error) {
       console.log('Invalid Expression', value.message);
     } else {
@@ -62,5 +60,5 @@ export default class ColorExpressionEditor extends React.Component {
 ColorExpressionEditor.propTypes = {
   onChange: React.PropTypes.func.isRequired,
   definition: React.PropTypes.instanceOf(Expression).isRequired,
-  pictureResult: React.PropTypes.instanceOf(PictureResult).isRequired
+  variableValues: React.PropTypes.object.isRequired
 };

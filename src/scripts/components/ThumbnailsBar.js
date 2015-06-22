@@ -1,34 +1,25 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import PictureResult from '../models/PictureResult';
+import Picture from '../models/Picture';
 import PictureActions from '../actions/PictureActions';
 import Canvas from './drawing/Canvas';
+import NotebookPictureCompiler from '../utils/NotebookPictureCompiler';
 
 export default class ThumbnailsBar extends React.Component {
 
   getThumbnailsBar() {
     let getThumbnailForPicture = (picture) => {
-      let drawingState = {
-        mode: 'normal',
-        selectedShapeId: null,
-        selectedInstructions: null,
-        currentLoopIndex: null,
-        editingInstructionId: null,
-        activePicture: picture
-      };
 
-      let pictureResult = new PictureResult({
-        picture: picture,
-        allPictures: this.props.pictures
-      });
-      let isActivePicture =
-        picture.id === this.props.activePicture.id;
+      let {activePicture, pictureForPictureTool, pictures, variableValues} = this.props;
+      let isActivePicture = picture.id === activePicture.id;
+      let isPictureForPictureTool = pictureForPictureTool &&
+        picture.id === pictureForPictureTool.id;
 
-
-      let isPictureForPictureTool =
-        this.props.pictureForPictureTool
-        && picture.id === this.props.pictureForPictureTool.id;
+      // We make our own picture compiler because none of these images will care about
+      // the current instruction
+      let pictureCompiler = new NotebookPictureCompiler({variableValues, pictures});
+      let shapes = pictureCompiler.getShapesForPicture(picture);
 
       let className = classNames('picture-thumbnail', {
         'active-picture-thumbnail': isActivePicture,
@@ -41,8 +32,9 @@ export default class ThumbnailsBar extends React.Component {
           onClick={this.handleThumbnailClick.bind(this, picture)}>
           <Canvas
             className={className}
-            drawingState={drawingState}
-            pictureResult={pictureResult} />
+            activePicture={picture}
+            drawingMode={'normal'}
+            shapes={shapes} />
         </a>);
     };
     return (
@@ -70,3 +62,10 @@ export default class ThumbnailsBar extends React.Component {
     }
   }
 }
+
+ThumbnailsBar.propTypes = {
+  pictures: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Picture)).isRequired,
+  variableValues: React.PropTypes.object.isRequired,
+  activePicture: React.PropTypes.instanceOf(Picture).isRequired,
+  pictureForPictureTool: React.PropTypes.instanceOf(Picture)
+};

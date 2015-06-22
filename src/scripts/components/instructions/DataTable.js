@@ -5,6 +5,7 @@ import PictureActions from '../../actions/PictureActions';
 import ExpressionEditorAndScrub from '../ExpressionEditorAndScrub';
 import Papa from 'papaparse';
 import Expression from '../../models/Expression';
+import Picture from '../../models/Picture';
 
 export default class DataTable extends React.Component {
   constructor(props) {
@@ -15,7 +16,8 @@ export default class DataTable extends React.Component {
   }
 
   render() {
-    let {rows, rowValues, maxLength} = this.props.table;
+    let table = this.props.picture.getVariableTableWithValues(this.props.dataValues);
+    let {rows, rowValues, maxLength} = table;
     let {currentLoopIndex} = this.props;
 
     let headerCells = 'i'.repeat(maxLength + 1).split('').map((dummy, index) => {
@@ -170,8 +172,8 @@ export default class DataTable extends React.Component {
 }
 
 DataTable.propTypes = {
+  picture: React.PropTypes.instanceOf(Picture).isRequired,
   currentLoopIndex: React.PropTypes.number,
-  table: React.PropTypes.object.isRequired,
   dataVariables: React.PropTypes.array.isRequired,
   dataValues: React.PropTypes.object.isRequired
 };

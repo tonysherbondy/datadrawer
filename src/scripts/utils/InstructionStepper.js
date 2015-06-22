@@ -66,10 +66,11 @@ let expandInstructions = function(instructionsList) {
 };
 
 export default class InstructionsStepper {
-  constructor(pictureResult) {
-    this.originalList = pictureResult.instructions;
+  constructor({picture, variableValues}) {
+    this.picture = picture;
+    this.variableValues = variableValues;
+    this.originalList = picture.instructions;
     this.expandedList = expandInstructions(this.originalList);
-    this.pictureResult = pictureResult;
   }
 
   _previousInExpanded(currentInstruction) {
@@ -94,7 +95,8 @@ export default class InstructionsStepper {
 
     if (next && next.isLoopEnd) {
       let loop = next.loopInstruction;
-      let loopLength = loop.getMaxLoopCount(this.pictureResult.getTable());
+      let table = this.picture.getVariableTableWithValues(this.variableValues);
+      let loopLength = loop.getMaxLoopCount(table);
       if (currentLoopIndex + 1 < loopLength) {
         return this.stepForwards(next.loopStart, currentLoopIndex + 1);
       } else {
@@ -126,7 +128,8 @@ export default class InstructionsStepper {
 
     if (prev && prev.isLoopEnd) {
       let loop = prev.loopInstruction;
-      let loopLength = loop.getMaxLoopCount(this.pictureResult.getTable());
+      let table = this.picture.getVariableTableWithValues(this.variableValues);
+      let loopLength = loop.getMaxLoopCount(table);
       return this.stepBackwards(prev, loopLength - 1);
     }
 

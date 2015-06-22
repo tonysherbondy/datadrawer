@@ -1,6 +1,6 @@
 import React from 'react';
 import Shape from '../models/shapes/Shape';
-import PictureResult from '../models/PictureResult';
+import Picture from '../models/Picture';
 import VariablePill from './VariablePill';
 import ExpressionEditorAndScrub from './ExpressionEditorAndScrub';
 import ColorExpressionEditor from './ColorExpressionEditor';
@@ -28,7 +28,7 @@ export default class ShapeDataList extends React.Component {
           return (
             <ColorExpressionEditor
               picture={this.props.picture}
-              pictureResult={this.props.pictureResult}
+              variableValues={this.props.variableValues}
               onChange={this.handleDefinitionChange.bind(this, this.props.picture, instruction, property)}
               definition={expression} />
           );
@@ -37,7 +37,7 @@ export default class ShapeDataList extends React.Component {
             <ExpressionEditorAndScrub
               picture={this.props.picture}
               onChange={this.handleDefinitionChange.bind(this, this.props.picture, instruction, property)}
-              variableValues={this.props.pictureResult.variableValues}
+              variableValues={this.props.variableValues}
               definition={expression} />
           );
         }
@@ -60,7 +60,7 @@ export default class ShapeDataList extends React.Component {
   }
 
   getDrawInstruction(id) {
-    return this.props.pictureResult.getDrawInstructionForShapeId(id);
+    return this.props.picture.getDrawInstructionForShapeId(id);
   }
   handleDefinitionChange(picture, instruction, property, definition) {
     let props = instruction.getCloneProps();
@@ -70,7 +70,8 @@ export default class ShapeDataList extends React.Component {
 }
 
 ShapeDataList.propTypes = {
-  pictureResult: React.PropTypes.instanceOf(PictureResult).isRequired,
+  variableValues: React.PropTypes.object.isRequired,
+  picture: React.PropTypes.instanceOf(Picture).isRequired,
   // I'm passing shape instead of instruction as I may need shape for measurements
   shape: React.PropTypes.instanceOf(Shape)
 };

@@ -7,9 +7,10 @@ import ScaleInstruction from '../../models/ScaleInstruction';
 import MoveInstruction from '../../models/MoveInstruction';
 import RotateInstruction from '../../models/RotateInstruction';
 import Expression from '../../models/Expression';
-import PictureResult from '../../models/PictureResult';
+import ShapesMap from '../../models/shapes/ShapesMap';
 import Instruction from '../../models/Instruction';
 import Shape from '../../models/shapes/Shape';
+import Picture from '../../models/Picture';
 
 class Canvas extends React.Component {
   constructor(props) {
@@ -23,7 +24,7 @@ class Canvas extends React.Component {
   getMagnets() {
     // All shapes that are not the current editing shape
     // have magnets
-    let {editingInstruction, pictureResult} = this.props;
+    let {editingInstruction, shapes} = this.props;
     if (!editingInstruction || editingInstruction instanceof ScaleInstruction) {
       // Only draw magnets when we are currently drawing
       // Also, no magnets for scale
@@ -31,7 +32,7 @@ class Canvas extends React.Component {
     }
 
     let editingId = editingInstruction.shapeId;
-    let magnets = pictureResult.getAllShapesForCurrentLoopIndex()
+    let magnets = shapes.getAllShapesForLoopIndex(this.props.currentLoopIndex)
                   .filter(shape => shape.id !== editingId)
                   .map(shape => shape.getMagnets());
     return _.flatten(magnets);
@@ -63,7 +64,8 @@ class Canvas extends React.Component {
 
   getEditingShape() {
     let {shapeId} = this.props.editingInstruction;
-    return this.props.pictureResult.getShapeById(shapeId);
+    let {shapes, currentLoopIndex} = this.props;
+    return shapes.getShapeByIdAndIndex(shapeId, currentLoopIndex);
   }
 
   drawShape(shape, key, props) {
@@ -108,8 +110,7 @@ class Canvas extends React.Component {
 
   drawShapes() {
     // Filter out canvas
-    let {pictureResult} = this.props;
-    return pictureResult.getAllShapes()
+    return this.props.shapes.getAllShapes()
             .filter(shape => shape.id !== 'canvas')
             .map(shape => this.drawShape(shape, shape.id, shape.getRenderProps()));
   }
@@ -130,7 +131,8 @@ class Canvas extends React.Component {
     if (!magnet) {
       return null;
     }
-    let closeShape = this.props.pictureResult.getShapeById(magnet.shapeId);
+    let {shapes, currentLoopIndex} = this.props;
+    let closeShape = shapes.getShapeByIdAndIndex(magnet.shapeId, currentLoopIndex);
     return this.drawShape(closeShape, `magnet_outline`, closeShape.getMagnetOutlineProps());
   }
 
@@ -151,28 +153,28 @@ class Canvas extends React.Component {
     // Can just set to first because it is protected from out of bound lookup
     this.setState({closeMagnet: _.first(magnets) || null});
 
-    let picture = this.props.drawingState.activePicture;
+    let picture = this.props.activePicture;
     let instruction = this.props.editingInstruction;
 
     if (instruction && instruction.isValid()) {
       let {point} = this.getEventPoint(event);
-      let {mode} = this.props.drawingState;
+      let {drawingMode} = this.props;
       let startPoint = this.state.startPoint;
       let to = point;
-      if (mode === 'scale') {
+      if (drawingMode === 'scale') {
         let shape = this.props.selectedShape;
         let props = shape.getScaleAdjustProps(startPoint, point);
         to = props.to;
-        PictureActions.modifyInstruction(picture, instruction.getCloneWithTo(to, this.props.pictureResult, magnets));
+        PictureActions.modifyInstruction(picture, instruction.getCloneWithTo(to, this.props.shapes, this.props.currentLoopIndex, magnets));
 
-      } else if (mode === 'rotate') {
+      } else if (drawingMode === 'rotate') {
         instruction.modifyWithTo(picture, to, startPoint);
 
-      } else if (mode === 'move') {
+      } else if (drawingMode === 'move') {
         instruction.modifyWithTo(picture, to, startPoint);
 
       } else {
-        PictureActions.modifyInstruction(picture, instruction.getCloneWithTo(to, this.props.pictureResult, magnets));
+        PictureActions.modifyInstruction(picture, instruction.getCloneWithTo(to, this.props.shapes, this.props.currentLoopIndex, magnets));
       }
     }
   }
@@ -202,20 +204,21 @@ class Canvas extends React.Component {
     let {point, magnets} = this.getEventPoint(event);
     // TODO - probably need to use setState if we don't want any
     // ui glitches
-    let picture = this.props.drawingState.activePicture;
-    let instructions = picture.instructions;
+    let {activePicture} = this.props;
+    let instructions = activePicture.instructions;
     let instruction = this.props.editingInstruction;
     if (instruction) {
       if (!instruction.isValid()) {
         // This has to be a draw instruction, set the from
         // TODO - treat this as actually immutable
-        PictureActions.modifyInstruction(picture, instruction.getCloneWithFrom(point, magnets));
+        PictureActions.modifyInstruction(activePicture, instruction.getCloneWithFrom(point, magnets));
       } else {
 
-        if (this.props.drawingState.mode === 'path' && !event.shiftKey) {
+        if (this.props.drawingMode === 'path' && !event.shiftKey) {
           // if we are drawing a path and our instruction is valid
           // we need to add another point
-          PictureActions.modifyInstruction(picture, instruction.getCloneWithAddedPoint(point, this.props.pictureResult, magnets));
+          let newInstruction = instruction.getCloneWithAddedPoint(point, this.props.shapes, magnets);
+          PictureActions.modifyInstruction(activePicture, newInstruction);
         } else {
           // If we click when we have a valid editing instruction we are ending
           // the instruction editing
@@ -227,7 +230,7 @@ class Canvas extends React.Component {
       let closeControlPoint = this.getCloseSelectedShapePoint(point)[0];
       let shape = this.props.selectedShape;
       if (closeControlPoint && shape) {
-        let mode = this.props.drawingState.mode;
+        let mode = this.props.drawingMode;
         switch(mode) {
           case 'normal': {
             // Show a popup for changing data about the shape
@@ -242,7 +245,7 @@ class Canvas extends React.Component {
             if (props) {
               this.setState({startPoint: closeControlPoint});
               PictureActions.insertInstructionAfterInstruction(
-                this.props.pictureResult.picture,
+                this.props.activePicture,
                 new ScaleInstruction(props),
                 this.props.currentInstruction);
             }
@@ -258,9 +261,9 @@ class Canvas extends React.Component {
               point: {id: shapeId, point: pointName}
             };
             this.setState({startPoint: closeControlPoint});
-            let newInstruction = (new RotateInstruction(props)).getCloneWithTo(point, closeControlPoint);
+            let newInstruction = (new RotateInstruction(props)).getCloneWithTo(point, closeControlPoint, this.props.currentLoopIndex);
             PictureActions.insertInstructionAfterInstruction(
-              this.props.pictureResult.picture,
+              this.props.activePicture,
               newInstruction,
               this.props.currentInstruction);
             break;
@@ -277,7 +280,7 @@ class Canvas extends React.Component {
             };
             this.setState({startPoint: closeControlPoint});
             PictureActions.insertInstructionAfterInstruction(
-              this.props.pictureResult.picture,
+              this.props.activePicture,
               new MoveInstruction(props),
               this.props.currentInstruction);
             break;
@@ -307,11 +310,14 @@ class Canvas extends React.Component {
 }
 
 Canvas.propTypes = {
-  drawingState: React.PropTypes.object.isRequired,
-  pictureResult: React.PropTypes.instanceOf(PictureResult).isRequired,
+  shapes: React.PropTypes.instanceOf(ShapesMap).isRequired,
   currentInstruction: React.PropTypes.instanceOf(Instruction),
+  currentLoopIndex: React.PropTypes.number,
   editingInstruction: React.PropTypes.instanceOf(Instruction),
-  selectedShape: React.PropTypes.instanceOf(Shape)
+  selectedShape: React.PropTypes.instanceOf(Shape),
+  // Previously drawingState
+  activePicture: React.PropTypes.instanceOf(Picture).isRequired,
+  drawingMode: React.PropTypes.string.isRequired
 };
 
 // TODO - shouldn't need this, convert magnet to use same naming convention

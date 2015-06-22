@@ -36,7 +36,7 @@ export default class DrawPictureInstruction extends DrawInstruction {
     return new DrawPictureInstruction(props);
   }
 
-  getCloneWithTo(to, pictureResult, magnets) {
+  getCloneWithTo(to, shapes, currentLoopIndex, magnets) {
     let props = this.getCloneProps();
     // TODO - if to is a magnet, we set to otherwise, width & height
     if (to.id) {
@@ -45,7 +45,7 @@ export default class DrawPictureInstruction extends DrawInstruction {
       props.width = null;
       props.height = null;
     } else {
-      let from = this.getFromValue(pictureResult);
+      let from = this.getFromValue(shapes, currentLoopIndex);
       props.to = null;
       props.width = new Expression(to.x - from.x);
       props.height = new Expression(to.y - from.y);
@@ -96,7 +96,7 @@ export default class DrawPictureInstruction extends DrawInstruction {
            `width: ${this.getWidthJs(index)},\n` +
            `height: ${this.getHeightJs(index)},\n` +
            `pictureId: '${this.pictureId}'\n` +
-           `}, '${this.shapeId}', ${index}, depth);\n`;
+           `}, '${this.shapeId}', ${index}, utils);\n`;
   }
 
   getFromUi(picture, shapes) {

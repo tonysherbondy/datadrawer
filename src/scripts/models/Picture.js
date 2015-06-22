@@ -1,6 +1,7 @@
 import {OrderedMap} from 'immutable';
-import InstructionTreeNode from '../models/InstructionTreeNode';
-import DataVariable from '../models/DataVariable';
+import InstructionTreeNode from './InstructionTreeNode';
+import DataVariable from './DataVariable';
+import DrawInstruction from './DrawInstruction';
 
 export default class Picture {
   constructor(id, instructions, variables) {
@@ -82,6 +83,38 @@ export default class Picture {
     let id = `v_${this.variables.length + 1}`;
     name = name || id;
     return new DataVariable({id, name, isRow, definition});
+  }
+
+  getDrawInstructionForShapeId(shapeId) {
+    return InstructionTreeNode.find(this.instructions, i => {
+      // TODO may need to account for looping
+      return i instanceof DrawInstruction && i.shapeId === shapeId;
+    });
+  }
+
+  // TODO - Do we even need this anymore??
+  // Create map from shapeId to shapeName, this has to be done so that all possible shapes
+  // even the ones not currently drawn are in the map
+  getShapeNameMap() {
+    let nameMap = {canvas: 'canvas'};
+    InstructionTreeNode
+      .flatten(this.instructions)
+      .filter(i => i instanceof DrawInstruction)
+      .forEach(i => {
+        nameMap[i.shapeId] = i.name || i.id;
+      });
+    return nameMap;
+  }
+
+  getVariableTableWithValues(variableValues) {
+    let rows = this.variables.filter(v => v.isRow);
+    let rowValues = rows.map(row => {
+      return row.getValue(variableValues);
+    });
+    let maxLength = rowValues.reduce((max, row) => {
+      return row.length > max ? row.length : max;
+    }, 0);
+    return {rows, rowValues, maxLength};
   }
 
 }
