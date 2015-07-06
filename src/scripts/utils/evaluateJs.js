@@ -70,6 +70,10 @@ function evaluationUtils(variables, picturesJs) {
 
       // Canvas for this picture
       let {width, height} = params;
+      // TODO - This is a problem when we want to scale the
+      // size of the picture, because the shapes are emitted
+      // as soon as we run into this instruction, so we may want to
+      // delay shape creation until the shapes are needed on the canvas
       let canvasDraw = new DrawCanvas({width, height});
       let canvasJs = canvasDraw.getJsCode();
 
