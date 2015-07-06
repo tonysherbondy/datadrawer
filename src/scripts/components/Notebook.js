@@ -44,11 +44,6 @@ export default class Notebook extends React.Component {
          currentInstruction,
          currentLoopIndex} = this.props;
 
-    // When the user selects a shape, there is no current instruction
-    if (_.isString(this.props.selectedShapeId)) {
-      currentInstruction = null;
-    }
-
     let selectedShape = this.props.shapes.getShapeByIdAndIndex(this.getSelectedShapeId(), this.props.currentLoopIndex);
     let shapeNameMap = activePicture.getShapeNameMap();
 
