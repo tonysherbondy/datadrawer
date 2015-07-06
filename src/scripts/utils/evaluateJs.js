@@ -69,8 +69,8 @@ function evaluationUtils(variables, picturesJs) {
       variables.picture = picture;
 
       // Canvas for this picture
-      // TODO maybe this should be the size of the picture?
-      let canvasDraw = new DrawCanvas({width: 800, height: 600});
+      let {width, height} = params;
+      let canvasDraw = new DrawCanvas({width, height});
       let canvasJs = canvasDraw.getJsCode();
 
       // Call picture code

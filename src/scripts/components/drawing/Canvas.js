@@ -95,11 +95,7 @@ class Canvas extends React.Component {
         .map((subShape) =>
           this.drawShape(subShape, subShape.id, subShape.getRenderProps()));
 
-      let xScale = props.width / 800;
-      let yScale = props.height / 600;
-      let scaleTransform = `scale(${xScale} ${yScale})`;
-
-      let transform = `${props.transform} translate(${props.x}, ${props.y}) scale(${xScale} ${yScale})`;
+      let transform = `${props.transform} translate(${props.x}, ${props.y})`;
 
       return (
         <g key={key} transform={transform}>{shapeElements}</g>
