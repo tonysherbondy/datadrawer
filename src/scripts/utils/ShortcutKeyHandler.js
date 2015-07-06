@@ -148,6 +148,16 @@ export default class ShortcutKeyHandler {
     });
 
     manager = manager.registerHandler({
+      keyCode: 90,
+      keyDescription: 'z',
+      description: 'extend path',
+      group: 'adjust',
+      keyDown: () => {
+        DrawingStateActions.setDrawingMode('extend path');
+      }
+    });
+
+    manager = manager.registerHandler({
       keyCode: 84,
       keyDescription: 't',
       description: 'text',

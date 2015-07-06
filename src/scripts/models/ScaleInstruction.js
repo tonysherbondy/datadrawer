@@ -22,7 +22,6 @@ export default class ScaleInstruction extends AdjustInstruction {
     return `${varName}.scalePropByPoint(${paramsJs});`;
   }
 
-  // TODO This belongs in the UI most likely
   getUiSentence(picture, variableValues, shapeNameMap) {
     let shapeName = this.getShapeName(shapeNameMap);
     return (

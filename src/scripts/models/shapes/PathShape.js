@@ -47,6 +47,9 @@ export default class PathShape extends Shape {
     let point;
     if (name === 'from') {
       point = this.from;
+    } else if (name === 'last') {
+      let index = this.points.length - 1;
+      point = this.getAbsPointPosition(index);
     } else {
       let index = parseInt(name.split('_')[1], 10);
       point = this.getAbsPointPosition(index);
@@ -61,6 +64,11 @@ export default class PathShape extends Shape {
       pt.x *= value;
       pt.y *= value;
     });
+  }
+
+  extendPathWithRelativePoint(point) {
+    point.isLine = true;
+    this.points.push(point);
   }
 
   moveRelative(value) {

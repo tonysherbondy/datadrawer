@@ -4,12 +4,14 @@ import {distanceBetweenPoints} from '../../utils/utils';
 import PictureActions from '../../actions/PictureActions';
 import DrawingStateActions from '../../actions/DrawingStateActions';
 import ScaleInstruction from '../../models/ScaleInstruction';
+import ExtendPathInstruction from '../../models/ExtendPathInstruction';
 import MoveInstruction from '../../models/MoveInstruction';
 import RotateInstruction from '../../models/RotateInstruction';
 import Expression from '../../models/Expression';
 import ShapesMap from '../../models/shapes/ShapesMap';
 import Instruction from '../../models/Instruction';
 import Shape from '../../models/shapes/Shape';
+import PathShape from '../../models/shapes/PathShape';
 import Picture from '../../models/Picture';
 
 class Canvas extends React.Component {
@@ -163,10 +165,7 @@ class Canvas extends React.Component {
         to = props.to;
         PictureActions.modifyInstruction(picture, instruction.getCloneWithTo(to, this.props.shapes, this.props.currentLoopIndex, magnets));
 
-      } else if (drawingMode === 'rotate') {
-        instruction.modifyWithTo(picture, to, startPoint);
-
-      } else if (drawingMode === 'move') {
+      } else if (drawingMode === 'rotate' || drawingMode === 'move' || drawingMode === 'extend path') {
         instruction.modifyWithTo(picture, to, startPoint);
 
       } else {
@@ -234,6 +233,24 @@ class Canvas extends React.Component {
               left: event.pageX + 10,
               top: event.pageY + 10
             });
+            break;
+          }
+          case 'extend path': {
+            if (shape instanceof PathShape) {
+              // Always extend from the last point on the path
+              let lastPoint = shape.getPoint('last');
+              let props = {
+                shape: {id: closeControlPoint.shapeId},
+                magnets,
+                x: new Expression(point.x - lastPoint.x),
+                y: new Expression(point.y - lastPoint.y)
+              };
+              this.setState({startPoint: lastPoint});
+              PictureActions.insertInstructionAfterInstruction(
+                this.props.activePicture,
+                new ExtendPathInstruction(props),
+                this.props.currentInstruction);
+            }
             break;
           }
           case 'scale': {
