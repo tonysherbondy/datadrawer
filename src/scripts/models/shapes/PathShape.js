@@ -71,6 +71,13 @@ export default class PathShape extends Shape {
     this.points.push(point);
   }
 
+  extendPathWithAbsolutePoint(point) {
+    let lastPoint = this.getPoint('last');
+    let x = point.x - lastPoint.x;
+    let y = point.y - lastPoint.y;
+    this.extendPathWithRelativePoint({x, y});
+  }
+
   moveRelative(value) {
     // From is only absolute point
     this.from.x += value.x;

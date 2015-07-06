@@ -43,7 +43,7 @@ export default class ExtendPathInstruction extends AdjustInstruction {
     if (this.to) {
       // When setting to a variable we will move the point = to the variable
       let toPointJs = this.getPointVarJs(this.to, index);
-      return `${varName}.extendPathWithShapePoint(${toPointJs});\n`;
+      return `${varName}.extendPathWithAbsolutePoint(${toPointJs});\n`;
     }
 
     let xJs = this.x.getJsCode(index);

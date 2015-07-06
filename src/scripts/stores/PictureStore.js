@@ -4,6 +4,7 @@ import Picture from '../models/Picture';
 import barsPicture from './barsPresetPicture';
 import scatterPicture from './scatterPresetPicture';
 import simplePicture from './simplePreset';
+import linePicture from './linePreset';
 import {guid} from '../utils/utils';
 
 let OrderedMap = Immutable.OrderedMap;
@@ -63,6 +64,7 @@ let updatePicture = function(picture) {
 };
 
 addPicture(simplePicture);
+addPicture(linePicture);
 addPicture(barsPicture);
 addPicture(scatterPicture);
 
