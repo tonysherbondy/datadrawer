@@ -32,9 +32,9 @@ export default class DrawInstruction extends Instruction {
 
   initializePropertyVariables() {
     let inits = [
-      {name: 'Stroke Width', definition: 1},
-      {name: 'Stroke', definition: `'#000000'`},
-      {name: 'Fill', definition: `'rgba(0, 0, 0, 0.2)'`}
+      {name: 'strokeWidth', definition: 1},
+      {name: 'stroke', definition: `'#000000'`},
+      {name: 'fill', definition: `'rgba(0, 0, 0, 0.2)'`}
     ];
     inits.forEach(property => {
       let {name, definition} = property;
@@ -53,16 +53,9 @@ export default class DrawInstruction extends Instruction {
   }
 
   getPropsJs(index) {
-    let styleProps = [
-      {name: 'Fill', shapeName: 'fill'},
-      {name: 'Stroke', shapeName: 'stroke'},
-      {name: 'Stroke Width', shapeName: 'strokeWidth'}
-    ];
-
-    let stylePropsJs = styleProps.map(prop => {
-      let variable = this._propertyVariables.get(prop.name);
+    let stylePropsJs = this.propertyVariables.map(variable => {
       let js = variable.definition.getJsCode(index);
-      return `${prop.shapeName}: ${js}`;
+      return `${variable.name}: ${js}`;
     });
 
     return super.getPropsJs(index).concat([

@@ -31,7 +31,9 @@ const instructions = [
   new DrawRectInstruction({
     id: 'line_rect1',
     isGuide: false,
-    fill: new DataVariable({name: 'Fill', definition: `'aliceblue'`}),
+    propertyVariables: [
+      new DataVariable({name: 'fill', definition: `'aliceblue'`})
+    ],
     from: {id: 'canvas', point: 'bottomLeft'},
     to: {id: 'canvas', point: 'topRight'}
   }),
@@ -44,8 +46,10 @@ const instructions = [
   }),
   new DrawPathInstruction({
     id: 'line_path',
-    strokeWidth: new DataVariable({name: 'Stroke Width', definition: 2}),
-    fill: new DataVariable({name: 'Fill', definition: `'rgba(255, 127, 0, 0)'`}),
+    propertyVariables: [
+      new DataVariable({name: 'fill', definition: `'rgba(0, 0, 0, 0)'`}),
+      new DataVariable({name: 'strokeWidth', definition: 2})
+    ],
     from: {id: 'shape_line_rect1', point: 'bottomLeft'},
     to: [
       {x: new Expression(1), y: new Expression(1), isLine: true}
