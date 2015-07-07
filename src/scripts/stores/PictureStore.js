@@ -3,8 +3,8 @@ import Immutable from 'immutable';
 import Picture from '../models/Picture';
 import barsPicture from './barsPresetPicture';
 import scatterPicture from './scatterPresetPicture';
-import simplePicture from './simplePreset';
 import linePicture from './linePreset';
+import simplePicture from './simplePreset';
 import {guid} from '../utils/utils';
 
 let OrderedMap = Immutable.OrderedMap;

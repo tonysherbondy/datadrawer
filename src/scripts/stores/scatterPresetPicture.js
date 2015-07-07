@@ -85,8 +85,8 @@ const instructions = [
       }),
       new DrawLineInstruction({
         id: 'i5',
-        stroke: new Expression(`'rgb(236, 194, 116)'`),
-        strokeWidth: new Expression(2),
+        stroke: new DataVariable({name: 'Stroke', definition: `'rgb(236, 194, 116)'`}),
+        strokeWidth: new DataVariable({name: 'Stroke Width', definition: 2}),
         from: {id: 'shape_i0', point: 'center'},
         to: {id: 'shape_i4', point: 'center'}
       }),
@@ -98,7 +98,7 @@ const instructions = [
       }),
       new DrawLineInstruction({
         id: 'i6',
-        strokeWidth: new Expression(2),
+        strokeWidth: new DataVariable({name: 'Stroke Width', definition: 2}),
         from: {id: 'canvas', point: 'left'},
         to: {id: 'canvas', point: 'right'}
       }),
@@ -118,7 +118,7 @@ const instructions = [
       //// TODO missing ability to draw a line centered about a point
       new DrawLineInstruction({
         id: 'i8',
-        strokeWidth: new Expression(2),
+        strokeWidth: new DataVariable({name: 'Stroke Width', definition: 2}),
         from: {id: 'shape_i6', point: 'right'},
         width: new Expression(0),
         height: new Expression(9.5)
@@ -132,7 +132,7 @@ const instructions = [
       //// TODO missing ability to draw a line centered about a point
       new DrawLineInstruction({
         id: 'i9',
-        strokeWidth: new Expression(2),
+        strokeWidth: new DataVariable({name: 'Stroke Width', definition: 2}),
         from: {id: 'shape_i6', point: 'left'},
         width: new Expression(0),
         height: new Expression(9.5)
@@ -145,8 +145,8 @@ const instructions = [
       }),
       new DrawRectInstruction({
         id: 'i10',
-        fill: new Expression(`'rgba(255, 127, 0, 0.25)'`),
-        stroke: new Expression(`'rgba(255, 127, 0, 0.25)'`),
+        fill: new DataVariable({name: 'Fill', definition: `'rgba(255, 127, 0, 0.25)'`}),
+        stroke: new DataVariable({name: 'Stroke', definition: `'rgba(255, 127, 0, 0.25)'`}),
         from: {id: 'shape_i8', point: 'center'},
         to: {id: 'shape_i9', point: 'center'}
       }),
@@ -168,8 +168,8 @@ const instructions = [
       }),
       new DrawPathInstruction({
         id: 'i11',
-        fill: new Expression(`'rgba(238, 141, 40, 1)'`),
-        stroke: new Expression(`'rgba(238, 141, 40, 1)'`),
+        fill: new DataVariable({name: 'Fill', definition: `'rgba(238, 141, 40, 1)'`}),
+        stroke: new DataVariable({name: 'Stroke', definition: `'rgba(238, 141, 40, 1)'`}),
         from: {id: 'canvas', point: 'center'},
         to: [
           {x: new Expression(-40), y: new Expression(-15), isLine: true},
@@ -198,14 +198,14 @@ const instructions = [
       }),
       new DrawLineInstruction({
         id: 'i13',
-        strokeWidth: new Expression(1),
+        strokeWidth: new DataVariable({name: 'Stroke Width', definition: 1}),
         from: {id: 'shape_i10', point: 'bottom'},
         width: new Expression(0),
         height: new Expression(-15)
       }),
       new DrawLineInstruction({
         id: 'i14',
-        strokeWidth: new Expression(1),
+        strokeWidth: new DataVariable({name: 'Stroke Width', definition: 1}),
         from: {id: 'shape_i1', point: 'topLeft'},
         width: new Expression(15),
         height: new Expression(0)

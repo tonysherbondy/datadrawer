@@ -8,44 +8,26 @@ import ColorExpressionEditor from './ColorExpressionEditor';
 export default class ShapeDataList extends React.Component {
 
   render() {
+
     let shape = this.props.shape;
     if (!shape) {
       return (<span>No shape selected.</span>);
     }
+
     let instruction = this.getDrawInstruction(shape.id);
     if (!instruction) {
       return (<span>Cannot modify shape.</span>);
     }
+
     let instructionName = instruction.name;
-    let props = ['strokeWidth', 'stroke', 'fill'];
-    let propsUi = props.map(property => {
-      let name = `${instructionName}'s ${property}`;
-      let id = `${instruction.id}_${property}`;
-      let variable = {id, name};
-      let value = shape[property];
-      let getExpressionEditor = expression => {
-        if (expression.isColor()) {
-          return (
-            <ColorExpressionEditor
-              picture={this.props.picture}
-              variableValues={this.props.variableValues}
-              onChange={this.handleDefinitionChange.bind(this, this.props.picture, instruction, property)}
-              definition={expression} />
-          );
-        } else {
-          return (
-            <ExpressionEditorAndScrub
-              picture={this.props.picture}
-              onChange={this.handleDefinitionChange.bind(this, this.props.picture, instruction, property)}
-              variableValues={this.props.variableValues}
-              definition={expression} />
-          );
-        }
-      };
+    let {propertyVariables} = instruction;
+    let propsUi = propertyVariables.map(property => {
+      let name = `${instructionName}'s ${property.name}`;
+      let value = property.definition.evaluate(this.props.variableValues);
       return (
-        <li className='shape-data-list-item' key={property}>
-          <VariablePill variable={variable} />
-          {getExpressionEditor(instruction[property])}
+        <li className='shape-data-list-item' key={property.name}>
+          <VariablePill variable={{id: property.id, name}} />
+          {this.getExpressionEditor(instruction, property)}
           <div className='shape-data-value'>
             {value}
           </div>
@@ -59,13 +41,34 @@ export default class ShapeDataList extends React.Component {
     );
   }
 
+  getExpressionEditor(instruction, variable) {
+    let {picture, variableValues} = this.props;
+    if (variable.definition.isColor()) {
+      return (
+        <ColorExpressionEditor
+          picture={picture}
+          variableValues={variableValues}
+          onChange={this.handleDefinitionChange.bind(this, instruction, variable)}
+          definition={variable.definition} />
+      );
+    } else {
+      return (
+        <ExpressionEditorAndScrub
+          picture={picture}
+          onChange={this.handleDefinitionChange.bind(this, instruction, variable)}
+          variableValues={variableValues}
+          definition={variable.definition} />
+      );
+    }
+  }
+
   getDrawInstruction(id) {
     return this.props.picture.getDrawInstructionForShapeId(id);
   }
-  handleDefinitionChange(picture, instruction, property, definition) {
-    let props = instruction.getCloneProps();
-    props[property] = definition;
-    instruction.modifyInstructionWithProps(picture, props);
+
+  handleDefinitionChange(instruction, variable, definition) {
+    let newVariable = variable.cloneWithDefinition(definition);
+    instruction.modifyInstructionWithPropertyVariable(this.props.picture, newVariable);
   }
 }
 

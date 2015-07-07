@@ -1,8 +1,9 @@
 import React from 'react';
 import Instruction from './Instruction';
 import ContentEditable from '../components/ContentEditable';
-import Expression from './Expression';
+import DataVariable from './DataVariable';
 import {guid} from '../utils/utils';
+import {OrderedMap} from 'immutable';
 
 export default class DrawInstruction extends Instruction {
   constructor(props = {}) {
@@ -17,27 +18,65 @@ export default class DrawInstruction extends Instruction {
     this.toMagnets = props.toMagnets;
     this.isGuide = !!props.isGuide;
     this.name = props.name;
-    this.strokeWidth = props.strokeWidth || new Expression(1);
-    this.stroke = props.stroke || new Expression(`'#000000'`);
-    this.fill = props.fill || new Expression(`'rgba(0, 0, 0, 0.2)'`);
+
+    // All draw instructions will have property variables which define some
+    // properties about the shape, e.g., font size or fill color
+    if (props.propertyVariables instanceof OrderedMap) {
+      this._propertyVariables = props.propertyVariables;
+    } else {
+      // Map by name because I don't care about the id
+      this._propertyVariables = OrderedMap((props.propertyVariables || []).map(v => [v.name, v]));
+    }
+    this.initializePropertyVariables();
+  }
+
+  initializePropertyVariables() {
+    let inits = [
+      {name: 'Stroke Width', definition: 1},
+      {name: 'Stroke', definition: `'#000000'`},
+      {name: 'Fill', definition: `'rgba(0, 0, 0, 0.2)'`}
+    ];
+    inits.forEach(property => {
+      let {name, definition} = property;
+      if (!this._propertyVariables.has(name)) {
+        this._propertyVariables = this._propertyVariables.set(name, new DataVariable({name, definition}));
+      }
+    });
+  }
+
+  get propertyVariables() { return this._propertyVariables.valueSeq().toArray(); }
+  set propertyVariables(v) { throw `Not allowed to set propertyVariables.  (Tried to set to ${v})`; }
+
+  modifyInstructionWithPropertyVariable(picture, variable) {
+    let propertyVariables = this._propertyVariables.set(variable.name, variable);
+    this.modifyProps(picture, {propertyVariables});
   }
 
   getPropsJs(index) {
+    let styleProps = [
+      {name: 'Fill', shapeName: 'fill'},
+      {name: 'Stroke', shapeName: 'stroke'},
+      {name: 'Stroke Width', shapeName: 'strokeWidth'}
+    ];
+
+    let stylePropsJs = styleProps.map(prop => {
+      let variable = this._propertyVariables.get(prop.name);
+      let js = variable.definition.getJsCode(index);
+      return `${prop.shapeName}: ${js}`;
+    });
+
     return super.getPropsJs(index).concat([
      `name: '${this.name}'`,
-     `fill: ${this.fill.getJsCode(index)}`,
-     `stroke: ${this.stroke.getJsCode(index)}`,
-     `strokeWidth: ${this.strokeWidth.getJsCode(index)}`,
+     ...stylePropsJs,
      `isGuide: ${this.isGuide}`
     ]);
   }
 
   getCloneProps() {
     let props = super.getCloneProps();
-    let {from, fromMagnets, to, toMagnets, isGuide, strokeWidth, stroke, fill} = this;
+    let {from, fromMagnets, to, toMagnets, isGuide, propertyVariables} = this;
     return Object.assign(props, {to, toMagnets, from, fromMagnets,
-                                 isGuide, stroke,
-                                 strokeWidth, fill});
+                                 isGuide, propertyVariables});
   }
 
   isValid() {

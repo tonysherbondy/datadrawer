@@ -49,7 +49,7 @@ const instructions = [
   new DrawRectInstruction({
     id: 'rect1',
     isGuide: false,
-    fill: new Expression(`'aliceblue'`),
+    fill: new DataVariable({name: 'Fill', definition: `'aliceblue'`}),
     from: {id: 'canvas', point: 'bottomLeft'},
     to: {id: 'canvas', point: 'topRight'}
   }),

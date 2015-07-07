@@ -4,7 +4,6 @@ import PictureActions from '../actions/PictureActions';
 import Expression from './Expression';
 import ExpressionEditorAndScrub from '../components/ExpressionEditorAndScrub';
 
-import {guid} from '../utils/utils';
 import DataVariable from './DataVariable';
 import {OrderedMap} from 'immutable';
 
@@ -22,7 +21,6 @@ export default class DrawPictureInstruction extends DrawInstruction {
 
   createDataVariableClones() {
     let v = new DataVariable({
-      id: guid(),
       name: 'clone variable',
       definition: 42
     });
