@@ -1,13 +1,9 @@
 import Expression from './Expression';
-
-let counter = 0;
-function getNewID() {
-  return `data_${counter++}`;
-}
+import {guid} from '../utils/utils';
 
 export default class DataVariable {
   constructor({name, id, definition, isRow}) {
-    this.id = id || getNewID();
+    this.id = id || guid();
     this.name = name;
     this.isRow = isRow;
     if (definition instanceof Expression) {
