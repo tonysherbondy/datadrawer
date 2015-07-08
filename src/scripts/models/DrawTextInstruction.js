@@ -13,9 +13,10 @@ export default class DrawTextInstruction extends DrawLineInstruction {
 
   initializePropertyVariables(initMap) {
     super.initializePropertyVariables(Object.assign({
-      fontSize: 10,
+      fontSize: 20,
       fill: `'#000000'`,
-      strokeWidth: 0
+      strokeWidth: 0,
+      textAnchor: `'start'`
     },
     initMap));
   }

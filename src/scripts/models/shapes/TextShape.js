@@ -5,7 +5,7 @@ export default class TextShape extends LineShape {
     super(props);
     this.text = props.text;
     this.fontSize = props.fontSize || 20;
-    this.textAnchor = props.textAnchor || 'middle';
+    this.textAnchor = props.textAnchor;
     this.type = 'text';
   }
 
