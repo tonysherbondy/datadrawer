@@ -9,7 +9,15 @@ export default class DrawTextInstruction extends DrawLineInstruction {
     super(props);
     this.name = props.name || 'text';
     this.text = props.text || new Expression(`'yolo'`);
-    this.fontSize = props.fontSize;
+  }
+
+  initializePropertyVariables(initMap) {
+    super.initializePropertyVariables(Object.assign({
+      fontSize: 10,
+      fill: `'#000000'`,
+      strokeWidth: 0
+    },
+    initMap));
   }
 
   modifyInstructionWithProps(picture, props) {
@@ -18,9 +26,8 @@ export default class DrawTextInstruction extends DrawLineInstruction {
 
   getCloneProps() {
     let props = super.getCloneProps();
-    let {text, fontSize} = this;
+    let {text} = this;
     props.text = text;
-    props.fontSize = fontSize;
     return props;
   }
 
@@ -55,7 +62,6 @@ export default class DrawTextInstruction extends DrawLineInstruction {
     return `utils.text({\n` +
            `${propsJs},\n` +
            `text: ${this.text.getJsCode(index)},\n` +
-           `fontSize: ${this.fontSize},\n` +
            `x1: ${x},\n` +
            `y1: ${y},\n` +
            `x2: ${this.getToXJs(index)},\n` +

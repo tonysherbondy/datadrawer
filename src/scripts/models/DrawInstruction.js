@@ -4,6 +4,7 @@ import ContentEditable from '../components/ContentEditable';
 import DataVariable from './DataVariable';
 import {guid} from '../utils/utils';
 import {OrderedMap} from 'immutable';
+import _ from 'lodash';
 
 export default class DrawInstruction extends Instruction {
   constructor(props = {}) {
@@ -30,16 +31,17 @@ export default class DrawInstruction extends Instruction {
     this.initializePropertyVariables();
   }
 
-  initializePropertyVariables() {
-    let inits = [
-      {name: 'strokeWidth', definition: 1},
-      {name: 'stroke', definition: `'#000000'`},
-      {name: 'fill', definition: `'rgba(0, 0, 0, 0.2)'`}
-    ];
-    inits.forEach(property => {
-      let {name, definition} = property;
+  initializePropertyVariables(initMap) {
+    initMap = Object.assign({
+      fill: `'rgba(0, 0, 0, 0.2)'`,
+      stroke: `'#000000'`,
+      strokeWidth: 1
+    }, initMap);
+
+    _.keys(initMap).forEach(name => {
       if (!this._propertyVariables.has(name)) {
-        this._propertyVariables = this._propertyVariables.set(name, new DataVariable({name, definition}));
+        let v = new DataVariable({name, definition: initMap[name]});
+        this._propertyVariables = this._propertyVariables.set(name, v);
       }
     });
   }

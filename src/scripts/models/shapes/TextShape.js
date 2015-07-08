@@ -5,13 +5,13 @@ export default class TextShape extends LineShape {
     super(props);
     this.text = props.text;
     this.fontSize = props.fontSize || 20;
+    this.textAnchor = props.textAnchor || 'middle';
     this.type = 'text';
   }
 
   getStyle() {
-    return {
-      fontSize: this.fontSize
-    };
+    let {fill, stroke, strokeWidth, fontSize} = this;
+    return {fontSize, fill, stroke, strokeWidth};
   }
 
   getRenderProps() {
@@ -28,7 +28,7 @@ export default class TextShape extends LineShape {
     return {
       x,
       y,
-      textAnchor: 'middle',
+      textAnchor: this.textAnchor,
       transform,
       style: this.getStyle(),
       strokeOpacity: this.isGuide ? 0 : 1
