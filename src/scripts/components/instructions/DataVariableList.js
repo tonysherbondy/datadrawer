@@ -2,6 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import VariablePill from '../VariablePill';
 import ExpressionEditorAndScrub from '../ExpressionEditorAndScrub';
+import ColorExpressionEditor from '../ColorExpressionEditor';
 import PictureActions from '../../actions/PictureActions';
 
 export default class DataVariableList extends React.Component {
@@ -32,12 +33,7 @@ export default class DataVariableList extends React.Component {
             picture={this.props.picture}
             name={name}
             variable={dataVariable} />
-          <ExpressionEditorAndScrub
-            picture={this.props.picture}
-            asVector={true}
-            onChange={this.handleDefinitionChange.bind(this, dataVariable)}
-            variableValues={this.props.dataValues}
-            definition={dataVariable.definition} />
+          {this.getExpressionEditor(dataVariable)}
           <div className='dataVariable-value'>
             {value}
           </div>
@@ -56,6 +52,29 @@ export default class DataVariableList extends React.Component {
         {addButton}
       </div>
     );
+  }
+
+  getExpressionEditor(variable) {
+    let {picture, dataValues} = this.props;
+    let handleChange = this.handleDefinitionChange.bind(this, variable);
+    if (variable.definition.isColor()) {
+      return (
+        <ColorExpressionEditor
+          picture={picture}
+          variableValues={dataValues}
+          onChange={handleChange}
+          definition={variable.definition} />
+      );
+    } else {
+      return (
+        <ExpressionEditorAndScrub
+          picture={picture}
+          asVector={true}
+          onChange={handleChange}
+          variableValues={dataValues}
+          definition={variable.definition} />
+      );
+    }
   }
 
   handleDefinitionChange(variable, newDefinition) {

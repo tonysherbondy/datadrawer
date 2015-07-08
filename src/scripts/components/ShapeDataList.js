@@ -1,8 +1,6 @@
 import React from 'react';
 import Shape from '../models/shapes/Shape';
 import Picture from '../models/Picture';
-import ExpressionEditorAndScrub from './ExpressionEditorAndScrub';
-import ColorExpressionEditor from './ColorExpressionEditor';
 import DataVariableList from './instructions/DataVariableList';
 //import DataTable from './instructions/DataTable';
 
@@ -43,27 +41,6 @@ export default class ShapeDataList extends React.Component {
           //picture={picture}
           //dataVariables={renamedVariables}
           //dataValues={variableValues} />
-  }
-
-  getExpressionEditor(instruction, variable) {
-    let {picture, variableValues} = this.props;
-    if (variable.definition.isColor()) {
-      return (
-        <ColorExpressionEditor
-          picture={picture}
-          variableValues={variableValues}
-          onChange={this.handleDefinitionChange.bind(this, instruction, variable)}
-          definition={variable.definition} />
-      );
-    } else {
-      return (
-        <ExpressionEditorAndScrub
-          picture={picture}
-          onChange={this.handleDefinitionChange.bind(this, instruction, variable)}
-          variableValues={variableValues}
-          definition={variable.definition} />
-      );
-    }
   }
 
   getDrawInstruction(id) {
