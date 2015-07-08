@@ -36,6 +36,8 @@ export default class ShapeDataList extends React.Component {
         </li>
       );
     });
+
+    // TODO - Reuse DataVariableList and DataTable instead
     return (
       <ul className='shape-data-list'>
         {propsUi}
@@ -70,6 +72,7 @@ export default class ShapeDataList extends React.Component {
 
   handleDefinitionChange(instruction, variable, definition) {
     let newVariable = variable.cloneWithDefinition(definition);
+    // TODO - Call something different if instruction is picture
     instruction.modifyInstructionWithPropertyVariable(this.props.picture, newVariable);
   }
 }

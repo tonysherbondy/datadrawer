@@ -37,6 +37,11 @@ export default class DataVariable {
     return new DataVariable({id, name, isRow, definition});
   }
 
+  cloneWithNewId() {
+    let {id, name, isRow, definition} = this;
+    return new DataVariable({name, isRow, definition});
+  }
+
   // Detect whether one of dep vars depends on this variable
   hasCycle(variables) {
     let getVariable = v => variables.find(vv => vv.id === v.id);

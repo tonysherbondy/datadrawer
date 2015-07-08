@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import evaluateJs from './evaluateJs';
 import InstructionTreeNode from '../models/InstructionTreeNode';
 import LoopInstruction from '../models/LoopInstruction';
@@ -58,7 +57,7 @@ function computeShapes(picture, variableValues, allPicturesJs) {
     width: new Expression(800),
     height: new Expression(600),
     pictureId: picture.id,
-    variables: _.cloneDeep(picture.variables)
+    variables: picture.variables
   }).getJsCode();
 
   evaluateJs(jsCode, variableValues, allPicturesJs);

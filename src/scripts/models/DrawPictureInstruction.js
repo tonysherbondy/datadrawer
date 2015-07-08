@@ -13,15 +13,20 @@ export default class DrawPictureInstruction extends DrawInstruction {
     this.pictureId = props.pictureId || 'bars';
     this.width = props.width || new Expression(1);
     this.height = props.height || new Expression(1);
+    this.variables = this.initializePictureVariables(props.variables);
   }
 
   // Need to clone all of picture's variables and add them to
   // our propertyVariables
-  initializePropertyVariables(initMap) {
-    super.initializePropertyVariables(Object.assign({
-      cloneVariable: 42
-    },
-    initMap));
+  initializePictureVariables(variables) {
+
+    // First pass: create a clone variable with same name and definition as original
+    let newVariables = variables.map(v => v.cloneWithNewId());
+
+    // Second pass: change any reference to previous variables to new clones
+    // TODO -- maybe...
+
+    return newVariables;
   }
 
   modifyInstructionWithProps(picture, props) {
@@ -30,10 +35,11 @@ export default class DrawPictureInstruction extends DrawInstruction {
 
   getCloneProps() {
     let props = super.getCloneProps();
-    let {width, height, pictureId} = this;
+    let {width, height, pictureId, variables} = this;
     props.pictureId = pictureId;
     props.width = width;
     props.height = height;
+    props.variables = variables;
     return props;
   }
 
