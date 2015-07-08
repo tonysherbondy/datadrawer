@@ -24,6 +24,8 @@ export default class ShapeDataList extends React.Component {
     let propsUi = propertyVariables.map(property => {
       let name = `${instructionName}'s ${property.name}`;
       let value = property.definition.evaluate(this.props.variableValues);
+      // TODO - These need to be read-only variable names as the name locks to
+      // the functionality of this variable, i.e., strokeWidth
       return (
         <li className='shape-data-list-item' key={property.name}>
           <VariablePill variable={{id: property.id, name}} />

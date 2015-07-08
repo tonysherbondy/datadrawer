@@ -4,9 +4,6 @@ import PictureActions from '../actions/PictureActions';
 import Expression from './Expression';
 import ExpressionEditorAndScrub from '../components/ExpressionEditorAndScrub';
 
-import DataVariable from './DataVariable';
-import {OrderedMap} from 'immutable';
-
 // TODO: (nhan) most of the code for the geometry of the picture was copied-
 // pasted from DrawRectInstruction.  Should probably abstract this out.
 export default class DrawPictureInstruction extends DrawInstruction {
@@ -16,15 +13,15 @@ export default class DrawPictureInstruction extends DrawInstruction {
     this.pictureId = props.pictureId || 'bars';
     this.width = props.width || new Expression(1);
     this.height = props.height || new Expression(1);
-    this._variables = this.createDataVariableClones();
   }
 
-  createDataVariableClones() {
-    let v = new DataVariable({
-      name: 'clone variable',
-      definition: 42
-    });
-    return OrderedMap([[v.id, v]]);
+  // Need to clone all of picture's variables and add them to
+  // our propertyVariables
+  initializePropertyVariables(initMap) {
+    super.initializePropertyVariables(Object.assign({
+      cloneVariable: 42
+    },
+    initMap));
   }
 
   modifyInstructionWithProps(picture, props) {

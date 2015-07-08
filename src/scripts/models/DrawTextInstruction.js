@@ -16,7 +16,7 @@ export default class DrawTextInstruction extends DrawLineInstruction {
       fontSize: 20,
       fill: `'#000000'`,
       strokeWidth: 0,
-      textAnchor: `'start'`
+      textAnchor: `'middle'`
     },
     initMap));
   }

@@ -40,7 +40,10 @@ export default class DrawInstruction extends Instruction {
 
     _.keys(initMap).forEach(name => {
       if (!this._propertyVariables.has(name)) {
-        let v = new DataVariable({name, definition: initMap[name]});
+        let v = initMap[name];
+        if (!(v instanceof DataVariable)) {
+          v = new DataVariable({name, definition: v});
+        }
         this._propertyVariables = this._propertyVariables.set(name, v);
       }
     });
