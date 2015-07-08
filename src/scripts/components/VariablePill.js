@@ -2,18 +2,19 @@ import React from 'react';
 import ContentEditable from './ContentEditable';
 import PictureActions from '../actions/PictureActions';
 import DataVariable from '../models/DataVariable';
+import Picture from '../models/Picture';
 
 export default class VariablePill extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       isEditingName: false,
-      name: props.variable.name
+      name: props.name || props.variable.name
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({name: nextProps.variable.name});
+    this.setState({name: nextProps.name || nextProps.variable.name});
   }
 
   render() {
@@ -54,6 +55,9 @@ export default class VariablePill extends React.Component {
   }
 
   handleDoubleClick() {
+    if (this.props.readOnly) {
+      return;
+    }
     this.setState({isEditingName: true}, () => {
       React.findDOMNode(this.refs.theContentEditable).focus();
     });
@@ -97,7 +101,10 @@ VariablePill.getVariableName = function(variables, id) {
 };
 
 VariablePill.propTypes = {
-  variable: React.PropTypes.object
+  variable: React.PropTypes.instanceOf(DataVariable).isRequired,
+  picture: React.PropTypes.instanceOf(Picture),
+  name: React.PropTypes.string,
+  readOnly: React.PropTypes.bool
 };
 
 VariablePill.defaultProps = {

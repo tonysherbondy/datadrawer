@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import VariablePill from '../VariablePill';
 import ExpressionEditorAndScrub from '../ExpressionEditorAndScrub';
 import PictureActions from '../../actions/PictureActions';
@@ -14,11 +15,23 @@ export default class DataVariableList extends React.Component {
 
     let values = scalars.map((dataVariable, index) => {
       let value = dataVariable.getValue(this.props.dataValues);
-      value = Math.round(value * 100) / 100;
+      if (_.isNumber(value)) {
+        value = Math.round(value * 100) / 100;
+      }
+
+      // Allow for overriding variable names
+      let {name} = dataVariable;
+      if (this.props.variableNameMap) {
+        name = this.props.variableNameMap[dataVariable.id];
+      }
 
       return (
         <li className='data-variable-list-item' key={index}>
-          <VariablePill picture={this.props.picture} variable={dataVariable} />
+          <VariablePill
+            readOnly={this.props.readOnly}
+            picture={this.props.picture}
+            name={name}
+            variable={dataVariable} />
           <ExpressionEditorAndScrub
             picture={this.props.picture}
             asVector={true}
@@ -31,17 +44,26 @@ export default class DataVariableList extends React.Component {
         </li>
       );
     });
+
+    let addButton = this.props.readOnly ? null : (
+      <button onClick={this.handleAddVariable.bind(this)}>Add</button>
+    );
     return (
       <div className="dataVariables-list-container">
         <ul className='dataVariables-list'>
           {values}
         </ul>
-        <button onClick={this.handleAddVariable.bind(this)}>Add</button>
+        {addButton}
       </div>
     );
   }
 
   handleDefinitionChange(variable, newDefinition) {
+    if (this.props.onDefinitionChange) {
+      this.props.onDefinitionChange(variable, newDefinition);
+      return;
+    }
+
     let newVariable = variable.cloneWithDefinition(newDefinition);
     // Make sure the new variable hasn't introduced cycle
     if (!newVariable.hasCycle(this.props.picture.variables)) {
@@ -65,8 +87,10 @@ export default class DataVariableList extends React.Component {
 }
 
 DataVariableList.propTypes = {
-  dataVariables: React.PropTypes.array,
-  dataValues: React.PropTypes.object
+  readOnly: React.PropTypes.bool,
+  variableNameMap: React.PropTypes.object,
+  dataVariables: React.PropTypes.array.isRequired,
+  dataValues: React.PropTypes.object.isRequired
 };
 
 DataVariableList.defaultProps = {

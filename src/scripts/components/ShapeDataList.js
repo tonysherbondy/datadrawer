@@ -1,15 +1,16 @@
 import React from 'react';
 import Shape from '../models/shapes/Shape';
 import Picture from '../models/Picture';
-import VariablePill from './VariablePill';
 import ExpressionEditorAndScrub from './ExpressionEditorAndScrub';
 import ColorExpressionEditor from './ColorExpressionEditor';
+import DataVariableList from './instructions/DataVariableList';
+//import DataTable from './instructions/DataTable';
 
 export default class ShapeDataList extends React.Component {
 
   render() {
 
-    let shape = this.props.shape;
+    let {shape, variableValues, picture} = this.props;
     if (!shape) {
       return (<span>No shape selected.</span>);
     }
@@ -19,30 +20,29 @@ export default class ShapeDataList extends React.Component {
       return (<span>Cannot modify shape.</span>);
     }
 
-    let instructionName = instruction.name;
+    // Rename variables for this list
     let {propertyVariables} = instruction;
-    let propsUi = propertyVariables.map(property => {
-      let name = `${instructionName}'s ${property.name}`;
-      let value = property.definition.evaluate(this.props.variableValues);
-      // TODO - These need to be read-only variable names as the name locks to
-      // the functionality of this variable, i.e., strokeWidth
-      return (
-        <li className='shape-data-list-item' key={property.name}>
-          <VariablePill variable={{id: property.id, name}} />
-          {this.getExpressionEditor(instruction, property)}
-          <div className='shape-data-value'>
-            {value}
-          </div>
-        </li>
-      );
+    let variableNameMap = {};
+    propertyVariables.forEach(v => {
+      variableNameMap[v.id] = `${instruction.name}'s ${v.name}`;
     });
 
-    // TODO - Reuse DataVariableList and DataTable instead
     return (
-      <ul className='shape-data-list'>
-        {propsUi}
-      </ul>
+      <div className="shape-data-list">
+        <DataVariableList
+          picture={picture}
+          readOnly={true}
+          variableNameMap={variableNameMap}
+          onDefinitionChange={this.handleDefinitionChange.bind(this, instruction)}
+          dataVariables={propertyVariables}
+          dataValues={variableValues} />
+
+      </div>
     );
+        //<DataTable
+          //picture={picture}
+          //dataVariables={renamedVariables}
+          //dataValues={variableValues} />
   }
 
   getExpressionEditor(instruction, variable) {
