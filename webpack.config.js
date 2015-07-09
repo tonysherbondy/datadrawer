@@ -10,7 +10,7 @@ module.exports = {
     './src/scripts/main'
   ],
   output: {
-    path: path.join(__dirname, 'build'),
+    path: path.join(__dirname, 'build/src'),
     filename: 'bundle.js',
     publicPath: '/src/'
   },
