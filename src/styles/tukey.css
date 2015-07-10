@@ -293,5 +293,7 @@ td, th {
   cursor: pointer;
   width: 10px;
   height: 10px;
+  margin-right: 5px;
+  margin-left: 5px;
 }
 

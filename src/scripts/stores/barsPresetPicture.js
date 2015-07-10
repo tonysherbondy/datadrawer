@@ -22,6 +22,11 @@ let variables = [
     definition: ['40']
   }),
   new DataVariable({
+    id: 'bar_color',
+    name: 'bar color',
+    definition: `'#888888'`
+  }),
+  new DataVariable({
     id: 'max_energy_in_mwh',
     name: 'Max energy in MWh',
     definition: ['_.max(', {id: 'energy_in_mwh', asVector: true}, ')']

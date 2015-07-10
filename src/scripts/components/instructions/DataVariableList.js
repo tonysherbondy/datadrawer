@@ -34,9 +34,7 @@ export default class DataVariableList extends React.Component {
             name={name}
             variable={dataVariable} />
           {this.getExpressionEditor(dataVariable)}
-          <div className='dataVariable-value'>
-            {value}
-          </div>
+          {this.getValueUi(dataVariable, value)}
         </li>
       );
     });
@@ -57,22 +55,31 @@ export default class DataVariableList extends React.Component {
   getExpressionEditor(variable) {
     let {picture, dataValues} = this.props;
     let handleChange = this.handleDefinitionChange.bind(this, variable);
+    return (
+      <ExpressionEditorAndScrub
+        picture={picture}
+        asVector={true}
+        onChange={handleChange}
+        variableValues={dataValues}
+        definition={variable.definition} />
+    );
+  }
+
+  getValueUi(variable, value) {
     if (variable.definition.isColor()) {
+      let handleChange = this.handleDefinitionChange.bind(this, variable);
       return (
         <ColorExpressionEditor
-          picture={picture}
-          variableValues={dataValues}
+          picture={this.props.picture}
+          variableValues={this.props.dataValues}
           onChange={handleChange}
           definition={variable.definition} />
       );
     } else {
       return (
-        <ExpressionEditorAndScrub
-          picture={picture}
-          asVector={true}
-          onChange={handleChange}
-          variableValues={dataValues}
-          definition={variable.definition} />
+        <div className='dataVariable-value'>
+          {value}
+        </div>
       );
     }
   }

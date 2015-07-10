@@ -29,7 +29,10 @@ export default class DataVariable {
   }
 
   getValue(values) {
-    return values.data[this.id];
+    // Need to compute the value and not just look it up because we might have
+    // shape expressions that are simply not evaluated with data right now,
+    // e.g., rect's fill color
+    return this.definition.evaluate(values);
   }
 
   cloneWithDefinition(definition) {
