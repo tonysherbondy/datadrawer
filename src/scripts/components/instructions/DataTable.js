@@ -11,6 +11,7 @@ export default class DataTable extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      isEditing: false,
       hoveredRowIndex: null
     };
   }
@@ -84,6 +85,7 @@ export default class DataTable extends React.Component {
         picture={this.props.picture}
         asVector={true}
         onChange={this.handleDefinitionChange.bind(this, variable)}
+        onEditChange={this.handleEditChange.bind(this)}
         variableValues={variableValues}
         definition={variable.definition} />
     );
@@ -107,11 +109,17 @@ export default class DataTable extends React.Component {
     }
   }
 
+  handleEditChange(isEditing) {
+    this.setState({isEditing: isEditing});
+  }
+
   handleMouseLeftTable() {
+    if (this.state.isEditing) { return; }
     this.setState({hoveredRowIndex: null});
   }
 
   handleMouseEnterData(index) {
+    if (this.state.isEditing) { return; }
     this.setState({hoveredRowIndex: index});
   }
 

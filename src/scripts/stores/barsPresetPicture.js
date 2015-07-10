@@ -72,6 +72,7 @@ const instructions = [
     instructions: [
       new DrawRectInstruction({
         id: 'rect2',
+        fill: new Expression({id: 'bar_color'}),
         from: {id: 'shape_rect1', point: 'bottomLeft'},
         to: {id: 'shape_rect1', point: 'topRight'}
       }),

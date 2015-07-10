@@ -116,10 +116,16 @@ export default class ExpressionEditorAndScrub extends React.Component {
       return;
     }
     this.setState({isEditing: true});
+    if (this.props.onEditChange) {
+      this.props.onEditChange(true);
+    }
   }
 
   handleEnterKey(evt) {
     this.setState({isEditing: false});
+    if (this.props.onEditChange) {
+      this.props.onEditChange(false);
+    }
     evt.stopPropagation();
   }
 
