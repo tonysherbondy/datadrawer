@@ -10,6 +10,7 @@ import InstructionTreeNode from '../models/InstructionTreeNode';
 import Picture from '../models/Picture';
 import LoopInstruction from '../models/LoopInstruction';
 import Instruction from '../models/Instruction';
+import DrawInstruction from '../models/DrawInstruction';
 
 import DataTable from './instructions/DataTable';
 import DataVariableList from './instructions/DataVariableList';
@@ -255,6 +256,14 @@ export default class Notebook extends React.Component {
     }
 
     DrawingStateActions.setLoopIndex(currentLoopIndex);
+  }
+
+  getDrawInstructionForSelectedShape() {
+    let selectedShapeId = this.getSelectedShapeId();
+    let {instructions} = this.props.activePicture;
+    return InstructionTreeNode.find(instructions, i => {
+      return i.shapeId === selectedShapeId && i instanceof DrawInstruction;
+    });
   }
 
 }
