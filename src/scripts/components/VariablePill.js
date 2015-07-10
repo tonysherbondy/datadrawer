@@ -2,7 +2,7 @@ import React from 'react';
 import ContentEditable from './ContentEditable';
 import PictureActions from '../actions/PictureActions';
 import DataVariable from '../models/DataVariable';
-import Picture from '../models/Picture';
+//import Picture from '../models/Picture';
 
 export default class VariablePill extends React.Component {
   constructor(props) {
@@ -100,9 +100,16 @@ VariablePill.getVariableName = function(variables, id) {
   return variables.filter(v => v.id === id).map(v => v.name)[0];
 };
 
+// TODO - For some reason, when I added the dependency of DrawPictureInstruction to
+// Picture to search for all variables, it makes it so that Picture is not resolved
+// by this time, it is still some esModule placeholder... Need to investigate this further
+//console.log(Picture);
+console.warn('Bring back Picture PropType check');
+
 VariablePill.propTypes = {
   variable: React.PropTypes.object.isRequired,
-  picture: React.PropTypes.instanceOf(Picture),
+  picture: React.PropTypes.object,
+  //picture: React.PropTypes.instanceOf(Picture),
   name: React.PropTypes.string,
   readOnly: React.PropTypes.bool
 };

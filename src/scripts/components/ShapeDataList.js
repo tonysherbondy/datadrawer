@@ -3,7 +3,7 @@ import Shape from '../models/shapes/Shape';
 import Picture from '../models/Picture';
 import DrawPictureInstruction from '../models/DrawPictureInstruction';
 import DataVariableList from './instructions/DataVariableList';
-//import DataTable from './instructions/DataTable';
+import DataTable from './instructions/DataTable';
 
 export default class ShapeDataList extends React.Component {
 
@@ -43,12 +43,17 @@ export default class ShapeDataList extends React.Component {
           dataVariables={variables}
           dataValues={variableValues} />
 
+        <DataTable
+          picture={picture}
+          readOnly={true}
+          isPicturePopup={instruction instanceof DrawPictureInstruction}
+          variableNameMap={variableNameMap}
+          onDefinitionChange={this.handleDefinitionChange.bind(this, instruction)}
+          dataVariables={variables}
+          dataValues={variableValues} />
+
       </div>
     );
-        //<DataTable
-          //picture={picture}
-          //dataVariables={renamedVariables}
-          //dataValues={variableValues} />
   }
 
   getDrawInstruction(id) {

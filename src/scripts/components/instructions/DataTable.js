@@ -16,7 +16,7 @@ export default class DataTable extends React.Component {
   }
 
   render() {
-    let table = this.props.picture.getVariableTableWithValues(this.props.dataValues);
+    let table = this.props.picture.getVariableTableWithValues(this.props.dataValues, this.props.isPicturePopup);
     let {rows, rowValues, maxLength} = table;
     let {currentLoopIndex} = this.props;
 
@@ -50,6 +50,13 @@ export default class DataTable extends React.Component {
       );
     });
 
+    let addUi = this.props.readOnly ? null : (
+      <div>
+        <button onClick={this.handleAddVariable.bind(this)}>Add</button>
+        <input type='file' onChange={this.handleUpload.bind(this)} />
+      </div>
+    );
+
     return (
       <div className="table-container">
         <table onMouseLeave={this.handleMouseLeftTable.bind(this)} className="data-table">
@@ -63,11 +70,8 @@ export default class DataTable extends React.Component {
           </tbody>
         </table>
 
-        <button onClick={this.handleAddVariable.bind(this)}>Add</button>
+        {addUi}
 
-        <input
-          type='file'
-          onChange={this.handleUpload.bind(this)} />
       </div>
     );
   }
@@ -86,6 +90,11 @@ export default class DataTable extends React.Component {
   }
 
   handleDefinitionChange(variable, newDefinition) {
+    if (this.props.onDefinitionChange) {
+      this.props.onDefinitionChange(variable, newDefinition);
+      return;
+    }
+
     let newVariable = variable.cloneWithDefinition(newDefinition);
     // Make sure the new variable hasn't introduced cycle
     if (!newVariable.hasCycle(this.props.dataVariables)) {
@@ -173,6 +182,9 @@ export default class DataTable extends React.Component {
 
 DataTable.propTypes = {
   picture: React.PropTypes.instanceOf(Picture).isRequired,
+  readOnly: React.PropTypes.bool,
+  isPicturePopup: React.PropTypes.bool,
+  variableNameMap: React.PropTypes.object,
   currentLoopIndex: React.PropTypes.number,
   dataVariables: React.PropTypes.array.isRequired,
   dataValues: React.PropTypes.object.isRequired

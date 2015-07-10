@@ -29,7 +29,7 @@ export default class DataVariable {
   }
 
   getValue(values) {
-    return this.definition.evaluate(values);
+    return values.data[this.id];
   }
 
   cloneWithDefinition(definition) {

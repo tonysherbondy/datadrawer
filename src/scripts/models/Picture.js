@@ -2,6 +2,7 @@ import {OrderedMap} from 'immutable';
 import InstructionTreeNode from './InstructionTreeNode';
 import DataVariable from './DataVariable';
 import DrawInstruction from './DrawInstruction';
+import getAllPictureVariables from '../utils/getAllPictureVariables';
 
 export default class Picture {
   constructor(id, instructions, variables) {
@@ -106,8 +107,13 @@ export default class Picture {
     return nameMap;
   }
 
-  getVariableTableWithValues(variableValues) {
-    let rows = this.variables.filter(v => v.isRow);
+  getVariableById(id) {
+    return getAllPictureVariables(this).find(v => v.id === id);
+  }
+
+  getVariableTableWithValues(variableValues, withPictureVars) {
+    let vars = withPictureVars ? getAllPictureVariables(this) : this.variables;
+    let rows = vars.filter(v => v.isRow);
     let rowValues = rows.map(row => {
       return row.getValue(variableValues);
     });
