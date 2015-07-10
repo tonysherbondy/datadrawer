@@ -7,15 +7,16 @@ import computeVariableValues from '../utils/computeVariableValues';
 import Notebook from './Notebook';
 import InstructionTreeNode from '../models/InstructionTreeNode';
 import NotebookPictureCompiler from '../utils/NotebookPictureCompiler';
+import DrawPictureInstruction from '../models/DrawPictureInstruction';
 
 class App extends React.Component {
 
   render() {
-    let variableValues = this.getAllDataVariableValues();
     let {pictures, drawingState} = this.props;
+    let {activePicture} = drawingState;
+    let variableValues = this.getAllDataVariableValues(activePicture);
 
     // Compute shapes for the active picture
-    let {activePicture} = drawingState;
     let currentInstruction = this.getCurrentInstruction();
     let pictureCompiler = new NotebookPictureCompiler({
       variableValues, pictures, activePicture, currentInstruction,
@@ -44,7 +45,14 @@ class App extends React.Component {
   // that variables are unique across all pictures
   // Output is a Map between variable ID and the value of that variable
   getAllDataVariableValues() {
-    let allVariables = _(this.props.pictures.map(p => p.variables))
+    let {pictures} = this.props;
+    let pictureVariables = pictures.map(p => p.variables);
+    let instVariables = pictures.map(p => {
+      return _.flatten(InstructionTreeNode.flatten(p.instructions)
+                                .filter(i => i instanceof DrawPictureInstruction)
+                                .map(i => i.pictureVariables));
+    });
+    let allVariables = _(pictureVariables.concat(instVariables))
                         .flatten()
                         .unique()
                         .value();
@@ -83,6 +91,5 @@ let propsAccessor = () => ({
 });
 
 App = Flux.connect(App, stores, propsAccessor);
-
 
 export default App;

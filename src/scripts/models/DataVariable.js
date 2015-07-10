@@ -4,7 +4,7 @@ import {guid} from '../utils/utils';
 export default class DataVariable {
   constructor({name, id, definition, isRow}) {
     this.id = id || guid();
-    this.name = name;
+    this.name = name || id;
     this.isRow = isRow;
     if (definition instanceof Expression) {
       this.definition = definition;

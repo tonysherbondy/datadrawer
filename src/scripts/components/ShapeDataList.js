@@ -1,6 +1,7 @@
 import React from 'react';
 import Shape from '../models/shapes/Shape';
 import Picture from '../models/Picture';
+import DrawPictureInstruction from '../models/DrawPictureInstruction';
 import DataVariableList from './instructions/DataVariableList';
 //import DataTable from './instructions/DataTable';
 
@@ -18,10 +19,17 @@ export default class ShapeDataList extends React.Component {
       return (<span>Cannot modify shape.</span>);
     }
 
-    // Rename variables for this list
-    let {propertyVariables} = instruction;
+    // Picture variables are different as they have the Picture data
+    let variables;
+    if (instruction instanceof DrawPictureInstruction) {
+      variables = instruction.pictureVariables;
+    } else {
+      variables = instruction.propertyVariables;
+    }
+
+    // Rename variables
     let variableNameMap = {};
-    propertyVariables.forEach(v => {
+    (variables || []).forEach(v => {
       variableNameMap[v.id] = `${instruction.name}'s ${v.name}`;
     });
 
@@ -32,7 +40,7 @@ export default class ShapeDataList extends React.Component {
           readOnly={true}
           variableNameMap={variableNameMap}
           onDefinitionChange={this.handleDefinitionChange.bind(this, instruction)}
-          dataVariables={propertyVariables}
+          dataVariables={variables}
           dataValues={variableValues} />
 
       </div>
@@ -49,8 +57,11 @@ export default class ShapeDataList extends React.Component {
 
   handleDefinitionChange(instruction, variable, definition) {
     let newVariable = variable.cloneWithDefinition(definition);
-    // TODO - Call something different if instruction is picture
-    instruction.modifyInstructionWithPropertyVariable(this.props.picture, newVariable);
+    if (instruction instanceof DrawPictureInstruction) {
+      instruction.modifyInstructionWithPictureVariable(this.props.picture, newVariable);
+    } else {
+      instruction.modifyInstructionWithPropertyVariable(this.props.picture, newVariable);
+    }
   }
 }
 

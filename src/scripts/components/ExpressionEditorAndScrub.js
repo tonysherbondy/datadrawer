@@ -4,6 +4,7 @@ import ExpressionEditor from './ExpressionEditor';
 import Expression from '../models/Expression';
 import VariablePill from './VariablePill';
 import DataVariable from '../models/DataVariable';
+import getVariableById from '../utils/getVariableById';
 
 export default class ExpressionEditorAndScrub extends React.Component {
   constructor(props) {
@@ -61,7 +62,7 @@ export default class ExpressionEditorAndScrub extends React.Component {
 
   parseFragment(fragment) {
     if (!_.isString(fragment)) {
-      let variable = this.props.picture.variables.find(v => v.id === fragment.id);
+      let variable = getVariableById(this.props.picture, fragment.id);
       return [variable];
     }
 

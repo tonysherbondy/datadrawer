@@ -1,3 +1,5 @@
+// TODO - Get rid of variable store
+//
 import biff from '../dispatcher/dispatcher';
 import DataVariable from '../models/DataVariable';
 
@@ -99,9 +101,8 @@ const DataVariableStore = biff.createStore({
     return variables;
   },
   generateNewVariable({name, isRow, definition}) {
-    let id = `v_${variables.length + 1}`;
-    name = name || id;
-    return new DataVariable({id, name, isRow, definition});
+    name = name || `v_${variables.length + 1}`;
+    return new DataVariable({name, isRow, definition});
   }
 }, (payload) => {
 

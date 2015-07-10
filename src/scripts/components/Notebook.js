@@ -170,7 +170,7 @@ export default class Notebook extends React.Component {
       DrawingStateActions.setPictureForPictureTool(picture);
       let instruction = new DrawPictureInstruction({
         pictureId: picture.id,
-        variables: picture.variables
+        pictureVariables: picture.variables
       });
       PictureActions.insertInstructionAfterInstruction(
         this.props.activePicture, instruction,

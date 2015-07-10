@@ -12,13 +12,15 @@ function evaluationUtils(variables, picturesJs) {
     // Initialize global function call depth
     depth: 0,
     maxDepth: 4,
+    dataLookupMap: {},
     distanceBetweenPoints: function(a,b) {
       let x = a.x - b.x;
       let y = a.y - b.y;
       return Math.sqrt(x * x + y * y);
     },
     getData(varRef, index=0) {
-      let variable = variables.data[varRef.id];
+      let id = this.dataLookupMap[varRef.id] || varRef.id;
+      let variable = variables.data[id];
       // The variable reference will know whether or not we
       // want to refer to a vector as an entire vector or just
       // index of vector, the default is index
@@ -58,8 +60,9 @@ function evaluationUtils(variables, picturesJs) {
       if (utils.depth > utils.maxDepth) {
         return;
       }
-      // Besides updating depth, the utils context will be the same for the next eval'd JS
+      // Update depth and the data variable lookup map
       utils.depth++;
+      utils.dataLookupMap = params.pictureIdToDrawIdMap;
 
       // Store previous picture context where shape calls would be stored
       let prevPicture = variables.picture;

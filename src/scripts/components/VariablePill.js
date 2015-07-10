@@ -101,7 +101,7 @@ VariablePill.getVariableName = function(variables, id) {
 };
 
 VariablePill.propTypes = {
-  variable: React.PropTypes.instanceOf(DataVariable).isRequired,
+  variable: React.PropTypes.object.isRequired,
   picture: React.PropTypes.instanceOf(Picture),
   name: React.PropTypes.string,
   readOnly: React.PropTypes.bool

@@ -56,8 +56,7 @@ function computeShapes(picture, variableValues, allPicturesJs) {
     from: {x: 0, y: 0},
     width: new Expression(800),
     height: new Expression(600),
-    pictureId: picture.id,
-    variables: picture.variables
+    pictureId: picture.id
   }).getJsCode();
 
   evaluateJs(jsCode, variableValues, allPicturesJs);

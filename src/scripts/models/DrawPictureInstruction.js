@@ -1,4 +1,6 @@
 import React from 'react';
+import _ from 'lodash';
+import {OrderedMap} from 'immutable';
 import DrawInstruction from './DrawInstruction';
 import PictureActions from '../actions/PictureActions';
 import Expression from './Expression';
@@ -13,7 +15,21 @@ export default class DrawPictureInstruction extends DrawInstruction {
     this.pictureId = props.pictureId || 'bars';
     this.width = props.width || new Expression(1);
     this.height = props.height || new Expression(1);
-    this.variables = this.initializePictureVariables(props.variables);
+
+    let {pictureVariables} = props;
+    if (!props.preserveVariables && pictureVariables) {
+      let clone = this.initializePictureVariables(props.pictureVariables);
+      this.pictureIdToDrawIdMap = clone.pictureIdToDrawIdMap;
+      pictureVariables = clone.pictureVariables;
+    } else {
+      this.pictureIdToDrawIdMap = props.pictureIdToDrawIdMap || {};
+    }
+
+    if (pictureVariables instanceof OrderedMap) {
+      this._pictureVariables = pictureVariables;
+    } else {
+      this._pictureVariables = OrderedMap((pictureVariables || []).map(v => [v.name, v]));
+    }
   }
 
   // Need to clone all of picture's variables and add them to
@@ -21,12 +37,35 @@ export default class DrawPictureInstruction extends DrawInstruction {
   initializePictureVariables(variables) {
 
     // First pass: create a clone variable with same name and definition as original
-    let newVariables = variables.map(v => v.cloneWithNewId());
+    let pictureIdToDrawIdMap = {};
+    let newVariables = (variables || []).map(v => {
+      let newV = v.cloneWithNewId();
+      pictureIdToDrawIdMap[v.id] = newV.id;
+      return newV;
+    });
 
     // Second pass: change any reference to previous variables to new clones
-    // TODO -- maybe...
+    let mappedVariables = newVariables.map(v => {
+      if (v.getDependentVariables().length === 0) {
+        return v;
+      }
+      // Create new definition by replacing fragment ids with local one
+      let newFragments = v.definition.fragments.map(f => {
+        if (_.isString(f)) { return f; }
+        return Object.assign(_.cloneDeep(f), {id: pictureIdToDrawIdMap[f.id]});
+      });
+      return v.cloneWithDefinition(newFragments);
+    });
 
-    return newVariables;
+    return {pictureVariables: mappedVariables, pictureIdToDrawIdMap};
+  }
+
+  get pictureVariables() { return this._pictureVariables.valueSeq().toArray(); }
+  set pictureVariables(v) { throw `Not allowed to set propertyVariables.  (Tried to set to ${v})`; }
+
+  modifyInstructionWithPictureVariable(picture, variable) {
+    let pictureVariables = this._pictureVariables.set(variable.name, variable);
+    this.modifyProps(picture, {pictureVariables});
   }
 
   modifyInstructionWithProps(picture, props) {
@@ -35,11 +74,13 @@ export default class DrawPictureInstruction extends DrawInstruction {
 
   getCloneProps() {
     let props = super.getCloneProps();
-    let {width, height, pictureId, variables} = this;
+    let {width, height, pictureId, pictureVariables, pictureIdToDrawIdMap} = this;
     props.pictureId = pictureId;
     props.width = width;
     props.height = height;
-    props.variables = variables;
+    props.pictureVariables = pictureVariables;
+    props.pictureIdToDrawIdMap = pictureIdToDrawIdMap;
+    props.preserveVariables = true;
     return props;
   }
 
@@ -106,6 +147,7 @@ export default class DrawPictureInstruction extends DrawInstruction {
     let propsJs = super.getPropsJs(index).join(',\n');
     return `utils.picture({\n` +
            `${propsJs},\n` +
+           `pictureIdToDrawIdMap: ${JSON.stringify(this.pictureIdToDrawIdMap)},\n` +
            `x: ${x},\n` +
            `y: ${y},\n` +
            `width: ${this.getWidthJs(index)},\n` +
