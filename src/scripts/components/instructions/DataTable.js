@@ -16,7 +16,7 @@ export default class DataTable extends React.Component {
   }
 
   render() {
-    let table = this.props.picture.getVariableTableWithValues(this.props.dataValues, this.props.isPicturePopup);
+    let table = this.props.picture.getVariableTableWithValues(this.props.dataValues, this.props.dataVariables);
     let {rows, rowValues, maxLength} = table;
     let {currentLoopIndex} = this.props;
 

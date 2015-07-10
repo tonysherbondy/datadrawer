@@ -1,8 +1,10 @@
 import {OrderedMap} from 'immutable';
+import _ from 'lodash';
 import InstructionTreeNode from './InstructionTreeNode';
 import DataVariable from './DataVariable';
 import DrawInstruction from './DrawInstruction';
-import getAllPictureVariables from '../utils/getAllPictureVariables';
+//import getAllPictureVariables from '../utils/getAllPictureVariables';
+import DrawPictureInstruction from './DrawPictureInstruction';
 
 export default class Picture {
   constructor(id, instructions, variables) {
@@ -107,13 +109,22 @@ export default class Picture {
     return nameMap;
   }
 
-  getVariableById(id) {
-    return getAllPictureVariables(this).find(v => v.id === id);
+  getAllPictureVariables() {
+    return this.variables.concat(
+      _.flatten(InstructionTreeNode
+      .flatten(this.instructions)
+      .filter(i => i instanceof DrawPictureInstruction)
+      .map(i => i.pictureVariables))
+    );
   }
 
-  getVariableTableWithValues(variableValues, withPictureVars) {
-    let vars = withPictureVars ? getAllPictureVariables(this) : this.variables;
-    let rows = vars.filter(v => v.isRow);
+  getVariableById(id) {
+    return this.getAllPictureVariables(this).find(v => v.id === id);
+  }
+
+  getVariableTableWithValues(variableValues, variables) {
+    variables = variables || this.variables;
+    let rows = variables.filter(v => v.isRow);
     let rowValues = rows.map(row => {
       return row.getValue(variableValues);
     });
