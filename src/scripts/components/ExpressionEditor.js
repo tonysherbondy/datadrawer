@@ -85,16 +85,17 @@ export default class ExpressionEditor extends React.Component {
       if (_.isString(fragment)) {
         return escSpace(fragment);
       }
-      return VariablePill.getHtmlStringFromFragment(fragment, i, this.props.picture.variables);
+      return VariablePill.getHtmlStringFromFragment(fragment, i, this.props.picture);
     }).join('');
   }
 
   nodeToFragment(node) {
     if (node.hasAttribute && node.hasAttribute('data-variable-id')) {
       let id = node.getAttribute('data-variable-id');
+      let prop = node.getAttribute('data-variable-prop');
       // The expression editor either treats all possible vector values as is or not
       // If you are in the data list area, you will be vector valued otherwise, don't
-      return {id, asVector: this.props.asVector};
+      return {id, prop, asVector: this.props.asVector};
     } else if (node.hasAttribute) {
       // Probably a cursor location
       return '';

@@ -59,17 +59,15 @@ function computeShapes(picture, variableValues, allPicturesJs) {
     pictureId: picture.id
   }).getJsCode();
 
-  evaluateJs(jsCode, variableValues, allPicturesJs);
-
-  // Get the shapes for this picture
-  let shapes = variableValues.picture.shapes;
-
   // TODO - So picture is used as the current picture context that we change as we are calling
   // js within any picture. This is necessary because right now picture drawing involves mutating
   // whatever the picture value context is... So here we reset the picture context which was the
   // root picture instruction we made here.
   variableValues.picture = undefined;
+  evaluateJs(jsCode, variableValues, allPicturesJs);
 
+  // Get the shapes for this picture
+  let shapes = variableValues.picture.shapes;
   return {shapes, jsCode};
 }
 

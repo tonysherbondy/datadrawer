@@ -3,8 +3,8 @@ import _ from 'lodash';
 import InstructionTreeNode from './InstructionTreeNode';
 import DataVariable from './DataVariable';
 import DrawInstruction from './DrawInstruction';
-//import getAllPictureVariables from '../utils/getAllPictureVariables';
 import DrawPictureInstruction from './DrawPictureInstruction';
+import Expression from './Expression';
 
 export default class Picture {
   constructor(id, instructions, variables) {
@@ -118,8 +118,22 @@ export default class Picture {
     );
   }
 
-  getVariableById(id) {
-    return this.getAllPictureVariables(this).find(v => v.id === id);
+  getVariableForFragment(fragment) {
+    let variable;
+    if (fragment.prop) {
+      // It is a shape variable
+      let name = `${this.getShapeNameMap()[fragment.id]}'s ${fragment.prop}`;
+      variable = new DataVariable({
+        id: fragment.id,
+        name,
+        prop: fragment.prop,
+        definition: new Expression(fragment)
+      });
+    } else {
+      // DataVariable
+      return this.getAllPictureVariables(this).find(v => v.id === fragment.id);
+    }
+    return variable;
   }
 
   getVariableTableWithValues(variableValues, variables) {

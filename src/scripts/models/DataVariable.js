@@ -2,10 +2,12 @@ import Expression from './Expression';
 import {guid} from '../utils/utils';
 
 export default class DataVariable {
-  constructor({name, id, definition, isRow}) {
+  constructor({name, id, definition, isRow, prop}) {
     this.id = id || guid();
     this.name = name || id;
     this.isRow = isRow;
+    // Shape variables have a prop
+    this.prop = prop;
     if (definition instanceof Expression) {
       this.definition = definition;
     } else {

@@ -84,20 +84,17 @@ export default class VariablePill extends React.Component {
 VariablePill.cursorLocationId = 'cursorLocation';
 
 VariablePill.getHtmlString = function(variable, fragmentIndex) {
-  let dataAttr = `data-variable-id="${variable.id}"`;
+  let dataAttrId = `data-variable-id="${variable.id}"`;
+  let dataAttrProp = variable.prop ? `data-variable-prop="${variable.prop}"` : '';
   let fragmentAttr = isFinite(fragmentIndex) ? `data-fragment-index="${fragmentIndex}"` : '';
-  let attrs = `class="variable-pill" ${fragmentAttr} ${dataAttr} draggable="true" contenteditable="false"`;
+  let attrs = `class="variable-pill" ${fragmentAttr} ${dataAttrId} ` +
+              `${dataAttrProp} draggable="true" contenteditable="false"`;
   return `<span ${attrs}>${variable.name}</span>`;
 };
 
-VariablePill.getHtmlStringFromFragment = function(fragment, fragmentIndex, variables) {
-  let id = fragment.id;
-  let name = VariablePill.getVariableName(variables, id);
-  return VariablePill.getHtmlString({id, name}, fragmentIndex);
-};
-
-VariablePill.getVariableName = function(variables, id) {
-  return variables.filter(v => v.id === id).map(v => v.name)[0];
+VariablePill.getHtmlStringFromFragment = function(fragment, fragmentIndex, picture) {
+  let variable = picture.getVariableForFragment(fragment);
+  return VariablePill.getHtmlString(variable, fragmentIndex);
 };
 
 // TODO - For some reason, when I added the dependency of DrawPictureInstruction to

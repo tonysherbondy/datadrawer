@@ -113,7 +113,7 @@ const instructions = [
       }),
       new IfInstruction({
         id: 'if',
-        condition: [{id: 'shape_line1', prop: 'dy'}, ' < ', '1'],
+        condition: new Expression([{id: 'shape_line1', prop: 'dy'}, ' < ', '1']),
         instructions: [
           new MoveInstruction({
             id: 'imove3',

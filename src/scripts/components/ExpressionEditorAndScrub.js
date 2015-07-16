@@ -61,8 +61,7 @@ export default class ExpressionEditorAndScrub extends React.Component {
 
   parseFragment(fragment) {
     if (!_.isString(fragment)) {
-      let variable = this.props.picture.getVariableById(fragment.id);
-      return [variable];
+      return [this.props.picture.getVariableForFragment(fragment)];
     }
 
     // Parse the string into spans around numbers and other parts of the string
@@ -94,7 +93,7 @@ export default class ExpressionEditorAndScrub extends React.Component {
       } else if (f instanceof DataVariable) {
         // Convert variable into simple reference to variable
         // mainly need this for the asVector property
-        f = {id: f.id, asVector: this.props.asVector};
+        f = {id: f.id, prop: f.prop, asVector: this.props.asVector};
       }
 
       let last = _.last(joined);
