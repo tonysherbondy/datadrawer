@@ -2,10 +2,11 @@ import Expression from './Expression';
 import {guid} from '../utils/utils';
 
 export default class DataVariable {
-  constructor({name, id, definition, isRow, prop}) {
+  constructor({name, id, definition, isRow, prop, isReadOnly}) {
     this.id = id || guid();
     this.name = name || id;
     this.isRow = isRow;
+    this.isReadOnly = isReadOnly;
     // Shape variables have a prop
     this.prop = prop;
     if (definition instanceof Expression) {
@@ -30,11 +31,11 @@ export default class DataVariable {
     return `${this.getJsName()} = ${this.definition.getJsCode()};`;
   }
 
-  getValue(values) {
+  getValue(values, index) {
     // Need to compute the value and not just look it up because we might have
     // shape expressions that are simply not evaluated with data right now,
     // e.g., rect's fill color
-    return this.definition.evaluate(values);
+    return this.definition.evaluate(values, index);
   }
 
   cloneWithDefinition(definition) {

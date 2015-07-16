@@ -33,6 +33,13 @@ export default class ShapeDataList extends React.Component {
       variableNameMap[v.id] = `${instruction.name}'s ${v.name}`;
     });
 
+    // Get shape measurement variables
+    let shapeVariables = shape.getMeasurementVariables();
+    shapeVariables.forEach(v => {
+      variableNameMap[v.id] = `${instruction.name}'s ${v.prop}`;
+    });
+
+
     return (
       <div className="shape-data-list">
         <DataVariableList
@@ -52,6 +59,15 @@ export default class ShapeDataList extends React.Component {
           dataVariables={variables}
           dataValues={variableValues} />
 
+        <div className="left-panel-header">Measurements</div>
+
+        <DataVariableList
+          picture={picture}
+          readOnly={true}
+          variableNameMap={variableNameMap}
+          dataVariables={shapeVariables}
+          currentLoopIndex={this.props.currentLoopIndex}
+          dataValues={variableValues} />
       </div>
     );
   }
@@ -73,6 +89,7 @@ export default class ShapeDataList extends React.Component {
 ShapeDataList.propTypes = {
   variableValues: React.PropTypes.object.isRequired,
   picture: React.PropTypes.instanceOf(Picture).isRequired,
+  currentLoopIndex: React.PropTypes.number,
   // I'm passing shape instead of instruction as I may need shape for measurements
   shape: React.PropTypes.instanceOf(Shape)
 };

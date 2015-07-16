@@ -15,7 +15,7 @@ export default class DataVariableList extends React.Component {
     }, {scalars: [], vectors: []});
 
     let values = scalars.map((dataVariable, index) => {
-      let value = dataVariable.getValue(this.props.dataValues);
+      let value = dataVariable.getValue(this.props.dataValues, this.props.currentLoopIndex);
       if (_.isNumber(value)) {
         value = Math.round(value * 100) / 100;
       }
@@ -53,6 +53,7 @@ export default class DataVariableList extends React.Component {
   }
 
   getExpressionEditor(variable) {
+    if (variable.isReadOnly) { return null; }
     let {picture, dataValues} = this.props;
     let handleChange = this.handleDefinitionChange.bind(this, variable);
     return (
@@ -116,6 +117,7 @@ DataVariableList.propTypes = {
   readOnly: React.PropTypes.bool,
   variableNameMap: React.PropTypes.object,
   dataVariables: React.PropTypes.array.isRequired,
+  currentLoopIndex: React.PropTypes.number,
   dataValues: React.PropTypes.object.isRequired
 };
 

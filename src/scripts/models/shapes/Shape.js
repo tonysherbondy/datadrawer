@@ -1,4 +1,5 @@
 import Expression from '../Expression';
+import DataVariable from '../DataVariable';
 
 export default class Shape {
   constructor(props) {
@@ -112,5 +113,17 @@ export default class Shape {
       fillOpacity: this.isGuide ? 0 : 1,
       strokeOpacity: this.isGuide ? 0 : 1
     };
+  }
+
+  getMeasurementProps() {
+    return [];
+  }
+
+  getMeasurementVariables() {
+    return this.getMeasurementProps().map(prop => new DataVariable({
+      prop,
+      isReadOnly: true,
+      definition: new Expression({id: this.id, prop})
+    }));
   }
 }

@@ -236,6 +236,10 @@ td, th {
   user-select: none;
 }
 
+.shape-data-list {
+  padding: 0;
+}
+
 .dataVariable-value, .shape-data-value {
   display: inline-block;
   color: darkgray;

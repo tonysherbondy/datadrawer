@@ -45,22 +45,6 @@ export default class LineShape extends Shape {
     return this.rotatePoint(point);
   }
 
-  getProp(name) {
-    if (name === 'angle') {
-      let dx = this.x2 - this.x1;
-      let dy = this.y2 - this.y1;
-      // atan is between -90 and 90, when x is negative
-      // we want the other hemi-circle
-      let flip = dx < 0 ? 180 : 0;
-      return Math.atan(dy / dx) * 180 / Math.PI + flip;
-    } else if (name === 'dy') {
-      return this.y2 - this.y1;
-    } else if (name === 'dx') {
-      return this.x2 - this.x1;
-    }
-    console.error(`Don't know how to get prop`, name);
-  }
-
   // Move the shape relatively by this value
   moveRelative(name, value, isReshape, axis) {
     let {x, y} = value;
@@ -134,6 +118,27 @@ export default class LineShape extends Shape {
   getRenderProps() {
     let {x1, y1, x2, y2} = this;
     return Object.assign(super.getRenderProps(), {x1, y1, x2, y2});
+  }
+
+  // TODO - Maybe should be measuremnt prop now?
+  getProp(name) {
+    if (name === 'angle') {
+      let dx = this.x2 - this.x1;
+      let dy = this.y2 - this.y1;
+      // atan is between -90 and 90, when x is negative
+      // we want the other hemi-circle
+      let flip = dx < 0 ? 180 : 0;
+      return Math.atan(dy / dx) * 180 / Math.PI + flip;
+    } else if (name === 'dy') {
+      return this.y2 - this.y1;
+    } else if (name === 'dx') {
+      return this.x2 - this.x1;
+    }
+    console.error(`Don't know how to get prop`, name);
+  }
+
+  getMeasurementProps() {
+    return ['dy', 'dx'];
   }
 
 }

@@ -118,6 +118,7 @@ export default class Notebook extends React.Component {
             <ShapeDataList
               picture={activePicture}
               variableValues={this.props.variableValues}
+              currentLoopIndex={currentLoopIndex}
               shape={selectedShape}
               shapes={this.props.shapes} />
           </Popover>
