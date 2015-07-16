@@ -4,40 +4,47 @@ import Flux from '../dispatcher/dispatcher';
 import PictureStore from '../stores/PictureStore';
 import DrawingStateStore from '../stores/DrawingStateStore';
 import computeVariableValues from '../utils/computeVariableValues';
-import Notebook from './Notebook';
+//import Notebook from './Notebook';
 import InstructionTreeNode from '../models/InstructionTreeNode';
-import NotebookPictureCompiler from '../utils/NotebookPictureCompiler';
 import DrawPictureInstruction from '../models/DrawPictureInstruction';
+//import picture2shapes from '../models/PictureCompiler';
 
 class App extends React.Component {
 
   render() {
     let {pictures, drawingState} = this.props;
     let {activePicture} = drawingState;
-    let variableValues = this.getAllDataVariableValues(activePicture);
+
+    let variableValues = computeVariableValues(activePicture.get('variables'));
+
+    //let variableValues = this.getAllDataVariableValues(activePicture);
 
     // Compute shapes for the active picture
-    let currentInstruction = this.getCurrentInstruction();
-    let pictureCompiler = new NotebookPictureCompiler({
-      variableValues, pictures, activePicture, currentInstruction,
-      currentLoopIndex: drawingState.currentLoopIndex});
-    let shapes = pictureCompiler.getShapesForPicture(activePicture);
+    //let currentInstruction = this.getCurrentInstruction();
+    //let pictureCompiler = new NotebookPictureCompiler({
+      //variableValues, pictures, activePicture, currentInstruction,
+      //currentLoopIndex: drawingState.currentLoopIndex});
+    //let shapes = pictureCompiler.getShapesForPicture(activePicture);
 
     return (
-      <Notebook
-        activePicture={drawingState.activePicture}
-        editingInstructionId={drawingState.editingInstructionId}
-        selectedInstructions={this.getSelectedInstructions()}
-        currentInstruction={currentInstruction}
-        variableValues={variableValues}
-        drawingMode={drawingState.mode}
-        pictureForPictureTool={drawingState.pictureForPictureTool}
-        currentLoopIndex={drawingState.currentLoopIndex}
-        selectedShapeId={drawingState.selectedShapeId}
-        showDataPopup={drawingState.showDataPopup}
-        dataPopupPosition={drawingState.dataPopupPosition}
-        shapes={shapes}
-        pictures={pictures} />
+      <div>blank state
+      {
+      //<Notebook
+        //activePicture={drawingState.activePicture}
+        //editingInstructionId={drawingState.editingInstructionId}
+        //selectedInstructions={this.getSelectedInstructions()}
+        //currentInstruction={currentInstruction}
+        //variableValues={variableValues}
+        //drawingMode={drawingState.mode}
+        //pictureForPictureTool={drawingState.pictureForPictureTool}
+        //currentLoopIndex={drawingState.currentLoopIndex}
+        //selectedShapeId={drawingState.selectedShapeId}
+        //showDataPopup={drawingState.showDataPopup}
+        //dataPopupPosition={drawingState.dataPopupPosition}
+        //shapes={shapes}
+        //pictures={pictures} />
+      }
+      </div>
     );
   }
 
