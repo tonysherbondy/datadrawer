@@ -2,11 +2,12 @@ import React from 'react';
 import Instruction from './Instruction';
 import ExpressionEditorAndScrub from '../components/ExpressionEditorAndScrub';
 import PictureActions from '../actions/PictureActions';
+import Expression from './Expression';
 
 export default class IfInstruction extends Instruction {
   constructor({id, instructions, condition}) {
     super({id, shapeId: null});
-    this.condition = condition;
+    this.condition = condition || new Expression('true');
     this.instructions = instructions;
   }
 

@@ -9,6 +9,7 @@ import DrawTextInstruction from '../models/DrawTextInstruction';
 import DrawLineInstruction from '../models/DrawLineInstruction';
 import DrawCircleInstruction from '../models/DrawCircleInstruction';
 import LoopInstruction from '../models/LoopInstruction';
+import IfInstruction from '../models/IfInstruction';
 import InstructionTreeNode from '../models/InstructionTreeNode';
 import InstructionStepper from '../utils/InstructionStepper';
 import KeyEventManager from '../utils/KeyEventManager';
@@ -239,6 +240,40 @@ export default class ShortcutKeyHandler {
 
         // Create a new loop instruction with selected instructions as children
         let instruction = new LoopInstruction({instructions: selectedInstructions});
+
+        // Insert loop instruction before previous instruction index
+        // TODO - need to grab the new activePicture because the one we were pointing to before has changed
+        // since we removed the pictures, really this needs to be done with a replace operation because otherwise we
+        // should wait async for the return of the remove
+        PictureActions.insertInstruction(this.notebook.props.activePicture, instruction, index, parent);
+        // We need to set the drawing mode to normal because we don't want to edit the newly inserted instruction
+        DrawingStateActions.setDrawingMode('normal');
+      }
+    });
+
+    manager = manager.registerHandler({
+      keyCode: 73,
+      keyDescription: 'i',
+      description: 'if',
+      group: 'flow',
+      keyDown: () => {
+        // TODO - this was just copypasted from loop. should extract
+
+
+        // TODO We allow multiple looping levels, but other assumptions don't support that
+        let selectedInstructions = this.notebook.props.selectedInstructions;
+
+        // Get the parent and index of first instruction
+        let {parent, index} = InstructionTreeNode.findParentWithIndex(
+          this.notebook.props.activePicture.instructions, selectedInstructions[0]);
+
+        // TODO - this should simply call an action that is changePicture and feed it a new picture that it makes
+        // based on removing and inserting new instructions
+        // Remove selected instructions from list
+        PictureActions.removeInstructions(this.notebook.props.activePicture, selectedInstructions);
+
+        // Create a new loop instruction with selected instructions as children
+        let instruction = new IfInstruction({instructions: selectedInstructions});
 
         // Insert loop instruction before previous instruction index
         // TODO - need to grab the new activePicture because the one we were pointing to before has changed

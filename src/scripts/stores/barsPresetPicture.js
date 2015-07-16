@@ -4,7 +4,7 @@ import MoveInstruction from '../models/MoveInstruction';
 import LoopInstruction from '../models/LoopInstruction';
 import DrawTextInstruction from '../models/DrawTextInstruction';
 import DrawLineInstruction from '../models/DrawLineInstruction';
-import IfInstruction from '../models/IfInstruction';
+//import IfInstruction from '../models/IfInstruction';
 import Expression from '../models/Expression';
 import DataVariable from '../models/DataVariable';
 import Picture from '../models/Picture';
@@ -110,20 +110,20 @@ const instructions = [
         isGuide: true,
         from: {id: 'shape_text1', point: 'center'},
         to: {id: 'shape_rect2', point: 'bottom'}
-      }),
-      new IfInstruction({
-        id: 'if',
-        condition: new Expression([{id: 'shape_line1', prop: 'dy'}, ' < ', '1']),
-        instructions: [
-          new MoveInstruction({
-            id: 'imove3',
-            shape: {id: 'shape_text1'},
-            point: 'center',
-            x: new Expression(0),
-            y: new Expression(-18)
-          })
-        ]
       })
+      //new IfInstruction({
+        //id: 'if',
+        //condition: new Expression([{id: 'shape_line1', prop: 'dy'}, ' < ', '1']),
+        //instructions: [
+          //new MoveInstruction({
+            //id: 'imove3',
+            //shape: {id: 'shape_text1'},
+            //point: 'center',
+            //x: new Expression(0),
+            //y: new Expression(-18)
+          //})
+        //]
+      //})
     ]
   })
 ];
