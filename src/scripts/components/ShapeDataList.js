@@ -36,7 +36,7 @@ export default class ShapeDataList extends React.Component {
     // Get shape measurement variables
     let shapeVariables = shape.getMeasurementVariables();
     shapeVariables.forEach(v => {
-      variableNameMap[v.id] = `${instruction.name}'s ${v.prop}`;
+      variableNameMap[`${v.id}_${v.prop}`] = `${instruction.name}'s ${v.prop}`;
     });
 
 

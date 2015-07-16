@@ -23,7 +23,14 @@ export default class DataVariableList extends React.Component {
       // Allow for overriding variable names
       let {name} = dataVariable;
       if (this.props.variableNameMap) {
-        name = this.props.variableNameMap[dataVariable.id];
+        // TODO - such an ugly way to handle the fact that the id for shape
+        // variables will be the same, because the id is the shape id. Really,
+        // we just need to refactor so that ShapeVariables are treated differently
+        if (dataVariable.prop) {
+          name = this.props.variableNameMap[`${dataVariable.id}_${dataVariable.prop}`];
+        } else {
+          name = this.props.variableNameMap[dataVariable.id];
+        }
       }
 
       return (

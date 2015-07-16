@@ -120,10 +120,12 @@ export default class Shape {
   }
 
   getMeasurementVariables() {
+    let {id} = this;
     return this.getMeasurementProps().map(prop => new DataVariable({
+      id,
       prop,
       isReadOnly: true,
-      definition: new Expression({id: this.id, prop})
+      definition: new Expression({id, prop})
     }));
   }
 }
