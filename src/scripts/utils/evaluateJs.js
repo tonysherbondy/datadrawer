@@ -103,9 +103,8 @@ export default function evalutateJs(jsCode, variables, picturesJs) {
       console.warn('Lodash required for evaluation environment!');
     }
 
-    let utils = evaluationUtils(variables, picturesJs);
-
     /* eslint-disable */
+    let utils = evaluationUtils(variables, picturesJs);
     return eval(jsCode);
     /* eslint-enable */
 

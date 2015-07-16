@@ -200,7 +200,6 @@ class Canvas extends React.Component {
     // TODO - probably need to use setState if we don't want any
     // ui glitches
     let {activePicture} = this.props;
-    let instructions = activePicture.instructions;
     let instruction = this.props.editingInstruction;
     if (instruction) {
       if (!instruction.isValid()) {

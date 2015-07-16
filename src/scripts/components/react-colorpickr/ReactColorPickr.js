@@ -190,7 +190,7 @@ module.exports = React.createClass({
     var hueBackground = '#' + hsv2hex(h, 100, 100);
     var coords = colorCoords(colorMode, color);
 
-    var opacity = Math.round((coords.y / coords.ymax) * 100);
+    //var opacity = Math.round((coords.y / coords.ymax) * 100);
 
     // Slider background color for saturation & value.
     var hueSlide = {};
@@ -208,6 +208,85 @@ module.exports = React.createClass({
     } else if (['s', 'v'].indexOf(colorMode) >= 0) {
       opacityHigh.opacity = Math.round((color[colorMode] / 100) * 100) / 100;
       opacityLow.opacity = Math.round(100 - ((color[colorMode] / 100) * 100)) / 100;
+    }
+
+    var rgbOrOther;
+    if (this.state.mode === 'rgb') {
+      rgbOrOther = (
+        <div>
+          <fieldset className={(colorMode === 'r') ? 'active' : ''}>
+            <label>R</label>
+            <input
+              value={r}
+              onFocus={this.colorMode.bind(null, 'r')}
+              onChange={this.changeRGB.bind(null, 'r')}
+              type='number'
+              min={0}
+              max={255}
+              step={1} />
+          </fieldset>
+          <fieldset className={(colorMode === 'g') ? 'active' : ''}>
+            <label>G</label>
+            <input
+              value={g}
+              onFocus={this.colorMode.bind(null, 'g')}
+              onChange={this.changeRGB.bind(null, 'g')}
+              type='number'
+              min={0}
+              max={255}
+              step={1} />
+          </fieldset>
+          <fieldset className={(colorMode === 'b') ? 'active' : ''}>
+            <label>B</label>
+            <input
+              value={b}
+              onFocus={this.colorMode.bind(null, 'b')}
+              onChange={this.changeRGB.bind(null, 'b')}
+              type='number'
+              min={0}
+              max={255}
+              step={1} />
+          </fieldset>
+        </div>
+      );
+    } else {
+      rgbOrOther = (
+        <div>
+          <fieldset className={(colorMode === 'h') ? 'active' : ''}>
+            <label>H</label>
+            <input
+              value={h}
+              onFocus={this.colorMode.bind(null, 'h')}
+              onChange={this.changeHSV.bind(null, 'h')}
+              type='number'
+              min={0}
+              max={359}
+              step={1} />
+          </fieldset>
+          <fieldset className={(colorMode === 's') ? 'active' : ''}>
+            <label>S</label>
+            <input
+              value={s}
+              onFocus={this.colorMode.bind(null, 's')}
+              onChange={this.changeHSV.bind(null, 's')}
+              type='number'
+              min={0}
+              max={100}
+              step={1} />
+          </fieldset>
+          <fieldset className={(colorMode === 'v') ? 'active' : ''}>
+            <label>V</label>
+            <input
+              value={v}
+              onFocus={this.colorMode.bind(null, 'v')}
+              onChange={this.changeHSV.bind(null, 'v')}
+              type='number'
+              min={0}
+              max={100}
+              step={1} />
+          </fieldset>
+        </div>
+      );
     }
 
     return (
@@ -289,79 +368,7 @@ module.exports = React.createClass({
             </div>
 
             <div className='inputs'>
-              {(this.state.mode === 'rgb') ? (
-              <div>
-                <fieldset className={(colorMode === 'r') ? 'active' : ''}>
-                  <label>R</label>
-                  <input
-                    value={r}
-                    onFocus={this.colorMode.bind(null, 'r')}
-                    onChange={this.changeRGB.bind(null, 'r')}
-                    type='number'
-                    min={0}
-                    max={255}
-                    step={1} />
-                </fieldset>
-                <fieldset className={(colorMode === 'g') ? 'active' : ''}>
-                  <label>G</label>
-                  <input
-                    value={g}
-                    onFocus={this.colorMode.bind(null, 'g')}
-                    onChange={this.changeRGB.bind(null, 'g')}
-                    type='number'
-                    min={0}
-                    max={255}
-                    step={1} />
-                </fieldset>
-                <fieldset className={(colorMode === 'b') ? 'active' : ''}>
-                  <label>B</label>
-                  <input
-                    value={b}
-                    onFocus={this.colorMode.bind(null, 'b')}
-                    onChange={this.changeRGB.bind(null, 'b')}
-                    type='number'
-                    min={0}
-                    max={255}
-                    step={1} />
-                </fieldset>
-              </div>
-              ) : (
-              <div>
-                <fieldset className={(colorMode === 'h') ? 'active' : ''}>
-                  <label>H</label>
-                  <input
-                    value={h}
-                    onFocus={this.colorMode.bind(null, 'h')}
-                    onChange={this.changeHSV.bind(null, 'h')}
-                    type='number'
-                    min={0}
-                    max={359}
-                    step={1} />
-                </fieldset>
-                <fieldset className={(colorMode === 's') ? 'active' : ''}>
-                  <label>S</label>
-                  <input
-                    value={s}
-                    onFocus={this.colorMode.bind(null, 's')}
-                    onChange={this.changeHSV.bind(null, 's')}
-                    type='number'
-                    min={0}
-                    max={100}
-                    step={1} />
-                </fieldset>
-                <fieldset className={(colorMode === 'v') ? 'active' : ''}>
-                  <label>V</label>
-                  <input
-                    value={v}
-                    onFocus={this.colorMode.bind(null, 'v')}
-                    onChange={this.changeHSV.bind(null, 'v')}
-                    type='number'
-                    min={0}
-                    max={100}
-                    step={1} />
-                </fieldset>
-              </div>
-              )}
+              {rgbOrOther}
 
               <fieldset>
                 <label className='label'>{String.fromCharCode(945)}</label>

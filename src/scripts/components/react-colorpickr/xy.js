@@ -77,7 +77,6 @@ module.exports = React.createClass({
   _drag: function(e) {
     var el = this.getDOMNode();
     el.classList.add('dragging');
-    var rect = el.getBoundingClientRect();
     var posX = e.clientX + this.start.x - this.offset.x;
     var posY = e.clientY + this.start.y - this.offset.y;
 
@@ -97,7 +96,7 @@ module.exports = React.createClass({
   render: function() {
     var pos = this.getPosition();
     return (
-      /* jshint ignore:start */
+      /*eslint-disable */
       <div
         onMouseDown={this._onMouseDown}
         className={this.props.className}>
@@ -105,7 +104,7 @@ module.exports = React.createClass({
           className='handle'
           style={pos} />
       </div>
-      /* jshint ignore:end */
+      /*eslint-enable */
     );
   }
 });

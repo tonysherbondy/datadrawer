@@ -78,7 +78,6 @@ export default class DataTable extends React.Component {
   }
 
   getEditableExpression(variable) {
-    let variables = this.props.dataVariables;
     let variableValues = this.props.dataValues;
     return (
       <ExpressionEditorAndScrub

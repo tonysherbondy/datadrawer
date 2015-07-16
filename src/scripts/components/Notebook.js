@@ -40,7 +40,6 @@ export default class Notebook extends React.Component {
   render() {
     let {activePicture,
          variableValues,
-         pictures,
          selectedInstructions,
          currentInstruction,
          currentLoopIndex} = this.props;

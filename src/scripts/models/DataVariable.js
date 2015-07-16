@@ -41,7 +41,7 @@ export default class DataVariable {
   }
 
   cloneWithNewId() {
-    let {id, name, isRow, definition} = this;
+    let {name, isRow, definition} = this;
     return new DataVariable({name, isRow, definition});
   }
 
