@@ -14,7 +14,6 @@ export default class ExpressionEditor extends React.Component {
     };
   }
 
-
   //
   ////////////////// LIFECYCLE METHODS //////////////////
   //
@@ -27,6 +26,7 @@ export default class ExpressionEditor extends React.Component {
     return (
       <div
         className='expression-editor'
+        onClick={this.handleClick.bind(this)}
         onInput={this.handleInput.bind(this)}
         onBlur={this.handleBlur.bind(this)}
         onKeyDown={this.handleKeyDown.bind(this)}
@@ -51,9 +51,6 @@ export default class ExpressionEditor extends React.Component {
     }
     this.updateCursorLocation();
   }
-
-
-
 
   //
   ////////////////// FRAGMENT-HTML MODEL //////////////////
@@ -272,6 +269,13 @@ export default class ExpressionEditor extends React.Component {
       }
     }
     // Don't let this bubble to app that is listening for key presses
+    evt.stopPropagation();
+  }
+
+  // TODO - May be smarter for instruction list item to ignore when we click on
+  // this instead...
+  // Clicking in the expression editor shouldn't trigger things upstream
+  handleClick(evt) {
     evt.stopPropagation();
   }
 
