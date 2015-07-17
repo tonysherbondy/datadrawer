@@ -3,7 +3,7 @@ import ScaleInstruction from '../models/ScaleInstruction';
 import MoveInstruction from '../models/MoveInstruction';
 import LoopInstruction from '../models/LoopInstruction';
 import DrawTextInstruction from '../models/DrawTextInstruction';
-import DrawLineInstruction from '../models/DrawLineInstruction';
+//import DrawLineInstruction from '../models/DrawLineInstruction';
 //import IfInstruction from '../models/IfInstruction';
 import Expression from '../models/Expression';
 import DataVariable from '../models/DataVariable';
@@ -24,7 +24,7 @@ let variables = [
   new DataVariable({
     id: 'bar_color',
     name: 'bar color',
-    definition: `'#888888'`
+    definition: `'rgba(191, 82, 82, 0.2)'`
   }),
   new DataVariable({
     id: 'max_energy_in_mwh',
@@ -72,7 +72,9 @@ const instructions = [
     instructions: [
       new DrawRectInstruction({
         id: 'rect2',
-        fill: new Expression({id: 'bar_color'}),
+        propertyVariables: [
+          new DataVariable({name: 'fill', definition: {id: 'bar_color'}})
+        ],
         from: {id: 'shape_rect1', point: 'bottomLeft'},
         to: {id: 'shape_rect1', point: 'topRight'}
       }),
@@ -104,13 +106,13 @@ const instructions = [
         point: 'center',
         x: new Expression(0),
         y: new Expression(14)
-      }),
-      new DrawLineInstruction({
-        id: 'line1',
-        isGuide: true,
-        from: {id: 'shape_text1', point: 'center'},
-        to: {id: 'shape_rect2', point: 'bottom'}
       })
+      //new DrawLineInstruction({
+        //id: 'line1',
+        //isGuide: true,
+        //from: {id: 'shape_text1', point: 'center'},
+        //to: {id: 'shape_rect2', point: 'bottom'}
+      //})
       //new IfInstruction({
         //id: 'if',
         //condition: new Expression([{id: 'shape_line1', prop: 'dy'}, ' < ', '1']),
