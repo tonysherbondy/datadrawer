@@ -1,6 +1,8 @@
 /*eslint quotes: [0]*/
 let barsImmutable = {
   "id": "bars_immutable",
+  "type": "draw.picture",
+
   "variables": [
     {
       "id": "numberEnergies",

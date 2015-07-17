@@ -89,6 +89,8 @@ export default class DrawInstruction extends Instruction {
         y: `${fromPt}.y`
       };
     }
+
+    // these should really be interpolated strings
     return {
       x: this.from.x,
       y: this.from.y
