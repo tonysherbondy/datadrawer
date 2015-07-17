@@ -70,6 +70,12 @@ export default class Picture {
     return new Picture(this._id, instructions, this._variables);
   }
 
+  replaceInstructions(toRemove, toAdd) {
+    let instructions = this.instructions;
+    instructions = InstructionTreeNode.replaceInstructions(instructions, toRemove, toAdd);
+    return new Picture(this._id, instructions, this._variables);
+  }
+
   insertInstructionAtIndexWithParent(index, parent, instruction) {
     let instructions = this.instructions;
     instructions = InstructionTreeNode.insertInstruction(instructions, instruction, index, parent);

@@ -125,6 +125,13 @@ const PictureStore = biff.createStore({
       break;
     }
 
+    case 'REPLACE_INSTRUCTIONS': {
+      let picture = payload.picture.replaceInstructions(payload.toRemove, payload.toAdd);
+      updatePicture(picture);
+      PictureStore.emitChange();
+      break;
+    }
+
     case 'MODIFY_INSTRUCTION': {
       let picture = payload.picture.updateInstruction(payload.instruction);
       // Only push a new history when instructions are added and deleted.

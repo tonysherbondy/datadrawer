@@ -75,18 +75,30 @@ InstructionTreeNode.insertInstruction = function(instructions, instruction, inde
 InstructionTreeNode.spliceParent = function(instructions, spliceParams, parent) {
   let newInstructions;
   if (parent.id) {
-    // For now assume a parent can only be nested one level deep
-    // First find the parent's parent
-    let {index: pIndex} = InstructionTreeNode.findParentWithIndex(instructions, parent);
-    // Next, clone the parent instruction
+    // clone the parent instruction
     let cloneParent = parent.clone();
     // Splice the new instruction into the previous array of instructions that had the parent
     cloneParent.instructions = update(cloneParent.instructions, spliceParams);
-    newInstructions = update(instructions, {$splice: [[pIndex, 1, cloneParent]]});
+
+    // Keep splicing up the instruction tree
+    let {parent: nextParent, index} = InstructionTreeNode.findParentWithIndex(instructions, parent);
+    newInstructions = InstructionTreeNode.spliceParent(instructions, {$splice: [[index, 1, cloneParent]]}, nextParent);
   } else {
     newInstructions = update(instructions, spliceParams);
   }
   return newInstructions;
+};
+
+InstructionTreeNode.replaceInstructions = function(instructions, instructionsToRemove, instructionsToAdd) {
+  // Assumption is that the instructionsToRemove are contiguous and only have one parent
+  // so that we can easily perform a slice
+  // Assume instructions toAdd is an array
+  let firstRemove = _.first(instructionsToRemove);
+  let numToRemove = instructionsToRemove.length;
+  let {parent, index} = InstructionTreeNode.findParentWithIndex(instructions, {id: firstRemove.id});
+  let spliceArray = instructionsToAdd ? [index, numToRemove, ...instructionsToAdd] : [index, numToRemove];
+  let spliceParams = {$splice: [spliceArray]};
+  return InstructionTreeNode.spliceParent(instructions, spliceParams, parent);
 };
 
 InstructionTreeNode.replaceById = function(instructions, idToRemove, newInstruction) {

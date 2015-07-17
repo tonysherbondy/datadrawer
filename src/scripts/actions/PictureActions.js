@@ -21,6 +21,10 @@ const PictureActions = biff.createActions({
     this.dispatch({actionType: 'REMOVE_INSTRUCTIONS', picture, instructions});
   },
 
+  replaceInstructions(picture, toRemove, toAdd) {
+    this.dispatch({actionType: 'REPLACE_INSTRUCTIONS', picture, toRemove, toAdd});
+  },
+
   insertInstruction(picture, instruction, index, parent) {
     this.dispatch({
       actionType: 'INSERT_INSTRUCTION',
