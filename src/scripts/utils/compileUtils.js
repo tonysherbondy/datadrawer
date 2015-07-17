@@ -63,11 +63,22 @@ function computeShapes(picture, variableValues, allPicturesJs) {
   // js within any picture. This is necessary because right now picture drawing involves mutating
   // whatever the picture value context is... So here we reset the picture context which was the
   // root picture instruction we made here.
+  let prevPicture = variableValues.picture;
   variableValues.picture = undefined;
   evaluateJs(jsCode, variableValues, allPicturesJs);
 
   // Get the shapes for this picture
   let shapes = variableValues.picture.shapes;
+
+  // TODO - This previous picture shit is necessary because we are mutating the picture, which changes
+  // our variableValues if we render something... like a thumbnail and then want to find the shape on
+  // variable values.
+  //
+  // Possible solution is to just don't look for shapes in variableValues and instead look pass around
+  // shapes explicitly
+  if (prevPicture) {
+    variableValues.picture = prevPicture;
+  }
   return {shapes, jsCode};
 }
 
