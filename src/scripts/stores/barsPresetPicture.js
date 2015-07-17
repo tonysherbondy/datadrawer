@@ -96,7 +96,7 @@ const instructions = [
         propertyVariables: [
           new DataVariable({name: 'fontSize', definition: 13})
         ],
-        text: new Expression({id: 'energy_in_mwh'}),
+        text: new Expression(['_.round(', {id: 'energy_in_mwh'}, ', 2)']),
         from: {id: 'shape_rect2', point: 'topLeft'},
         to: {id: 'shape_rect2', point: 'topRight'}
       }),
