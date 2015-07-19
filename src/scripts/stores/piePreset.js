@@ -5,7 +5,9 @@ import DrawCircleInstruction from '../models/DrawCircleInstruction';
 import ScaleInstruction from '../models/ScaleInstruction';
 import Expression from '../models/Expression';
 import DrawLineInstruction from '../models/DrawLineInstruction';
+import RotateInstruction from '../models/RotateInstruction';
 import DrawPathInstruction from '../models/DrawPathInstruction';
+import ExtendPathInstruction from '../models/ExtendPathInstruction';
 
 let variables = [
   new DataVariable({
@@ -14,9 +16,21 @@ let variables = [
     definition: [`['h', 'e', 'l', 'o', 'w', 'r', 'd']`]
   }),
   new DataVariable({
+    id: 'angle',
+    name: 'angle',
+    isRow: true,
+    definition: [{id: 'frequency', asVector: true}, '.map(function(d){ return 360 * d / ', {id: 'sum'}, '; })']
+  }),
+  new DataVariable({
+    id: 'frequency',
     name: 'frequency',
     isRow: true,
     definition: [`[1, 1, 3, 2, 1, 1, 1]`]
+  }),
+  new DataVariable({
+    id: 'sum',
+    name: 'sum',
+    definition: ['_.sum(', {id: 'frequency', asVector: true}, ')']
   })
 ];
 
@@ -44,6 +58,16 @@ let instructions = [
       {id: 'shape_line', point: 'right', isLine: true}
     ],
     isClosed: true
+  }),
+  new RotateInstruction({
+    shape: {id: 'shape_line'},
+    point: {id: 'shape_line', point: 'left'},
+    to: new Expression({id: 'angle'})
+  }),
+  new ExtendPathInstruction({
+    shape: {id: 'shape_path'},
+    to: {id: 'shape_line', point: 'right'},
+    isLine: true
   })
 
 ];
