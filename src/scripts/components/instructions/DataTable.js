@@ -29,7 +29,7 @@ export default class DataTable extends React.Component {
 
     let rowElements = rows.map((row, index) => {
       let cells = rowValues[index].map((v, i) => {
-        let displayV = Math.round(v * 100) / 100;
+        let displayV = _.isNumber(v) ? Math.round(v * 100) / 100 : v;
         return (<td key={i} onMouseEnter={this.handleMouseEnterData.bind(this, index)}>{displayV}</td>);
       });
 
