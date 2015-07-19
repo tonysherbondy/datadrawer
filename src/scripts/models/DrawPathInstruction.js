@@ -94,6 +94,7 @@ export default class DrawPathInstruction extends DrawInstruction {
     let prevYJs = `${y}`;
     let allTosJs = this.to.map(to => {
       let isLine = to.isLine;
+      let isArc = to.isArc;
       let xJs, yJs;
       if (to.id) {
         let toPt = this.getPointVarJs(to, index);
@@ -106,7 +107,7 @@ export default class DrawPathInstruction extends DrawInstruction {
       // Update previous X and Y js
       prevXJs = `${prevXJs} + ${xJs}`;
       prevYJs = `${prevYJs} + ${yJs}`;
-      return `{x: ${xJs}, y: ${yJs}, isLine: ${isLine}},`;
+      return `{x: ${xJs}, y: ${yJs}, isLine: ${isLine}, isArc: ${isArc}}`;
     });
     return ['['].concat(allTosJs, [']']).join('\n');
   }

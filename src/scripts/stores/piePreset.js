@@ -67,7 +67,8 @@ let instructions = [
   new ExtendPathInstruction({
     shape: {id: 'shape_path'},
     to: {id: 'shape_line', point: 'right'},
-    isLine: true
+    isArc: true,
+    arcRadius: new Expression({id: 'shape_line', prop: 'dx'})
   })
 
 ];

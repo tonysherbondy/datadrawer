@@ -9,6 +9,9 @@ export default class ExtendPathInstruction extends AdjustInstruction {
     super(props);
     this.x = props.x;
     this.y = props.y;
+    this.isLine = props.isLine;
+    this.isArc = props.isArc;
+    this.arcRadius = props.arcRadius;
   }
 
   modifyInstructionWithProps(picture, props) {
@@ -17,9 +20,12 @@ export default class ExtendPathInstruction extends AdjustInstruction {
 
   getCloneProps() {
     let props = super.getCloneProps();
-    let {x, y} = this;
+    let {x, y, isLine, isArc, arcRadius} = this;
     props.x = x;
     props.y = y;
+    props.isLine = isLine;
+    props.isArc = isArc;
+    props.arcRadius = arcRadius;
     return props;
   }
 
@@ -39,18 +45,20 @@ export default class ExtendPathInstruction extends AdjustInstruction {
 
   getJsCode(index) {
     let varName = this.getShapeVarName(this.shape, index);
-
+    let props = `{isLine: ${this.isLine}, isArc: ${this.isArc}, arcRadius: ${this.arcRadius.getJsCode(index)}}`;
+    let extendWithProps = pJs => `Object.assign(${pJs}, ${props})`;
     if (this.to) {
       // When setting to a variable we will move the point = to the variable
       let toPointJs = this.getPointVarJs(this.to, index);
-      return `${varName}.extendPathWithAbsolutePoint(${toPointJs});\n`;
+      let toWithProps = extendWithProps(toPointJs);
+      return `${varName}.extendPathWithAbsolutePoint(${toWithProps});\n`;
     }
 
     let xJs = this.x.getJsCode(index);
     let yJs = this.y.getJsCode(index);
     let pointJs = `{x: ${xJs}, y: ${yJs}}`;
-
-    return `${varName}.extendPathWithRelativePoint(${pointJs});\n`;
+    let pointWithProps = extendWithProps(pointJs);
+    return `${varName}.extendPathWithRelativePoint(${pointWithProps});\n`;
   }
 
   getUiSentence(picture, variableValues, shapeNameMap) {

@@ -12,7 +12,10 @@ export default class PathShape extends Shape {
   getD() {
     let pointsD = this.points.map(pt => {
       if (pt.isLine) {
-      return `l ${pt.x} ${pt.y}`;
+        return `l ${pt.x} ${pt.y}`;
+      } else if (pt.isArc) {
+        let arcRadius = pt.arcRadius || 1;
+        return `a ${arcRadius} ${arcRadius} 0 0 1 ${pt.x} ${pt.y}`;
       }
       return `m ${pt.x} ${pt.y}`;
     });
@@ -67,7 +70,6 @@ export default class PathShape extends Shape {
   }
 
   extendPathWithRelativePoint(point) {
-    point.isLine = true;
     this.points.push(point);
   }
 
@@ -75,7 +77,9 @@ export default class PathShape extends Shape {
     let lastPoint = this.getPoint('last');
     let x = point.x - lastPoint.x;
     let y = point.y - lastPoint.y;
-    this.extendPathWithRelativePoint({x, y});
+    // Need to keep the props that might be passed on the point
+    let relativePoint = Object.assign(point, {x, y});
+    this.extendPathWithRelativePoint(relativePoint);
   }
 
   moveRelative(value) {
