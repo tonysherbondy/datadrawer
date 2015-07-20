@@ -1,5 +1,6 @@
 import Expression from '../Expression';
 import DataVariable from '../DataVariable';
+import Matrix from '../../utils/Matrix';
 
 export default class Shape {
   constructor(props) {
@@ -11,6 +12,8 @@ export default class Shape {
     this.stroke = props.stroke;
     this.strokeWidth = props.strokeWidth;
     this.isGuide = props.isGuide;
+
+    // Is a matrix
     this.rotation = props.rotation;
   }
 
@@ -46,6 +49,8 @@ export default class Shape {
       return point;
     }
     let {value, point: aboutPoint} = this.rotation;
+
+
     let {x: cx, y: cy} = aboutPoint;
     let {x, y} = point;
     let radians = (Math.PI / 180) * value;
@@ -53,6 +58,12 @@ export default class Shape {
     let sin = Math.sin(radians);
     let nx = (cos * (x - cx)) - (sin * (y - cy)) + cx;
     let ny = (sin * (x - cx)) + (cos * (y - cy)) + cy;
+
+    let matrix = Matrix.rotateAroundPoint(value, aboutPoint);
+    let newVec = matrix.vecMultiply([point.x, point.y, 1]);
+    console.log('rotated vec', newVec);
+    console.log('rotated point', {x: nx, y: ny});
+
     return {x: nx, y: ny};
   }
 
@@ -113,6 +124,10 @@ export default class Shape {
       fillOpacity: this.isGuide ? 0 : 1,
       strokeOpacity: this.isGuide ? 0 : 1
     };
+  }
+
+  getProp(name) {
+    console.error(`Don't know how to get prop`, name);
   }
 
   getMeasurementProps() {
