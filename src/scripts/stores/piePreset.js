@@ -8,6 +8,7 @@ import DrawLineInstruction from '../models/DrawLineInstruction';
 import RotateInstruction from '../models/RotateInstruction';
 import DrawPathInstruction from '../models/DrawPathInstruction';
 import ExtendPathInstruction from '../models/ExtendPathInstruction';
+import LoopInstruction from '../models/LoopInstruction';
 
 let variables = [
   new DataVariable({
@@ -55,6 +56,7 @@ let variables = [
 let instructions = [
   new DrawCircleInstruction({
     id: 'circle',
+    isGuide: true,
     from: {id: 'canvas', point: 'center'},
     to: {id: 'canvas', point: 'top'}
   }),
@@ -66,30 +68,36 @@ let instructions = [
   }),
   new DrawLineInstruction({
     id: 'line',
+    isGuide: true,
     from: {id: 'shape_circle', point: 'center'},
     to: {id: 'shape_circle', point: 'right'}
   }),
-  new DrawPathInstruction({
-    id: 'path',
-    //propertyVariables: [
-      //new DataVariable({name: 'fill', definition: [{id: 'slice_color'}]})
-    //],
-    from: {id: 'shape_line', point: 'left'},
-    to: [
-      {id: 'shape_line', point: 'right', isLine: true}
-    ],
-    isClosed: true
-  }),
-  new RotateInstruction({
-    shape: {id: 'shape_line'},
-    point: {id: 'shape_line', point: 'left'},
-    to: new Expression({id: 'angle'})
-  }),
-  new ExtendPathInstruction({
-    shape: {id: 'shape_path'},
-    to: {id: 'shape_line', point: 'right'},
-    isArc: true,
-    arcRadius: new Expression({id: 'shape_circle', prop: 'radius'})
+  new LoopInstruction({
+    instructions: [
+      new DrawPathInstruction({
+        id: 'path',
+        propertyVariables: [
+          new DataVariable({name: 'fill', definition: [{id: 'slice_color'}]}),
+          new DataVariable({name: 'strokeWidth', definition: [`0`]})
+        ],
+        from: {id: 'shape_line', point: 'left'},
+        to: [
+          {id: 'shape_line', point: 'right', isLine: true}
+        ],
+        isClosed: true
+      }),
+      new RotateInstruction({
+        shape: {id: 'shape_line'},
+        point: {id: 'shape_line', point: 'left'},
+        to: new Expression({id: 'angle'})
+      }),
+      new ExtendPathInstruction({
+        shape: {id: 'shape_path'},
+        to: {id: 'shape_line', point: 'right'},
+        isArc: true,
+        arcRadius: new Expression({id: 'shape_circle', prop: 'radius'})
+      })
+    ]
   })
 
 ];
