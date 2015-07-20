@@ -9,9 +9,17 @@ import RotateInstruction from '../models/RotateInstruction';
 import DrawPathInstruction from '../models/DrawPathInstruction';
 import ExtendPathInstruction from '../models/ExtendPathInstruction';
 import LoopInstruction from '../models/LoopInstruction';
+import MoveInstruction from '../models/MoveInstruction';
+import DrawTextInstruction from '../models/DrawTextInstruction';
 
 let variables = [
   new DataVariable({
+    id: 'label_offset',
+    name: 'label offset',
+    definition: ['-40']
+  }),
+  new DataVariable({
+    id: 'letters',
     name: 'letters',
     isRow: true,
     definition: [`['h', 'e', 'l', 'o', 'w', 'r', 'd']`]
@@ -44,12 +52,6 @@ let variables = [
     name: 'slice_opacity',
     isRow: true,
     definition: [{id: 'column', asVector: true}, '.map(function(d){ return _.round(d /', {id: 'frequency', asVector: true}, '.length, 2); })']
-  }),
-  new DataVariable({
-    id: 'slice_color',
-    name: 'slice_color',
-    isRow: true,
-    definition: [{id: 'slice_opacity', asVector: true}, `.map(function(d){ return 'rgba(77, 144, 221, ' + d + ')'; })`]
   })
 ];
 
@@ -72,12 +74,26 @@ let instructions = [
     from: {id: 'shape_circle', point: 'center'},
     to: {id: 'shape_circle', point: 'right'}
   }),
+  new DrawLineInstruction({
+    id: 'label_line',
+    name: 'label_line',
+    isGuide: true,
+    from: {id: 'shape_line', point: 'left'},
+    to: {id: 'shape_line', point: 'right'}
+  }),
+  new MoveInstruction({
+    shape: {id: 'shape_label_line'},
+    point: 'right',
+    isReshape: true,
+    x: new Expression({id: 'label_offset'}),
+    y: new Expression(0)
+  }),
   new LoopInstruction({
     instructions: [
       new DrawPathInstruction({
         id: 'path',
         propertyVariables: [
-          new DataVariable({name: 'fill', definition: [{id: 'slice_color'}]}),
+          new DataVariable({name: 'fill', definition: [`'rgba(77, 144, 221, ' + `, {id: 'slice_opacity'}, ` + ')'`]}),
           new DataVariable({name: 'strokeWidth', definition: [`0`]})
         ],
         from: {id: 'shape_line', point: 'left'},
@@ -90,6 +106,22 @@ let instructions = [
         shape: {id: 'shape_line'},
         point: {id: 'shape_line', point: 'left'},
         to: new Expression({id: 'angle'})
+      }),
+      new RotateInstruction({
+        shape: {id: 'shape_label_line'},
+        point: {id: 'shape_label_line', point: 'left'},
+        to: new Expression([{id: 'angle'}, ' / 2'])
+      }),
+      new DrawTextInstruction({
+        text: new Expression({id: 'letters'}),
+        from: {id: 'shape_label_line', point: 'right'},
+        width: new Expression(1),
+        height: new Expression(0)
+      }),
+      new RotateInstruction({
+        shape: {id: 'shape_label_line'},
+        point: {id: 'shape_label_line', point: 'left'},
+        to: new Expression([{id: 'angle'}, ' / 2'])
       }),
       new ExtendPathInstruction({
         shape: {id: 'shape_path'},
