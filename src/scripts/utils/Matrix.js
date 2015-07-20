@@ -16,14 +16,8 @@ export default class Matrix {
   }
 
   multiply(elements) {
-    if (elements instanceof Matrix) {
-      elements = elements.elements;
-    }
-
-    if (!Matrix.isElementMatrix(elements)) {
-      console.error('Asked to multiply with bad matrix', elements);
-      return null;
-    }
+    elements = Matrix.getElementsFromMatrixOrElements(elements);
+    if (!elements) { return null; }
 
     let newElements = [[], [], []];
     for (let r = 0; r < 3; r++) {
@@ -45,7 +39,49 @@ export default class Matrix {
     }
     return newVec;
   }
+
+  isIdentity() {
+    return this.isEqual([
+      [1, 0, 0],
+      [0, 1, 0],
+      [0, 0, 1]
+    ]);
+  }
+
+  isEqual(elements) {
+    elements = Matrix.getElementsFromMatrixOrElements(elements);
+    if (!elements) { return null; }
+    return _.isEqual(this.elements, elements);
+  }
+
+  getSvgTransform() {
+    if (this.isIdentity()) {
+      return '';
+    }
+
+    let params = [
+      this.elements[0][0],
+      this.elements[1][0],
+      this.elements[0][1],
+      this.elements[1][1],
+      this.elements[0][2],
+      this.elements[1][2]
+    ].join(' ');
+    return `matrix(${params})`;
+  }
 }
+
+Matrix.getElementsFromMatrixOrElements = function(elements) {
+  if (elements instanceof Matrix) {
+    elements = elements.elements;
+  }
+  if (!Matrix.isElementMatrix(elements)) {
+    console.error('bad matrix', elements);
+    return null;
+  }
+
+  return elements;
+};
 
 Matrix.column = function(elements, c) {
   return [elements[0][c], elements[1][c], elements[2][c]];
@@ -64,8 +100,8 @@ Matrix.isElementMatrix = function(props) {
 
 Matrix.translation = function(point) {
   return new Matrix([
-    [1, 0, point.x],
-    [0, 1, point.y],
+    [1, 0, point[0]],
+    [0, 1, point[1]],
     [0, 0, 1]
   ]);
 };
@@ -84,10 +120,10 @@ Matrix.rotation = function(angle) {
 
 // Return a matrix for rotation about a point
 // Angle is in degrees
-// TODO - May want to reconcile when we do objects vs. arrays for points
 Matrix.rotationAroundPoint = function(angle, point) {
   let rotation = Matrix.rotation(angle);
-  let t1 = Matrix.translation({x: -point.x, y: -point.y});
+  let t1 = Matrix.translation([-point[0], -point[1]]);
   let t2 = Matrix.translation(point);
-  return t1.multiply(rotation).multiply(t2);
+  // this is T2*R*T1
+  return t2.multiply(rotation).multiply(t1);
 };

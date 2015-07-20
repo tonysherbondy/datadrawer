@@ -14,7 +14,7 @@ export default class Shape {
     this.isGuide = props.isGuide;
 
     // Is a matrix
-    this.rotation = props.rotation;
+    this.rotation = new Matrix(props.rotation);
   }
 
   // Default is rect points
@@ -45,26 +45,11 @@ export default class Shape {
   }
 
   rotatePoint(point) {
-    if (!this.rotation) {
+    if (this.rotation.isIdentity()) {
       return point;
     }
-    let {value, point: aboutPoint} = this.rotation;
-
-
-    let {x: cx, y: cy} = aboutPoint;
-    let {x, y} = point;
-    let radians = (Math.PI / 180) * value;
-    let cos = Math.cos(radians);
-    let sin = Math.sin(radians);
-    let nx = (cos * (x - cx)) - (sin * (y - cy)) + cx;
-    let ny = (sin * (x - cx)) + (cos * (y - cy)) + cy;
-
-    let matrix = Matrix.rotateAroundPoint(value, aboutPoint);
-    let newVec = matrix.vecMultiply([point.x, point.y, 1]);
-    console.log('rotated vec', newVec);
-    console.log('rotated point', {x: nx, y: ny});
-
-    return {x: nx, y: ny};
+    let rotatedPoint = this.rotation.vecMultiply([point.x, point.y, 1]);
+    return {x: rotatedPoint[0], y: rotatedPoint[1]};
   }
 
   getScalePropsForAxis(startPoint, toPoint, anchorPoint, axis, prop) {
@@ -110,12 +95,18 @@ export default class Shape {
   }
 
   rotateAroundPoint(value, point) {
-    this.rotation = {value, point};
+    // Adds rotation to the current rotation matrix
+    let rotation = Matrix.rotationAroundPoint(value, [point.x, point.y, 1]);
+    this.rotation = rotation.multiply(this.rotation);
+  }
+
+  getTransform() {
+    return this.rotation.getSvgTransform();
   }
 
   getRenderProps() {
-    let {stroke, strokeWidth, fill, rotation} = this;
-    let transform = rotation ? `rotate(${rotation.value} ${rotation.point.x} ${rotation.point.y})` : '';
+    let {stroke, strokeWidth, fill} = this;
+    let transform = this.getTransform();
     return {
       stroke,
       strokeWidth,
