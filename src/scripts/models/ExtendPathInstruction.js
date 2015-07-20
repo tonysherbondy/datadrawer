@@ -23,6 +23,9 @@ export default class ExtendPathInstruction extends AdjustInstruction {
     let {x, y, isLine, isArc, arcRadius} = this;
     props.x = x;
     props.y = y;
+
+    // TODO - This is stupid, this should just be an extend type with either
+    // move, line, or arc
     props.isLine = isLine;
     props.isArc = isArc;
     props.arcRadius = arcRadius;
@@ -71,10 +74,32 @@ export default class ExtendPathInstruction extends AdjustInstruction {
       toUi = this.getSizeUi(picture, variableValues);
     }
 
+    // TODO - Eventually allow 'Move to'
+    let extendType = 'Line to';
+    let extendParams;
+    if (this.isArc) {
+      extendType = 'Arc to';
+      extendParams = (
+        <ExpressionEditorAndScrub
+          picture={picture}
+          onChange={this.handleArcRadiusChange.bind(this, picture)}
+          variableValues={variableValues}
+          definition={this.arcRadius} />
+      );
+    }
+
+    let extendToUi = (
+      <span>
+        <button onClick={this.handleExtendTypeChange.bind(this, picture)}>{extendType}</button>
+        {extendParams}
+      </span>
+    );
+
     // May need to allow more than line to
     return (
       <span className='instruction-sentence'>
-        {`Extend ${shapeName} with line to`}
+        {`Extend ${shapeName} with`}
+        {extendToUi}
         {toUi}
       </span>
     );
@@ -98,6 +123,26 @@ export default class ExtendPathInstruction extends AdjustInstruction {
         vertically.
       </span>
     );
+  }
+
+  // TODO - Just a toggle right now, eventually handle 'Move to' with
+  // select
+  handleExtendTypeChange(picture) {
+    let props = this.getCloneProps();
+    if (props.isLine) {
+      props.isLine = false;
+      props.isArc = true;
+    } else {
+      props.isLine = true;
+      props.isArc = false;
+    }
+    this.modifyInstructionWithProps(picture, props);
+  }
+
+  handleArcRadiusChange(picture, definition) {
+    let props = this.getCloneProps();
+    props.arcRadius = definition;
+    this.modifyInstructionWithProps(picture, props);
   }
 
   handleXChange(picture, definition) {
