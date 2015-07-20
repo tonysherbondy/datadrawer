@@ -1,0 +1,20 @@
+New features under this architecture:
+- from point on rect (other shapes?) will be able to take expressions
+- to point can take expressions
+
+DrawInstructions:
+- can be either from/to or from/size
+- in general they are not in a canonical form
+=>
+JS that generates shapes
+This is needed because instructions can contain expressions
+=>
+- Shape has canonical form
+- must be able to to calculate measurements in canonical form for each shape
+from the instruction
+
+Needed for compilation:
+- get shape refered to in to/from points
+- get point from shape referred to to/from points
+- get x,y of a point
+- ability to determine whether to use width/height/size vs to-point
