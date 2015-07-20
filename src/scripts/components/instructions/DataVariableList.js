@@ -66,7 +66,7 @@ export default class DataVariableList extends React.Component {
     return (
       <ExpressionEditorAndScrub
         picture={picture}
-        asVector={true}
+        asVector={this.props.asVector}
         onChange={handleChange}
         variableValues={dataValues}
         definition={variable.definition} />
@@ -121,6 +121,8 @@ export default class DataVariableList extends React.Component {
 }
 
 DataVariableList.propTypes = {
+  // Whether the variables into an expression should be vectors
+  asVector: React.PropTypes.bool.isRequired,
   readOnly: React.PropTypes.bool,
   variableNameMap: React.PropTypes.object,
   dataVariables: React.PropTypes.array.isRequired,

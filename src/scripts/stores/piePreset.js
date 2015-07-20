@@ -31,6 +31,24 @@ let variables = [
     id: 'sum',
     name: 'sum',
     definition: ['_.sum(', {id: 'frequency', asVector: true}, ')']
+  }),
+  new DataVariable({
+    id: 'column',
+    name: 'column',
+    isRow: true,
+    definition: [{id: 'frequency', asVector: true}, '.map(function(d, i){ return i + 1; })']
+  }),
+  new DataVariable({
+    id: 'slice_opacity',
+    name: 'slice_opacity',
+    isRow: true,
+    definition: [{id: 'column', asVector: true}, '.map(function(d){ return _.round(d /', {id: 'frequency', asVector: true}, '.length, 2); })']
+  }),
+  new DataVariable({
+    id: 'slice_color',
+    name: 'slice_color',
+    isRow: true,
+    definition: [{id: 'slice_opacity', asVector: true}, `.map(function(d){ return 'rgba(77, 144, 221, ' + d + ')'; })`]
   })
 ];
 
@@ -53,6 +71,9 @@ let instructions = [
   }),
   new DrawPathInstruction({
     id: 'path',
+    //propertyVariables: [
+      //new DataVariable({name: 'fill', definition: [{id: 'slice_color'}]})
+    //],
     from: {id: 'shape_line', point: 'left'},
     to: [
       {id: 'shape_line', point: 'right', isLine: true}
@@ -68,7 +89,7 @@ let instructions = [
     shape: {id: 'shape_path'},
     to: {id: 'shape_line', point: 'right'},
     isArc: true,
-    arcRadius: new Expression({id: 'shape_line', prop: 'dx'})
+    arcRadius: new Expression({id: 'shape_circle', prop: 'radius'})
   })
 
 ];

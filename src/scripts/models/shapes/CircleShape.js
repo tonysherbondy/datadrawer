@@ -74,4 +74,14 @@ export default class CircleShape extends Shape {
     return Object.assign(super.getRenderProps(), {cx, cy, r});
   }
 
+  getProp(name) {
+    if (name === 'radius') {
+      return this.r;
+    }
+    super.getProp(name);
+  }
+
+  getMeasurementProps() {
+    return ['radius'];
+  }
 }

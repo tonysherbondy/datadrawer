@@ -62,6 +62,7 @@ export default class Notebook extends React.Component {
 
             <DataVariableList
               picture={activePicture}
+              asVector={true}
               dataVariables={activePicture.variables}
               dataValues={variableValues} />
 

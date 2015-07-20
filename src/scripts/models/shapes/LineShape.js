@@ -134,7 +134,7 @@ export default class LineShape extends Shape {
     } else if (name === 'dx') {
       return this.x2 - this.x1;
     }
-    console.error(`Don't know how to get prop`, name);
+    super.getProp(name);
   }
 
   getMeasurementProps() {

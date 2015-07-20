@@ -45,6 +45,7 @@ export default class ShapeDataList extends React.Component {
         <DataVariableList
           picture={picture}
           readOnly={true}
+          asVector={false}
           variableNameMap={variableNameMap}
           onDefinitionChange={this.handleDefinitionChange.bind(this, instruction)}
           dataVariables={variables}
@@ -64,6 +65,7 @@ export default class ShapeDataList extends React.Component {
         <DataVariableList
           picture={picture}
           readOnly={true}
+          asVector={false}
           variableNameMap={variableNameMap}
           dataVariables={shapeVariables}
           currentLoopIndex={this.props.currentLoopIndex}
