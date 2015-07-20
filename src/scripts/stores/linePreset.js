@@ -74,6 +74,7 @@ const instructions = [
       }),
       new ExtendPathInstruction({
         id: 'line_extend',
+        isLine: true,
         shape: {id: 'shape_line_path'},
         to: {id: 'shape_line_rect2', point: 'topLeft'}
       }),

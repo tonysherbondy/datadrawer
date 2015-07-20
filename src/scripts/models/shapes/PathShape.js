@@ -14,7 +14,7 @@ export default class PathShape extends Shape {
       if (pt.isLine) {
         return `l ${pt.x} ${pt.y}`;
       } else if (pt.isArc) {
-        let arcRadius = pt.arcRadius || 1;
+        let arcRadius = pt.arcRadius;
         return `a ${arcRadius} ${arcRadius} 0 0 1 ${pt.x} ${pt.y}`;
       }
       return `m ${pt.x} ${pt.y}`;

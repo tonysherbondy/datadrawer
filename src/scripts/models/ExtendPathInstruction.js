@@ -11,7 +11,7 @@ export default class ExtendPathInstruction extends AdjustInstruction {
     this.y = props.y;
     this.isLine = props.isLine;
     this.isArc = props.isArc;
-    this.arcRadius = props.arcRadius;
+    this.arcRadius = props.arcRadius || new Expression(10);
   }
 
   modifyInstructionWithProps(picture, props) {

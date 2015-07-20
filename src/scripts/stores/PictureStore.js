@@ -2,10 +2,9 @@ import biff from '../dispatcher/dispatcher';
 import Immutable from 'immutable';
 import Picture from '../models/Picture';
 import piePicture from './piePreset';
-//import barsPicture from './barsPresetPicture';
-//import scatterPicture from './scatterPresetPicture';
-//import simplePicture from './simplePreset';
-//import linePicture from './linePreset';
+import barsPicture from './barsPresetPicture';
+import scatterPicture from './scatterPresetPicture';
+import linePicture from './linePreset';
 import {guid} from '../utils/utils';
 
 let OrderedMap = Immutable.OrderedMap;
@@ -65,10 +64,9 @@ let updatePicture = function(picture) {
 };
 
 addPicture(piePicture);
-//addPicture(barsPicture);
-//addPicture(simplePicture);
-//addPicture(linePicture);
-//addPicture(scatterPicture);
+addPicture(barsPicture);
+addPicture(linePicture);
+addPicture(scatterPicture);
 
 if (pictures.size === 0) {
   // Can't have an empty picture list as we always need one picture

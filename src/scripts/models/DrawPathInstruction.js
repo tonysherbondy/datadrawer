@@ -107,7 +107,7 @@ export default class DrawPathInstruction extends DrawInstruction {
       // Update previous X and Y js
       prevXJs = `${prevXJs} + ${xJs}`;
       prevYJs = `${prevYJs} + ${yJs}`;
-      return `{x: ${xJs}, y: ${yJs}, isLine: ${isLine}, isArc: ${isArc}}`;
+      return `{x: ${xJs}, y: ${yJs}, isLine: ${isLine}, isArc: ${isArc}},`;
     });
     return ['['].concat(allTosJs, [']']).join('\n');
   }
