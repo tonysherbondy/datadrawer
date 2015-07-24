@@ -88,4 +88,8 @@ const instructions = [
   })
 ];
 
-export default new Picture('line', instructions, variables);
+function get() {
+  return new Picture('line', instructions, variables);
+}
+
+export default {get};

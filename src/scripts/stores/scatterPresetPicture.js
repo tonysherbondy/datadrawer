@@ -230,4 +230,8 @@ const instructions = [
   })
 ];
 
-export default new Picture('scatter', instructions, variables);
+function get() {
+  return new Picture('scatter', instructions, variables);
+}
+
+export default {get};

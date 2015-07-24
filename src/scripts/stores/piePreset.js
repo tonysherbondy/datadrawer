@@ -134,4 +134,8 @@ let instructions = [
 
 ];
 
-export default new Picture('pie', instructions, variables);
+function get() {
+  return new Picture('pie', instructions, variables);
+}
+
+export default {get};

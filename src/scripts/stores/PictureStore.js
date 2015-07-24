@@ -1,14 +1,13 @@
 import biff from '../dispatcher/dispatcher';
 import Immutable from 'immutable';
 import Picture from '../models/Picture';
-import piePicture from './piePreset';
-import barsPicture from './barsPresetPicture';
-import scatterPicture from './scatterPresetPicture';
-import linePicture from './linePreset';
 import {guid} from '../utils/utils';
 
 let OrderedMap = Immutable.OrderedMap;
 let List = Immutable.List;
+let isLoading = false;
+let isSaving = false;
+
 
 // maintains the history of states of an immutable object
 // used for supporting undo/redo
@@ -63,17 +62,16 @@ let updatePicture = function(picture) {
   pictures = pictures.update(picture.id, history => history.append(picture));
 };
 
-addPicture(piePicture);
-addPicture(barsPicture);
-addPicture(linePicture);
-addPicture(scatterPicture);
-
 if (pictures.size === 0) {
   // Can't have an empty picture list as we always need one picture
   addPicture(new Picture(guid(), [], []));
 }
 
 const PictureStore = biff.createStore({
+  getStoreState() {
+    return {isLoading, isSaving};
+  },
+
   getPictures() {
     return pictures.map(history => history.currentState())
       .valueSeq().toArray();
@@ -172,6 +170,31 @@ const PictureStore = biff.createStore({
 
     case 'REDO_CHANGE_TO_PICTURE': {
       pictures = pictures.update(payload.picture.id, history => history.redo());
+      PictureStore.emitChange();
+      break;
+    }
+
+    case 'SAVING_PICTURE': {
+      isSaving = true;
+      PictureStore.emitChange();
+      break;
+    }
+
+    case 'SAVED_PICTURE': {
+      isSaving = false;
+      PictureStore.emitChange();
+      break;
+    }
+
+    case 'LOADING_PICTURES': {
+      isLoading = true;
+      PictureStore.emitChange();
+      break;
+    }
+
+    case 'LOADED_PICTURES': {
+      payload.pictures.forEach(addPicture);
+      isLoading = false;
       PictureStore.emitChange();
       break;
     }

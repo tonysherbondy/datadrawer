@@ -327,6 +327,18 @@ export default class ShortcutKeyHandler {
     });
 
     manager = manager.registerHandler({
+      keyCode: 83,
+      metaKey: true,
+      keyDescription: '\u2318 + s',
+      description: 'save picture',
+      keyDown: (e) => {
+        console.log('save');
+        PictureActions.savePicture(this.notebook.props.activePicture);
+        e.preventDefault();
+      }
+    });
+
+    manager = manager.registerHandler({
       keyCode: 90,
       metaKey: true,
       keyDescription: '\u2318 + z',

@@ -8,13 +8,18 @@ import InstructionTreeNode from '../models/InstructionTreeNode';
 import NotebookPictureCompiler from '../utils/NotebookPictureCompiler';
 import DrawPictureInstruction from '../models/DrawPictureInstruction';
 import DrawingStateActions from '../actions/DrawingStateActions';
-
+import PictureActions from '../actions/PictureActions';
 import {RouteHandler} from 'react-router';
 
 class App extends React.Component {
 
   render() {
-    let {pictures, drawingState} = this.props;
+    let {pictures, drawingState, pictureStoreState} = this.props;
+
+    if (pictureStoreState.isLoading) {
+      return ( <h1>LOADING...</h1>);
+    }
+
     let {pictureId} = this.router.getCurrentParams();
 
     // TODO - Use willTransitionTo to make sure that the ID is legitimate
@@ -49,6 +54,7 @@ class App extends React.Component {
         pictures={pictures} />
     );
   }
+
 
   // Compute data variable values used across all pictures. This assumes
   // that variables are unique across all pictures
@@ -91,42 +97,54 @@ class App extends React.Component {
     return _.last(this.getSelectedInstructions(activePicture));
   }
 
-  componentWillMount(){
+  componentWillMount() {
     this.router = this.context.router;
   }
 
+  componentWillReceiveProps(nextProps) {
+    let pictureId = nextProps.params.pictureId;
+    let activePicture = nextProps.pictures.find(p => p.id === pictureId);
+
+    if (!activePicture) {
+      // pictureId in the route is not in our list of available pictures.
+      // Reroute to the first available picture by swapping out the id in
+      // the route.
+      // TODO: probably a better way to do this other than manipulating route
+      // string manually
+      let pathElements = this.router.getCurrentPath().split('/');
+      let pathIndex = pathElements.indexOf(pictureId);
+      pathElements[pathIndex] = _.first(nextProps.pictures).id;
+      this.router.transitionTo(pathElements.join('/'));
+
+    } else if (nextProps.drawingState.activePicture !== activePicture) {
+      // TODO: probably should get rid of activePicture in DrawingState
+      DrawingStateActions.setActivePicture(activePicture);
+    }
+  }
 }
+
 
 App.contextTypes = {
   router: React.PropTypes.func.isRequired
 };
 
-
 let stores = [PictureStore, DrawingStateStore];
 let propsAccessor = () => ({
+  pictureStoreState: PictureStore.getStoreState(),
   pictures: PictureStore.getPictures(),
   drawingState: DrawingStateStore.getDrawingState()
 });
 
 App = Flux.connect(App, stores, propsAccessor);
 
-App.willTransitionTo = function(transition, params, query) {
+App.willTransitionTo = function(transition, params) {
   let pictures = PictureStore.getPictures();
-  let {pictureId} = params;
-  let activePicture = pictures.find(p => p._id === pictureId);
+  let activePicture = pictures.find(p => p._id === params.pictureId);
+
   if (!activePicture) {
-    // It is annoying that I need to specify the exact path I want rather
-    // than just changing the parameters
-    let pathElements = transition.path.split('/');
-    let pathIndex = pathElements.indexOf(pictureId);
-    pictureId = pictures[0]._id;
-    pathElements[pathIndex] = pictureId;
-    transition.redirect(pathElements.join('/'), Object.assign(params, {pictureId}), query);
-  } else {
-    DrawingStateActions.setActivePicture(activePicture);
+    // about to transition picture that doesn't exist in store
+    // we'll try to fetch all pictures
+    PictureActions.loadAllPictures();
   }
-  //NotebookActions.fetchNotebook(params.notebookId);
 };
-
-
 export default App;

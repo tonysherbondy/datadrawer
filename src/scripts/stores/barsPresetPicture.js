@@ -130,4 +130,8 @@ const instructions = [
   })
 ];
 
-export default new Picture('bars', instructions, variables);
+function get() {
+  return new Picture('bars', instructions, variables);
+}
+
+export default {get};

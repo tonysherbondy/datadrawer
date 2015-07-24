@@ -1,4 +1,5 @@
 import biff from '../dispatcher/dispatcher';
+import PictureApi from '../api/LocalStoragePictureApi';
 
 const PictureActions = biff.createActions({
   addNewPicture(picture) {
@@ -59,6 +60,29 @@ const PictureActions = biff.createActions({
 
   removeVariable(picture, variable) {
     this.dispatch({actionType: 'REMOVE_VARIABLE', picture, variable});
+  },
+
+  loadAllPictures() {
+    this.dispatch({actionType: 'LOADING_PICTURES'});
+    PictureApi.loadAllPictures().then((loadedPictures) => {
+      this.dispatch({
+        actionType: 'LOADED_PICTURES',
+        pictures: loadedPictures
+      });
+    }).catch((err) => {
+      console.error(err);
+    });
+  },
+
+  savePicture(picture) {
+    this.dispatch({actionType: 'SAVING_PICTURE', picture: picture});
+    PictureApi.savePicture(picture).then(() => {
+      this.dispatch({
+        actionType: 'SAVED_PICTURE'
+      });
+    }).catch((err) => {
+      console.error(err);
+    });
   },
 
   undoChange(picture) {
