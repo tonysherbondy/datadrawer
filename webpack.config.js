@@ -1,14 +1,20 @@
 var path = require('path');
 var webpack = require('webpack');
 
+function getEntrySources(sources) {
+  if (process.env.NODE_ENV === 'production') {
+    return sources;
+  } else {
+    return sources.concat(['webpack-dev-server/client?http://localhost:3000']);
+  }
+}
+
 module.exports = {
   devtool: 'eval',
-  entry: [
-    'webpack-dev-server/client?http://localhost:3000',
-    'webpack/hot/only-dev-server',
+  entry: getEntrySources([
     path.join(__dirname, '/node_modules/babel-core/browser-polyfill.js'),
     './src/scripts/main'
-  ],
+  ]),
   output: {
     path: path.join(__dirname, 'build/src'),
     filename: 'bundle.js',
@@ -46,7 +52,7 @@ module.exports = {
       loader: 'url-loader?limit=8192'
     }, {
       test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-      loader: 'url-loader?limit=10000&minetype=application/font-woff'
+      loader: 'url-loader?limit=10000&mimetype=application/font-woff'
     }, {
       test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
       loader: 'file-loader'

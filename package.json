@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node server.js",
     "lint": "eslint . --ext .js --ext .jsx",
-    "deploy": "webpack && cp index.html build/ && firebase deploy"
+    "deploy": "NODE_ENV=production webpack && cp index.html build/ && firebase deploy"
   },
   "keywords": [
     "react",
