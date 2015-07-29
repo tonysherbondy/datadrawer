@@ -14,11 +14,17 @@ class App extends React.Component {
 
   render() {
     let {pictures, drawingState} = this.props;
-    let {activePicture} = drawingState;
+    let {pictureId} = this.router.getCurrentParams();
+
+    // TODO - Use willTransitionTo to make sure that the ID is legitimate
+    let activePicture = this.props.pictures.find(p => p._id === pictureId);
+
+    // Instead of defaulting to first, we should transition to the right route... but I don't
+    // want to do this in render
     let variableValues = this.getAllDataVariableValues(activePicture);
 
     // Compute shapes for the active picture
-    let currentInstruction = this.getCurrentInstruction();
+    let currentInstruction = this.getCurrentInstruction(activePicture);
     let pictureCompiler = new NotebookPictureCompiler({
       variableValues, pictures, activePicture, currentInstruction,
       currentLoopIndex: drawingState.currentLoopIndex});
@@ -27,9 +33,9 @@ class App extends React.Component {
     // Either go to a picture viewer or editor
     return (
       <RouteHandler
-        activePicture={drawingState.activePicture}
+        activePicture={activePicture}
         editingInstructionId={drawingState.editingInstructionId}
-        selectedInstructions={this.getSelectedInstructions()}
+        selectedInstructions={this.getSelectedInstructions(activePicture)}
         currentInstruction={currentInstruction}
         variableValues={variableValues}
         drawingMode={drawingState.mode}
@@ -62,9 +68,9 @@ class App extends React.Component {
   }
 
   // Either a range that the user selected or the last instruction
-  getSelectedInstructions() {
+  getSelectedInstructions(activePicture) {
     let {selectedInstructions} = this.props.drawingState;
-    let {instructions} = this.props.drawingState.activePicture;
+    let {instructions} = activePicture;
     if (selectedInstructions && selectedInstructions.length > 0) {
       selectedInstructions = _.compact(selectedInstructions.map(i => {
         return InstructionTreeNode.findById(instructions, i.id);
@@ -80,11 +86,19 @@ class App extends React.Component {
   }
 
   // The last instruction in the selected instructions
-  getCurrentInstruction() {
-    return _.last(this.getSelectedInstructions());
+  getCurrentInstruction(activePicture) {
+    return _.last(this.getSelectedInstructions(activePicture));
+  }
+
+  componentWillMount(){
+    this.router = this.context.router;
   }
 
 }
+
+App.contextTypes = {
+  router: React.PropTypes.func.isRequired
+};
 
 let stores = [PictureStore, DrawingStateStore];
 let propsAccessor = () => ({
