@@ -56,10 +56,11 @@ export default class ThumbnailsBar extends React.Component {
     );
   }
 
-  handleThumbnailClick(picture) {
+  handleThumbnailClick(picture, evt) {
     if (this.props.onThumbnailClick) {
       this.props.onThumbnailClick(picture);
     }
+    evt.preventDefault();
   }
 }
 

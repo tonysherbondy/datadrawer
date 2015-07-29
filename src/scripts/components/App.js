@@ -24,6 +24,7 @@ class App extends React.Component {
       currentLoopIndex: drawingState.currentLoopIndex});
     let shapes = pictureCompiler.getShapesForPicture(activePicture);
 
+    // Either go to a picture viewer or editor
     return (
       <RouteHandler
         activePicture={drawingState.activePicture}
