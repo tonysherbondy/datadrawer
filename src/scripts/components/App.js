@@ -4,10 +4,11 @@ import Flux from '../dispatcher/dispatcher';
 import PictureStore from '../stores/PictureStore';
 import DrawingStateStore from '../stores/DrawingStateStore';
 import computeVariableValues from '../utils/computeVariableValues';
-import Notebook from './Notebook';
 import InstructionTreeNode from '../models/InstructionTreeNode';
 import NotebookPictureCompiler from '../utils/NotebookPictureCompiler';
 import DrawPictureInstruction from '../models/DrawPictureInstruction';
+
+import {RouteHandler} from 'react-router';
 
 class App extends React.Component {
 
@@ -24,7 +25,7 @@ class App extends React.Component {
     let shapes = pictureCompiler.getShapesForPicture(activePicture);
 
     return (
-      <Notebook
+      <RouteHandler
         activePicture={drawingState.activePicture}
         editingInstructionId={drawingState.editingInstructionId}
         selectedInstructions={this.getSelectedInstructions()}
