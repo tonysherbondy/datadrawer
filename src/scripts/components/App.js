@@ -100,6 +100,7 @@ App.contextTypes = {
   router: React.PropTypes.func.isRequired
 };
 
+
 let stores = [PictureStore, DrawingStateStore];
 let propsAccessor = () => ({
   pictures: PictureStore.getPictures(),
@@ -107,5 +108,18 @@ let propsAccessor = () => ({
 });
 
 App = Flux.connect(App, stores, propsAccessor);
+
+App.willTransitionTo = function(transition, params, query) {
+  console.log('will transition to', transition, params, query);
+  let pictures = PictureStore.getPictures();
+  let {pictureId} = params;
+  let activePicture = pictures.find(p => p._id === pictureId);
+  if (!activePicture) {
+    pictureId = pictures[0]._id;
+    transition.redirect('app', Object.assign(params, {pictureId}), query);
+  }
+  //NotebookActions.fetchNotebook(params.notebookId);
+};
+
 
 export default App;
