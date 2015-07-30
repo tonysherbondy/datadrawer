@@ -5,10 +5,11 @@ import DataVariable from './DataVariable';
 import DrawInstruction from './DrawInstruction';
 import DrawPictureInstruction from './DrawPictureInstruction';
 import Expression from './Expression';
+import {guid} from '../utils/utils';
 
 export default class Picture {
-  constructor(id, instructions, variables) {
-    this._id = id;
+  constructor(id, instructions=[], variables=[]) {
+    this._id = id || guid();
 
     if (instructions instanceof OrderedMap) {
       this._instructions = instructions;

@@ -72,12 +72,6 @@ const DrawingStateStore = biff.createStore({
       break;
     }
 
-    case 'ADD_NEW_PICTURE': {
-      // TODO (nhan): can probably get rid of this dependency on PictureStore
-      drawingState.activePicture = _.last(PictureStore.getPictures());
-      break;
-    }
-
     case 'SET_ACTIVE_PICTURE': {
       drawingState.activePicture = payload.picture;
       DrawingStateStore.emitChange();

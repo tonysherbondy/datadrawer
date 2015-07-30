@@ -111,7 +111,6 @@ let propsAccessor = () => ({
 App = Flux.connect(App, stores, propsAccessor);
 
 App.willTransitionTo = function(transition, params, query) {
-  console.log('will transition to', transition, params, query);
   let pictures = PictureStore.getPictures();
   let {pictureId} = params;
   let activePicture = pictures.find(p => p._id === pictureId);

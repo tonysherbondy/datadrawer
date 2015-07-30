@@ -85,7 +85,7 @@ const PictureStore = biff.createStore({
 }, (payload) => {
   switch (payload.actionType) {
     case 'ADD_NEW_PICTURE': {
-      addPicture(new Picture(guid(), [], []));
+      addPicture(payload.picture);
       PictureStore.emitChange();
       break;
     }

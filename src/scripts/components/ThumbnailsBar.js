@@ -40,7 +40,7 @@ export default class ThumbnailsBar extends React.Component {
     return (
       <div>
         {this.props.pictures.map(getThumbnailForPicture)}
-        <a href='#' onClick={PictureActions.addNewPicture}>
+        <a href='#' onClick={this.handleAddNewPicture.bind(this)}>
           <div className='picture-thumbnail new-picture-button'>
             New Picture
           </div>
@@ -54,6 +54,15 @@ export default class ThumbnailsBar extends React.Component {
         {this.getThumbnailsBar()}
       </div>
     );
+  }
+
+  handleAddNewPicture(evt) {
+    let picture = new Picture();
+    PictureActions.addNewPicture(picture);
+    if (this.props.onThumbnailClick) {
+      this.props.onThumbnailClick(picture);
+    }
+    evt.preventDefault();
   }
 
   handleThumbnailClick(picture, evt) {

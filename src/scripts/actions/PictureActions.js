@@ -1,8 +1,8 @@
 import biff from '../dispatcher/dispatcher';
 
 const PictureActions = biff.createActions({
-  addNewPicture() {
-    this.dispatch({actionType: 'ADD_NEW_PICTURE'});
+  addNewPicture(picture) {
+    this.dispatch({actionType: 'ADD_NEW_PICTURE', picture});
   },
 
   addInstruction(picture, instruction) {
