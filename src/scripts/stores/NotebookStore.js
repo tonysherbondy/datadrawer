@@ -20,7 +20,7 @@ const NotebookStore = biff.createStore({
       break;
     }
     case 'ERROR_LOADING_NOTEBOOK': {
-      notebookStatus = 'error';
+      notebookStatus = payload.error === 'NOTFOUND' ? 'notfound' : 'error';
       notebook = null;
       NotebookStore.emitChange();
       break;

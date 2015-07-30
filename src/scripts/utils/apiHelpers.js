@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-let firebaseApi = 'https://amber-inferno-424.firebaseio.com/firebase_notes';
+let firebaseApi = 'https://dashdrawer.firebaseio.com/';
 var apiHelpers = {
 
   setPicturesForNotebook(notebookId, pictures) {

@@ -25,7 +25,7 @@ const NotebookActions = biff.createActions({
             this.dispatch({
               actionType: 'ERROR_LOADING_NOTEBOOK',
               notebookId,
-              error: 'Notebook not found'
+              error: 'NOTFOUND'
             });
           } else {
             NotebookActions.setNotebook({id: notebookId, notes: data});

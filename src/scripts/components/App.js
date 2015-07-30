@@ -15,6 +15,12 @@ import {RouteHandler} from 'react-router';
 
 class App extends React.Component {
 
+  // TODO - Consider moving this to a notebook notfound route or something
+  handleNewNotebook(evt) {
+    console.log('should try to create a new notebook');
+    evt.preventDefault();
+  }
+
   render() {
     let {pictures, drawingState, notebookStatus} = this.props;
 
@@ -24,10 +30,16 @@ class App extends React.Component {
           Loading notebook...
         </div>
       );
+    } else if (notebookStatus === 'notfound') {
+      return (
+        <div>
+          <h1>Notebook Not Found</h1>
+          <a href='#' onClick={this.handleNewNotebook.bind(this)}>Click start a new notebook</a>
+        </div>
+      );
     }
 
     let {pictureId} = this.router.getCurrentParams();
-
     let activePicture = this.props.pictures.find(p => p.id === pictureId);
 
     // Instead of defaulting to first, we should transition to the right route... but I don't
