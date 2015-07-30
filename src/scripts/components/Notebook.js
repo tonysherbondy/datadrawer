@@ -54,6 +54,7 @@ export default class Notebook extends React.Component {
           variableValues={variableValues}
           activePicture={this.props.activePicture}
           pictureForPictureTool={this.props.pictureForPictureTool}
+          onPreviewClick={this.handlePicturePreview.bind(this)}
           onThumbnailClick={this.handleThumbnailClick.bind(this)}
         />
         <div className='editor-area'>
@@ -179,8 +180,13 @@ export default class Notebook extends React.Component {
         this.props.currentInstruction);
     } else {
       let {notebookId} = this.context.router.getCurrentParams();
-      this.context.router.transitionTo(`/notebook/${notebookId}/picture/${picture._id}/edit`);
+      this.context.router.transitionTo(`/notebook/${notebookId}/picture/${picture.id}/edit`);
     }
+  }
+
+  handlePicturePreview(picture) {
+    let {notebookId} = this.context.router.getCurrentParams();
+    this.context.router.transitionTo(`/notebook/${notebookId}/picture/${picture.id}/view`);
   }
 
   handlePopoverClose() {

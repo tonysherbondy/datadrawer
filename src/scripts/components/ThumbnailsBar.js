@@ -76,7 +76,9 @@ export default class ThumbnailsBar extends React.Component {
   }
 
   handlePreviewPicture(picture, evt) {
-    console.log('supposed to preview', picture.id);
+    if (this.props.onPreviewClick) {
+      this.props.onPreviewClick(picture);
+    }
     evt.stopPropagation();
     evt.preventDefault();
   }
