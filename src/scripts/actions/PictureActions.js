@@ -1,5 +1,5 @@
 import biff from '../dispatcher/dispatcher';
-import PictureApi from '../api/LocalStoragePictureApi';
+import PictureApi from '../api/FirebasePictureApi';
 
 const PictureActions = biff.createActions({
   addNewPicture(picture) {
