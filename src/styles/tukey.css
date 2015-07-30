@@ -323,3 +323,16 @@ td, th {
   margin-left: 5px;
 }
 
+.return-to-edit-popover {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: gray;
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+.return-to-edit-popover:hover {
+  opacity: 1.0;
+}
+
