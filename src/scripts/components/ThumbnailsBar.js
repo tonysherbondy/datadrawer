@@ -11,6 +11,20 @@ export default class ThumbnailsBar extends React.Component {
   getThumbnailsBar() {
     let getThumbnailForPicture = (picture) => {
 
+      if (picture === null) {
+        return (
+          <a
+            href='#'
+            key={'new-picture-button'}
+            onClick={this.handleAddNewPicture.bind(this)}>
+              <div className='picture-thumbnail new-picture-button'>
+                New Picture
+              </div>
+          </a>
+        );
+      }
+            //<div className='picture-thumbnail new-picture-button'>
+
       let {activePicture, pictureForPictureTool, pictures, variableValues} = this.props;
       let isActivePicture = picture.id === activePicture.id;
       let isPictureForPictureTool = pictureForPictureTool &&
@@ -27,25 +41,21 @@ export default class ThumbnailsBar extends React.Component {
       });
 
       return (
-        <a key={picture.id}
-          href='#'
+        <a
+          className='picture-thumbnail-wrapper'
+          key={picture.id}
           onClick={this.handleThumbnailClick.bind(this, picture)}>
           <Canvas
             className={className}
             activePicture={picture}
             drawingMode={'normal'}
             shapes={shapes} />
+          <i
+            onClick={this.handlePreviewPicture.bind(this, picture)}
+            className="preview-picture-button fa fa-external-link"></i>
         </a>);
     };
-    return (
-      <div>
-        {this.props.pictures.map(getThumbnailForPicture)}
-        <a href='#' onClick={this.handleAddNewPicture.bind(this)}>
-          <div className='picture-thumbnail new-picture-button'>
-            New Picture
-          </div>
-        </a>
-      </div>);
+    return this.props.pictures.concat([null]).map(getThumbnailForPicture);
   }
 
   render() {
@@ -62,6 +72,12 @@ export default class ThumbnailsBar extends React.Component {
     if (this.props.onThumbnailClick) {
       this.props.onThumbnailClick(picture);
     }
+    evt.preventDefault();
+  }
+
+  handlePreviewPicture(picture, evt) {
+    console.log('supposed to preview', picture.id);
+    evt.stopPropagation();
     evt.preventDefault();
   }
 

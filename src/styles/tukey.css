@@ -6,9 +6,6 @@
 }
 
 /* drawing */
-.drawing-area {
-}
-
 .canvas {
   box-shadow: 0px 0px 10px rgba(0,0,0,0.25);
   width: 800px;
@@ -18,6 +15,24 @@
 .canvas.view {
   width: 100%;
   height: 100%;
+}
+
+.picture-thumbnail-wrapper {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+}
+
+.preview-picture-button {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.picture-thumbnail-wrapper:hover .preview-picture-button {
+  opacity: 0.6;
 }
 
 .picture-thumbnail {
