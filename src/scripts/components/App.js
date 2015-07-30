@@ -8,17 +8,27 @@ import InstructionTreeNode from '../models/InstructionTreeNode';
 import NotebookPictureCompiler from '../utils/NotebookPictureCompiler';
 import DrawPictureInstruction from '../models/DrawPictureInstruction';
 import DrawingStateActions from '../actions/DrawingStateActions';
+import NotebookActions from '../actions/NotebookActions';
+import NotebookStore from '../stores/NotebookStore';
 
 import {RouteHandler} from 'react-router';
 
 class App extends React.Component {
 
   render() {
-    let {pictures, drawingState} = this.props;
+    let {pictures, drawingState, notebookStatus} = this.props;
+
+    if (notebookStatus === 'loading') {
+      return (
+        <div>
+          Loading notebook...
+        </div>
+      );
+    }
+
     let {pictureId} = this.router.getCurrentParams();
 
-    // TODO - Use willTransitionTo to make sure that the ID is legitimate
-    let activePicture = this.props.pictures.find(p => p._id === pictureId);
+    let activePicture = this.props.pictures.find(p => p.id === pictureId);
 
     // Instead of defaulting to first, we should transition to the right route... but I don't
     // want to do this in render
@@ -102,8 +112,10 @@ App.contextTypes = {
 };
 
 
-let stores = [PictureStore, DrawingStateStore];
+let stores = [PictureStore, DrawingStateStore, NotebookStore];
 let propsAccessor = () => ({
+  notebookStatus: NotebookStore.getNotebookStatus(),
+  notebook: NotebookStore.getNotebook(),
   pictures: PictureStore.getPictures(),
   drawingState: DrawingStateStore.getDrawingState()
 });
@@ -125,7 +137,8 @@ App.willTransitionTo = function(transition, params, query) {
   } else {
     DrawingStateActions.setActivePicture(activePicture);
   }
-  //NotebookActions.fetchNotebook(params.notebookId);
+  // TODO - Need to do this before the picture check...
+  NotebookActions.fetchNotebook(params.notebookId);
 };
 
 
