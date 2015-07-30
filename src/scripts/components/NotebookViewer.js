@@ -1,11 +1,14 @@
 import React from 'react';
+import Canvas from './drawing/Canvas';
 
 class NotebookViewer extends React.Component {
   render() {
     return (
-      <div>
-        Notebook Viewer
-      </div>
+        <Canvas
+          className='canvas view'
+          activePicture={this.props.activePicture}
+          drawingMode='normal'
+          shapes={this.props.shapes} />
     );
   }
 }
