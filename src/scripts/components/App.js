@@ -115,8 +115,11 @@ App.willTransitionTo = function(transition, params, query) {
   let {pictureId} = params;
   let activePicture = pictures.find(p => p._id === pictureId);
   if (!activePicture) {
+    let pathElements = transition.path.split('/');
+    let pathIndex = pathElements.indexOf(pictureId);
     pictureId = pictures[0]._id;
-    transition.redirect('app', Object.assign(params, {pictureId}), query);
+    pathElements[pathIndex] = pictureId;
+    transition.redirect(pathElements.join('/'), Object.assign(params, {pictureId}), query);
   }
   //NotebookActions.fetchNotebook(params.notebookId);
 };
