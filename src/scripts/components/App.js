@@ -7,6 +7,7 @@ import computeVariableValues from '../utils/computeVariableValues';
 import InstructionTreeNode from '../models/InstructionTreeNode';
 import NotebookPictureCompiler from '../utils/NotebookPictureCompiler';
 import DrawPictureInstruction from '../models/DrawPictureInstruction';
+import DrawingStateActions from '../actions/DrawingStateActions';
 
 import {RouteHandler} from 'react-router';
 
@@ -115,11 +116,15 @@ App.willTransitionTo = function(transition, params, query) {
   let {pictureId} = params;
   let activePicture = pictures.find(p => p._id === pictureId);
   if (!activePicture) {
+    // It is annoying that I need to specify the exact path I want rather
+    // than just changing the parameters
     let pathElements = transition.path.split('/');
     let pathIndex = pathElements.indexOf(pictureId);
     pictureId = pictures[0]._id;
     pathElements[pathIndex] = pictureId;
     transition.redirect(pathElements.join('/'), Object.assign(params, {pictureId}), query);
+  } else {
+    DrawingStateActions.setActivePicture(activePicture);
   }
   //NotebookActions.fetchNotebook(params.notebookId);
 };

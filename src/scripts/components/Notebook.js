@@ -178,7 +178,8 @@ export default class Notebook extends React.Component {
         this.props.activePicture, instruction,
         this.props.currentInstruction);
     } else {
-      DrawingStateActions.setActivePicture(picture);
+      let {notebookId} = this.context.router.getCurrentParams();
+      this.context.router.transitionTo(`/notebook/${notebookId}/picture/${picture._id}/edit`);
     }
   }
 
@@ -268,6 +269,10 @@ export default class Notebook extends React.Component {
   }
 
 }
+
+Notebook.contextTypes = {
+  router: React.PropTypes.func.isRequired
+};
 
 Notebook.propTypes = {
   // TODO How to use arrayOf??

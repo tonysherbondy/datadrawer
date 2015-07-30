@@ -1,6 +1,9 @@
 import biff from '../dispatcher/dispatcher';
 
 const DrawingStateActions = biff.createActions({
+
+  // TODO - this should probably be removed as the only way this should
+  // be called is on url transition
   setActivePicture(picture) {
     this.dispatch({
       actionType: 'SET_ACTIVE_PICTURE',
