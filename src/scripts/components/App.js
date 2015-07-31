@@ -16,7 +16,7 @@ class App extends React.Component {
   render() {
     let {pictures, drawingState, pictureStoreState} = this.props;
 
-    if (pictureStoreState.isLoading) {
+    if (pictureStoreState.isLoading || this.state.isTransitioning) {
       return ( <h1>LOADING...</h1>);
     }
 
@@ -102,6 +102,11 @@ class App extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    if (nextProps.pictureStoreState.isLoading) {
+      this.setState({isTransitioning: true});
+      return;
+    }
+
     let pictureId = nextProps.params.pictureId;
     let activePicture = nextProps.pictures.find(p => p.id === pictureId);
 
@@ -115,10 +120,12 @@ class App extends React.Component {
       let pathIndex = pathElements.indexOf(pictureId);
       pathElements[pathIndex] = _.first(nextProps.pictures).id;
       this.router.transitionTo(pathElements.join('/'));
-
+      this.setState({isTransitioning: true});
     } else if (nextProps.drawingState.activePicture !== activePicture) {
       // TODO: probably should get rid of activePicture in DrawingState
       DrawingStateActions.setActivePicture(activePicture);
+    } else {
+      this.setState({isTransitioning: false});
     }
   }
 }

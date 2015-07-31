@@ -1,7 +1,7 @@
 import biff from '../dispatcher/dispatcher';
 import Immutable from 'immutable';
+/*eslint no-unused-vars:0*/
 import Picture from '../models/Picture';
-import {guid} from '../utils/utils';
 
 let OrderedMap = Immutable.OrderedMap;
 let List = Immutable.List;
@@ -51,7 +51,6 @@ History.of = function(initialState) {
   return new History(List.of(initialState), 0);
 };
 
-
 let pictures = OrderedMap();
 
 let addPicture = function(picture) {
@@ -61,11 +60,6 @@ let addPicture = function(picture) {
 let updatePicture = function(picture) {
   pictures = pictures.update(picture.id, history => history.append(picture));
 };
-
-if (pictures.size === 0) {
-  // Can't have an empty picture list as we always need one picture
-  addPicture(new Picture(guid(), [], []));
-}
 
 const PictureStore = biff.createStore({
   getStoreState() {

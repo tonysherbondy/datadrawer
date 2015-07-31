@@ -9,7 +9,7 @@ import Expression from '../models/Expression';
 import DataVariable from '../models/DataVariable';
 import Picture from '../models/Picture';
 
-let variables = [
+let variables = () => [
   // Bar Chart Data
   new DataVariable({
     id: 'numberEnergies',
@@ -50,7 +50,7 @@ let variables = [
   })
 ];
 
-const instructions = [
+const instructions = () => [
   new DrawRectInstruction({
     id: 'rect1',
     isGuide: false,
@@ -131,7 +131,7 @@ const instructions = [
 ];
 
 function get() {
-  return new Picture('bars', instructions, variables);
+  return new Picture('bars', instructions(), variables());
 }
 
 export default {get};

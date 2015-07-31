@@ -8,7 +8,7 @@ import ExtendPathInstruction from '../models/ExtendPathInstruction';
 import MoveInstruction from '../models/MoveInstruction';
 import LoopInstruction from '../models/LoopInstruction';
 
-let variables = [
+let variables = () => [
   new DataVariable({
     id: 'line_max',
     name: 'max',
@@ -27,7 +27,7 @@ let variables = [
   })
 ];
 
-const instructions = [
+const instructions = () => [
   new DrawRectInstruction({
     id: 'line_rect1',
     isGuide: false,
@@ -89,7 +89,7 @@ const instructions = [
 ];
 
 function get() {
-  return new Picture('line', instructions, variables);
+  return new Picture('line', instructions(), variables());
 }
 
 export default {get};

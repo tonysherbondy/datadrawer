@@ -11,9 +11,9 @@ export default (
     <Route name="app" path="/notebook/:notebookId/picture/:pictureId" handler={App}>
       <Route name="edit" path="edit" handler={Notebook} />
       <Route name="view" path="view" handler={NotebookViewer} />
-      <Redirect to="view" />
+      <Redirect to="edit" />
     </Route>
-    <Redirect to="/notebook/default/picture/bars/view" />
+    <Redirect to="/notebook/default/picture/bars/edit" />
   </Route>
 );
 

@@ -1,6 +1,5 @@
 import DataVariable from '../models/DataVariable';
 import Picture from '../models/Picture';
-
 import DrawCircleInstruction from '../models/DrawCircleInstruction';
 import ScaleInstruction from '../models/ScaleInstruction';
 import Expression from '../models/Expression';
@@ -12,7 +11,7 @@ import LoopInstruction from '../models/LoopInstruction';
 import MoveInstruction from '../models/MoveInstruction';
 import DrawTextInstruction from '../models/DrawTextInstruction';
 
-let variables = [
+let variables = () => [
   new DataVariable({
     id: 'label_offset',
     name: 'label offset',
@@ -55,7 +54,7 @@ let variables = [
   })
 ];
 
-let instructions = [
+let instructions = () => [
   new DrawCircleInstruction({
     id: 'circle',
     isGuide: true,
@@ -135,7 +134,7 @@ let instructions = [
 ];
 
 function get() {
-  return new Picture('pie', instructions, variables);
+  return new Picture('pie', instructions(), variables());
 }
 
 export default {get};

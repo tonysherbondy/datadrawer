@@ -10,7 +10,7 @@ import Expression from '../models/Expression';
 import DataVariable from '../models/DataVariable';
 import Picture from '../models/Picture';
 
-let variables = [
+let variables = () => [
   new DataVariable({
     id: 'd3',
     name: 'gamma',
@@ -46,7 +46,7 @@ let variables = [
   })
 ];
 
-const instructions = [
+const instructions = () => [
   new DrawCircleInstruction({
     id: 'i0',
     from: {id: 'canvas', point: 'bottomLeft'},
@@ -231,7 +231,7 @@ const instructions = [
 ];
 
 function get() {
-  return new Picture('scatter', instructions, variables);
+  return new Picture('scatter', instructions(), variables());
 }
 
 export default {get};
