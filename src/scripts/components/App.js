@@ -114,14 +114,15 @@ class App extends React.Component {
       } else {
         PictureActions.setInvalidPictureState();
         // TODO - need to transition to somewhere else
-        //let pathElements = this.router.getCurrentPath().split('/');
-        //let pathIndex = pathElements.indexOf(pictureId);
-        //pathElements[pathIndex] = _.first(nextProps.pictures).id;
-        //this.router.transitionTo(pathElements.join('/'));
-        //this.setState({isTransitioning: true});
       }
+    } else if (pictureApiState === 'invalid') {
+      let pathElements = this.router.getCurrentPath().split('/');
+      let pathIndex = pathElements.indexOf(nextProps.params.pictureId);
+      pathElements[pathIndex] = _.first(pictures).id;
+      this.router.transitionTo(pathElements.join('/'));
     }
   }
+
 }
 
 
