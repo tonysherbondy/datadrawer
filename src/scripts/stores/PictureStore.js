@@ -6,7 +6,7 @@ import Picture from '../models/Picture';
 let OrderedMap = Immutable.OrderedMap;
 let List = Immutable.List;
 
-let activePicture = null;
+let activePictureId = null;
 // states can be 'loading', 'loaded', 'saving', 'invalid'
 let apiState = 'invalid';
 // TODO - merge with loadingState
@@ -71,7 +71,11 @@ const PictureStore = biff.createStore({
   },
 
   getActivePicture() {
-    return activePicture;
+    let activePictureHistory = pictures.get(activePictureId);
+    if (activePictureHistory) {
+      return activePictureHistory.currentState();
+    }
+    return null;
   },
 
   getStoreState() {
@@ -193,7 +197,7 @@ const PictureStore = biff.createStore({
     }
 
     case 'SET_ACTIVE_PICTURE': {
-      activePicture = payload.picture;
+      activePictureId = payload.picture.id;
       // TODO this is a little weird
       apiState = 'loaded';
       PictureStore.emitChange();
@@ -201,7 +205,7 @@ const PictureStore = biff.createStore({
     }
 
     case 'SET_INVALID_PICTURE_STATE': {
-      activePicture = null;
+      activePictureId = null;
       apiState = 'invalid';
       PictureStore.emitChange();
       break;
@@ -218,10 +222,10 @@ const PictureStore = biff.createStore({
       let picture = payload.pictures.find(p => p.id === payload.activePictureId);
       if (picture) {
         apiState = 'loaded';
-        activePicture = picture;
+        activePictureId = picture.id;
       } else {
         apiState = 'invalid';
-        activePicture = null;
+        activePictureId = null;
       }
       PictureStore.emitChange();
       break;
