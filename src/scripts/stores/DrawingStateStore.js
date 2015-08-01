@@ -12,7 +12,6 @@ let drawingState = {
   editingInstructionId: null,
   dataPopupPosition: null,
   showDataPopup: false,
-  activePicture: null,
   pictureForPictureTool: null
 };
 
@@ -24,7 +23,8 @@ function resetState() {
 }
 
 function setSelectedInstructions(selectedInstructions) {
-  let instructions = drawingState.activePicture.instructions;
+  let activePicture = PictureStore.getActivePicture();
+  let instructions = activePicture.instructions;
   let parent = InstructionTreeNode.findParent(instructions, selectedInstructions[0]);
   // TODO (nhan): this should check whether an ancestor is a loop instruction
   // instead of the parent
@@ -50,10 +50,11 @@ function insertedInstruction(instruction) {
 const DrawingStateStore = biff.createStore({
   getDrawingState() {
     // TODO (nhan): This logic might be better placed in the App
-    if (!drawingState.activePicture) {
-      drawingState.activePicture = _.first(PictureStore.getPictures());
+    let activePicture = PictureStore.getActivePicture();
+    if (!activePicture) {
+      activePicture = _.first(PictureStore.getPictures());
     } else {
-      drawingState.activePicture = PictureStore.getPicture(drawingState.activePicture.id);
+      activePicture = PictureStore.getPicture(activePicture.id);
     }
     return drawingState;
   }
@@ -72,11 +73,6 @@ const DrawingStateStore = biff.createStore({
       break;
     }
 
-    case 'SET_ACTIVE_PICTURE': {
-      drawingState.activePicture = payload.picture;
-      DrawingStateStore.emitChange();
-      break;
-    }
     case 'SET_DRAWING_MODE': {
       drawingState.mode = payload.data;
       if (drawingState.mode === 'normal') {

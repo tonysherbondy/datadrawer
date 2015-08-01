@@ -5,7 +5,11 @@ import Picture from '../models/Picture';
 
 let OrderedMap = Immutable.OrderedMap;
 let List = Immutable.List;
-let isLoading = false;
+
+let activePicture = null;
+// states can be 'loading', 'loaded', 'saving', 'invalid'
+let apiState = 'invalid';
+// TODO - merge with loadingState
 let isSaving = false;
 
 
@@ -62,8 +66,16 @@ let updatePicture = function(picture) {
 };
 
 const PictureStore = biff.createStore({
+  getApiState() {
+    return apiState;
+  },
+
+  getActivePicture() {
+    return activePicture;
+  },
+
   getStoreState() {
-    return {isLoading, isSaving};
+    return {isSaving};
   },
 
   getPictures() {
@@ -180,15 +192,37 @@ const PictureStore = biff.createStore({
       break;
     }
 
+    case 'SET_ACTIVE_PICTURE': {
+      activePicture = payload.picture;
+      // TODO this is a little weird
+      apiState = 'loaded';
+      PictureStore.emitChange();
+      break;
+    }
+
+    case 'SET_INVALID_PICTURE_STATE': {
+      activePicture = null;
+      apiState = 'invalid';
+      PictureStore.emitChange();
+      break;
+    }
+
     case 'LOADING_PICTURES': {
-      isLoading = true;
+      apiState = 'loading';
       PictureStore.emitChange();
       break;
     }
 
     case 'LOADED_PICTURES': {
       payload.pictures.forEach(addPicture);
-      isLoading = false;
+      let picture = payload.pictures.find(p => p.id === payload.activePictureId);
+      if (picture) {
+        apiState = 'loaded';
+        activePicture = picture;
+      } else {
+        apiState = 'invalid';
+        activePicture = null;
+      }
       PictureStore.emitChange();
       break;
     }

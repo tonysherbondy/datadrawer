@@ -7,23 +7,21 @@ import computeVariableValues from '../utils/computeVariableValues';
 import InstructionTreeNode from '../models/InstructionTreeNode';
 import NotebookPictureCompiler from '../utils/NotebookPictureCompiler';
 import DrawPictureInstruction from '../models/DrawPictureInstruction';
-import DrawingStateActions from '../actions/DrawingStateActions';
 import PictureActions from '../actions/PictureActions';
 import {RouteHandler} from 'react-router';
 
 class App extends React.Component {
 
   render() {
-    let {pictures, drawingState, pictureStoreState} = this.props;
+    let {pictures, drawingState, pictureApiState} = this.props;
 
-    if (pictureStoreState.isLoading || this.state.isTransitioning) {
+    if (pictureApiState === 'loading') {
       return ( <h1>LOADING...</h1>);
+    } else if (pictureApiState === 'invalid') {
+      return ( <h1>INVALID.</h1>);
     }
 
-    let {pictureId} = this.router.getCurrentParams();
-
-    // TODO - Use willTransitionTo to make sure that the ID is legitimate
-    let activePicture = this.props.pictures.find(p => p._id === pictureId);
+    let activePicture = this.props.activePicture;
 
     // Instead of defaulting to first, we should transition to the right route... but I don't
     // want to do this in render
@@ -102,30 +100,26 @@ class App extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.pictureStoreState.isLoading) {
-      this.setState({isTransitioning: true});
-      return;
-    }
-
-    let pictureId = nextProps.params.pictureId;
-    let activePicture = nextProps.pictures.find(p => p.id === pictureId);
-
-    if (!activePicture) {
-      // pictureId in the route is not in our list of available pictures.
-      // Reroute to the first available picture by swapping out the id in
-      // the route.
-      // TODO: probably a better way to do this other than manipulating route
-      // string manually
-      let pathElements = this.router.getCurrentPath().split('/');
-      let pathIndex = pathElements.indexOf(pictureId);
-      pathElements[pathIndex] = _.first(nextProps.pictures).id;
-      this.router.transitionTo(pathElements.join('/'));
-      this.setState({isTransitioning: true});
-    } else if (nextProps.drawingState.activePicture !== activePicture) {
-      // TODO: probably should get rid of activePicture in DrawingState
-      DrawingStateActions.setActivePicture(activePicture);
-    } else {
-      this.setState({isTransitioning: false});
+    let {pictures, pictureApiState} = nextProps;
+    if (_.isEmpty(pictures)) {
+      if ( pictureApiState !== 'loading') {
+        PictureActions.loadAllPicturesAndSetActive(nextProps.params.pictureId);
+      }
+    } else if (nextProps.params.pictureId !== this.props.params.pictureId) {
+      // This is like checking if we have the right notebook, but for now we are
+      // just seeing if all pictures have been loaded
+      let picture = pictures.find(p => p.id === nextProps.params.pictureId);
+      if (picture) {
+        PictureActions.setActivePicture(picture);
+      } else {
+        PictureActions.setInvalidPictureState();
+        // TODO - need to transition to somewhere else
+        //let pathElements = this.router.getCurrentPath().split('/');
+        //let pathIndex = pathElements.indexOf(pictureId);
+        //pathElements[pathIndex] = _.first(nextProps.pictures).id;
+        //this.router.transitionTo(pathElements.join('/'));
+        //this.setState({isTransitioning: true});
+      }
     }
   }
 }
@@ -137,21 +131,12 @@ App.contextTypes = {
 
 let stores = [PictureStore, DrawingStateStore];
 let propsAccessor = () => ({
-  pictureStoreState: PictureStore.getStoreState(),
+  activePicture: PictureStore.getActivePicture(),
+  pictureApiState: PictureStore.getApiState(),
   pictures: PictureStore.getPictures(),
   drawingState: DrawingStateStore.getDrawingState()
 });
 
 App = Flux.connect(App, stores, propsAccessor);
 
-App.willTransitionTo = function(transition, params) {
-  let pictures = PictureStore.getPictures();
-  let activePicture = pictures.find(p => p._id === params.pictureId);
-
-  if (!activePicture) {
-    // about to transition picture that doesn't exist in store
-    // we'll try to fetch all pictures
-    PictureActions.loadAllPictures();
-  }
-};
 export default App;

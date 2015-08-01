@@ -62,11 +62,20 @@ const PictureActions = biff.createActions({
     this.dispatch({actionType: 'REMOVE_VARIABLE', picture, variable});
   },
 
-  loadAllPictures() {
+  setActivePicture(picture) {
+    this.dispatch({actionType: 'SET_ACTIVE_PICTURE', picture});
+  },
+
+  setInvalidPictureState() {
+    this.dispatch({actionType: 'SET_INVALID_PICTURE_STATE'});
+  },
+
+  loadAllPicturesAndSetActive(activePictureId) {
     this.dispatch({actionType: 'LOADING_PICTURES'});
     PictureApi.loadAllPictures().then((loadedPictures) => {
       this.dispatch({
         actionType: 'LOADED_PICTURES',
+        activePictureId,
         pictures: loadedPictures
       });
     }).catch((err) => {
