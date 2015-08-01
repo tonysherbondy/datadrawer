@@ -24,6 +24,7 @@ import ShapesMap from '../models/shapes/ShapesMap';
 
 import Popover from './Popover';
 import ShapeDataList from './ShapeDataList';
+import CMEditor from './CMEditor';
 
 import ShortcutKeyHandler from '../utils/ShortcutKeyHandler';
 
@@ -123,6 +124,14 @@ export default class Notebook extends React.Component {
               currentLoopIndex={currentLoopIndex}
               shape={selectedShape}
               shapes={this.props.shapes} />
+          </Popover>
+
+          <Popover
+            picture={activePicture}
+            handleClose={this.handlePopoverClose.bind(this)}
+            position={{top: 150, left: 400}}
+            isShown={true}>
+            <CMEditor value={'var a = function(b) { return b + 5; };'}/>
           </Popover>
 
         </div>

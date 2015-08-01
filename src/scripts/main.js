@@ -2,6 +2,7 @@
 require('../styles/normalize.css');
 require('font-awesome/css/font-awesome.css');
 require('../styles/tukey.css');
+require('codemirror/lib/codemirror.css');
 
 import React from 'react';
 import Router from 'react-router';
