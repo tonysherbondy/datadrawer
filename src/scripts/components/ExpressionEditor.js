@@ -2,18 +2,18 @@ import React from 'react';
 import _ from 'lodash';
 import Expression from '../models/Expression';
 import VariablePill from './VariablePill';
+import $ from 'jquery';
 
 export default class ExpressionEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      cursorFragmentIndex: null,
+      cursorFragmentIndex: {start: null, end: null},
       cursorOffset: {start: 0, end: 0},
       fragments: this.getSpaceBufferedFragments(props.definition.fragments),
       showDefinition: false
     };
   }
-
   //
   ////////////////// LIFECYCLE METHODS //////////////////
   //
@@ -25,11 +25,14 @@ export default class ExpressionEditor extends React.Component {
     let html = this.getHtml(this.state.fragments);
     return (
       <div
+        onDrop={this.handleDrop.bind(this)}
+        onDragOver={this.handleDragOver.bind(this)}
         className='expression-editor'
         onClick={this.handleClick.bind(this)}
         onInput={this.handleInput.bind(this)}
         onBlur={this.handleBlur.bind(this)}
         onKeyDown={this.handleKeyDown.bind(this)}
+        onMouseUp={this.handleMouseUp.bind(this)}
         contentEditable='true'
         dangerouslySetInnerHTML={{__html: html}}
       ></div>
@@ -115,29 +118,31 @@ export default class ExpressionEditor extends React.Component {
   }
 
   moveCursorTo(nodeIndex, offset) {
-    if (nodeIndex === null) {
+    if (nodeIndex.start === null) {
       return;
     }
     let element = React.findDOMNode(this);
-    let node = element.childNodes[nodeIndex];
+    let startNode = element.childNodes[nodeIndex.start];
+    let endNode = element.childNodes[nodeIndex.end];
 
     try {
       window.getSelection().removeAllRanges();
       let range = document.createRange();
-      range.setStart(node, offset.start);
-      range.setEnd(node, offset.end);
+      range.setStart(startNode, offset.start);
+      range.setEnd(endNode, offset.end);
       window.getSelection().addRange(range);
     }
     catch (err) {
       console.warn('error moving cursor', err);
       // TODO - Perhaps remove this and explore why this fails sometimes
       this.setState({
-        cursorFragmentIndex: null,
+        cursorFragmentIndex: {start: null, end: null},
         cursorOffset: {start: 0, end: 0}
       });
     }
   }
 
+  // fragmentIndex is one location, this will remove any range selection
   moveCursorPosition(dir, location) {
     let {fragmentIndex, offset} = location;
     let fragments = this.state.fragments;
@@ -174,17 +179,20 @@ export default class ExpressionEditor extends React.Component {
     }
 
     this.setState({
-      cursorFragmentIndex: fragmentIndex,
+      cursorFragmentIndex: {start: fragmentIndex, end: fragmentIndex},
       cursorOffset: {start: position, end: position}
     });
   }
 
-  getCursorNodeOffsetWithinTextFragment(range, element) {
-    let node, offset;
-    if (range.startContainer === element) {
+  getCursorNodeOffsetWithinTextFragment(fragContainer, fragOffset, element) {
+    // Leave this if the range starts in child node
+    let node = fragContainer;
+    let offset = fragOffset;
+
+    if (fragContainer === element) {
       // This means the container is not the text
-      if (range.startOffset < element.childNodes.length) {
-        node = element.childNodes[range.startOffset];
+      if (fragOffset < element.childNodes.length) {
+        node = element.childNodes[fragOffset];
         offset = {start: 0, end: 0};
       } else {
         node = element.childNodes[element.childNodes.length - 1];
@@ -196,50 +204,74 @@ export default class ExpressionEditor extends React.Component {
           offset = {start: 0, end: 0};
         }
       }
-    } else { // range starts in child node
-      node = range.startContainer;
-      offset = {start: range.startOffset, end: range.endOffset};
     }
     return {node, offset};
   }
 
-  getCursorLocation(element) {
+  getIndexOffsetForContainerOffset(container, offset, element) {
     let fragmentIndex = 0;
-    let offset = {start: 0, end: 0};
+    let fragmentOffset = 0;
 
-    let selection = window.getSelection();
-    if (selection) {
-      let range = selection.getRangeAt(0);
-      if (range) {
-
-        let parentEl = range.startContainer.parentElement;
-        if (parentEl.hasAttribute('data-fragment-index')) {
-
-          // We are within a variable pill
-          fragmentIndex = +parentEl.getAttribute('data-fragment-index');
-          // If we tried to click on the end of the pill, place the curso
-          // in the next node
-          if (range.startOffset === range.startContainer.length) {
-            // Always have a next node because we buffer the variables with space
-            fragmentIndex++;
-          }
-        } else {
-
-          // We are within a text node
-          let nodeOffset = this.getCursorNodeOffsetWithinTextFragment(range, element);
-          // We are either the index ahead of the previous variable or the first
-          let prevEl = nodeOffset.node.previousElementSibling;
-          if (prevEl && prevEl.hasAttribute('data-fragment-index')) {
-            fragmentIndex = +prevEl.getAttribute('data-fragment-index') + 1;
-          }
-          offset = nodeOffset.offset;
-        }
+    let parentElement = container.parentElement;
+    if (parentElement.hasAttribute('data-fragment-index')) {
+      // We are within a variable pill
+      fragmentIndex = +parentElement.getAttribute('data-fragment-index');
+      // If we tried to click on the end of the pill, place the curso
+      // in the next node
+      if (offset === container.length) {
+        // Always have a next node because we buffer the variables with space
+        fragmentIndex++;
       }
+    } else {
+      // We are within a text node
+      let nodeOffset = this.getCursorNodeOffsetWithinTextFragment(container, offset, element);
+      // We are either the index ahead of the previous variable or the first
+      let prevEl = nodeOffset.node.previousElementSibling;
+      if (prevEl && prevEl.hasAttribute('data-fragment-index')) {
+        fragmentIndex = +prevEl.getAttribute('data-fragment-index') + 1;
+      }
+      fragmentOffset = nodeOffset.offset;
     }
-    return {fragmentIndex, offset};
+    return {fragmentIndex, fragmentOffset};
   }
 
+  getCursorLocation(element) {
+    let selection = window.getSelection();
+    if (selection && selection.rangeCount > 0) {
+      let range = selection.getRangeAt(0);
+      if (range) {
+        let {fragmentIndex,
+             fragmentOffset} = this.getIndexOffsetForContainerOffset(range.startContainer, range.startOffset, element);
+        return {
+          fragmentIndex,
+          offset: {start: fragmentOffset, end: fragmentOffset}
+        };
+      }
+    }
+    return {
+      fragmentIndex: 0,
+      offset: {start: 0, end: 0}
+    };
+  }
 
+  getRangeLocation(element) {
+    let selection = window.getSelection();
+    if (selection && selection.rangeCount > 0) {
+      let range = selection.getRangeAt(0);
+      if (range) {
+        let start = this.getIndexOffsetForContainerOffset(range.startContainer, range.startOffset, element);
+        let end = this.getIndexOffsetForContainerOffset(range.endContainer, range.endOffset, element);
+        return {
+          cursorFragmentIndex: {start: start.fragmentIndex, end: end.fragmentIndex},
+          cursorOffset: {start: start.fragmentOffset, end: end.fragmentOffset}
+        };
+      }
+    }
+    return {
+      cursorFragmentIndex: {start: 0, end: 0},
+      cursorOffset: {start: 0, end: 0}
+    };
+  }
 
 
 
@@ -248,13 +280,61 @@ export default class ExpressionEditor extends React.Component {
   ////////////////// HANDLE EVENTS //////////////////
   //
   handleBlur() {
-    // Set our cursor index to null so that we don't update
-    // the cursor even though we aren't focused
-    this.setState({cursorFragmentIndex: null});
+    // Don't think we need this anymore, but leaving commented out to remind
+    // If this is in here this is problematic as it will remove the highlighted
+    // text when we blur to drag and drop something in
+    //this.setState({cursorFragmentIndex: {start: null, end: null}});
     if (this.props.handleBlur) {
       this.props.handleBlur();
     }
   }
+
+  // TODO - for some reason if the editor contains a variable then the text
+  // gets unselected before we even start the drag
+  handleDragOver(evt) {
+    let selection = window.getSelection();
+    if (this.isSelectingRangeInComponent(selection)) {
+      evt.preventDefault();
+    }
+  }
+
+  handleDrop(evt) {
+    let selection = window.getSelection();
+    // TODO - maybe we just want to deselect the other text
+    // Make sure we don't drop when the selection is somewhere else
+    if(!this.isSelectionInComponent(selection)) {
+      evt.preventDefault();
+    } else if (this.isSelectingRangeInComponent(selection)) {
+      console.log('special select drop');
+    }
+  }
+
+  isSelectionInComponent(selection) {
+    if (selection && selection.rangeCount > 0) {
+      let range = selection.getRangeAt(0);
+      return range && $.contains(React.findDOMNode(this), range.startContainer);
+    }
+    return false;
+  }
+
+  isSelectingRangeInComponent(selection) {
+    if (this.isSelectionInComponent(selection)) {
+      let range = selection.getRangeAt(0);
+      let withinOneContainer = range.startContainer === range.endContainer;
+      let rangeLength = range.endOffset - range.startOffset;
+      console.log('rangelength', rangeLength);
+      return !withinOneContainer || rangeLength !== 0;
+    }
+    return false;
+  }
+
+  handleMouseUp() {
+    let selection = window.getSelection();
+    if (this.isSelectingRangeInComponent(selection)) {
+      this.setState(this.getRangeLocation(React.findDOMNode(this)));
+    }
+  }
+
 
   handleKeyDown(evt) {
     if (evt.which === 37 || evt.which === 39) {
@@ -305,7 +385,7 @@ export default class ExpressionEditor extends React.Component {
     }
 
     this.setState({
-      cursorFragmentIndex: location.fragmentIndex,
+      cursorFragmentIndex: {start: location.fragmentIndex, end: location.fragmentIndex},
       cursorOffset: location.offset,
       fragments: this.getSpaceBufferedFragments(newFragments)
     });
