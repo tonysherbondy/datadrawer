@@ -305,7 +305,16 @@ export default class ExpressionEditor extends React.Component {
     if(!this.isSelectionInComponent(selection)) {
       evt.preventDefault();
     } else if (this.isSelectingRangeInComponent(selection)) {
-      console.log('special select drop');
+      let range = selection.getRangeAt(0);
+      range.deleteContents();
+      let dropData = evt.dataTransfer.getData('text/html');
+      let varId = _.last(/data-variable-id="([a-zA-Z]*)"/.exec(dropData));
+      let varName = _.last(/>([a-zA-Z\s]+)<\/span>/.exec(dropData));
+      let varNode = document.createElement('span');
+      varNode.setAttribute('data-variable-id', varId);
+      varNode.innerHTML = varName;
+      range.insertNode(varNode);
+      this.handleInput();
     }
   }
 
@@ -322,7 +331,6 @@ export default class ExpressionEditor extends React.Component {
       let range = selection.getRangeAt(0);
       let withinOneContainer = range.startContainer === range.endContainer;
       let rangeLength = range.endOffset - range.startOffset;
-      console.log('rangelength', rangeLength);
       return !withinOneContainer || rangeLength !== 0;
     }
     return false;
@@ -334,7 +342,6 @@ export default class ExpressionEditor extends React.Component {
       this.setState(this.getRangeLocation(React.findDOMNode(this)));
     }
   }
-
 
   handleKeyDown(evt) {
     if (evt.which === 37 || evt.which === 39) {
