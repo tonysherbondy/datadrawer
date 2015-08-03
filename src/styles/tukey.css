@@ -262,6 +262,10 @@ td, th {
   padding: 0;
 }
 
+.data-variable-list-item {
+  margin-bottom: .5em;
+}
+
 .dataVariable-value, .shape-data-value {
   display: inline-block;
   color: darkgray;
