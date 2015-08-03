@@ -1,5 +1,6 @@
 import React from 'react';
 import CodeMirror from 'codemirror';
+require('codemirror/mode/javascript/javascript');
 
 class CMEditor extends React.Component {
 
@@ -27,11 +28,12 @@ class CMEditor extends React.Component {
 
   componentDidMount() {
     let options = {
+      value: this.props.value,
+      mode: 'javascript',
       lineNumbers: true,
       viewportMargin: Infinity,
-      theme: 'lesser-dark',
       gutters: ['CodeMirror-lint-markers']
-      //lintWith: CodeMirror.javascriptValidatorWithOptions({
+      //lintWith: CodeMirror.lint.javascript({
         //asi: true,
         //laxcomma: true,
         //laxbreak: true,
@@ -41,9 +43,7 @@ class CMEditor extends React.Component {
         //sub: true
       //})
     };
-    /*eslint new-cap:0 */
     this.codeMirror = CodeMirror(this.refs.codeMirrorStub.getDOMNode(), options);
-    this.codeMirror.setValue(this.props.value);
   }
 }
 

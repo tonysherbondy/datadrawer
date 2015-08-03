@@ -33,7 +33,8 @@ export default class Notebook extends React.Component {
     super(props);
     this.state = {
       isDebugging: false,
-      hideKeyMap: false
+      hideKeyMap: false,
+      isCMEditorShown: true
     };
     this.keyEventManager = this.getKeyEventManager();
   }
@@ -128,15 +129,19 @@ export default class Notebook extends React.Component {
 
           <Popover
             picture={activePicture}
-            handleClose={this.handlePopoverClose.bind(this)}
+            handleClose={this.handleCMEditorClose.bind(this)}
             position={{top: 150, left: 400}}
-            isShown={true}>
+            isShown={this.state.isCMEditorShown}>
             <CMEditor value={'var a = function(b) { return b + 5; };'}/>
           </Popover>
 
         </div>
       </div>
     );
+  }
+
+  handleCMEditorClose() {
+    this.setState({isCMEditorShown: false});
   }
 
   componentDidMount() {
@@ -150,7 +155,11 @@ export default class Notebook extends React.Component {
   }
 
   handleKeyDown(e) {
-    this.keyEventManager.handleKeyDown(e);
+    // TODO - maybe should just be on focus??
+    // Don't handle key presses when code editor is shown
+    if (!this.state.isCMEditorShown) {
+      this.keyEventManager.handleKeyDown(e);
+    }
   }
 
   getKeyEventManager() {
