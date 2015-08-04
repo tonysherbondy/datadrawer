@@ -83,32 +83,37 @@ export default class Notebook extends React.Component {
               instructions={activePicture.instructions} />
           </div>
 
-          <KeyboardControlsList
-            className={classNames('keyboard-controls-list', {'hidden': this.state.hideKeyMap})}
-            keyEventManager={this.keyEventManager}
-            drawingMode={this.props.drawingMode}/>
+          <div className="drawing-area-scroll-wrapper">
+            <div className='drawing-area'>
 
-          <div className='drawing-area'>
-            <div className='canvas-container'>
-              <InstructionTitle
-                picture={activePicture}
-                dataVariables={activePicture.variables}
-                variableValues={variableValues}
-                shapeNameMap={shapeNameMap}
-                instruction={currentInstruction} />
-              <Canvas
-                className='canvas'
-                activePicture={this.props.activePicture}
-                drawingMode={this.props.drawingMode}
-                currentInstruction={currentInstruction}
-                currentLoopIndex={currentLoopIndex}
-                selectedShape={selectedShape}
-                editingInstruction={this.getEditingInstruction()}
-                shapes={this.props.shapes} />
-              <div>Mode: {this.props.drawingMode}</div>
-              <InstructionCode
-                className={classNames({'hidden': !this.state.isDebugging})}
-                code={this.props.jsCode} />
+              <KeyboardControlsList
+                className={classNames('keyboard-controls-list', {'hidden': this.state.hideKeyMap})}
+                keyEventManager={this.keyEventManager}
+                drawingMode={this.props.drawingMode}/>
+
+              <div className='canvas-container'>
+                <InstructionTitle
+                  picture={activePicture}
+                  dataVariables={activePicture.variables}
+                  variableValues={variableValues}
+                  shapeNameMap={shapeNameMap}
+                  instruction={currentInstruction} />
+                <Canvas
+                  className='canvas'
+                  activePicture={this.props.activePicture}
+                  drawingMode={this.props.drawingMode}
+                  currentInstruction={currentInstruction}
+                  currentLoopIndex={currentLoopIndex}
+                  selectedShape={selectedShape}
+                  editingInstruction={this.getEditingInstruction()}
+                  shapes={this.props.shapes} />
+                <div>Mode: {this.props.drawingMode}</div>
+                <InstructionCode
+                  className={classNames({'hidden': !this.state.isDebugging})}
+                  code={this.props.jsCode} />
+              </div>
+
+              <div style={{clear: 'both'}}></div>
             </div>
           </div>
 
@@ -126,6 +131,7 @@ export default class Notebook extends React.Component {
               shapes={this.props.shapes} />
           </Popover>
 
+          <div style={{clear: 'both'}}></div>
         </div>
       </div>
     );
