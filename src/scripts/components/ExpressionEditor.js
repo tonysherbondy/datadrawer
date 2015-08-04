@@ -163,7 +163,7 @@ export default class ExpressionEditor extends React.Component {
       if (_.isString(fragment) && position > 0) {
         position--;
       } else if (fragmentIndex > 0) {
-        fragmentIndex = _.findIndex(fragments, (f, i) => i < fragmentIndex && _.isString(f));
+        fragmentIndex = _.findLastIndex(fragments, (f, i) => i < fragmentIndex && _.isString(f));
         position = fragments[fragmentIndex].length;
       }
     }
@@ -364,7 +364,14 @@ export default class ExpressionEditor extends React.Component {
     let nodes = React.findDOMNode(this).childNodes;
     let newFragments = [];
     for (let i = 0; i < nodes.length; i++) {
-      newFragments.push(this.nodeToFragment(nodes[i]));
+      // Deleting variables can cause two text nodes to be adjacent, remove these
+      let fragment = this.nodeToFragment(nodes[i]);
+      let lastFragmentAdded = _.last(newFragments);
+      if (i > 0 && _.isString(lastFragmentAdded) && _.isString(fragment)) {
+        newFragments[newFragments.length - 1] = lastFragmentAdded + fragment;
+      } else {
+        newFragments.push(fragment);
+      }
     }
 
     // Get the new cursor location from the edit
