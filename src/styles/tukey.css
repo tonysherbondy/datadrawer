@@ -103,6 +103,10 @@
   box-shadow: inset 0px -5px 20px -5px rgba(0,0,0,0.3);
 }
 
+.drag-handle {
+  cursor: move;
+}
+
 .drawing-area {
   overflow: auto;
   padding: 40px 0px 0px 20px;
@@ -243,6 +247,7 @@ td, th {
 .expression-scrubbable {
   margin-left: 5px;
   margin-right: 5px;
+  cursor: ew-resize;
 }
 
 .dataVariables-list, .shape-data-list {

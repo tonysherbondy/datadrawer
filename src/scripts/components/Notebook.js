@@ -116,6 +116,7 @@ export default class Notebook extends React.Component {
             picture={activePicture}
             handleClose={this.handlePopoverClose.bind(this)}
             position={this.props.dataPopupPosition}
+            isDraggable={true}
             isShown={this.props.showDataPopup}>
             <ShapeDataList
               picture={activePicture}
