@@ -153,8 +153,8 @@ export default class ExpressionEditor extends React.Component {
       position = offset.end;
       if (_.isString(fragment) && position < fragment.length) {
         position++;
-      } else {
-        fragmentIndex++;
+      } else if (fragmentIndex < fragments.length - 1) {
+        fragmentIndex = _.findIndex(fragments, (f, i) => i > fragmentIndex && _.isString(f));
         position = 0;
       }
 
@@ -162,20 +162,10 @@ export default class ExpressionEditor extends React.Component {
       position = offset.start;
       if (_.isString(fragment) && position > 0) {
         position--;
-      } else {
-        fragmentIndex--;
-        position = 0;
-        let prevFragment = fragments[fragmentIndex];
-        if (_.isString(prevFragment)) {
-          position = prevFragment.length;
-        }
+      } else if (fragmentIndex > 0) {
+        fragmentIndex = _.findIndex(fragments, (f, i) => i < fragmentIndex && _.isString(f));
+        position = fragments[fragmentIndex].length;
       }
-    }
-
-    if (fragmentIndex < 0) {
-      fragmentIndex = 0;
-    } else if (fragmentIndex > fragments.length - 1) {
-      fragmentIndex = fragments.length - 1;
     }
 
     this.setState({
@@ -308,7 +298,7 @@ export default class ExpressionEditor extends React.Component {
       let range = selection.getRangeAt(0);
       range.deleteContents();
       let dropData = evt.dataTransfer.getData('text/html');
-      let varId = _.last(/data-variable-id="([a-zA-Z]*)"/.exec(dropData));
+      let varId = _.last(/data-variable-id="([a-zA-Z_]*)"/.exec(dropData));
       let varName = _.last(/>([a-zA-Z\s]+)<\/span>/.exec(dropData));
       let varNode = document.createElement('span');
       varNode.setAttribute('data-variable-id', varId);
