@@ -1,6 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import classNames from 'classnames';
+import $ from 'jquery';
 
 import ThumbnailsBar from './ThumbnailsBar';
 import DrawingStateActions from '../actions/DrawingStateActions';
@@ -31,6 +32,7 @@ export default class Notebook extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      leftPanelWidth: 300,
       isDebugging: false,
       hideKeyMap: false
     };
@@ -58,8 +60,13 @@ export default class Notebook extends React.Component {
           onThumbnailClick={this.handleThumbnailClick.bind(this)}
         />
         <div className='editor-area'>
-          <div className='left-panel'>
-            <div className='left-panel-header'>Data</div>
+          <div className='left-panel' style={{width: this.state.leftPanelWidth}}>
+            <div className='left-panel-header'>
+              Data
+              <i
+                onMouseDown={this.handleMouseDownPanelResize.bind(this)}
+                className="resize-panel-arrow fa fa-arrows-h"></i>
+            </div>
 
             <DataVariableList
               picture={activePicture}
@@ -149,6 +156,28 @@ export default class Notebook extends React.Component {
 
   handleKeyDown(e) {
     this.keyEventManager.handleKeyDown(e);
+  }
+
+  handleMouseDownPanelResize(evt) {
+    this.resizeStartScreenX = evt.screenX;
+    this.resizeStartWidth = this.state.leftPanelWidth;
+    this.resizeMoveHandler = this.handleResizeMouseMove.bind(this);
+    this.resizeUpHandler = this.handleResizeMouseUp.bind(this);
+    window.addEventListener('mousemove', this.resizeMoveHandler);
+    window.addEventListener('mouseup', this.resizeUpHandler);
+    $('body').css('cursor', 'ew-resize');
+    evt.preventDefault();
+  }
+
+  handleResizeMouseMove(evt) {
+    let delta = evt.screenX - this.resizeStartScreenX;
+    this.setState({leftPanelWidth: this.resizeStartWidth + delta});
+  }
+
+  handleResizeMouseUp() {
+    window.removeEventListener('mousemove', this.resizeMoveHandler);
+    window.removeEventListener('mouseup', this.resizeUpHandler);
+    $('body').css('cursor', 'default');
   }
 
   getKeyEventManager() {

@@ -1,5 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
+import $ from 'jquery';
 import ExpressionEditor from './ExpressionEditor';
 import Expression from '../models/Expression';
 import VariablePill from './VariablePill';
@@ -158,6 +159,8 @@ export default class ExpressionEditorAndScrub extends React.Component {
     this.scrubMouseUpHandler = this.handleScrubMouseUp.bind(this);
     window.addEventListener('mousemove', this.scrubMouseMoveHandler);
     window.addEventListener('mouseup', this.scrubMouseUpHandler);
+    $('body').css('cursor', 'ew-resize');
+    evt.preventDefault();
   }
 
   handleScrubMouseMove(evt) {
@@ -179,6 +182,7 @@ export default class ExpressionEditorAndScrub extends React.Component {
     window.removeEventListener('mousemove', this.scrubMouseMoveHandler);
     window.removeEventListener('mouseup', this.scrubMouseUpHandler);
     this.scrubState = null;
+    $('body').css('cursor', 'default');
   }
 }
 

@@ -85,7 +85,6 @@
 }
 
 .left-panel {
-  width: 300px;
   float: left;
   border-width: 0 1px 0 0;
   border-style: solid;
@@ -93,6 +92,7 @@
 }
 
 .left-panel-header {
+  position: relative;
   border-width: 1px 0 1px 0;
   border-style: solid;
   border-color: #ccc;
@@ -101,6 +101,18 @@
   color: #606060;
   background-color: #cdf;
   box-shadow: inset 0px -5px 20px -5px rgba(0,0,0,0.3);
+}
+
+.resize-panel-arrow {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+  cursor: ew-resize;
+  opacity: 0;
+}
+
+.left-panel-header:hover .resize-panel-arrow {
+  opacity: 0.5;
 }
 
 .drag-handle {
