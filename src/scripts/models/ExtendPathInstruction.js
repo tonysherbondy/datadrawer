@@ -1,6 +1,5 @@
 import React from 'react';
 import AdjustInstruction from './AdjustInstruction';
-import PictureActions from '../actions/PictureActions';
 import Expression from './Expression';
 import ExpressionEditorAndScrub from '../components/ExpressionEditorAndScrub';
 
@@ -14,8 +13,8 @@ export default class ExtendPathInstruction extends AdjustInstruction {
     this.arcRadius = props.arcRadius || new Expression(10);
   }
 
-  modifyInstructionWithProps(picture, props) {
-    PictureActions.modifyInstruction(picture, new ExtendPathInstruction(props));
+  modifyInstructionWithProps(pictureActions, picture, props) {
+    pictureActions.modifyInstruction(picture, new ExtendPathInstruction(props));
   }
 
   getCloneProps() {
@@ -32,7 +31,7 @@ export default class ExtendPathInstruction extends AdjustInstruction {
     return props;
   }
 
-  modifyWithTo(picture, to, start) {
+  modifyWithTo(pictureActions, picture, to, start) {
     let props = this.getCloneProps();
     if (to.id) {
       props.to = to;
@@ -43,7 +42,7 @@ export default class ExtendPathInstruction extends AdjustInstruction {
       props.x = new Expression(to.x - start.x);
       props.y = new Expression(to.y - start.y);
     }
-    this.modifyInstructionWithProps(picture, props);
+    this.modifyInstructionWithProps(pictureActions, picture, props);
   }
 
   getJsCode(index) {
@@ -64,14 +63,14 @@ export default class ExtendPathInstruction extends AdjustInstruction {
     return `${varName}.extendPathWithRelativePoint(${pointWithProps});\n`;
   }
 
-  getUiSentence(picture, variableValues, shapeNameMap) {
+  getUiSentence(pictureActions, picture, variableValues, shapeNameMap) {
     let shapeName = this.getShapeName(shapeNameMap);
     let toUi;
     let pointUi = this.getPointUi(shapeNameMap, this.to);
     if (pointUi) {
       toUi = `, to meet ${pointUi}`;
     } else {
-      toUi = this.getSizeUi(picture, variableValues);
+      toUi = this.getSizeUi(pictureActions, picture, variableValues);
     }
 
     // TODO - Eventually allow 'Move to'
@@ -82,7 +81,7 @@ export default class ExtendPathInstruction extends AdjustInstruction {
       extendParams = (
         <ExpressionEditorAndScrub
           picture={picture}
-          onChange={this.handleArcRadiusChange.bind(this, picture)}
+          onChange={this.handleArcRadiusChange.bind(this, pictureActions, picture)}
           variableValues={variableValues}
           definition={this.arcRadius} />
       );
@@ -90,7 +89,7 @@ export default class ExtendPathInstruction extends AdjustInstruction {
 
     let extendToUi = (
       <span>
-        <button onClick={this.handleExtendTypeChange.bind(this, picture)}>{extendType}</button>
+        <button onClick={this.handleExtendTypeChange.bind(this, pictureActions, picture)}>{extendType}</button>
         {extendParams}
       </span>
     );
@@ -105,19 +104,19 @@ export default class ExtendPathInstruction extends AdjustInstruction {
     );
   }
 
-  getSizeUi(picture, variableValues) {
+  getSizeUi(pictureActions, picture, variableValues) {
     return (
       <span className="size-ui">
         <ExpressionEditorAndScrub
           picture={picture}
-          onChange={this.handleXChange.bind(this, picture)}
+          onChange={this.handleXChange.bind(this, pictureActions, picture)}
           variableValues={variableValues}
           definition={this.x} />
          horizontally
 
         <ExpressionEditorAndScrub
           picture={picture}
-          onChange={this.handleYChange.bind(this, picture)}
+          onChange={this.handleYChange.bind(this, pictureActions, picture)}
           variableValues={variableValues}
           definition={this.y} />
         vertically.
@@ -127,7 +126,7 @@ export default class ExtendPathInstruction extends AdjustInstruction {
 
   // TODO - Just a toggle right now, eventually handle 'Move to' with
   // select
-  handleExtendTypeChange(picture) {
+  handleExtendTypeChange(pictureActions, picture) {
     let props = this.getCloneProps();
     if (props.isLine) {
       props.isLine = false;
@@ -136,25 +135,25 @@ export default class ExtendPathInstruction extends AdjustInstruction {
       props.isLine = true;
       props.isArc = false;
     }
-    this.modifyInstructionWithProps(picture, props);
+    this.modifyInstructionWithProps(pictureActions, picture, props);
   }
 
-  handleArcRadiusChange(picture, definition) {
+  handleArcRadiusChange(pictureActions, picture, definition) {
     let props = this.getCloneProps();
     props.arcRadius = definition;
-    this.modifyInstructionWithProps(picture, props);
+    this.modifyInstructionWithProps(pictureActions, picture, props);
   }
 
-  handleXChange(picture, definition) {
+  handleXChange(pictureActions, picture, definition) {
     let props = this.getCloneProps();
     props.x = definition;
-    this.modifyInstructionWithProps(picture, props);
+    this.modifyInstructionWithProps(pictureActions, picture, props);
   }
 
-  handleYChange(picture, definition) {
+  handleYChange(pictureActions, picture, definition) {
     let props = this.getCloneProps();
     props.y = definition;
-    this.modifyInstructionWithProps(picture, props);
+    this.modifyInstructionWithProps(pictureActions, picture, props);
   }
 
 }

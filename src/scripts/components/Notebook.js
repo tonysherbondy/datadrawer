@@ -4,8 +4,6 @@ import classNames from 'classnames';
 import $ from 'jquery';
 
 import ThumbnailsBar from './ThumbnailsBar';
-import DrawingStateActions from '../actions/DrawingStateActions';
-import PictureActions from '../actions/PictureActions';
 import DrawPictureInstruction from '../models/DrawPictureInstruction';
 import InstructionTreeNode from '../models/InstructionTreeNode';
 import Picture from '../models/Picture';
@@ -29,7 +27,8 @@ import ShapeDataList from './ShapeDataList';
 
 import ShortcutKeyHandler from '../utils/ShortcutKeyHandler';
 
-export default class Notebook extends React.Component {
+class Notebook extends React.Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -38,7 +37,6 @@ export default class Notebook extends React.Component {
       isShowingPictures: true,
       hideKeyMap: false
     };
-    this.keyEventManager = this.getKeyEventManager();
   }
 
   render() {
@@ -157,6 +155,14 @@ export default class Notebook extends React.Component {
     );
   }
 
+  componentWillMount() {
+    // TODO: move this to a better place
+    // need to happen after initialization in order to have context.actions
+    if (!this.keyEventManager) {
+      this.keyEventManager = this.getKeyEventManager();
+    }
+  }
+
   componentDidMount() {
     // Loading keyboard shortcuts
     window.addEventListener('keydown', this.handleKeyDown.bind(this));
@@ -202,7 +208,11 @@ export default class Notebook extends React.Component {
   }
 
   getKeyEventManager() {
-    let {manager} = new ShortcutKeyHandler({notebook: this});
+    let {manager} = new ShortcutKeyHandler({
+      pictureActions: this.context.actions.picture,
+      drawingStateActions: this.context.actions.drawingState,
+      notebook: this
+    });
 
     manager = manager.registerHandler({
       keyCode: 112,
@@ -227,12 +237,12 @@ export default class Notebook extends React.Component {
 
   handleThumbnailClick(picture) {
     if (this.props.drawingMode === 'picture') {
-      DrawingStateActions.setPictureForPictureTool(picture);
+      this.context.actions.drawingState.setPictureForPictureTool(picture);
       let instruction = new DrawPictureInstruction({
         pictureId: picture.id,
         pictureVariables: picture.variables
       });
-      PictureActions.insertInstructionAfterInstruction(
+      this.context.actions.picture.insertInstructionAfterInstruction(
         this.props.activePicture, instruction,
         this.props.currentInstruction);
     } else {
@@ -247,7 +257,7 @@ export default class Notebook extends React.Component {
   }
 
   handlePopoverClose() {
-    DrawingStateActions.hideDataPopup();
+    this.context.actions.drawingState.hideDataPopup();
   }
 
   // Either the one the user selected or the shape from the selected
@@ -279,7 +289,7 @@ export default class Notebook extends React.Component {
     if (nextIndex >= 0 && nextIndex < shapes.length) {
       nextShapeId = shapes[nextIndex].id;
     }
-    DrawingStateActions.setSelectedShapeId(nextShapeId);
+    this.context.actions.drawingState.setSelectedShapeId(nextShapeId);
   }
 
   isLoopIndexAtEnd() {
@@ -302,7 +312,7 @@ export default class Notebook extends React.Component {
 
     // If the current instruction is not in a loop, then index = null
     if (!(parent instanceof LoopInstruction)) {
-      DrawingStateActions.setLoopIndex(null);
+      this.context.actions.drawingState.setLoopIndex(null);
       return;
     }
 
@@ -320,7 +330,7 @@ export default class Notebook extends React.Component {
       currentLoopIndex = count - 1;
     }
 
-    DrawingStateActions.setLoopIndex(currentLoopIndex);
+    this.context.actions.drawingState.setLoopIndex(currentLoopIndex);
   }
 
   getDrawInstructionForSelectedShape() {
@@ -332,10 +342,6 @@ export default class Notebook extends React.Component {
   }
 
 }
-
-Notebook.contextTypes = {
-  router: React.PropTypes.func.isRequired
-};
 
 Notebook.propTypes = {
   // TODO How to use arrayOf??
@@ -356,3 +362,13 @@ Notebook.propTypes = {
   showDataPopup: React.PropTypes.bool,
   dataPopupPosition: React.PropTypes.object
 };
+
+Notebook.contextTypes = {
+  actions: React.PropTypes.shape({
+    drawingState: React.PropTypes.object.isRequired,
+    picture: React.PropTypes.object.isRequired
+  }),
+  router: React.PropTypes.func.isRequired
+};
+
+export default Notebook;

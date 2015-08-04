@@ -1,6 +1,5 @@
 import React from 'react';
 import DrawInstruction from './DrawInstruction';
-import PictureActions from '../actions/PictureActions';
 import Expression from './Expression';
 import ExpressionEditorAndScrub from '../components/ExpressionEditorAndScrub';
 
@@ -12,8 +11,8 @@ export default class DrawRectInstruction extends DrawInstruction {
     this.height = props.height || new Expression(1);
   }
 
-  modifyInstructionWithProps(picture, props) {
-    PictureActions.modifyInstruction(picture, new DrawRectInstruction(props));
+  modifyInstructionWithProps(pictureActions, picture, props) {
+    pictureActions.modifyInstruction(picture, new DrawRectInstruction(props));
   }
 
   getCloneProps() {
@@ -94,19 +93,19 @@ export default class DrawRectInstruction extends DrawInstruction {
            `}, '${this.shapeId}', ${index});\n`;
   }
 
-  getSizeUi(picture, variableValues) {
+  getSizeUi(pictureActions, picture, variableValues) {
     return (
       <span className="to-expression">
         <ExpressionEditorAndScrub
           picture={picture}
-          onChange={this.handleWidthChange.bind(this, picture)}
+          onChange={this.handleWidthChange.bind(this, pictureActions, picture)}
           variableValues={variableValues}
           definition={this.width} />
          horizontally
 
         <ExpressionEditorAndScrub
           picture={picture}
-          onChange={this.handleHeightChange.bind(this, picture)}
+          onChange={this.handleHeightChange.bind(this, pictureActions, picture)}
           variableValues={variableValues}
           definition={this.height} />
         vertically.
@@ -114,16 +113,16 @@ export default class DrawRectInstruction extends DrawInstruction {
     );
   }
 
-  handleWidthChange(picture, definition) {
+  handleWidthChange(pictureActions, picture, definition) {
     let props = this.getCloneProps();
     props.width = definition;
-    this.modifyInstructionWithProps(picture, props);
+    this.modifyInstructionWithProps(pictureActions, picture, props);
   }
 
-  handleHeightChange(picture, definition) {
+  handleHeightChange(pictureActions, picture, definition) {
     let props = this.getCloneProps();
     props.height = definition;
-    this.modifyInstructionWithProps(picture, props);
+    this.modifyInstructionWithProps(pictureActions, picture, props);
   }
 
 }

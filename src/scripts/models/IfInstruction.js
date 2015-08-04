@@ -1,7 +1,6 @@
 import React from 'react';
 import Instruction from './Instruction';
 import ExpressionEditorAndScrub from '../components/ExpressionEditorAndScrub';
-import PictureActions from '../actions/PictureActions';
 import Expression from './Expression';
 
 export default class IfInstruction extends Instruction {
@@ -11,8 +10,8 @@ export default class IfInstruction extends Instruction {
     this.instructions = instructions;
   }
 
-  modifyInstructionWithProps(picture, props) {
-    PictureActions.modifyInstruction(picture, new IfInstruction(props));
+  modifyInstructionWithProps(pictureActions, picture, props) {
+    pictureActions.modifyInstruction(picture, new IfInstruction(props));
   }
 
   getCloneProps() {
@@ -47,22 +46,22 @@ export default class IfInstruction extends Instruction {
     }).join('');
   }
 
-  getUiSentence(picture, variableValues) {
+  getUiSentence(pictureActions, picture, variableValues) {
     return (
       <span className='instruction-sentence'>
         If
         <ExpressionEditorAndScrub
           picture={picture}
-          onChange={this.handleConditionChange.bind(this, picture)}
+          onChange={this.handleConditionChange.bind(this, pictureActions, picture)}
           variableValues={variableValues}
           definition={this.condition} />
       </span>
     );
   }
 
-  handleConditionChange(picture, definition) {
+  handleConditionChange(pictureActions, picture, definition) {
     let props = this.getCloneProps();
     props.condition = definition;
-    this.modifyInstructionWithProps(picture, props);
+    this.modifyInstructionWithProps(pictureActions, picture, props);
   }
 }

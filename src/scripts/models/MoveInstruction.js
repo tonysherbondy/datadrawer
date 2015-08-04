@@ -1,6 +1,5 @@
 import React from 'react';
 import AdjustInstruction from './AdjustInstruction';
-import PictureActions from '../actions/PictureActions';
 import Expression from './Expression';
 import ExpressionEditorAndScrub from '../components/ExpressionEditorAndScrub';
 
@@ -13,8 +12,8 @@ export default class MoveInstruction extends AdjustInstruction {
     this.axis = props.axis;
   }
 
-  modifyInstructionWithProps(picture, props) {
-    PictureActions.modifyInstruction(picture, new MoveInstruction(props));
+  modifyInstructionWithProps(pictureActions, picture, props) {
+    pictureActions.modifyInstruction(picture, new MoveInstruction(props));
   }
 
   getCloneProps() {
@@ -27,7 +26,7 @@ export default class MoveInstruction extends AdjustInstruction {
     return props;
   }
 
-  modifyWithTo(picture, to, start) {
+  modifyWithTo(pictureActions, picture, to, start) {
     let props = this.getCloneProps();
     if (to.id) {
       props.to = to;
@@ -38,7 +37,7 @@ export default class MoveInstruction extends AdjustInstruction {
       props.x = new Expression(to.x - start.x);
       props.y = new Expression(to.y - start.y);
     }
-    this.modifyInstructionWithProps(picture, props);
+    this.modifyInstructionWithProps(pictureActions, picture, props);
   }
 
   getJsCode(index) {
@@ -56,15 +55,15 @@ export default class MoveInstruction extends AdjustInstruction {
     return `${varName}.moveRelative('${this.point}', ${pointJs}, ${this.isReshape}, ${axisString});\n`;
   }
 
-  getUiSentence(picture, variableValues, shapeNameMap) {
+  getUiSentence(pictureActions, picture, variableValues, shapeNameMap) {
     let shapeName = this.getShapeName(shapeNameMap);
     let moveOrReshape = this.isReshape ? 'Reshape' : 'Move';
     let pointWithAxis = this.point + (this.axis ? `(${this.axis} only)` : '');
     let fromUi = (
       <span>
-        <button onClick={this.handleMoveOrReshapeToggle.bind(this, picture)}>{moveOrReshape}</button>
+        <button onClick={this.handleMoveOrReshapeToggle.bind(this, pictureActions, picture)}>{moveOrReshape}</button>
         {`${shapeName}'s`}
-        <button onClick={this.handleMoveAxisToggle.bind(this, picture)}>{pointWithAxis}</button>
+        <button onClick={this.handleMoveAxisToggle.bind(this, pictureActions, picture)}>{pointWithAxis}</button>
       </span>
     );
     let toUi;
@@ -72,7 +71,7 @@ export default class MoveInstruction extends AdjustInstruction {
     if (pointUi) {
       toUi = `, to meet ${pointUi}`;
     } else {
-      toUi = this.getSizeUi(picture, variableValues);
+      toUi = this.getSizeUi(pictureActions, picture, variableValues);
     }
     return (
       <span className='instruction-sentence'>
@@ -82,19 +81,19 @@ export default class MoveInstruction extends AdjustInstruction {
     );
   }
 
-  getSizeUi(picture, variableValues) {
+  getSizeUi(pictureActions, picture, variableValues) {
     return (
       <span className="size-ui">
         <ExpressionEditorAndScrub
           picture={picture}
-          onChange={this.handleXChange.bind(this, picture)}
+          onChange={this.handleXChange.bind(this, pictureActions, picture)}
           variableValues={variableValues}
           definition={this.x} />
          horizontally
 
         <ExpressionEditorAndScrub
           picture={picture}
-          onChange={this.handleYChange.bind(this, picture)}
+          onChange={this.handleYChange.bind(this, pictureActions, picture)}
           variableValues={variableValues}
           definition={this.y} />
         vertically.
@@ -102,13 +101,13 @@ export default class MoveInstruction extends AdjustInstruction {
     );
   }
 
-  handleMoveOrReshapeToggle(picture) {
+  handleMoveOrReshapeToggle(pictureActions, picture) {
     let props = this.getCloneProps();
     props.isReshape = !props.isReshape;
-    this.modifyInstructionWithProps(picture, props);
+    this.modifyInstructionWithProps(pictureActions, picture, props);
   }
 
-  handleMoveAxisToggle(picture) {
+  handleMoveAxisToggle(pictureActions, picture) {
     let props = this.getCloneProps();
     if (this.axis === 'x') {
       props.axis = 'y';
@@ -117,19 +116,19 @@ export default class MoveInstruction extends AdjustInstruction {
     } else {
       props.axis = 'x';
     }
-    this.modifyInstructionWithProps(picture, props);
+    this.modifyInstructionWithProps(pictureActions, picture, props);
   }
 
-  handleXChange(picture, definition) {
+  handleXChange(pictureActions, picture, definition) {
     let props = this.getCloneProps();
     props.x = definition;
-    this.modifyInstructionWithProps(picture, props);
+    this.modifyInstructionWithProps(pictureActions, picture, props);
   }
 
-  handleYChange(picture, definition) {
+  handleYChange(pictureActions, picture, definition) {
     let props = this.getCloneProps();
     props.y = definition;
-    this.modifyInstructionWithProps(picture, props);
+    this.modifyInstructionWithProps(pictureActions, picture, props);
   }
 
 }

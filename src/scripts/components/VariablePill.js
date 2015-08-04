@@ -1,11 +1,11 @@
 import React from 'react';
 import ContentEditable from './ContentEditable';
-import PictureActions from '../actions/PictureActions';
 import DataVariable from '../models/DataVariable';
 import _ from 'lodash';
 //import Picture from '../models/Picture';
 
-export default class VariablePill extends React.Component {
+class VariablePill extends React.Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -77,7 +77,7 @@ export default class VariablePill extends React.Component {
     // Clone old variable and change name
     let newVariable = new DataVariable(this.props.variable);
     newVariable.name = name;
-    PictureActions.modifyVariable(this.props.picture, newVariable);
+    this.context.actions.picture.modifyVariable(this.props.picture, newVariable);
   }
 
 }
@@ -123,3 +123,11 @@ VariablePill.propTypes = {
 VariablePill.defaultProps = {
   variable: {}
 };
+
+VariablePill.contextTypes = {
+  actions: React.PropTypes.shape({
+    picture: React.PropTypes.object.isRequired
+  })
+};
+
+export default VariablePill;

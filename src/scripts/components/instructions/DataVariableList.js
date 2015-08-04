@@ -3,9 +3,8 @@ import _ from 'lodash';
 import VariablePill from '../VariablePill';
 import ExpressionEditorAndScrub from '../ExpressionEditorAndScrub';
 import ColorExpressionEditor from '../ColorExpressionEditor';
-import PictureActions from '../../actions/PictureActions';
 
-export default class DataVariableList extends React.Component {
+class DataVariableList extends React.Component {
 
   render() {
     let {scalars} = this.props.dataVariables.reduce((map, d) => {
@@ -101,7 +100,7 @@ export default class DataVariableList extends React.Component {
     let newVariable = variable.cloneWithDefinition(newDefinition);
     // Make sure the new variable hasn't introduced cycle
     if (!newVariable.hasCycle(this.props.picture.variables)) {
-      PictureActions.modifyVariable(this.props.picture, newVariable);
+      this.context.actions.picture.modifyVariable(this.props.picture, newVariable);
     } else {
       // Force rerender
       // TODO - Right now this is a hack, probably a better way to do this is to flash
@@ -115,13 +114,18 @@ export default class DataVariableList extends React.Component {
       isRow: false,
       definition: '42'
     });
-    PictureActions.addVariable(this.props.picture, variable);
+    this.context.actions.picture.addVariable(this.props.picture, variable);
   }
 
 }
 
+DataVariableList.contextTypes = {
+  actions: React.PropTypes.shape({
+    picture: React.PropTypes.object.isRequired
+  })
+};
+
 DataVariableList.propTypes = {
-  // Whether the variables into an expression should be vectors
   asVector: React.PropTypes.bool.isRequired,
   readOnly: React.PropTypes.bool,
   variableNameMap: React.PropTypes.object,
@@ -134,3 +138,5 @@ DataVariableList.defaultProps = {
   dataVariables: [],
   dataValues: {}
 };
+
+export default DataVariableList;

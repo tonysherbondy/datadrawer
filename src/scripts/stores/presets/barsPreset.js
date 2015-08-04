@@ -1,13 +1,13 @@
-import DrawRectInstruction from '../models/DrawRectInstruction';
-import ScaleInstruction from '../models/ScaleInstruction';
-import MoveInstruction from '../models/MoveInstruction';
-import LoopInstruction from '../models/LoopInstruction';
-import DrawTextInstruction from '../models/DrawTextInstruction';
+import DrawRectInstruction from '../../models/DrawRectInstruction';
+import ScaleInstruction from '../../models/ScaleInstruction';
+import MoveInstruction from '../../models/MoveInstruction';
+import LoopInstruction from '../../models/LoopInstruction';
+import DrawTextInstruction from '../../models/DrawTextInstruction';
 //import DrawLineInstruction from '../models/DrawLineInstruction';
 //import IfInstruction from '../models/IfInstruction';
-import Expression from '../models/Expression';
-import DataVariable from '../models/DataVariable';
-import Picture from '../models/Picture';
+import Expression from '../../models/Expression';
+import DataVariable from '../../models/DataVariable';
+import Picture from '../../models/Picture';
 
 let variables = () => [
   // Bar Chart Data
@@ -130,8 +130,7 @@ const instructions = () => [
   })
 ];
 
-function get() {
+
+export default function() {
   return new Picture('bars', instructions(), variables());
 }
-
-export default {get};

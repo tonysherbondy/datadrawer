@@ -6,14 +6,17 @@ import Main from './components/Main';
 import Notebook from './components/Notebook';
 import NotebookViewer from './components/NotebookViewer';
 
-export default (
-  <Route name="main" path="/" handler={Main}>
-    <Route name="app" path="/notebook/:notebookId/picture/:pictureId" handler={App}>
-      <Route name="edit" path="edit" handler={Notebook} />
-      <Route name="view" path="view" handler={NotebookViewer} />
-      <Redirect to="edit" />
+function routes() {
+  return (
+    <Route name="main" path="/" handler={Main}>
+      <Route name="app" path="/notebook/:notebookId/picture/:pictureId" handler={App}>
+        <Route name="edit" path="edit" handler={Notebook} />
+        <Route name="view" path="view" handler={NotebookViewer} />
+        <Redirect to="edit" />
+      </Route>
+      <Redirect to="/notebook/default/picture/bars/edit" />
     </Route>
-    <Redirect to="/notebook/default/picture/bars/edit" />
-  </Route>
-);
+  );
+}
 
+export default routes;

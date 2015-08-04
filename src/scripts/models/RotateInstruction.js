@@ -1,17 +1,16 @@
 import React from 'react';
 import AdjustInstruction from './AdjustInstruction';
-import PictureActions from '../actions/PictureActions';
 import Expression from './Expression';
 import ExpressionEditorAndScrub from '../components/ExpressionEditorAndScrub';
 
 export default class RotateInstruction extends AdjustInstruction {
 
-  modifyInstructionWithProps(picture, props) {
-    PictureActions.modifyInstruction(picture, new RotateInstruction(props));
+  modifyInstructionWithProps(pictureActions, picture, props) {
+    pictureActions.modifyInstruction(picture, new RotateInstruction(props));
   }
 
-  modifyWithTo(picture, to, start) {
-    PictureActions.modifyInstruction(picture, this.getCloneWithTo(to, start));
+  modifyWithTo(pictureActions, picture, to, start) {
+    pictureActions.modifyInstruction(picture, this.getCloneWithTo(to, start));
   }
 
   getCloneWithTo(to, startPoint) {
@@ -46,7 +45,7 @@ export default class RotateInstruction extends AdjustInstruction {
     return `${varName}.rotateAroundPoint(${paramsJs});`;
   }
 
-  getUiSentence(picture, variableValues, shapeNameMap) {
+  getUiSentence(pictureActions, picture, variableValues, shapeNameMap) {
     let shapeName = this.getShapeName(shapeNameMap);
     let pointUi = this.getPointUi(shapeNameMap, this.point);
     return (
@@ -54,16 +53,16 @@ export default class RotateInstruction extends AdjustInstruction {
         {`Rotate ${shapeName} about ${pointUi} by`}
         <ExpressionEditorAndScrub
           picture={picture}
-          onChange={this.handleToChange.bind(this, picture)}
+          onChange={this.handleToChange.bind(this, pictureActions, picture)}
           variableValues={variableValues}
           definition={this.to} />
       </span>
     );
   }
 
-  handleToChange(picture, definition) {
+  handleToChange(pictureActions, picture, definition) {
     let props = this.getCloneProps();
     props.to = definition;
-    this.modifyInstructionWithProps(picture, props);
+    this.modifyInstructionWithProps(pictureActions, picture, props);
   }
 }

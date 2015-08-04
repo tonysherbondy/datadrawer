@@ -2,7 +2,6 @@ import React from 'react';
 import _ from 'lodash';
 import {OrderedMap} from 'immutable';
 import DrawInstruction from './DrawInstruction';
-import PictureActions from '../actions/PictureActions';
 import Expression from './Expression';
 import ExpressionEditorAndScrub from '../components/ExpressionEditorAndScrub';
 
@@ -63,13 +62,13 @@ export default class DrawPictureInstruction extends DrawInstruction {
   get pictureVariables() { return this._pictureVariables.valueSeq().toArray(); }
   set pictureVariables(v) { throw `Not allowed to set propertyVariables.  (Tried to set to ${v})`; }
 
-  modifyInstructionWithPictureVariable(picture, variable) {
+  modifyInstructionWithPictureVariable(pictureActions, picture, variable) {
     let pictureVariables = this._pictureVariables.set(variable.name, variable);
-    this.modifyProps(picture, {pictureVariables});
+    this.modifyProps(pictureActions, picture, {pictureVariables});
   }
 
-  modifyInstructionWithProps(picture, props) {
-    PictureActions.modifyInstruction(picture, new DrawPictureInstruction(props));
+  modifyInstructionWithProps(pictureActions, picture, props) {
+    pictureActions.modifyInstruction(picture, new DrawPictureInstruction(props));
   }
 
   getCloneProps() {
@@ -156,7 +155,7 @@ export default class DrawPictureInstruction extends DrawInstruction {
            `}, '${this.shapeId}', ${index}, utils);\n`;
   }
 
-  getFromUi(picture, shapes) {
+  getFromUi(pictureActions, picture, shapes) {
     let pointUi = this.getPointUi(shapes, this.from);
     if (pointUi === null) {
       pointUi = `(${this.from.x}, ${this.from.y})`;
@@ -168,19 +167,19 @@ export default class DrawPictureInstruction extends DrawInstruction {
     );
   }
 
-  getSizeUi(picture, variableValues) {
+  getSizeUi(pictureActions, picture, variableValues) {
     return (
       <span className="to-expression">
         <ExpressionEditorAndScrub
           picture={picture}
-          onChange={this.handleWidthChange.bind(this, picture)}
+          onChange={this.handleWidthChange.bind(this, pictureActions, picture)}
           variableValues={variableValues}
           definition={this.width} />
          horizontally
 
         <ExpressionEditorAndScrub
           picture={picture}
-          onChange={this.handleHeightChange.bind(this, picture)}
+          onChange={this.handleHeightChange.bind(this, pictureActions, picture)}
           variableValues={variableValues}
           definition={this.height} />
         vertically.
@@ -188,16 +187,16 @@ export default class DrawPictureInstruction extends DrawInstruction {
     );
   }
 
-  handleWidthChange(picture, definition) {
+  handleWidthChange(pictureActions, picture, definition) {
     let props = this.getCloneProps();
     props.width = definition;
-    this.modifyInstructionWithProps(picture, props);
+    this.modifyInstructionWithProps(pictureActions, picture, props);
   }
 
-  handleHeightChange(picture, definition) {
+  handleHeightChange(pictureActions, picture, definition) {
     let props = this.getCloneProps();
     props.height = definition;
-    this.modifyInstructionWithProps(picture, props);
+    this.modifyInstructionWithProps(pictureActions, picture, props);
   }
 
 }

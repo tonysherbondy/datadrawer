@@ -1,73 +1,77 @@
-import biff from '../dispatcher/dispatcher';
+function drawingStateActions() {
+  return {
+    setDrawingMode(name) {
+      this.dispatch({
+        actionType: 'SET_DRAWING_MODE',
+        data: name
+      });
+    },
 
-const DrawingStateActions = biff.createActions({
+    setEditingInstruction(instruction) {
+      this.dispatch({
+        actionType: 'SET_EDITING_INSTRUCTION',
+        data: instruction
+      });
+    },
 
-  setDrawingMode(name) {
-    this.dispatch({
-      actionType: 'SET_DRAWING_MODE',
-      data: name
-    });
-  },
+    setSelectedInstruction(picture, instruction, loopIndex) {
+      this.dispatch({
+        actionType: 'SET_SELECTED_INSTRUCTION',
+        picture,
+        instruction,
+        // TODO: (nhan) this is perf hack for now so that we don't rerender
+        // everytime we step forward  inside a loop
+        loopIndex
+      });
+    },
 
-  setEditingInstruction(instruction) {
-    this.dispatch({
-      actionType: 'SET_EDITING_INSTRUCTION',
-      data: instruction
-    });
-  },
+    setSelectedInstructions(picture, instructions) {
+      this.dispatch({
+        actionType: 'SET_SELECTED_INSTRUCTIONS',
+        picture,
+        instructions
+      });
+    },
 
-  setSelectedInstruction(instruction, loopIndex) {
-    this.dispatch({
-      actionType: 'SET_SELECTED_INSTRUCTION',
-      data: instruction,
-      // TODO: (nhan) this is perf hack for now so that we don't rerender
-      // everytime we step forward  inside a loop
-      loopIndex: loopIndex
-    });
-  },
+    setLoopIndex(index) {
+      this.dispatch({
+        actionType: 'SET_LOOP_INDEX',
+        data: index
+      });
+    },
 
-  setSelectedInstructions(instructions) {
-    this.dispatch({
-      actionType: 'SET_SELECTED_INSTRUCTIONS',
-      data: instructions
-    });
-  },
+    setSelectedShapeId(id) {
+      this.dispatch({
+        actionType: 'SET_SELECTED_SHAPE',
+        data: {id}
+      });
+    },
 
-  setLoopIndex(index) {
-    this.dispatch({
-      actionType: 'SET_LOOP_INDEX',
-      data: index
-    });
-  },
+    setPictureForPictureTool(picture) {
+      this.dispatch({
+        actionType: 'SET_PICTURE_FOR_PICTURE_TOOL',
+        picture: picture
+      });
+    },
 
-  setSelectedShapeId(id) {
-    this.dispatch({
-      actionType: 'SET_SELECTED_SHAPE',
-      data: {id}
-    });
-  },
+    showDataPopup(position) {
+      this.dispatch({
+        actionType: 'SHOW_DATA_POPUP',
+        data: position
+      });
+    },
 
-  setPictureForPictureTool(picture) {
-    this.dispatch({
-      actionType: 'SET_PICTURE_FOR_PICTURE_TOOL',
-      picture: picture
-    });
-  },
+    hideDataPopup() {
+      this.dispatch({
+        actionType: 'HIDE_DATA_POPUP',
+        data: null
+      });
+    }
+  };
+}
 
-  showDataPopup(position) {
-    this.dispatch({
-      actionType: 'SHOW_DATA_POPUP',
-      data: position
-    });
-  },
-
-  hideDataPopup() {
-    this.dispatch({
-      actionType: 'HIDE_DATA_POPUP',
-      data: null
-    });
+export default class {
+  constructor(dispatcher) {
+    return dispatcher.createActions(drawingStateActions());
   }
-});
-
-export default DrawingStateActions;
-
+}

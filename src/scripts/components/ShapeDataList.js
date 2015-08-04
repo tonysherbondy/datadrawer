@@ -81,12 +81,20 @@ export default class ShapeDataList extends React.Component {
   handleDefinitionChange(instruction, variable, definition) {
     let newVariable = variable.cloneWithDefinition(definition);
     if (instruction instanceof DrawPictureInstruction) {
-      instruction.modifyInstructionWithPictureVariable(this.props.picture, newVariable);
+      instruction.modifyInstructionWithPictureVariable(
+        this.context.actions.picture, this.props.picture, newVariable);
     } else {
-      instruction.modifyInstructionWithPropertyVariable(this.props.picture, newVariable);
+      instruction.modifyInstructionWithPropertyVariable(
+        this.context.actions.picture, this.props.picture, newVariable);
     }
   }
 }
+
+ShapeDataList.contextTypes = {
+  actions: React.PropTypes.shape({
+    picture: React.PropTypes.object.isRequired
+  })
+};
 
 ShapeDataList.propTypes = {
   variableValues: React.PropTypes.object.isRequired,

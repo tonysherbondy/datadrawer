@@ -1,8 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import {distanceBetweenPoints} from '../../utils/utils';
-import PictureActions from '../../actions/PictureActions';
-import DrawingStateActions from '../../actions/DrawingStateActions';
+
 import ScaleInstruction from '../../models/ScaleInstruction';
 import ExtendPathInstruction from '../../models/ExtendPathInstruction';
 import MoveInstruction from '../../models/MoveInstruction';
@@ -146,6 +145,7 @@ class Canvas extends React.Component {
   }
 
   handleMouseMove(event) {
+    let pictureActions = this.context.actions.picture;
     let {x, y} = this.getPositionOfEvent(event);
     let magnets = this.getCloseMagnets({x, y});
     // Can just set to first because it is protected from out of bound lookup
@@ -163,13 +163,13 @@ class Canvas extends React.Component {
         let shape = this.props.selectedShape;
         let props = shape.getScaleAdjustProps(startPoint, point);
         to = props.to;
-        PictureActions.modifyInstruction(picture, instruction.getCloneWithTo(to, this.props.shapes, this.props.currentLoopIndex, magnets));
+        pictureActions.modifyInstruction(picture, instruction.getCloneWithTo(to, this.props.shapes, this.props.currentLoopIndex, magnets));
 
       } else if (drawingMode === 'rotate' || drawingMode === 'move' || drawingMode === 'extend path') {
-        instruction.modifyWithTo(picture, to, startPoint);
+        instruction.modifyWithTo(pictureActions, picture, to, startPoint);
 
       } else {
-        PictureActions.modifyInstruction(picture, instruction.getCloneWithTo(to, this.props.shapes, this.props.currentLoopIndex, magnets));
+        pictureActions.modifyInstruction(picture, instruction.getCloneWithTo(to, this.props.shapes, this.props.currentLoopIndex, magnets));
       }
     }
   }
@@ -205,18 +205,18 @@ class Canvas extends React.Component {
       if (!instruction.isValid()) {
         // This has to be a draw instruction, set the from
         // TODO - treat this as actually immutable
-        PictureActions.modifyInstruction(activePicture, instruction.getCloneWithFrom(point, magnets));
+        this.context.actions.picture.modifyInstruction(activePicture, instruction.getCloneWithFrom(point, magnets));
       } else {
 
         if (this.props.drawingMode === 'path' && !event.shiftKey) {
           // if we are drawing a path and our instruction is valid
           // we need to add another point
           let newInstruction = instruction.getCloneWithAddedPoint(point, this.props.shapes, magnets);
-          PictureActions.modifyInstruction(activePicture, newInstruction);
+          this.context.actions.picture.modifyInstruction(activePicture, newInstruction);
         } else {
           // If we click when we have a valid editing instruction we are ending
           // the instruction editing
-          DrawingStateActions.setDrawingMode('normal');
+          this.context.actions.drawingState.setDrawingMode('normal');
         }
       }
     } else {
@@ -228,7 +228,7 @@ class Canvas extends React.Component {
         switch(mode) {
           case 'normal': {
             // Show a popup for changing data about the shape
-            DrawingStateActions.showDataPopup({
+            this.context.actions.drawingState.showDataPopup({
               left: event.pageX + 10,
               top: event.pageY + 10
             });
@@ -245,7 +245,7 @@ class Canvas extends React.Component {
                 y: new Expression(point.y - lastPoint.y)
               };
               this.setState({startPoint: lastPoint});
-              PictureActions.insertInstructionAfterInstruction(
+              this.context.actions.picture.insertInstructionAfterInstruction(
                 this.props.activePicture,
                 new ExtendPathInstruction(props),
                 this.props.currentInstruction);
@@ -256,7 +256,7 @@ class Canvas extends React.Component {
             let props = shape.getScaleAdjustProps(closeControlPoint, point);
             if (props) {
               this.setState({startPoint: closeControlPoint});
-              PictureActions.insertInstructionAfterInstruction(
+              this.context.actions.picture.insertInstructionAfterInstruction(
                 this.props.activePicture,
                 new ScaleInstruction(props),
                 this.props.currentInstruction);
@@ -274,7 +274,7 @@ class Canvas extends React.Component {
             };
             this.setState({startPoint: closeControlPoint});
             let newInstruction = (new RotateInstruction(props)).getCloneWithTo(point, closeControlPoint, this.props.currentLoopIndex);
-            PictureActions.insertInstructionAfterInstruction(
+            this.context.actions.picture.insertInstructionAfterInstruction(
               this.props.activePicture,
               newInstruction,
               this.props.currentInstruction);
@@ -291,7 +291,7 @@ class Canvas extends React.Component {
               y: new Expression(point.y - closeControlPoint.y)
             };
             this.setState({startPoint: closeControlPoint});
-            PictureActions.insertInstructionAfterInstruction(
+            this.context.actions.picture.insertInstructionAfterInstruction(
               this.props.activePicture,
               new MoveInstruction(props),
               this.props.currentInstruction);
@@ -319,8 +319,26 @@ class Canvas extends React.Component {
       </svg>
     );
   }
+
 }
 
+// TODO - shouldn't need this, convert magnet to use same naming convention
+Canvas.convertMagnetToPoint = (magnet) => {
+  return {
+    id: magnet.shapeId,
+    point: magnet.pointName
+  };
+};
+
+Canvas.contextTypes = {
+  actions: React.PropTypes.shape({
+    drawingState: React.PropTypes.object.isRequired,
+    picture: React.PropTypes.object.isRequired
+  })
+};
+
+// TODO: refering to types loaded from other files is unsafe here since they
+// can be will undefined in this scope if there is a circular dependency
 Canvas.propTypes = {
   shapes: React.PropTypes.instanceOf(ShapesMap).isRequired,
   currentInstruction: React.PropTypes.instanceOf(Instruction),
@@ -332,13 +350,4 @@ Canvas.propTypes = {
   drawingMode: React.PropTypes.string.isRequired
 };
 
-// TODO - shouldn't need this, convert magnet to use same naming convention
-Canvas.convertMagnetToPoint = function(magnet) {
-  return {
-    id: magnet.shapeId,
-    point: magnet.pointName
-  };
-};
-
 export default Canvas;
-

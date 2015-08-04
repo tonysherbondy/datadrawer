@@ -1,13 +1,11 @@
 import React from 'react';
 import _ from 'lodash';
-import Flux from '../dispatcher/dispatcher';
-import PictureStore from '../stores/PictureStore';
-import DrawingStateStore from '../stores/DrawingStateStore';
+
 import computeVariableValues from '../utils/computeVariableValues';
 import InstructionTreeNode from '../models/InstructionTreeNode';
 import NotebookPictureCompiler from '../utils/NotebookPictureCompiler';
 import DrawPictureInstruction from '../models/DrawPictureInstruction';
-import PictureActions from '../actions/PictureActions';
+
 import {RouteHandler} from 'react-router';
 
 class App extends React.Component {
@@ -103,16 +101,16 @@ class App extends React.Component {
     let {pictures, pictureApiState} = nextProps;
     if (_.isEmpty(pictures)) {
       if ( pictureApiState !== 'loading') {
-        PictureActions.loadAllPicturesAndSetActive(nextProps.params.pictureId);
+        this.context.actions.picture.loadAllPicturesAndSetActive(nextProps.params.pictureId);
       }
     } else if (nextProps.params.pictureId !== this.props.params.pictureId) {
       // This is like checking if we have the right notebook, but for now we are
       // just seeing if all pictures have been loaded
       let picture = pictures.find(p => p.id === nextProps.params.pictureId);
       if (picture) {
-        PictureActions.setActivePicture(picture);
+        this.context.actions.picture.setActivePicture(picture);
       } else {
-        PictureActions.setInvalidPictureState();
+        this.context.actions.picture.setInvalidPictureState();
         // TODO - need to transition to somewhere else
       }
     } else if (pictureApiState === 'invalid') {
@@ -125,19 +123,11 @@ class App extends React.Component {
 
 }
 
-
 App.contextTypes = {
-  router: React.PropTypes.func.isRequired
+    actions: React.PropTypes.shape({
+      picture: React.PropTypes.object.isRequired
+    }),
+    router: React.PropTypes.func.isRequired
 };
-
-let stores = [PictureStore, DrawingStateStore];
-let propsAccessor = () => ({
-  activePicture: PictureStore.getActivePicture(),
-  pictureApiState: PictureStore.getApiState(),
-  pictures: PictureStore.getPictures(),
-  drawingState: DrawingStateStore.getDrawingState()
-});
-
-App = Flux.connect(App, stores, propsAccessor);
 
 export default App;

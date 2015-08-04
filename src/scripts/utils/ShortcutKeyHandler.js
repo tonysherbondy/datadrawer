@@ -1,5 +1,3 @@
-import PictureActions from '../actions/PictureActions';
-import DrawingStateActions from '../actions/DrawingStateActions';
 import DrawPathInstruction from '../models/DrawPathInstruction';
 import DrawInstruction from '../models/DrawInstruction';
 import ScaleInstruction from '../models/ScaleInstruction';
@@ -17,6 +15,8 @@ import KeyEventManager from '../utils/KeyEventManager';
 export default class ShortcutKeyHandler {
   constructor(props) {
     this.notebook = props.notebook;
+    this.pictureActions = props.pictureActions;
+    this.drawingStateActions = props.drawingStateActions;
     this.manager = this._getEventManager();
   }
 
@@ -34,8 +34,8 @@ export default class ShortcutKeyHandler {
       description: 'path',
       group: 'draw',
       keyDown: () => {
-        DrawingStateActions.setDrawingMode('path');
-        PictureActions.insertInstructionAfterInstruction(
+        this.drawingStateActions.setDrawingMode('path');
+        this.pictureActions.insertInstructionAfterInstruction(
           this.notebook.props.activePicture,
           new DrawPathInstruction(),
           this.notebook.props.currentInstruction);
@@ -51,7 +51,7 @@ export default class ShortcutKeyHandler {
         // Toggle guide setting on selected shape
         let drawInstruction = this.notebook.getDrawInstructionForSelectedShape();
         if (drawInstruction) {
-          drawInstruction.modifyProps(this.notebook.props.activePicture, {isGuide: !drawInstruction.isGuide});
+          drawInstruction.modifyProps(this.pictureActions, this.notebook.props.activePicture, {isGuide: !drawInstruction.isGuide});
         }
       }
     });
@@ -108,7 +108,7 @@ export default class ShortcutKeyHandler {
             } else {
               instruction = instruction.getCloneWithTo(magnetPoint, this.shapes, magnets);
             }
-            PictureActions.modifyInstruction(this.notebook.props.activePicture, instruction);
+            this.pictureActions.modifyInstruction(this.notebook.props.activePicture, instruction);
           }
         }
       }
@@ -120,8 +120,8 @@ export default class ShortcutKeyHandler {
       description: 'rect',
       group: 'draw',
       keyDown: () => {
-        DrawingStateActions.setDrawingMode('rect');
-        PictureActions.insertInstructionAfterInstruction(
+        this.drawingStateActions.setDrawingMode('rect');
+        this.pictureActions.insertInstructionAfterInstruction(
           this.notebook.props.activePicture,
           new DrawRectInstruction(),
           this.notebook.props.currentInstruction);
@@ -134,7 +134,7 @@ export default class ShortcutKeyHandler {
       description: 'picture',
       group: 'draw',
       keyDown: () => {
-        DrawingStateActions.setDrawingMode('picture');
+        this.drawingStateActions.setDrawingMode('picture');
       }
     });
 
@@ -144,7 +144,7 @@ export default class ShortcutKeyHandler {
       description: 'scale',
       group: 'adjust',
       keyDown: () => {
-        DrawingStateActions.setDrawingMode('scale');
+        this.drawingStateActions.setDrawingMode('scale');
       }
     });
 
@@ -154,7 +154,7 @@ export default class ShortcutKeyHandler {
       description: 'extend path',
       group: 'adjust',
       keyDown: () => {
-        DrawingStateActions.setDrawingMode('extend path');
+        this.drawingStateActions.setDrawingMode('extend path');
       }
     });
 
@@ -164,8 +164,8 @@ export default class ShortcutKeyHandler {
       description: 'text',
       group: 'draw',
       keyDown: () => {
-        DrawingStateActions.setDrawingMode('text');
-        PictureActions.insertInstructionAfterInstruction(
+        this.drawingStateActions.setDrawingMode('text');
+        this.pictureActions.insertInstructionAfterInstruction(
           this.notebook.props.activePicture,
           new DrawTextInstruction(),
           this.notebook.props.currentInstruction);
@@ -178,7 +178,7 @@ export default class ShortcutKeyHandler {
       description: 'move',
       group: 'adjust',
       keyDown: () => {
-        DrawingStateActions.setDrawingMode('move');
+        this.drawingStateActions.setDrawingMode('move');
       }
     });
 
@@ -188,8 +188,8 @@ export default class ShortcutKeyHandler {
       description: 'line',
       group: 'draw',
       keyDown: () => {
-        DrawingStateActions.setDrawingMode('line');
-        PictureActions.insertInstructionAfterInstruction(
+        this.drawingStateActions.setDrawingMode('line');
+        this.pictureActions.insertInstructionAfterInstruction(
           this.notebook.props.activePicture,
           new DrawLineInstruction(),
           this.notebook.props.currentInstruction);
@@ -202,8 +202,8 @@ export default class ShortcutKeyHandler {
       description: 'circle',
       group: 'draw',
       keyDown: () => {
-        DrawingStateActions.setDrawingMode('circle');
-        PictureActions.insertInstructionAfterInstruction(
+        this.drawingStateActions.setDrawingMode('circle');
+        this.pictureActions.insertInstructionAfterInstruction(
           this.notebook.props.activePicture,
           new DrawCircleInstruction(),
           this.notebook.props.currentInstruction);
@@ -216,11 +216,11 @@ export default class ShortcutKeyHandler {
       description: 'rotate',
       group: 'adjust',
       keyDown: () => {
-        DrawingStateActions.setDrawingMode('rotate');
+        this.drawingStateActions.setDrawingMode('rotate');
       }
     });
 
-    function insertNewInstructionContainingSelected(notebook, newInstructionFunc) {
+    function insertNewInstructionContainingSelected(pictureActions, drawingStateActions, notebook, newInstructionFunc) {
       // TODO We allow multiple looping levels, but other assumptions don't support that
       let selectedInstructions = notebook.props.selectedInstructions;
 
@@ -228,9 +228,9 @@ export default class ShortcutKeyHandler {
       // based on removing and inserting new instructions
       // Remove selected instructions from list
       let newInstruction = newInstructionFunc(selectedInstructions);
-      PictureActions.replaceInstructions(notebook.props.activePicture, selectedInstructions, [newInstruction]);
+      pictureActions.replaceInstructions(notebook.props.activePicture, selectedInstructions, [newInstruction]);
 
-      DrawingStateActions.setDrawingMode('normal');
+      drawingStateActions.setDrawingMode('normal');
     }
 
     manager = manager.registerHandler({
@@ -239,9 +239,10 @@ export default class ShortcutKeyHandler {
       description: 'loop',
       group: 'flow',
       keyDown: () => {
-        insertNewInstructionContainingSelected(this.notebook, instructions => {
-          return new LoopInstruction({instructions});
-        });
+        insertNewInstructionContainingSelected(
+          this.pictureActions, this.drawingStateActions, this.notebook,
+          instructions => new LoopInstruction({ instructions })
+        );
       }
     });
 
@@ -290,7 +291,7 @@ export default class ShortcutKeyHandler {
           stepBackwards(this.notebook.props.currentInstruction, loopIndex);
 
         if (nextInstruction) {
-          DrawingStateActions.setSelectedInstruction(nextInstruction, nextLoopIndex);
+          this.drawingStateActions.setSelectedInstruction(this.notebook.props.activePicture, nextInstruction, nextLoopIndex);
         }
 
         e.preventDefault();
@@ -310,7 +311,7 @@ export default class ShortcutKeyHandler {
           stepForwards(this.notebook.props.currentInstruction, loopIndex);
 
         if (nextInstruction) {
-          DrawingStateActions.setSelectedInstruction(nextInstruction, nextLoopIndex);
+          this.drawingStateActions.setSelectedInstruction(this.notebook.props.activePicture, nextInstruction, nextLoopIndex);
         }
 
         e.preventDefault();
@@ -322,7 +323,7 @@ export default class ShortcutKeyHandler {
       keyDescription: 'esc',
       description: 'cancel drawing mode',
       keyDown: () => {
-        DrawingStateActions.setDrawingMode('normal');
+        this.drawingStateActions.setDrawingMode('normal');
       }
     });
 
@@ -333,7 +334,7 @@ export default class ShortcutKeyHandler {
       description: 'save picture',
       keyDown: (e) => {
         console.log('save');
-        PictureActions.savePicture(this.notebook.props.activePicture);
+        this.pictureActions.savePicture(this.notebook.props.activePicture);
         e.preventDefault();
       }
     });
@@ -345,7 +346,7 @@ export default class ShortcutKeyHandler {
       description: 'undo',
       keyDown: () => {
         console.log('undo');
-        PictureActions.undoChange(this.notebook.props.activePicture);
+        this.pictureActions.undoChange(this.notebook.props.activePicture);
       }
     });
 
@@ -357,7 +358,7 @@ export default class ShortcutKeyHandler {
       description: 'redo',
       keyDown: () => {
         console.log('redo');
-        PictureActions.redoChange(this.notebook.props.activePicture);
+        this.pictureActions.redoChange(this.notebook.props.activePicture);
       }
     });
 

@@ -1,14 +1,14 @@
-import DrawRectInstruction from '../models/DrawRectInstruction';
-import ScaleInstruction from '../models/ScaleInstruction';
-import MoveInstruction from '../models/MoveInstruction';
-import LoopInstruction from '../models/LoopInstruction';
-import DrawLineInstruction from '../models/DrawLineInstruction';
-import DrawPathInstruction from '../models/DrawPathInstruction';
-import DrawCircleInstruction from '../models/DrawCircleInstruction';
-import RotateInstruction from '../models/RotateInstruction';
-import Expression from '../models/Expression';
-import DataVariable from '../models/DataVariable';
-import Picture from '../models/Picture';
+import DrawRectInstruction from '../../models/DrawRectInstruction';
+import ScaleInstruction from '../../models/ScaleInstruction';
+import MoveInstruction from '../../models/MoveInstruction';
+import LoopInstruction from '../../models/LoopInstruction';
+import DrawLineInstruction from '../../models/DrawLineInstruction';
+import DrawPathInstruction from '../../models/DrawPathInstruction';
+import DrawCircleInstruction from '../../models/DrawCircleInstruction';
+import RotateInstruction from '../../models/RotateInstruction';
+import Expression from '../../models/Expression';
+import DataVariable from '../../models/DataVariable';
+import Picture from '../../models/Picture';
 
 let variables = () => [
   new DataVariable({
@@ -230,8 +230,6 @@ const instructions = () => [
   })
 ];
 
-function get() {
+export default function() {
   return new Picture('scatter', instructions(), variables());
 }
-
-export default {get};

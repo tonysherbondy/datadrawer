@@ -1,5 +1,4 @@
 import DrawLineInstruction from './DrawLineInstruction';
-import PictureActions from '../actions/PictureActions';
 import Expression from './Expression';
 import React from 'react';
 import ExpressionEditorAndScrub from '../components/ExpressionEditorAndScrub';
@@ -21,8 +20,8 @@ export default class DrawTextInstruction extends DrawLineInstruction {
     initMap));
   }
 
-  modifyInstructionWithProps(picture, props) {
-    PictureActions.modifyInstruction(picture, new DrawTextInstruction(props));
+  modifyInstructionWithProps(pictureActions, picture, props) {
+    pictureActions.modifyInstruction(picture, new DrawTextInstruction(props));
   }
 
   getCloneProps() {
@@ -70,25 +69,25 @@ export default class DrawTextInstruction extends DrawLineInstruction {
            `}, '${this.shapeId}', ${index});\n`;
   }
 
-  handleTextChange(picture, definition) {
+  handleTextChange(pictureActions, picture, definition) {
     let props = this.getCloneProps();
     props.text = definition;
-    this.modifyInstructionWithProps(picture, props);
+    this.modifyInstructionWithProps(pictureActions, picture, props);
   }
 
   // TODO - this is only here because I need to place text
   // value somewhere
-  getUiSentence(picture, variableValues, shapeNameMap) {
+  getUiSentence(pictureActions, picture, variableValues, shapeNameMap) {
     if (!this.isValid()) {
-      return this.getInvalidUi();
+      return this.getInvalidUi(pictureActions, picture);
     }
 
-    let fromUi = this.getFromUi(picture, shapeNameMap);
+    let fromUi = this.getFromUi(pictureActions, picture, shapeNameMap);
     let toUi;
     if (this.to) {
       toUi = this.getPointToUi(shapeNameMap);
     } else {
-      toUi = this.getSizeUi(picture, variableValues);
+      toUi = this.getSizeUi(pictureActions, picture, variableValues);
     }
     return (
       <span className='instruction-sentence'>
@@ -97,7 +96,7 @@ export default class DrawTextInstruction extends DrawLineInstruction {
         of
         <ExpressionEditorAndScrub
           picture={picture}
-          onChange={this.handleTextChange.bind(this, picture)}
+          onChange={this.handleTextChange.bind(this, pictureActions, picture)}
           variableValues={variableValues}
           definition={this.text} />
 

@@ -21,10 +21,10 @@ export default class Instruction extends InstructionTreeNode {
     return {id: this.id, shapeId: this.shapeId};
   }
 
-  modifyProps(picture, modProps) {
+  modifyProps(pictureActions, picture, modProps) {
     let props = this.getCloneProps();
     let nextProps = Object.assign(props, modProps);
-    this.modifyInstructionWithProps(picture, nextProps);
+    this.modifyInstructionWithProps(pictureActions, picture, nextProps);
   }
 
   isValid() {

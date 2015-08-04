@@ -1,28 +1,33 @@
 import $ from 'jquery';
-import {pictureToJson, pictureFromJson} from './PictureSerializer';
-import PiePreset from '../stores/piePreset';
-import BarsPreset from '../stores/barsPresetPicture';
-import ScatterPreset from '../stores/scatterPresetPicture';
-import LinePreset from '../stores/linePreset';
 
-let baseUrl = 'https://datadrawer.firebaseio.com/';
+// TODO: rewrite these files to use new?
+import piePreset from '../stores/presets/piePreset';
+import barsPreset from '../stores/presets/barsPreset';
+import scatterPreset from '../stores/presets/scatterPreset';
+import linePreset from '../stores/presets/linePreset';
+
+const baseUrl = 'https://datadrawer.firebaseio.com/';
 
 class FirebasePictureApi {
+  constructor(serializer) {
+    this.serializer = serializer;
+  }
+
   savePicture(picture) {
     return Promise.resolve($.ajax({
       url: `${baseUrl}/pictures/${picture.id}.json`,
       method: 'PUT',
       contentType: 'application/json',
-      data: JSON.stringify(pictureToJson(picture))
+      data: JSON.stringify(this.serializer.pictureToJson(picture))
     }));
   }
 
   savePresets() {
     return Promise.all([
-      this.savePicture(PiePreset.get()),
-      this.savePicture(BarsPreset.get()),
-      this.savePicture(ScatterPreset.get()),
-      this.savePicture(LinePreset.get())
+      this.savePicture(piePreset()),
+      this.savePicture(barsPreset()),
+      this.savePicture(scatterPreset()),
+      this.savePicture(linePreset())
     ]);
   }
 
@@ -36,9 +41,9 @@ class FirebasePictureApi {
 
       let pictureJsonValues =
         Object.keys(pictureIdMap).map(id => pictureIdMap[id]);
-      return pictureJsonValues.map(pictureFromJson);
+      return pictureJsonValues.map(this.serializer.pictureFromJson);
     });
   }
 }
 
-export default new FirebasePictureApi();
+export default FirebasePictureApi;

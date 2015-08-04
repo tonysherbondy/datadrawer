@@ -1,12 +1,12 @@
-import Expression from '../models/Expression';
-import Picture from '../models/Picture';
-import DataVariable from '../models/DataVariable';
-import DrawRectInstruction from '../models/DrawRectInstruction';
-import ScaleInstruction from '../models/ScaleInstruction';
-import DrawPathInstruction from '../models/DrawPathInstruction';
-import ExtendPathInstruction from '../models/ExtendPathInstruction';
-import MoveInstruction from '../models/MoveInstruction';
-import LoopInstruction from '../models/LoopInstruction';
+import Expression from '../../models/Expression';
+import Picture from '../../models/Picture';
+import DataVariable from '../../models/DataVariable';
+import DrawRectInstruction from '../../models/DrawRectInstruction';
+import ScaleInstruction from '../../models/ScaleInstruction';
+import DrawPathInstruction from '../../models/DrawPathInstruction';
+import ExtendPathInstruction from '../../models/ExtendPathInstruction';
+import MoveInstruction from '../../models/MoveInstruction';
+import LoopInstruction from '../../models/LoopInstruction';
 
 let variables = () => [
   new DataVariable({
@@ -88,8 +88,6 @@ const instructions = () => [
   })
 ];
 
-function get() {
+export default function() {
   return new Picture('line', instructions(), variables());
 }
-
-export default {get};

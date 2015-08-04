@@ -2,7 +2,6 @@ import React from 'react';
 import classNames from 'classnames';
 
 import Picture from '../models/Picture';
-import PictureActions from '../actions/PictureActions';
 import Canvas from './drawing/Canvas';
 import NotebookPictureCompiler from '../utils/NotebookPictureCompiler';
 
@@ -68,7 +67,7 @@ export default class ThumbnailsBar extends React.Component {
 
   handleAddNewPicture(evt) {
     let picture = new Picture();
-    PictureActions.addNewPicture(picture);
+    this.context.actions.picture.addNewPicture(picture);
     if (this.props.onThumbnailClick) {
       this.props.onThumbnailClick(picture);
     }
@@ -90,6 +89,12 @@ export default class ThumbnailsBar extends React.Component {
     evt.preventDefault();
   }
 }
+
+ThumbnailsBar.contextTypes = {
+  actions: React.PropTypes.shape({
+    picture: React.PropTypes.object.isRequired
+  })
+};
 
 ThumbnailsBar.propTypes = {
   pictures: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Picture)).isRequired,

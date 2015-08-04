@@ -1,13 +1,14 @@
 import React from 'react';
 import _ from 'lodash';
-import VariablePill from '../VariablePill';
-import PictureActions from '../../actions/PictureActions';
-import ExpressionEditorAndScrub from '../ExpressionEditorAndScrub';
 import Papa from 'papaparse';
+
+import VariablePill from '../VariablePill';
+import ExpressionEditorAndScrub from '../ExpressionEditorAndScrub';
 import Expression from '../../models/Expression';
 import Picture from '../../models/Picture';
 
-export default class DataTable extends React.Component {
+class DataTable extends React.Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -99,7 +100,7 @@ export default class DataTable extends React.Component {
     let newVariable = variable.cloneWithDefinition(newDefinition);
     // Make sure the new variable hasn't introduced cycle
     if (!newVariable.hasCycle(this.props.dataVariables)) {
-      PictureActions.modifyVariable(this.props.picture, newVariable);
+      this.context.actions.picture.modifyVariable(this.props.picture, newVariable);
     } else {
       // Force rerender
       // TODO - Right now this is a hack, probably a better way to do this is to flash
@@ -127,7 +128,7 @@ export default class DataTable extends React.Component {
       isRow: true,
       definition: '[42]'
     });
-    PictureActions.addVariable(this.props.picture, variable);
+    this.context.actions.picture.addVariable(this.props.picture, variable);
   }
 
   handleUpload(e) {
@@ -167,7 +168,7 @@ export default class DataTable extends React.Component {
           if (variable) {
             // Modify the existing variable with this definition
             variable = variable.cloneWithDefinition(new Expression(jsonVal));
-            PictureActions.modifyVariable(picture, variable);
+            this.context.actions.picture.modifyVariable(picture, variable);
           } else {
             // Create a new variable
             variable = this.props.picture.generateNewVariable({
@@ -175,7 +176,7 @@ export default class DataTable extends React.Component {
               isRow: true,
               definition: jsonVal
             });
-            PictureActions.addVariable(this.props.picture, variable);
+            this.context.actions.picture.addVariable(this.props.picture, variable);
           }
         });
       },
@@ -187,6 +188,12 @@ export default class DataTable extends React.Component {
   }
 }
 
+DataTable.contextTypes = {
+  actions: React.PropTypes.shape({
+    picture: React.PropTypes.object.isRequired
+  })
+};
+
 DataTable.propTypes = {
   picture: React.PropTypes.instanceOf(Picture).isRequired,
   readOnly: React.PropTypes.bool,
@@ -196,3 +203,5 @@ DataTable.propTypes = {
   dataVariables: React.PropTypes.array.isRequired,
   dataValues: React.PropTypes.object.isRequired
 };
+
+export default DataTable;

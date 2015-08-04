@@ -1,12 +1,11 @@
 import React from 'react';
 import AdjustInstruction from './AdjustInstruction';
 import ExpressionEditorAndScrub from '../components/ExpressionEditorAndScrub';
-import PictureActions from '../actions/PictureActions';
 
 export default class ScaleInstruction extends AdjustInstruction {
 
-  modifyInstructionWithProps(picture, props) {
-    PictureActions.modifyInstruction(picture, new ScaleInstruction(props));
+  modifyInstructionWithProps(pictureActions, picture, props) {
+    pictureActions.modifyInstruction(picture, new ScaleInstruction(props));
   }
 
   getCloneWithTo(to) {
@@ -22,24 +21,23 @@ export default class ScaleInstruction extends AdjustInstruction {
     return `${varName}.scalePropByPoint(${paramsJs});`;
   }
 
-  getUiSentence(picture, variableValues, shapeNameMap) {
+  getUiSentence(pictureActions, picture, variableValues, shapeNameMap) {
     let shapeName = this.getShapeName(shapeNameMap);
     return (
       <span className='instruction-sentence'>
         {`Scale ${shapeName}'s ${this.prop} by`}
         <ExpressionEditorAndScrub
           picture={picture}
-          onChange={this.handleToChange.bind(this, picture)}
+          onChange={this.handleToChange.bind(this, pictureActions, picture)}
           variableValues={variableValues}
           definition={this.to} />
       </span>
     );
   }
 
-  handleToChange(picture, definition) {
+  handleToChange(pictureActions, picture, definition) {
     let props = this.getCloneProps();
     props.to = definition;
-    this.modifyInstructionWithProps(picture, props);
+    this.modifyInstructionWithProps(pictureActions, picture, props);
   }
-
 }

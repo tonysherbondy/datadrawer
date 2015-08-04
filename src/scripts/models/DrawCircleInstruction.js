@@ -1,6 +1,5 @@
 import React from 'react';
 import DrawInstruction from './DrawInstruction';
-import PictureActions from '../actions/PictureActions';
 import ExpressionEditorAndScrub from '../components/ExpressionEditorAndScrub';
 import {distanceBetweenPoints} from '../utils/utils';
 import Expression from '../models/Expression';
@@ -12,8 +11,8 @@ export default class DrawCircleInstruction extends DrawInstruction {
     this.radius = props.radius || new Expression(1);
   }
 
-  modifyInstructionWithProps(picture, props) {
-    PictureActions.modifyInstruction(picture, new DrawCircleInstruction(props));
+  modifyInstructionWithProps(pictureActions, picture, props) {
+    pictureActions.modifyInstruction(picture, new DrawCircleInstruction(props));
   }
 
   getCloneProps() {
@@ -71,23 +70,23 @@ export default class DrawCircleInstruction extends DrawInstruction {
            `}, '${this.shapeId}', ${index});\n`;
   }
 
-  getSizeUi(picture, variableValues) {
+  getSizeUi(pictureActions, picture, variableValues) {
     return (
       <span className="size-ui">
         , with radius
         <ExpressionEditorAndScrub
           picture={picture}
-          onChange={this.handleRadiusChange.bind(this, picture)}
+          onChange={this.handleRadiusChange.bind(this, pictureActions, picture)}
           variableValues={variableValues}
           definition={this.radius} />
       </span>
     );
   }
 
-  handleRadiusChange(picture, definition) {
+  handleRadiusChange(pictureActions, picture, definition) {
     let props = this.getCloneProps();
     props.radius = definition;
-    this.modifyInstructionWithProps(picture, props);
+    this.modifyInstructionWithProps(pictureActions, picture, props);
   }
 
 }

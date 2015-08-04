@@ -7,6 +7,7 @@ export default class InstructionTitle extends React.Component {
     let instruction = this.props.instruction;
     if (instruction) {
       titleUi = instruction.getUiSentence(
+        this.context.actions.picture,
         this.props.picture,
         this.props.variableValues,
         this.props.shapeNameMap);
@@ -18,6 +19,12 @@ export default class InstructionTitle extends React.Component {
     );
   }
 }
+
+InstructionTitle.contextTypes = {
+  actions: React.PropTypes.shape({
+    picture: React.PropTypes.object.isRequired
+  })
+};
 
 InstructionTitle.propTypes = {
   shapeNameMap: React.PropTypes.object.isRequired,

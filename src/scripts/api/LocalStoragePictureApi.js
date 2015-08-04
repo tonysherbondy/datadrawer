@@ -1,18 +1,21 @@
 import Immutable from 'immutable';
-import {pictureToJson, pictureFromJson} from './PictureSerializer';
-import PiePreset from '../stores/piePreset';
-import BarsPreset from '../stores/barsPresetPicture';
-import ScatterPreset from '../stores/scatterPresetPicture';
-import LinePreset from '../stores/linePreset';
-let LocalStorage = window.localStorage;
+import piePreset from '../stores/presets/piePreset';
+import barsPreset from '../stores/presets/barsPreset';
+import scatterPreset from '../stores/presets/scatterPreset';
+import linePreset from '../stores/presets/linePreset';
 
 class LocalStoragePictureApi {
+  constructor(serializer, localStorage) {
+    this.serializer = serializer;
+    this.localStorage = localStorage || window.localStorage;
+  }
+
   getItem(key) {
-    return Promise.resolve(LocalStorage.getItem(key));
+    return Promise.resolve(this.localStorage.getItem(key));
   }
 
   setItem(key, item) {
-    return Promise.resolve(LocalStorage.setItem(key, item));
+    return Promise.resolve(this.localStorage.setItem(key, item));
   }
 
   getPictureKeys() {
@@ -38,7 +41,8 @@ class LocalStoragePictureApi {
         setKeys = this.setItem('__picture_keys', pictureKeysJsonString);
       }
 
-      let pictureJsonString = JSON.stringify(pictureToJson(picture));
+      let pictureJsonString =
+        JSON.stringify(this.serializer.pictureToJson(picture));
       let setPicture = this.setItem(picture.id, pictureJsonString);
 
       return Promise.all([setKeys, setPicture]);
@@ -48,14 +52,15 @@ class LocalStoragePictureApi {
   savePresets() {
     // TODO: these need to sequential for now due to above bug where
     // multiple saves can overwrite picture keys
-    return this.savePicture(PiePreset.get())
-      .then(() => this.savePicture(BarsPreset.get()))
-      .then(() => this.savePicture(ScatterPreset.get()))
-      .then(() => this.savePicture(LinePreset.get()));
+    return this.savePicture(piePreset())
+      .then(() => this.savePicture(barsPreset()))
+      .then(() => this.savePicture(scatterPreset()))
+      .then(() => this.savePicture(linePreset()));
   }
 
   loadPicture(id) {
-    return this.getItem(id).then(JSON.parse).then(pictureFromJson);
+    return this.getItem(id).then(JSON.parse).then(
+      this.serializer.pictureFromJson);
   }
 
   loadAllPictures(initialized) {
@@ -67,7 +72,6 @@ class LocalStoragePictureApi {
       return Promise.all(pictureKeys.map((p) => this.loadPicture(p)));
     });
   }
-
 }
 
-export default new LocalStoragePictureApi();
+export default LocalStoragePictureApi;

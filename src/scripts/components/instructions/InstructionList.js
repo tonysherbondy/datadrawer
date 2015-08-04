@@ -1,8 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import classNames from 'classnames';
-import PictureActions from '../../actions/PictureActions';
-import DrawingStateActions from '../../actions/DrawingStateActions';
+
 import InstructionTreeNode from '../../models/InstructionTreeNode';
 import LoopInstruction from '../../models/LoopInstruction';
 import IfInstruction from '../../models/IfInstruction';
@@ -28,11 +27,12 @@ class BlockInstructionItem extends React.Component {
     });
 
     let itemDescription = instruction.getUiSentence(
+      this.context.actions.picture,
       this.props.picture,
       this.props.variableValues,
       this.props.shapeNameMap);
 
-     let firstSubInstruction = _.first(instruction.instructions);
+    let firstSubInstruction = _.first(instruction.instructions);
 
     return (
       <li className='instruction-list-item'>
@@ -61,6 +61,13 @@ class BlockInstructionItem extends React.Component {
     );
   }
 }
+BlockInstructionItem.contextTypes = {
+    actions: React.PropTypes.shape({
+      drawingState: React.PropTypes.object.isRequired,
+      picture: React.PropTypes.object.isRequired
+    })
+};
+
 
 class InstructionItem extends React.Component {
   render() {
@@ -73,6 +80,7 @@ class InstructionItem extends React.Component {
     });
 
     let itemDescription = instruction.getUiSentence(
+      this.context.actions.picture,
       this.props.picture,
       this.props.variableValues,
       this.props.shapeNameMap);
@@ -89,11 +97,18 @@ class InstructionItem extends React.Component {
     );
   }
 }
+InstructionItem.contextTypes = {
+    actions: React.PropTypes.shape({
+      drawingState: React.PropTypes.object.isRequired,
+      picture: React.PropTypes.object.isRequired
+    })
+};
 
 
-export default class InstructionList extends React.Component {
+class InstructionList extends React.Component {
+
   removeInstruction(instruction) {
-    PictureActions.removeInstruction(this.props.picture, instruction);
+    this.context.actions.picture.removeInstruction(this.props.picture, instruction);
   }
 
   render() {
@@ -144,16 +159,22 @@ export default class InstructionList extends React.Component {
       let prevInstruction = selectedInstructions[0];
       let between = InstructionTreeNode.findBetweenRange(instructions, prevInstruction, instruction);
       if (between.length && between.length > 0) {
-        DrawingStateActions.setSelectedInstructions(between);
+        this.context.actions.drawingState.setSelectedInstructions(this.props.picture, between);
       }
     } else {
-      DrawingStateActions.setSelectedInstruction(instruction);
+      this.context.actions.drawingState.setSelectedInstruction(this.props.picture, instruction);
     }
     evt.stopPropagation();
     evt.preventDefault();
   }
-
 }
+
+InstructionList.contextTypes = {
+    actions: React.PropTypes.shape({
+      drawingState: React.PropTypes.object.isRequired,
+      picture: React.PropTypes.object.isRequired
+    })
+};
 
 InstructionList.propTypes = {
   shapeNameMap: React.PropTypes.object.isRequired,
@@ -163,6 +184,8 @@ InstructionList.propTypes = {
 };
 
 InstructionList.defaultProps = {
-  instructions: [],
-  variableValues: {}
+    instructions: [],
+    variableValues: {}
 };
+
+export default InstructionList;
