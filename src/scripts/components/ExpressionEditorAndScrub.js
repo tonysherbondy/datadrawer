@@ -43,7 +43,12 @@ export default class ExpressionEditorAndScrub extends React.Component {
         }
       });
       return (
-        <span onMouseUp={this.handleMouseUp.bind(this)}>{mappedFragments}</span>
+        <span
+          onDrop={this.handleDrop.bind(this)}
+          onDragOver={this.handleDragOver.bind(this)}
+          onMouseUp={this.handleMouseUp.bind(this)}>
+            {mappedFragments}
+        </span>
       );
     }
   }
@@ -107,6 +112,19 @@ export default class ExpressionEditorAndScrub extends React.Component {
     }, []);
 
     return new Expression(newFragments);
+  }
+
+  handleDragOver(evt) {
+    if (!this.state.isEditing) {
+      evt.preventDefault();
+    }
+  }
+
+  handleDrop(evt) {
+    let {id} = VariablePill.getVarFromDropData(evt.dataTransfer);
+    if (this.props.onChange) {
+      this.props.onChange(new Expression({id, asVector: this.props.asVector}));
+    }
   }
 
   handleMouseUp() {

@@ -2,6 +2,7 @@ import React from 'react';
 import ContentEditable from './ContentEditable';
 import PictureActions from '../actions/PictureActions';
 import DataVariable from '../models/DataVariable';
+import _ from 'lodash';
 //import Picture from '../models/Picture';
 
 export default class VariablePill extends React.Component {
@@ -95,6 +96,14 @@ VariablePill.getHtmlString = function(variable, fragmentIndex) {
 VariablePill.getHtmlStringFromFragment = function(fragment, fragmentIndex, picture) {
   let variable = picture.getVariableForFragment(fragment);
   return VariablePill.getHtmlString(variable, fragmentIndex);
+};
+
+// TODO - probably need to handle shape variable as well
+VariablePill.getVarFromDropData = function(dataTransfer) {
+  let dropData = dataTransfer.getData('text/html');
+  let id = _.last(/data-variable-id="([a-zA-Z_]*)"/.exec(dropData));
+  let name = _.last(/>([a-zA-Z\s]+)<\/span>/.exec(dropData));
+  return {id, name};
 };
 
 // TODO - For some reason, when I added the dependency of DrawPictureInstruction to

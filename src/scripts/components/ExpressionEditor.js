@@ -297,12 +297,10 @@ export default class ExpressionEditor extends React.Component {
     } else if (this.isSelectingRangeInComponent(selection)) {
       let range = selection.getRangeAt(0);
       range.deleteContents();
-      let dropData = evt.dataTransfer.getData('text/html');
-      let varId = _.last(/data-variable-id="([a-zA-Z_]*)"/.exec(dropData));
-      let varName = _.last(/>([a-zA-Z\s]+)<\/span>/.exec(dropData));
+      let {name, id} = VariablePill.getVarFromDropData(evt.dataTransfer);
       let varNode = document.createElement('span');
-      varNode.setAttribute('data-variable-id', varId);
-      varNode.innerHTML = varName;
+      varNode.setAttribute('data-variable-id', id);
+      varNode.innerHTML = name;
       range.insertNode(varNode);
       this.handleInput();
     }
