@@ -2,7 +2,7 @@
 /* TODO split css into modules */
 
 .hidden {
-  opacity: 0;
+  display: none;
 }
 
 /* drawing */
