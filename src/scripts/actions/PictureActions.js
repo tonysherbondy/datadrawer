@@ -2,6 +2,10 @@ import biff from '../dispatcher/dispatcher';
 import PictureApi from '../api/FirebasePictureApi';
 
 const PictureActions = biff.createActions({
+  setNotebookName(notebookName) {
+    this.dispatch({actionType: 'SET_NOTEBOOK_NAME', notebookName});
+  },
+
   addNewPicture(picture) {
     this.dispatch({actionType: 'ADD_NEW_PICTURE', picture});
   },

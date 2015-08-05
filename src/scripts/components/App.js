@@ -37,6 +37,7 @@ class App extends React.Component {
     // Either go to a picture viewer or editor
     return (
       <RouteHandler
+        notebookName={this.props.notebookName}
         activePicture={activePicture}
         editingInstructionId={drawingState.editingInstructionId}
         selectedInstructions={this.getSelectedInstructions(activePicture)}
@@ -135,6 +136,7 @@ let propsAccessor = () => ({
   activePicture: PictureStore.getActivePicture(),
   pictureApiState: PictureStore.getApiState(),
   pictures: PictureStore.getPictures(),
+  notebookName: PictureStore.getNotebookName(),
   drawingState: DrawingStateStore.getDrawingState()
 });
 

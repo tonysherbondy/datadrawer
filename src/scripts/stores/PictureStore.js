@@ -55,6 +55,8 @@ History.of = function(initialState) {
   return new History(List.of(initialState), 0);
 };
 
+let notebookName = 'Untitled';
+
 let pictures = OrderedMap();
 
 let addPicture = function(picture) {
@@ -89,9 +91,19 @@ const PictureStore = biff.createStore({
 
   getPicture(id) {
     return pictures.get(id).currentState();
+  },
+
+  getNotebookName() {
+    return notebookName;
   }
 }, (payload) => {
   switch (payload.actionType) {
+    case 'SET_NOTEBOOK_NAME': {
+      notebookName = payload.notebookName;
+      PictureStore.emitChange();
+      break;
+    }
+
     case 'ADD_NEW_PICTURE': {
       addPicture(payload.picture);
       PictureStore.emitChange();

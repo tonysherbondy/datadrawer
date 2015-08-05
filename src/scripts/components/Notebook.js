@@ -55,7 +55,7 @@ export default class Notebook extends React.Component {
       <div className='main'>
 
         <NotebookEditorMenuBar
-          notebookName={'Untitled'}
+          notebookName={this.props.notebookName}
           isShowingPictures={this.state.isShowingPictures}
           isShowingShortcuts={!this.state.hideKeyMap}
           onToggleShortcuts={this.handleToggleShortcuts.bind(this)}
@@ -118,6 +118,7 @@ export default class Notebook extends React.Component {
                   variableValues={variableValues}
                   shapeNameMap={shapeNameMap}
                   instruction={currentInstruction} />
+
                 <Canvas
                   className='canvas'
                   activePicture={this.props.activePicture}
@@ -127,7 +128,7 @@ export default class Notebook extends React.Component {
                   selectedShape={selectedShape}
                   editingInstruction={this.getEditingInstruction()}
                   shapes={this.props.shapes} />
-                <div>Mode: {this.props.drawingMode}</div>
+
                 <InstructionCode
                   className={classNames({'hidden': !this.state.isDebugging})}
                   code={this.props.jsCode} />
@@ -168,7 +169,16 @@ export default class Notebook extends React.Component {
   }
 
   handleKeyDown(e) {
+    console.log('key down', e.target);
     this.keyEventManager.handleKeyDown(e);
+  }
+
+  handleNotebookFork() {
+    console.log('fork notebook');
+  }
+
+  handleNewNotebook() {
+    console.log('new notebook');
   }
 
   handleTogglePictures() {
@@ -204,23 +214,23 @@ export default class Notebook extends React.Component {
   getKeyEventManager() {
     let {manager} = new ShortcutKeyHandler({notebook: this});
 
-    manager = manager.registerHandler({
-      keyCode: 112,
-      keyDescription: 'F1',
-      description: 'debug mode',
-      keyDown: () => {
-        this.setState({isDebugging: !this.state.isDebugging});
-      }
-    });
+    //manager = manager.registerHandler({
+      //keyCode: 112,
+      //keyDescription: 'F1',
+      //description: 'debug mode',
+      //keyDown: () => {
+        //this.setState({isDebugging: !this.state.isDebugging});
+      //}
+    //});
 
-    manager = manager.registerHandler({
-      keyCode: 113,
-      keyDescription: 'F2',
-      description: 'hide this list',
-      keyDown: () => {
-        this.setState({hideKeyMap: !this.state.hideKeyMap});
-      }
-    });
+    //manager = manager.registerHandler({
+      //keyCode: 113,
+      //keyDescription: 'F2',
+      //description: 'hide this list',
+      //keyDown: () => {
+        //this.setState({hideKeyMap: !this.state.hideKeyMap});
+      //}
+    //});
 
     return manager;
   }
@@ -340,6 +350,7 @@ Notebook.contextTypes = {
 Notebook.propTypes = {
   // TODO How to use arrayOf??
   //pictures: React.PropTypes.arrayOf(Picture).isRequired,
+  notebookName: React.PropTypes.string.isRequired,
   pictures: React.PropTypes.array.isRequired,
   variableValues: React.PropTypes.object.isRequired,
   currentInstruction: React.PropTypes.instanceOf(Instruction),
