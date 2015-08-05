@@ -23,6 +23,7 @@ import Canvas from './drawing/Canvas';
 import InstructionCode from './instructions/InstructionCode';
 import ShapesMap from '../models/shapes/ShapesMap';
 
+import NotebookEditorMenuBar from './NotebookEditorMenuBar';
 import Popover from './Popover';
 import ShapeDataList from './ShapeDataList';
 
@@ -51,6 +52,9 @@ export default class Notebook extends React.Component {
 
     return (
       <div className='main'>
+
+        <NotebookEditorMenuBar />
+
         <ThumbnailsBar
           pictures={this.props.pictures}
           variableValues={variableValues}
