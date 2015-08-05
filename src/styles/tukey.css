@@ -374,6 +374,35 @@ td, th {
 }
 
 /* Notebook Editor Menu Bar */
+span.logo {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.2em;
+  margin: 5px;
+  vertical-align: middle;
+  float: left;
+  color: #555;
+}
+
+span.logo input {
+  margin-left: 20px;
+  background-color: #333;
+  color: #666;
+  border: none;
+  outline: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+
+span.logo input:hover {
+  border: 2px solid #777;
+}
+
+span.logo input:focus {
+  color: #ddd;
+  border: 2px solid #777;
+}
+
 .nav ul {
   list-style: none;
   background-color: #333;

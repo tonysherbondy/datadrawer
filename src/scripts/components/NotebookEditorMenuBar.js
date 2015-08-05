@@ -24,9 +24,14 @@ class NotebookEditorMenuBar extends React.Component {
 
     return (
       <div className="nav">
+        <span className="logo">DataDrawer</span>
+        <span className="logo">
+          <input type="text" value={this.props.notebookName} />
+        </span>
         <ul>
           {listItems}
         </ul>
+        <div style={{clear: 'both'}}></div>
       </div>
     );
   }
@@ -44,6 +49,7 @@ class NotebookEditorMenuBar extends React.Component {
 }
 
 NotebookEditorMenuBar.propTypes = {
+  notebookName: React.PropTypes.string.isRequired,
   isShowingShortcuts: React.PropTypes.bool.isRequired,
   isShowingPictures: React.PropTypes.bool.isRequired,
   onTogglePictures: React.PropTypes.func.isRequired,

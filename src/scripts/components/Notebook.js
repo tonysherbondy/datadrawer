@@ -55,6 +55,7 @@ export default class Notebook extends React.Component {
       <div className='main'>
 
         <NotebookEditorMenuBar
+          notebookName={'Untitled'}
           isShowingPictures={this.state.isShowingPictures}
           isShowingShortcuts={!this.state.hideKeyMap}
           onToggleShortcuts={this.handleToggleShortcuts.bind(this)}
