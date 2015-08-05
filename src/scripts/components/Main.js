@@ -31,10 +31,6 @@ class Main extends React.Component {
     return this.getStateFromStores(props.stores);
   }
 
-  getInitialState() {
-    return this.getStateFromStores(this.props.stores);
-  }
-
   componentDidMount() {
     _.values(this.props.stores).forEach(store => {
       store.addChangeListener(this.handleChangeFromStore.bind(this));
