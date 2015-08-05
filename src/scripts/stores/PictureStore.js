@@ -50,6 +50,12 @@ function pictureStore(props) {
   // TODO - merge with loadingState
   let pictures = OrderedMap();
 
+  let notebookName = 'Untitled';
+
+  function getNotebookName() {
+    return notebookName;
+  }
+
   function getApiState() {
     return apiState;
   }
@@ -78,6 +84,12 @@ function pictureStore(props) {
 
   function handleAction(payload) {
     switch (payload.actionType) {
+      case 'SET_NOTEBOOK_NAME': {
+        notebookName = payload.notebookName;
+        props.fluxStore.emitChange();
+        break;
+      }
+
       case 'ADD_NEW_PICTURE': {
         addPicture(payload.picture);
         props.fluxStore.emitChange();
@@ -216,6 +228,7 @@ function pictureStore(props) {
 
   return {
     accessors: {
+      getNotebookName,
       getApiState,
       getActivePicture,
       getPictures

@@ -35,6 +35,7 @@ class App extends React.Component {
     // Either go to a picture viewer or editor
     return (
       <RouteHandler
+        notebookName={this.props.notebookName}
         activePicture={activePicture}
         editingInstructionId={drawingState.editingInstructionId}
         selectedInstructions={this.getSelectedInstructions(activePicture)}

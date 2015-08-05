@@ -1,5 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
+import PictureActions from '../actions/PictureActions';
 
 class NotebookEditorMenuBar extends React.Component {
   getMenuBarItem(name, handler, isActive) {
@@ -24,9 +25,24 @@ class NotebookEditorMenuBar extends React.Component {
 
     return (
       <div className="nav">
-        <span className="logo">DataDrawer</span>
+        <span className="logo">D2</span>
         <span className="logo">
-          <input type="text" value={this.props.notebookName} />
+          <input
+            type="text"
+            className="notebook-name-input"
+            ref="notebookNameInput"
+            onChange={this.handleNotebookNameChange.bind(this)}
+            value={this.props.notebookName} />
+        </span>
+        <span className="logo">
+          <i
+            onClick={this.handleNotebookFork.bind(this)}
+            className="logo-button fa fa-code-fork"></i>
+        </span>
+        <span className="logo">
+          <i
+            onClick={this.handleNewNotebook.bind(this)}
+            className="logo-button fa fa-plus"></i>
         </span>
         <ul>
           {listItems}
@@ -34,6 +50,18 @@ class NotebookEditorMenuBar extends React.Component {
         <div style={{clear: 'both'}}></div>
       </div>
     );
+  }
+
+  handleNotebookNameChange(evt) {
+    PictureActions.setNotebookName(evt.target.value);
+  }
+
+  handleNotebookFork() {
+    console.log('handle notebook fork');
+  }
+
+  handleNewNotebook() {
+    console.log('handle new notebook');
   }
 
   handleTogglePictures(evt) {
