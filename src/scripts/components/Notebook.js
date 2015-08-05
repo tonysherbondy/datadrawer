@@ -35,6 +35,7 @@ export default class Notebook extends React.Component {
     this.state = {
       leftPanelWidth: 300,
       isDebugging: false,
+      isShowingPictures: true,
       hideKeyMap: false
     };
     this.keyEventManager = this.getKeyEventManager();
@@ -53,16 +54,23 @@ export default class Notebook extends React.Component {
     return (
       <div className='main'>
 
-        <NotebookEditorMenuBar />
+        <NotebookEditorMenuBar
+          isShowingPictures={this.state.isShowingPictures}
+          isShowingShortcuts={!this.state.hideKeyMap}
+          onToggleShortcuts={this.handleToggleShortcuts.bind(this)}
+          onTogglePictures={this.handleTogglePictures.bind(this)} />
 
-        <ThumbnailsBar
-          pictures={this.props.pictures}
-          variableValues={variableValues}
-          activePicture={this.props.activePicture}
-          pictureForPictureTool={this.props.pictureForPictureTool}
-          onPreviewClick={this.handlePicturePreview.bind(this)}
-          onThumbnailClick={this.handleThumbnailClick.bind(this)}
-        />
+        {this.state.isShowingPictures ?
+          <ThumbnailsBar
+            pictures={this.props.pictures}
+            variableValues={variableValues}
+            activePicture={this.props.activePicture}
+            pictureForPictureTool={this.props.pictureForPictureTool}
+            onPreviewClick={this.handlePicturePreview.bind(this)}
+            onThumbnailClick={this.handleThumbnailClick.bind(this)}
+          /> : ''
+        }
+
         <div className='editor-area'>
           <div className='left-panel' style={{width: this.state.leftPanelWidth}}>
             <div className='left-panel-header'>
@@ -98,7 +106,7 @@ export default class Notebook extends React.Component {
             <div className='drawing-area'>
 
               <KeyboardControlsList
-                className={classNames('keyboard-controls-list', {'hidden': this.state.hideKeyMap})}
+                className={classNames('keyboard-controls-list', {hidden: this.state.hideKeyMap})}
                 keyEventManager={this.keyEventManager}
                 drawingMode={this.props.drawingMode}/>
 
@@ -160,6 +168,14 @@ export default class Notebook extends React.Component {
 
   handleKeyDown(e) {
     this.keyEventManager.handleKeyDown(e);
+  }
+
+  handleTogglePictures() {
+    this.setState({isShowingPictures: !this.state.isShowingPictures});
+  }
+
+  handleToggleShortcuts() {
+    this.setState({hideKeyMap: !this.state.hideKeyMap});
   }
 
   handleMouseDownPanelResize(evt) {

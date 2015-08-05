@@ -2,7 +2,7 @@
 /* TODO split css into modules */
 
 .hidden {
-  display: none;
+  opacity: 0;
 }
 
 /* drawing */
@@ -265,6 +265,10 @@ td, th {
   margin-left: 5px;
   margin-right: 5px;
   cursor: ew-resize;
+}
+
+.expression-scrubbable:hover {
+  background-color: #EFED13;
 }
 
 .dataVariables-list-container {
