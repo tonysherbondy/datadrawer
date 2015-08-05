@@ -93,14 +93,11 @@
 
 .left-panel-header {
   position: relative;
-  border-width: 1px 0 1px 0;
-  border-style: solid;
-  border-color: #ccc;
   text-align: center;
   padding: 3px;
-  color: #606060;
-  background-color: #cdf;
-  box-shadow: inset 0px -5px 20px -5px rgba(0,0,0,0.3);
+  color: #777;
+  background-color: #ccc;
+  /*box-shadow: inset 0px -5px 20px -5px rgba(0,0,0,0.3);*/
 }
 
 .resize-panel-arrow {
@@ -112,7 +109,7 @@
 }
 
 .left-panel-header:hover .resize-panel-arrow {
-  opacity: 0.5;
+  opacity: 1;
 }
 
 .drag-handle {
@@ -152,7 +149,6 @@
 .instructions-list {
   list-style-type: none;
   position: relative;
-  background: #efefef;
   color: black;
 
   /* no-select stuff */
@@ -400,7 +396,7 @@ td, th {
 .nav a.active {
   color: #ddd;
   background-color: #444;
-  border-bottom: 2px solid #9E4949;
+  border-bottom: 2px solid rgb(38, 137, 220);
 }
 
 .nav a:hover {
