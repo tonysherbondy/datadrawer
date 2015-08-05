@@ -47,6 +47,9 @@
   line-height: 150px;
   text-align: center;
   vertical-align: top;
+  color: #444;
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.5em;
 }
 
 .active-picture-thumbnail {

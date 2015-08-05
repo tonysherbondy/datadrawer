@@ -5,8 +5,7 @@ import BarsPreset from '../stores/barsPresetPicture';
 import ScatterPreset from '../stores/scatterPresetPicture';
 import LinePreset from '../stores/linePreset';
 
-//let baseUrl = 'https://datadrawer.firebaseio.com/';
-let baseUrl = 'https://dashdrawer.firebaseio.com/';
+let baseUrl = 'https://datadrawer.firebaseio.com/';
 
 class FirebasePictureApi {
   savePicture(picture) {
