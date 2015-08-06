@@ -1,21 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
-import PictureActions from '../actions/PictureActions';
 
 class NotebookEditorMenuBar extends React.Component {
-  getMenuBarItem(name, handler, isActive) {
-    return (
-      <li key={name}>
-        <a
-          className={classNames({active: isActive})}
-          href="#"
-          onClick={handler.bind(this)}>
-            {name}
-        </a>
-      </li>
-    );
-  }
-
   render() {
     let {isShowingPictures} = this.props;
     let listItems = [
@@ -52,8 +38,22 @@ class NotebookEditorMenuBar extends React.Component {
     );
   }
 
+  getMenuBarItem(name, handler, isActive) {
+    return (
+      <li key={name}>
+        <a
+          className={classNames({active: isActive})}
+          href="#"
+          onClick={handler.bind(this)}>
+            {name}
+        </a>
+      </li>
+    );
+  }
+
+
   handleNotebookNameChange(evt) {
-    PictureActions.setNotebookName(evt.target.value);
+    this.context.actions.picture.setNotebookName(evt.target.value);
   }
 
   handleNotebookFork() {
@@ -75,6 +75,12 @@ class NotebookEditorMenuBar extends React.Component {
   }
 
 }
+
+NotebookEditorMenuBar.contextTypes = {
+  actions: React.PropTypes.shape({
+    picture: React.PropTypes.object.isRequired
+  })
+};
 
 NotebookEditorMenuBar.propTypes = {
   notebookName: React.PropTypes.string.isRequired,

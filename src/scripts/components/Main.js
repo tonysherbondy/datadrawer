@@ -23,6 +23,7 @@ class Main extends React.Component {
       activePicture: stores.picture.getActivePicture(),
       pictureApiState: stores.picture.getApiState(),
       pictures: stores.picture.getPictures(),
+      notebookName: stores.picture.getNotebookName(),
       drawingState: stores.drawingState.getDrawingState()
     };
   }

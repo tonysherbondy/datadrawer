@@ -175,7 +175,10 @@ class Notebook extends React.Component {
   }
 
   handleKeyDown(e) {
-    console.log('key down', e.target);
+    let targetClass = e.target.getAttribute('class');
+    if (/notebook-name-input/.test(targetClass)) {
+      return;
+    }
     this.keyEventManager.handleKeyDown(e);
   }
 
