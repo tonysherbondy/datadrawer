@@ -1,91 +1,62 @@
-import Immutable from 'immutable';
-let {OrderedMap, List} = Immutable;
+import {OrderedMap} from 'immutable';
+
+import History from '../models/History';
+import Notebook from '../models/Notebook';
 
 // maintains the history of states of an immutable object
 // used for supporting undo/redo
-class History {
-  constructor(states, currentIndex) {
-    this.states = states;
-    this.currentIndex = currentIndex;
-  }
-
-  currentState() {
-    return this.states.get(this.currentIndex);
-  }
-
-  redo() {
-    if (this.currentIndex + 1 < this.states.size) {
-      return new History(this.states, this.currentIndex + 1);
-    }
-    return this;
-  }
-
-  undo() {
-    if (this.currentIndex > 0) {
-      return new History(this.states, this.currentIndex - 1);
-    }
-    return this;
-  }
-
-  // overwrite current state without adding to history
-  replaceCurrent(state) {
-    let states = this.states.take(this.currentIndex).push(state);
-    return new History(states, this.currentIndex);
-  }
-
-  append(state) {
-    let states = this.states.take(this.currentIndex + 1).push(state);
-    return new History(states, this.currentIndex + 1);
-  }
-}
-
-History.of = function(initialState) {
-  return new History(List.of(initialState), 0);
-};
 
 function pictureStore(props) {
   let activePictureId = null;
   // states can be 'loading', 'loaded', 'saving', 'invalid'
   let apiState = 'invalid';
-  // TODO - merge with loadingState
-  let pictures = OrderedMap();
-
-  let notebookName = 'Untitled';
-
-  function getNotebookName() {
-    return notebookName;
-  }
+  let notebook = new Notebook();
+  let pictureHistories = OrderedMap();
 
   function getApiState() {
     return apiState;
   }
 
   function getActivePicture() {
-    let activePictureHistory = pictures.get(activePictureId);
-    if (activePictureHistory) {
-      return activePictureHistory.currentState();
-    }
-    return null;
+    return notebook.pictures.get(activePictureId);
+  }
+
+  function getNotebook() {
+    return notebook;
   }
 
   function getPictures() {
-    return pictures.map(history => history.currentState())
-      .valueSeq().toArray();
+    return notebook.pictures.valueSeq().toArray();
+  }
+
+  function updateNotebook(properties) {
+    notebook = new Notebook({
+      id: properties.id || notebook.id,
+      name: properties.name || notebook.name,
+      pictures: properties.pictures || notebook.pictures
+    });
   }
 
   function addPicture(picture) {
-    pictures = pictures.set(picture.id, History.of(picture));
+    updatePicture(picture);
   }
 
-  function updatePicture(picture) {
-    pictures = pictures.update(
-      picture.id, history => history.append(picture));
+  function updatePicture(picture, historyModifier) {
+    historyModifier = historyModifier || (history => history.append(picture));
+
+    updateNotebook({ pictures: notebook.pictures.set(picture.id, picture) });
+
+    if (pictureHistories.has(picture.id)) {
+      pictureHistories = pictureHistories.update(picture.id, historyModifier);
+    } else {
+      pictureHistories = pictureHistories.set(picture.id, History.of(picture));
+    }
   }
 
   function handleAction(payload) {
     switch (payload.actionType) {
       case 'SET_NOTEBOOK_NAME': {
-        notebookName = payload.notebookName;
+        updateNotebook({ name: payload.notebookName });
         props.fluxStore.emitChange();
         break;
       }
@@ -139,8 +110,7 @@ function pictureStore(props) {
         // TODO: think about how to handle editing the parameters of the
         // instruction in the instruction tree.
         // Here we overwrite the current state in the history
-        pictures = pictures.update(
-          picture.id, history => history.replaceCurrent(picture));
+        updatePicture(picture, history => history.replaceCurrent(picture));
         props.fluxStore.emitChange();
         break;
       }
@@ -150,9 +120,9 @@ function pictureStore(props) {
         let picture = getActivePicture();
         picture = picture.insertInstructionAtIndexWithParent(
           index, parent, instruction);
-          updatePicture(picture);
-          props.fluxStore.emitChange();
-          break;
+        updatePicture(picture);
+        props.fluxStore.emitChange();
+        break;
       }
 
       case 'INSERT_INSTRUCTION_AFTER_INSTRUCTION': {
@@ -170,13 +140,13 @@ function pictureStore(props) {
       }
 
       case 'UNDO_CHANGE_TO_PICTURE': {
-        pictures = pictures.update(payload.picture.id, history => history.undo());
+        updatePicture(payload.picture, history => history.undo());
         props.fluxStore.emitChange();
         break;
       }
 
       case 'REDO_CHANGE_TO_PICTURE': {
-        pictures = pictures.update(payload.picture.id, history => history.redo());
+        updatePicture(payload.picture, history => history.redo());
         props.fluxStore.emitChange();
         break;
       }
@@ -213,7 +183,15 @@ function pictureStore(props) {
       }
 
       case 'LOADED_PICTURES': {
+        // TODO: actually load notebook from the payload here
+        updateNotebook({
+          id: 'default',
+          name: 'my notebook name',
+          pictures: OrderedMap()
+        });
+        // TODO: abstract out the part that initializes the history
         payload.pictures.forEach(addPicture);
+
         let picture = payload.pictures.find(p => p.id === payload.activePictureId);
         if (picture) {
           apiState = 'loaded';
@@ -230,7 +208,7 @@ function pictureStore(props) {
 
   return {
     accessors: {
-      getNotebookName,
+      getNotebook,
       getApiState,
       getActivePicture,
       getPictures

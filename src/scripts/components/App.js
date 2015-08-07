@@ -35,7 +35,7 @@ class App extends React.Component {
     // Either go to a picture viewer or editor
     return (
       <RouteHandler
-        notebookName={this.props.notebookName}
+        notebook={this.props.notebook}
         activePicture={activePicture}
         editingInstructionId={drawingState.editingInstructionId}
         selectedInstructions={this.getSelectedInstructions(activePicture)}
@@ -99,8 +99,9 @@ class App extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    let {pictures, pictureApiState} = nextProps;
-    if (_.isEmpty(pictures)) {
+    let {notebook, pictures, pictureApiState} = nextProps;
+
+    if (nextProps.params.notebookId !== notebook.id) {
       if ( pictureApiState !== 'loading') {
         this.context.actions.picture.loadAllPicturesAndSetActive(nextProps.params.pictureId);
       }
@@ -123,6 +124,14 @@ class App extends React.Component {
   }
 
 }
+
+App.propTypes = {
+  notebook: React.PropTypes.object.isRequired,
+  activePicture: React.PropTypes.object,
+  pictureApiState: React.PropTypes.string.isRequired,
+  pictures: React.PropTypes.array.isRequired,
+  drawingState: React.PropTypes.object.isRequired
+};
 
 App.contextTypes = {
     actions: React.PropTypes.shape({

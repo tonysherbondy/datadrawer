@@ -20,10 +20,10 @@ class Main extends React.Component {
 
   getStateFromStores(stores) {
     return {
+      notebook: stores.picture.getNotebook(),
       activePicture: stores.picture.getActivePicture(),
       pictureApiState: stores.picture.getApiState(),
       pictures: stores.picture.getPictures(),
-      notebookName: stores.picture.getNotebookName(),
       drawingState: stores.drawingState.getDrawingState()
     };
   }

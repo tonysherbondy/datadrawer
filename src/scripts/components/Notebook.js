@@ -53,7 +53,7 @@ class Notebook extends React.Component {
       <div className='main'>
 
         <NotebookEditorMenuBar
-          notebookName={this.props.notebookName}
+          notebookName={this.props.notebook.name}
           isShowingPictures={this.state.isShowingPictures}
           isShowingShortcuts={!this.state.hideKeyMap}
           onToggleShortcuts={this.handleToggleShortcuts.bind(this)}
@@ -359,7 +359,7 @@ class Notebook extends React.Component {
 Notebook.propTypes = {
   // TODO How to use arrayOf??
   //pictures: React.PropTypes.arrayOf(Picture).isRequired,
-  notebookName: React.PropTypes.string.isRequired,
+  notebook: React.PropTypes.object.isRequired,
   pictures: React.PropTypes.array.isRequired,
   variableValues: React.PropTypes.object.isRequired,
   currentInstruction: React.PropTypes.instanceOf(Instruction),
