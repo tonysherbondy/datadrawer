@@ -101,8 +101,8 @@ VariablePill.getHtmlStringFromFragment = function(fragment, fragmentIndex, pictu
 // TODO - probably need to handle shape variable as well
 VariablePill.getVarFromDropData = function(dataTransfer) {
   let dropData = dataTransfer.getData('text/html');
-  let id = _.last(/data-variable-id="([a-zA-Z_]*)"/.exec(dropData));
-  let name = _.last(/>([a-zA-Z\s]+)<\/span>/.exec(dropData));
+  let id = _.last(/data-variable-id="([a-zA-Z_0-9]*)"/.exec(dropData));
+  let name = _.last(/>([a-zA-Z0-9\s]+)<\/span>/.exec(dropData));
   return {id, name};
 };
 
