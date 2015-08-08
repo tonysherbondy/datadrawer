@@ -16,7 +16,7 @@ import MoveInstruction from '../models/MoveInstruction';
 import RotateInstruction from '../models/RotateInstruction';
 import ScaleInstruction from '../models/ScaleInstruction';
 import Picture from '../models/Picture';
-
+import Notebook from '../models/Notebook';
 
 function pictureSerializer() {
   let instructionConstructorToTypeMap = Immutable.Map([
@@ -563,7 +563,21 @@ function pictureSerializer() {
     return new Picture(picturejson.id, instructions, variables);
   }
 
-  return {pictureToJson, pictureFromJson};
+  function notebookToJson(notebook) {
+    let notebookJson = Object.create(null);
+    notebookJson.id = notebook.id;
+    notebookJson.name = notebook.name;
+    notebookJson.pictures = notebook.pictures.map(pictureToJson).toJS();
+    return notebookJson;
+  }
+
+  function notebookFromJson(notebookJson) {
+    let {id, name} = notebookJson;
+    let pictures = _.mapValues((notebookJson.pictures || {}), pictureFromJson);
+    return new Notebook({id, name, pictures});
+  }
+
+  return {pictureToJson, pictureFromJson, notebookFromJson, notebookToJson};
 }
 
 export default pictureSerializer;

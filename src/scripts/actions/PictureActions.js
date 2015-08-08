@@ -61,13 +61,13 @@ function pictureActions(pictureApi) {
       this.dispatch({actionType: 'SET_INVALID_PICTURE_STATE'});
     },
 
-    loadAllPicturesAndSetActive(activePictureId) {
-      this.dispatch({actionType: 'LOADING_PICTURES'});
-      pictureApi.loadAllPictures().then((loadedPictures) => {
+    loadNotebookAndSetActivePicture(notebookId, pictureId) {
+      this.dispatch({actionType: 'LOADING_NOTEBOOK'});
+      pictureApi.loadNotebook(notebookId).then((notebook) => {
         this.dispatch({
-          actionType: 'LOADED_PICTURES',
-          activePictureId,
-          pictures: loadedPictures
+          actionType: 'LOADED_NOTEBOOK',
+          activePictureId: pictureId,
+          notebook
         });
       }).catch((err) => {
         console.error(err);

@@ -176,27 +176,26 @@ function pictureStore(props) {
         break;
       }
 
-      case 'LOADING_PICTURES': {
+      case 'LOADING_NOTEBOOK': {
         apiState = 'loading';
         props.fluxStore.emitChange();
         break;
       }
 
-      case 'LOADED_PICTURES': {
-        // TODO: actually load notebook from the payload here
-        updateNotebook({
-          id: 'default',
-          name: 'my notebook name',
-          pictures: OrderedMap()
-        });
-        // TODO: abstract out the part that initializes the history
-        payload.pictures.forEach(addPicture);
+      case 'LOADED_NOTEBOOK': {
+        let {id, name, pictures} = payload.notebook;
+        updateNotebook({id, name, pictures});
+        // Reset history
+        pictureHistories = OrderedMap();
+        notebook.pictures.forEach(updatePicture);
 
-        let picture = payload.pictures.find(p => p.id === payload.activePictureId);
+        // Set active picture
+        let picture = notebook.pictures.find(p => p.id === payload.activePictureId);
         if (picture) {
           apiState = 'loaded';
           activePictureId = picture.id;
         } else {
+          // TODO - need to decouple states for valid picture vs. valid notebook
           apiState = 'invalid';
           activePictureId = null;
         }

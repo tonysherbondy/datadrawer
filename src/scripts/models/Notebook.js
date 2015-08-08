@@ -8,7 +8,11 @@ class Notebook {
     this.name = props.name || 'Untitled';
 
     if (props.pictures) {
-      this.pictures = props.pictures;
+      if (props.pictures instanceof OrderedMap) {
+        this.pictures = props.pictures;
+      } else {
+        this.pictures = OrderedMap(props.pictures);
+      }
     } else {
       let emptyPicture = new Picture();
       this.pictures = OrderedMap([

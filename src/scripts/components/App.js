@@ -103,7 +103,7 @@ class App extends React.Component {
 
     if (nextProps.params.notebookId !== notebook.id) {
       if ( pictureApiState !== 'loading') {
-        this.context.actions.picture.loadAllPicturesAndSetActive(nextProps.params.pictureId);
+        this.context.actions.picture.loadNotebookAndSetActivePicture(nextProps.params.notebookId, nextProps.params.pictureId);
       }
     } else if (nextProps.params.pictureId !== this.props.params.pictureId) {
       // This is like checking if we have the right notebook, but for now we are

@@ -31,17 +31,11 @@ class FirebasePictureApi {
     ]);
   }
 
-  loadAllPictures(initialized) {
-    let fetchPictures = Promise.resolve($.getJSON(`${baseUrl}/pictures.json`));
+  loadNotebook(notebookId) {
+    let fetchNotebook = Promise.resolve($.getJSON(`${baseUrl}/notebooks/${notebookId}.json`));
 
-    return fetchPictures.then((pictureIdMap) => {
-      if (!pictureIdMap && !initialized) {
-        return this.savePresets().then(() => this.loadAllPictures(true));
-      }
-
-      let pictureJsonValues =
-        Object.keys(pictureIdMap).map(id => pictureIdMap[id]);
-      return pictureJsonValues.map(this.serializer.pictureFromJson);
+    return fetchNotebook.then((notebookJson) => {
+      return this.serializer.notebookFromJson(notebookJson);
     });
   }
 }
