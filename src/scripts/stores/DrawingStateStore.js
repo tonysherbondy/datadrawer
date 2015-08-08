@@ -25,7 +25,8 @@ function drawingStateStore(props) {
     drawingState.currentLoopIndex = null;
   }
 
-  function setSelectedInstructions(picture, selectedInstructions) {
+  function setSelectedInstructions(selectedInstructions) {
+    let picture = props.pictureStore.getActivePicture();
     let instructions = picture.instructions;
     let parent = InstructionTreeNode.findParent(instructions, selectedInstructions[0]);
     // TODO (nhan): this should check whether an ancestor is a loop instruction
@@ -44,9 +45,10 @@ function drawingStateStore(props) {
     drawingState.selectedShapeId = null;
   }
 
-  function insertedInstruction(picture, instruction) {
+  function insertedInstruction(instruction) {
+    props.dispatcher.dispatcher.waitFor([props.pictureStore.dispatcherID]);
     drawingState.editingInstructionId = instruction.id;
-    setSelectedInstructions(picture, [instruction]);
+    setSelectedInstructions([instruction]);
   }
 
   function handleAction(payload) {
@@ -83,7 +85,7 @@ function drawingStateStore(props) {
         break;
       }
       case 'SET_SELECTED_INSTRUCTION': {
-        setSelectedInstructions(payload.picture, [payload.instruction]);
+        setSelectedInstructions([payload.instruction]);
         // TODO: (nhan) this is a perf hack for now so that we don't emit
         // multiple changes in case we need to set both (e.g. when stepping
         // to next instruction inside a loop);
@@ -95,7 +97,7 @@ function drawingStateStore(props) {
       }
       case 'SET_SELECTED_INSTRUCTIONS': {
         // TODO - perhaps rename to instructionIds??
-        setSelectedInstructions(payload.picture, payload.instructions);
+        setSelectedInstructions(payload.instructions);
         props.fluxStore.emitChange();
         break;
       }
@@ -111,12 +113,12 @@ function drawingStateStore(props) {
       }
       // Respond to changes to instruction store
       case 'INSERT_INSTRUCTION': {
-        insertedInstruction(payload.picture, payload.instruction);
+        insertedInstruction(payload.instruction);
         props.fluxStore.emitChange();
         break;
       }
       case 'INSERT_INSTRUCTION_AFTER_INSTRUCTION': {
-        insertedInstruction(payload.picture, payload.instructionToInsert);
+        insertedInstruction(payload.instructionToInsert);
         props.fluxStore.emitChange();
         break;
       }
@@ -149,10 +151,10 @@ function drawingStateStore(props) {
 }
 
 export default class {
-  constructor (dispatcher) {
+  constructor (dispatcher, pictureStore) {
     //TODO: Come up with a better wrapper around Biff or use a different Flux
     //library.  This is pretty janky.
-    let props = {};
+    let props = {pictureStore, dispatcher};
     let store = drawingStateStore(props);
 
     // this assignment is necessary so that we have acess to the result of

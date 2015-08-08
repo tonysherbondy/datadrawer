@@ -256,7 +256,7 @@ class Notebook extends React.Component {
         pictureVariables: picture.variables
       });
       this.context.actions.picture.insertInstructionAfterInstruction(
-        this.props.activePicture, instruction,
+        instruction,
         this.props.currentInstruction);
     } else {
       let {notebookId} = this.context.router.getCurrentParams();

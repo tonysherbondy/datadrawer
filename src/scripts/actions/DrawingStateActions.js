@@ -14,10 +14,9 @@ function drawingStateActions() {
       });
     },
 
-    setSelectedInstruction(picture, instruction, loopIndex) {
+    setSelectedInstruction(instruction, loopIndex) {
       this.dispatch({
         actionType: 'SET_SELECTED_INSTRUCTION',
-        picture,
         instruction,
         // TODO: (nhan) this is perf hack for now so that we don't rerender
         // everytime we step forward  inside a loop
@@ -25,10 +24,9 @@ function drawingStateActions() {
       });
     },
 
-    setSelectedInstructions(picture, instructions) {
+    setSelectedInstructions(instructions) {
       this.dispatch({
         actionType: 'SET_SELECTED_INSTRUCTIONS',
-        picture,
         instructions
       });
     },

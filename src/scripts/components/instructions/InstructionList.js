@@ -159,10 +159,10 @@ class InstructionList extends React.Component {
       let prevInstruction = selectedInstructions[0];
       let between = InstructionTreeNode.findBetweenRange(instructions, prevInstruction, instruction);
       if (between.length && between.length > 0) {
-        this.context.actions.drawingState.setSelectedInstructions(this.props.picture, between);
+        this.context.actions.drawingState.setSelectedInstructions(between);
       }
     } else {
-      this.context.actions.drawingState.setSelectedInstruction(this.props.picture, instruction);
+      this.context.actions.drawingState.setSelectedInstruction(instruction);
     }
     evt.stopPropagation();
     evt.preventDefault();

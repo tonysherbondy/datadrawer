@@ -36,7 +36,6 @@ export default class ShortcutKeyHandler {
       keyDown: () => {
         this.drawingStateActions.setDrawingMode('path');
         this.pictureActions.insertInstructionAfterInstruction(
-          this.notebook.props.activePicture,
           new DrawPathInstruction(),
           this.notebook.props.currentInstruction);
       }
@@ -122,7 +121,6 @@ export default class ShortcutKeyHandler {
       keyDown: () => {
         this.drawingStateActions.setDrawingMode('rect');
         this.pictureActions.insertInstructionAfterInstruction(
-          this.notebook.props.activePicture,
           new DrawRectInstruction(),
           this.notebook.props.currentInstruction);
       }
@@ -166,7 +164,6 @@ export default class ShortcutKeyHandler {
       keyDown: () => {
         this.drawingStateActions.setDrawingMode('text');
         this.pictureActions.insertInstructionAfterInstruction(
-          this.notebook.props.activePicture,
           new DrawTextInstruction(),
           this.notebook.props.currentInstruction);
       }
@@ -190,7 +187,6 @@ export default class ShortcutKeyHandler {
       keyDown: () => {
         this.drawingStateActions.setDrawingMode('line');
         this.pictureActions.insertInstructionAfterInstruction(
-          this.notebook.props.activePicture,
           new DrawLineInstruction(),
           this.notebook.props.currentInstruction);
       }
@@ -204,7 +200,6 @@ export default class ShortcutKeyHandler {
       keyDown: () => {
         this.drawingStateActions.setDrawingMode('circle');
         this.pictureActions.insertInstructionAfterInstruction(
-          this.notebook.props.activePicture,
           new DrawCircleInstruction(),
           this.notebook.props.currentInstruction);
       }
@@ -252,9 +247,10 @@ export default class ShortcutKeyHandler {
       description: 'if',
       group: 'flow',
       keyDown: () => {
-        insertNewInstructionContainingSelected(this.notebook, instructions => {
-          return new IfInstruction({instructions});
-        });
+        insertNewInstructionContainingSelected(
+          this.pictureActions, this.drawingStateActions, this.notebook,
+          instructions => new IfInstruction({instructions})
+        );
       }
     });
 
@@ -291,7 +287,7 @@ export default class ShortcutKeyHandler {
           stepBackwards(this.notebook.props.currentInstruction, loopIndex);
 
         if (nextInstruction) {
-          this.drawingStateActions.setSelectedInstruction(this.notebook.props.activePicture, nextInstruction, nextLoopIndex);
+          this.drawingStateActions.setSelectedInstruction(nextInstruction, nextLoopIndex);
         }
 
         e.preventDefault();
@@ -311,7 +307,7 @@ export default class ShortcutKeyHandler {
           stepForwards(this.notebook.props.currentInstruction, loopIndex);
 
         if (nextInstruction) {
-          this.drawingStateActions.setSelectedInstruction(this.notebook.props.activePicture, nextInstruction, nextLoopIndex);
+          this.drawingStateActions.setSelectedInstruction(nextInstruction, nextLoopIndex);
         }
 
         e.preventDefault();

@@ -146,7 +146,8 @@ function pictureStore(props) {
       }
 
       case 'INSERT_INSTRUCTION': {
-        let {picture, instruction, index, parent} = payload;
+        let {instruction, index, parent} = payload;
+        let picture = getActivePicture();
         picture = picture.insertInstructionAtIndexWithParent(
           index, parent, instruction);
           updatePicture(picture);
@@ -155,7 +156,8 @@ function pictureStore(props) {
       }
 
       case 'INSERT_INSTRUCTION_AFTER_INSTRUCTION': {
-        let {picture, instruction, instructionToInsert} = payload;
+        let {instruction, instructionToInsert} = payload;
+        let picture = getActivePicture();
         if (!instruction) {
           picture = picture.addInstruction(instructionToInsert);
         } else {

@@ -26,9 +26,10 @@ const actions = {
   picture: new PictureActions(dispatcher, pictureApi)
 };
 
+const pictureStore = new PictureStore(dispatcher);
 const stores = {
-  drawingState: new DrawingStateStore(dispatcher),
-  picture: new PictureStore(dispatcher)
+  drawingState: new DrawingStateStore(dispatcher, pictureStore),
+  picture: pictureStore
 };
 
 const fluxContext = { actions, stores };
