@@ -102,8 +102,9 @@ VariablePill.getHtmlStringFromFragment = function(fragment, fragmentIndex, pictu
 VariablePill.getVarFromDropData = function(dataTransfer) {
   let dropData = dataTransfer.getData('text/html');
   let id = _.last(/data-variable-id="([a-zA-Z_0-9]*)"/.exec(dropData));
-  let name = _.last(/>([a-zA-Z0-9\s]+)<\/span>/.exec(dropData));
-  return {id, name};
+  let prop = _.last(/data-variable-prop="([a-zA-Z_0-9]*)"/.exec(dropData));
+  let name = _.last(/>([a-zA-Z_0-9\s]+)<\/span>/.exec(dropData));
+  return {id, name, prop};
 };
 
 // TODO - For some reason, when I added the dependency of DrawPictureInstruction to

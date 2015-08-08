@@ -122,9 +122,9 @@ export default class ExpressionEditorAndScrub extends React.Component {
   }
 
   handleDrop(evt) {
-    let {id} = VariablePill.getVarFromDropData(evt.dataTransfer);
+    let {id, prop} = VariablePill.getVarFromDropData(evt.dataTransfer);
     if (this.props.onChange) {
-      this.props.onChange(new Expression({id, asVector: this.props.asVector}));
+      this.props.onChange(new Expression({id, prop, asVector: this.props.asVector}));
     }
   }
 

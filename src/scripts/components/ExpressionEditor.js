@@ -297,9 +297,12 @@ export default class ExpressionEditor extends React.Component {
     } else if (this.isSelectingRangeInComponent(selection)) {
       let range = selection.getRangeAt(0);
       range.deleteContents();
-      let {name, id} = VariablePill.getVarFromDropData(evt.dataTransfer);
+      let {name, id, prop} = VariablePill.getVarFromDropData(evt.dataTransfer);
       let varNode = document.createElement('span');
       varNode.setAttribute('data-variable-id', id);
+      if (prop) {
+        varNode.setAttribute('data-variable-prop', prop);
+      }
       varNode.innerHTML = name;
       range.insertNode(varNode);
       this.handleInput();
