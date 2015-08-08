@@ -15,8 +15,10 @@ class App extends React.Component {
 
     if (pictureApiState === 'loading') {
       return ( <h1>LOADING...</h1>);
-    } else if (pictureApiState === 'invalid') {
-      return ( <h1>INVALID.</h1>);
+    } else if (pictureApiState === 'picture.invalid') {
+      return ( <h1>INVALID PICTURE.</h1>);
+    } else if (pictureApiState === 'notebook.invalid') {
+      return ( <h1>INVALID NOTEBOOK.</h1>);
     }
 
     let activePicture = this.props.activePicture;
@@ -102,7 +104,7 @@ class App extends React.Component {
     let {notebook, pictures, pictureApiState} = nextProps;
 
     if (nextProps.params.notebookId !== notebook.id) {
-      if ( pictureApiState !== 'loading') {
+      if ( pictureApiState !== 'loading' && pictureApiState !== 'notebook.invalid' ) {
         this.context.actions.picture.loadNotebookAndSetActivePicture(nextProps.params.notebookId, nextProps.params.pictureId);
       }
     } else if (nextProps.params.pictureId !== this.props.params.pictureId) {
@@ -115,7 +117,7 @@ class App extends React.Component {
         this.context.actions.picture.setInvalidPictureState();
         // TODO - need to transition to somewhere else
       }
-    } else if (pictureApiState === 'invalid') {
+    } else if (pictureApiState === 'picture.invalid') {
       let pathElements = this.router.getCurrentPath().split('/');
       let pathIndex = pathElements.indexOf(nextProps.params.pictureId);
       pathElements[pathIndex] = _.first(pictures).id;

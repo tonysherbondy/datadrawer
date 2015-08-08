@@ -8,8 +8,8 @@ import Notebook from '../models/Notebook';
 
 function pictureStore(props) {
   let activePictureId = null;
-  // states can be 'loading', 'loaded', 'saving', 'invalid'
-  let apiState = 'invalid';
+  // states can be 'loading', 'loaded', 'saving', 'picture.invalid', 'notebook.invalid'
+  let apiState = 'init';
   let notebook = new Notebook();
   let pictureHistories = OrderedMap();
 
@@ -171,7 +171,13 @@ function pictureStore(props) {
 
       case 'SET_INVALID_PICTURE_STATE': {
         activePictureId = null;
-        apiState = 'invalid';
+        apiState = 'picture.invalid';
+        props.fluxStore.emitChange();
+        break;
+      }
+
+      case 'NOTEBOOK_NOT_FOUND': {
+        apiState = 'notebook.invalid';
         props.fluxStore.emitChange();
         break;
       }
@@ -196,7 +202,7 @@ function pictureStore(props) {
           activePictureId = picture.id;
         } else {
           // TODO - need to decouple states for valid picture vs. valid notebook
-          apiState = 'invalid';
+          apiState = 'picture.invalid';
           activePictureId = null;
         }
         props.fluxStore.emitChange();

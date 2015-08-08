@@ -35,6 +35,9 @@ class FirebasePictureApi {
     let fetchNotebook = Promise.resolve($.getJSON(`${baseUrl}/notebooks/${notebookId}.json`));
 
     return fetchNotebook.then((notebookJson) => {
+      if (!notebookJson) {
+        throw new Error('notebook not found');
+      }
       return this.serializer.notebookFromJson(notebookJson);
     });
   }
