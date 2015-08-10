@@ -139,6 +139,19 @@ function drawingStateStore(props) {
         props.fluxStore.emitChange();
         break;
       }
+
+      // TODO - this eventually needs to depend on the picture store
+      // and also activePicture should be moved back here
+      // TODO - Once the waitFor is there then we can move the App logic
+      // that finds the actual current instruction
+      case 'ADD_NEW_PICTURE':
+      case 'LOADED_NOTEBOOK':
+      case 'SET_ACTIVE_PICTURE': {
+        props.dispatcher.dispatcher.waitFor([props.pictureStore.dispatcherID]);
+        resetState();
+        props.fluxStore.emitChange();
+        break;
+      }
     }
   }
 
