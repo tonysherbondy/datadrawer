@@ -37,6 +37,8 @@ class Notebook extends React.Component {
       isShowingPictures: true,
       hideKeyMap: false
     };
+
+    this.keyDownListener = this.handleKeyDown.bind(this);
   }
 
   render() {
@@ -166,12 +168,12 @@ class Notebook extends React.Component {
 
   componentDidMount() {
     // Loading keyboard shortcuts
-    window.addEventListener('keydown', this.handleKeyDown.bind(this));
+    window.addEventListener('keydown', this.keyDownListener);
   }
 
   componentWillUnmount() {
     // Remove keyboard shortcuts
-    window.removeEventListener('keydown');
+    window.removeEventListener('keydown', this.keyDownListener);
   }
 
   handleKeyDown(e) {
