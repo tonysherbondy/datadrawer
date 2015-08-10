@@ -330,7 +330,10 @@ export default class ShortcutKeyHandler {
       description: 'save picture',
       keyDown: (e) => {
         console.log('save');
-        this.pictureActions.savePicture(this.notebook.props.activePicture);
+        this.pictureActions.savePicture(
+          this.notebook.props.notebook.id,
+          this.notebook.props.activePicture
+        );
         e.preventDefault();
       }
     });

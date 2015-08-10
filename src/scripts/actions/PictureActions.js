@@ -81,9 +81,9 @@ function pictureActions(pictureApi) {
       });
     },
 
-    savePicture(picture) {
+    savePicture(notebookId, picture) {
       this.dispatch({actionType: 'SAVING_PICTURE', picture: picture});
-      pictureApi.savePicture(picture).then(() => {
+      pictureApi.savePicture(notebookId, picture).then(() => {
         this.dispatch({
           actionType: 'SAVED_PICTURE'
         });

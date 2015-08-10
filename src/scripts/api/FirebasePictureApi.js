@@ -13,9 +13,9 @@ class FirebasePictureApi {
     this.serializer = serializer;
   }
 
-  savePicture(picture) {
+  savePicture(notebookId, picture) {
     return Promise.resolve($.ajax({
-      url: `${baseUrl}/pictures/${picture.id}.json`,
+      url: `${baseUrl}/notebooks/${notebookId}/pictures/${picture.id}.json`,
       method: 'PUT',
       contentType: 'application/json',
       data: JSON.stringify(this.serializer.pictureToJson(picture))
