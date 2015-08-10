@@ -177,6 +177,9 @@ function pictureStore(props) {
       }
 
       case 'NOTEBOOK_NOT_FOUND': {
+        // we use this notebook to represent the fact that the call to fetch
+        // the notebook returned so that we don't attempt to do it again
+        notebook = new Notebook({id: payload.notebookId});
         apiState = 'notebook.invalid';
         props.fluxStore.emitChange();
         break;

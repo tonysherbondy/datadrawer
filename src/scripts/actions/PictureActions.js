@@ -71,7 +71,10 @@ function pictureActions(pictureApi) {
         });
       }).catch((err) => {
         if (err.message === 'notebook not found') {
-          this.dispatch({ actionType: 'NOTEBOOK_NOT_FOUND' });
+          this.dispatch({
+            actionType: 'NOTEBOOK_NOT_FOUND',
+            notebookId
+          });
         } else {
           console.error(err);
         }

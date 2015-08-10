@@ -19,6 +19,8 @@ class App extends React.Component {
       return ( <h1>INVALID PICTURE.</h1>);
     } else if (pictureApiState === 'notebook.invalid') {
       return ( <h1>INVALID NOTEBOOK.</h1>);
+    } else if (pictureApiState === 'init') {
+      return ( <h1>LOADING NOTEBOOK...</h1>);
     }
 
     let activePicture = this.props.activePicture;
@@ -103,8 +105,13 @@ class App extends React.Component {
   componentWillReceiveProps(nextProps) {
     let {notebook, pictures, pictureApiState} = nextProps;
 
+    // this check is a stand-in for intercepting when the route changes
+    // it would be better to have a direct hook into the router transition
+    // that actually works so that willreceiveprops does not have to issue
+    // an action and we don't have to do weird checks like the
+    // pictureApiState != loading below
     if (nextProps.params.notebookId !== notebook.id) {
-      if ( pictureApiState !== 'loading' && pictureApiState !== 'notebook.invalid' ) {
+      if (pictureApiState !== 'loading') {
         this.context.actions.picture.loadNotebookAndSetActivePicture(nextProps.params.notebookId, nextProps.params.pictureId);
       }
     } else if (nextProps.params.pictureId !== this.props.params.pictureId) {
