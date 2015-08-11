@@ -192,6 +192,12 @@ function pictureStore(props) {
         break;
       }
 
+      case 'FORKING_NOTEBOOK': {
+        apiState = 'forking';
+        props.fluxStore.emitChange();
+        break;
+      }
+
       case 'LOADED_NOTEBOOK': {
         let {id, name, pictures} = payload.notebook;
         updateNotebook({id, name, pictures});

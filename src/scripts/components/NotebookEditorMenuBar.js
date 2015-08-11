@@ -18,7 +18,7 @@ class NotebookEditorMenuBar extends React.Component {
             className="notebook-name-input"
             ref="notebookNameInput"
             onChange={this.handleNotebookNameChange.bind(this)}
-            value={this.props.notebookName} />
+            value={this.props.notebook.name} />
         </span>
         <span className="logo">
           <i
@@ -57,7 +57,7 @@ class NotebookEditorMenuBar extends React.Component {
   }
 
   handleNotebookFork() {
-    console.log('handle notebook fork');
+    this.context.actions.picture.forkNotebook(this.props.notebook.id);
   }
 
   handleNewNotebook() {
@@ -83,7 +83,7 @@ NotebookEditorMenuBar.contextTypes = {
 };
 
 NotebookEditorMenuBar.propTypes = {
-  notebookName: React.PropTypes.string.isRequired,
+  notebook: React.PropTypes.object.isRequired,
   isShowingShortcuts: React.PropTypes.bool.isRequired,
   isShowingPictures: React.PropTypes.bool.isRequired,
   onTogglePictures: React.PropTypes.func.isRequired,

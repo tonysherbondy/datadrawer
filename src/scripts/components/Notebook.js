@@ -55,7 +55,7 @@ class Notebook extends React.Component {
       <div className='main'>
 
         <NotebookEditorMenuBar
-          notebookName={this.props.notebook.name}
+          notebook={this.props.notebook}
           isShowingPictures={this.state.isShowingPictures}
           isShowingShortcuts={!this.state.hideKeyMap}
           onToggleShortcuts={this.handleToggleShortcuts.bind(this)}
