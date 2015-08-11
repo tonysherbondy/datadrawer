@@ -42,6 +42,11 @@ function pictureStore(props) {
     }
   }
 
+  function deletePicture(picture) {
+    updateNotebook({ pictures: notebook.pictures.remove(picture.id) });
+    pictureHistories = pictureHistories.remove(picture.id);
+  }
+
   function handleAction(payload) {
     switch (payload.actionType) {
       case 'SET_NOTEBOOK_NAME': {
@@ -52,6 +57,12 @@ function pictureStore(props) {
 
       case 'ADD_NEW_PICTURE': {
         addPicture(payload.picture);
+        props.fluxStore.emitChange();
+        break;
+      }
+
+      case 'DELETE_PICTURE': {
+        deletePicture(payload.picture);
         props.fluxStore.emitChange();
         break;
       }

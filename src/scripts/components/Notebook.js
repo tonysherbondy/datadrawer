@@ -63,11 +63,10 @@ class Notebook extends React.Component {
 
         {this.state.isShowingPictures ?
           <ThumbnailsBar
-            pictures={this.props.pictures}
+            notebook={this.props.notebook}
             variableValues={variableValues}
             activePicture={this.props.activePicture}
             pictureForPictureTool={this.props.pictureForPictureTool}
-            onPreviewClick={this.handlePicturePreview.bind(this)}
             onThumbnailClick={this.handleThumbnailClick.bind(this)}
           /> : ''
         }
@@ -267,11 +266,6 @@ class Notebook extends React.Component {
     }
   }
 
-  handlePicturePreview(picture) {
-    let {notebookId} = this.context.router.getCurrentParams();
-    this.context.router.transitionTo(`/notebook/${notebookId}/picture/${picture.id}/view`);
-  }
-
   handlePopoverClose() {
     this.context.actions.drawingState.hideDataPopup();
   }
@@ -360,10 +354,7 @@ class Notebook extends React.Component {
 }
 
 Notebook.propTypes = {
-  // TODO How to use arrayOf??
-  //pictures: React.PropTypes.arrayOf(Picture).isRequired,
   notebook: React.PropTypes.object.isRequired,
-  pictures: React.PropTypes.array.isRequired,
   variableValues: React.PropTypes.object.isRequired,
   currentInstruction: React.PropTypes.instanceOf(Instruction),
   selectedInstructions: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Instruction)),

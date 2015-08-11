@@ -4,6 +4,10 @@ function pictureActions(pictureApi) {
       this.dispatch({actionType: 'ADD_NEW_PICTURE', picture});
     },
 
+    deletePicture(picture) {
+      this.dispatch({actionType: 'DELETE_PICTURE', picture});
+    },
+
     setNotebookName(notebookName) {
       this.dispatch({actionType: 'SET_NOTEBOOK_NAME', notebookName});
     },

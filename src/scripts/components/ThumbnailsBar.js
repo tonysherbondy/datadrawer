@@ -8,6 +8,8 @@ import NotebookPictureCompiler from '../utils/NotebookPictureCompiler';
 export default class ThumbnailsBar extends React.Component {
 
   getThumbnailsBar() {
+    let {activePicture, pictureForPictureTool, notebook, variableValues} = this.props;
+    let pictures = notebook.pictures.valueSeq().toArray();
     let getThumbnailForPicture = (picture) => {
 
       if (picture === null) {
@@ -24,7 +26,6 @@ export default class ThumbnailsBar extends React.Component {
       }
             //<div className='picture-thumbnail new-picture-button'>
 
-      let {activePicture, pictureForPictureTool, pictures, variableValues} = this.props;
       let isActivePicture = picture.id === activePicture.id;
       let isPictureForPictureTool = pictureForPictureTool &&
         picture.id === pictureForPictureTool.id;
@@ -52,9 +53,12 @@ export default class ThumbnailsBar extends React.Component {
           <i
             onClick={this.handlePreviewPicture.bind(this, picture)}
             className="preview-picture-button fa fa-external-link"></i>
+          <i
+            onClick={this.handleDeletePicture.bind(this, picture)}
+            className="delete-picture-button fa fa-trash"></i>
         </a>);
     };
-    return this.props.pictures.concat([null]).map(getThumbnailForPicture);
+    return pictures.concat([null]).map(getThumbnailForPicture);
   }
 
   render() {
@@ -74,10 +78,16 @@ export default class ThumbnailsBar extends React.Component {
     evt.preventDefault();
   }
 
+  handleDeletePicture(picture, evt) {
+    this.context.actions.picture.deletePicture(picture);
+    evt.stopPropagation();
+    evt.preventDefault();
+  }
+
   handlePreviewPicture(picture, evt) {
-    if (this.props.onPreviewClick) {
-      this.props.onPreviewClick(picture);
-    }
+    let notebookId = this.props.notebook.id;
+    let url = `/notebook/${notebookId}/picture/${picture.id}/view`;
+    this.context.router.transitionTo(url);
     evt.stopPropagation();
     evt.preventDefault();
   }
@@ -97,7 +107,7 @@ ThumbnailsBar.contextTypes = {
 };
 
 ThumbnailsBar.propTypes = {
-  pictures: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Picture)).isRequired,
+  notebook: React.PropTypes.object.isRequired,
   variableValues: React.PropTypes.object.isRequired,
   activePicture: React.PropTypes.instanceOf(Picture).isRequired,
   pictureForPictureTool: React.PropTypes.instanceOf(Picture)

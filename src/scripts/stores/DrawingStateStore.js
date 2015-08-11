@@ -62,6 +62,21 @@ function drawingStateStore(props) {
     setSelectedInstructions([instruction]);
   }
 
+  function setActivePicture(pictureId) {
+    let picture = getPicture(pictureId);
+    if (picture) {
+      drawingState.apiState = 'loaded';
+      if (drawingState.activePictureId !== picture.id) {
+        drawingState.activePictureId = picture.id;
+        resetState();
+      }
+    } else {
+      drawingState.apiState = 'picture.invalid';
+      drawingState.activePictureId = null;
+      resetState();
+    }
+  }
+
   function handleAction(payload) {
     switch (payload.actionType) {
       case 'SHOW_DATA_POPUP': {
@@ -152,21 +167,14 @@ function drawingStateStore(props) {
       }
 
       case 'SET_ACTIVE_PICTURE': {
-        let picture = getPicture(payload.pictureId);
-        if (picture) {
-          drawingState.activePictureId = payload.pictureId;
-        } else {
-          drawingState.apiState = 'picture.invalid';
-          drawingState.activePictureId = null;
-        }
+        setActivePicture(payload.pictureId);
         resetState();
         props.fluxStore.emitChange();
         break;
       }
 
       case 'SET_INVALID_PICTURE_STATE': {
-        drawingState.apiState = 'picture.invalid';
-        drawingState.activePictureId = null;
+        setActivePicture(null);
         props.fluxStore.emitChange();
         break;
       }
@@ -198,25 +206,23 @@ function drawingStateStore(props) {
         props.dispatcher.dispatcher.waitFor([props.pictureStore.dispatcherID]);
 
         // Set active picture
-        let notebook = props.pictureStore.getNotebook();
-        let picture = notebook.pictures.find(p => p.id === payload.activePictureId);
-        if (picture) {
-          drawingState.apiState = 'loaded';
-          drawingState.activePictureId = picture.id;
-        } else {
-          // TODO - need to decouple states for valid picture vs. valid notebook
-          drawingState.apiState = 'picture.invalid';
-          drawingState.activePictureId = null;
-        }
+        setActivePicture(payload.activePictureId);
         props.fluxStore.emitChange();
         break;
       }
 
-      // TODO - Once the waitFor is there then we can move the App logic
-      // that finds the actual current instruction from App to here
+      // TODO - See if I can remove for add picture...
       case 'ADD_NEW_PICTURE': {
         props.dispatcher.dispatcher.waitFor([props.pictureStore.dispatcherID]);
         resetState();
+        props.fluxStore.emitChange();
+        break;
+      }
+
+      case 'DELETE_PICTURE': {
+        props.dispatcher.dispatcher.waitFor([props.pictureStore.dispatcherID]);
+        // Need to try to reset to the picture we had before in case we deleted it
+        setActivePicture(drawingState.activePictureId);
         props.fluxStore.emitChange();
         break;
       }
