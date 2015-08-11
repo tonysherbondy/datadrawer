@@ -5,6 +5,7 @@ import App from './components/App';
 import Main from './components/Main';
 import Notebook from './components/Notebook';
 import NotebookViewer from './components/NotebookViewer';
+import NotebookNotFound from './components/NotebookNotFound';
 
 function routes() {
   return (
@@ -14,6 +15,7 @@ function routes() {
         <Route name="view" path="view" handler={NotebookViewer} />
         <Redirect to="edit" />
       </Route>
+      <Route name="notebookNotFound" path="notebook-not-found" handler={NotebookNotFound} />
       <Redirect to="/notebook/default/picture/bars/edit" />
     </Route>
   );

@@ -8,7 +8,8 @@ import Notebook from '../models/Notebook';
 
 function pictureStore(props) {
   let activePictureId = null;
-  // states can be 'loading', 'loaded', 'saving', 'picture.invalid', 'notebook.invalid'
+  // states can be 'loading', 'loaded', 'saving',
+  // 'picture.invalid', 'notebook.invalid', 'forking'
   let apiState = 'init';
   let notebook = new Notebook();
   let pictureHistories = OrderedMap();

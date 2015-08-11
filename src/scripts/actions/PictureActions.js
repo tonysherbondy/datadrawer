@@ -92,6 +92,34 @@ function pictureActions(pictureApi) {
       });
     },
 
+    forkNotebook(notebookId) {
+      let forkedNotebook;
+      this.dispatch({actionType: 'FORKING_NOTEBOOK'});
+      pictureApi.loadNotebook(notebookId).then((notebook) => {
+        forkedNotebook = notebook.fork();
+        return forkedNotebook;
+      })
+      .then(pictureApi.saveNotebook.bind(pictureApi))
+      .then(() => {
+        let firstPicture = forkedNotebook.pictures.first();
+        this.dispatch({
+          actionType: 'LOADED_NOTEBOOK',
+          activePictureId: firstPicture.id,
+          notebook: forkedNotebook
+        });
+      }).catch((err) => {
+        if (err.message === 'notebook not found') {
+          this.dispatch({
+            actionType: 'NOTEBOOK_NOT_FOUND',
+            notebookId
+          });
+        } else {
+          console.error(err);
+        }
+      });
+    },
+
+
     undoChange(picture) {
       this.dispatch({actionType: 'UNDO_CHANGE_TO_PICTURE', picture});
     },

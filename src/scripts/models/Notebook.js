@@ -20,6 +20,14 @@ class Notebook {
       ]);
     }
   }
+
+  fork() {
+    return new Notebook({
+      id: guid(),
+      name: `Fork of ${this.name}`,
+      pictures: this.pictures
+    });
+  }
 }
 
 export default Notebook;

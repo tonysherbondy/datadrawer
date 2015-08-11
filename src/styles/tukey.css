@@ -451,3 +451,19 @@ span.logo input:focus {
 .nav a:hover {
   color: #ddd;
 }
+
+/* Notebook Not Found */
+.notebook-not-found {
+  margin: 20 auto;
+  font-size: 5em;
+  line-height: 40px;
+}
+
+.notebook-not-found .button {
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.notebook-not-found .button:hover {
+  color: gray;
+}

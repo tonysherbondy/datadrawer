@@ -22,6 +22,15 @@ class FirebasePictureApi {
     }));
   }
 
+  saveNotebook(notebook) {
+    return Promise.resolve($.ajax({
+      url: `${baseUrl}/notebooks/${notebook.id}.json`,
+      method: 'PUT',
+      contentType: 'application/json',
+      data: JSON.stringify(this.serializer.notebookToJson(notebook))
+    }));
+  }
+
   savePresets() {
     return Promise.all([
       this.savePicture(piePreset()),

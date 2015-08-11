@@ -105,7 +105,7 @@ class App extends React.Component {
   componentWillReceiveProps(nextProps) {
     let {notebook, pictures, pictureApiState} = nextProps;
 
-    // this check is a stand-in for intercepting when the route changes
+    // TODO - this check is a stand-in for intercepting when the route changes
     // it would be better to have a direct hook into the router transition
     // that actually works so that willreceiveprops does not have to issue
     // an action and we don't have to do weird checks like the
@@ -129,9 +129,10 @@ class App extends React.Component {
       let pathIndex = pathElements.indexOf(nextProps.params.pictureId);
       pathElements[pathIndex] = _.first(pictures).id;
       this.router.transitionTo(pathElements.join('/'));
+    } else if (pictureApiState === 'notebook.invalid') {
+      this.router.replaceWith('/notebook-not-found');
     }
   }
-
 }
 
 App.propTypes = {
@@ -143,10 +144,10 @@ App.propTypes = {
 };
 
 App.contextTypes = {
-    actions: React.PropTypes.shape({
-      picture: React.PropTypes.object.isRequired
-    }),
-    router: React.PropTypes.func.isRequired
+  actions: React.PropTypes.shape({
+    picture: React.PropTypes.object.isRequired
+  }),
+  router: React.PropTypes.func.isRequired
 };
 
 export default App;
