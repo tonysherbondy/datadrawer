@@ -334,10 +334,23 @@ export default class ShortcutKeyHandler {
       keyDescription: '\u2318 + s',
       description: 'save picture',
       keyDown: (e) => {
-        console.log('save');
         this.pictureActions.savePicture(
           this.notebook.props.notebook.id,
           this.notebook.props.activePicture
+        );
+        e.preventDefault();
+      }
+    });
+
+    manager = manager.registerHandler({
+      keyCode: 83,
+      metaKey: true,
+      shiftKey: true,
+      keyDescription: '\u2318 + \u21e7 + s',
+      description: 'save notebook',
+      keyDown: (e) => {
+        this.pictureActions.saveNotebook(
+          this.notebook.props.notebook
         );
         e.preventDefault();
       }

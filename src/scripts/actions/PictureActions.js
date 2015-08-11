@@ -90,6 +90,7 @@ function pictureActions(pictureApi) {
     savePicture(notebookId, picture) {
       this.dispatch({actionType: 'SAVING_PICTURE', picture});
       pictureApi.savePicture(notebookId, picture).then(() => {
+        console.log('saved picture');
         this.dispatch({
           actionType: 'SAVED_PICTURE'
         });
@@ -101,6 +102,7 @@ function pictureActions(pictureApi) {
     saveNotebook(notebook) {
       this.dispatch({actionType: 'SAVING_NOTEBOOK', notebook});
       pictureApi.saveNotebook(notebook).then(() => {
+        console.log('saved notebook');
         // TODO - may want to do some history management here
         this.dispatch({
           actionType: 'SAVED_NOTEBOOK'
