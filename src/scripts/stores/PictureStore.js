@@ -153,15 +153,15 @@ function pictureStore(props) {
         break;
       }
 
-      case 'SAVING_PICTURE': {
-        props.fluxStore.emitChange();
-        break;
-      }
+      //case 'SAVING_PICTURE': {
+        //props.fluxStore.emitChange();
+        //break;
+      //}
 
-      case 'SAVED_PICTURE': {
-        props.fluxStore.emitChange();
-        break;
-      }
+      //case 'SAVED_PICTURE': {
+        //props.fluxStore.emitChange();
+        //break;
+      //}
 
       case 'NOTEBOOK_NOT_FOUND': {
         // we use this notebook to represent the fact that the call to fetch

@@ -20,15 +20,23 @@ class NotebookEditorMenuBar extends React.Component {
             onChange={this.handleNotebookNameChange.bind(this)}
             value={this.props.notebook.name} />
         </span>
+
         <span className="logo">
           <i
             onClick={this.handleNotebookFork.bind(this)}
             className="logo-button fa fa-code-fork"></i>
         </span>
+
         <span className="logo">
           <i
             onClick={this.handleNewNotebook.bind(this)}
             className="logo-button fa fa-plus"></i>
+        </span>
+
+        <span className="logo">
+          <i
+            onClick={this.handleSaveNotebook.bind(this)}
+            className="logo-button fa fa-floppy-o"></i>
         </span>
         <ul>
           {listItems}
@@ -62,6 +70,10 @@ class NotebookEditorMenuBar extends React.Component {
 
   handleNewNotebook() {
     this.context.actions.picture.forkNotebook('default');
+  }
+
+  handleSaveNotebook() {
+    this.context.actions.picture.saveNotebook(this.props.notebook);
   }
 
   handleTogglePictures(evt) {

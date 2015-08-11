@@ -88,10 +88,22 @@ function pictureActions(pictureApi) {
     },
 
     savePicture(notebookId, picture) {
-      this.dispatch({actionType: 'SAVING_PICTURE', picture: picture});
+      this.dispatch({actionType: 'SAVING_PICTURE', picture});
       pictureApi.savePicture(notebookId, picture).then(() => {
         this.dispatch({
           actionType: 'SAVED_PICTURE'
+        });
+      }).catch((err) => {
+        console.error(err);
+      });
+    },
+
+    saveNotebook(notebook) {
+      this.dispatch({actionType: 'SAVING_NOTEBOOK', notebook});
+      pictureApi.saveNotebook(notebook).then(() => {
+        // TODO - may want to do some history management here
+        this.dispatch({
+          actionType: 'SAVED_NOTEBOOK'
         });
       }).catch((err) => {
         console.error(err);
