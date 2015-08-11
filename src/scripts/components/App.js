@@ -125,16 +125,8 @@ class App extends React.Component {
       this.context.actions.picture.loadNotebookAndSetActivePicture(nextProps.params.notebookId, nextProps.params.pictureId);
 
     } else if (nextProps.params.pictureId !== this.props.params.pictureId) {
-      // TODO - move this aciton to drawingState actions then move this logic into the store as well
-      // We are trying to transition to a new picture so we either do it if our notebook
-      // has that picture or we consider the picture is invalid
-      let picture = pictures.find(p => p.id === nextProps.params.pictureId);
-      if (picture) {
-        this.context.actions.picture.setActivePicture(picture);
-      } else {
-        this.context.actions.picture.setInvalidPictureState();
-        // TODO - need to transition to somewhere else
-      }
+      // After transitioning to a new picture
+      this.context.actions.picture.setActivePicture(nextProps.params.pictureId);
 
     } else if (apiState === 'picture.invalid') {
       // If our picture state is invalid, we need should transition to the first picture

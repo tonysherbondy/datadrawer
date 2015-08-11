@@ -55,8 +55,8 @@ function pictureActions(pictureApi) {
       this.dispatch({actionType: 'REMOVE_VARIABLE', picture, variable});
     },
 
-    setActivePicture(picture) {
-      this.dispatch({actionType: 'SET_ACTIVE_PICTURE', picture});
+    setActivePicture(pictureId) {
+      this.dispatch({actionType: 'SET_ACTIVE_PICTURE', pictureId});
     },
 
     setInvalidPictureState() {

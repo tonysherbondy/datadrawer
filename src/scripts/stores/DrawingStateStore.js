@@ -31,9 +31,13 @@ function drawingStateStore(props) {
     drawingState.currentLoopIndex = null;
   }
 
-  function setSelectedInstructions(selectedInstructions) {
+  function getPicture(id) {
     let notebook = props.pictureStore.getNotebook();
-    let picture = notebook.pictures.find(p => p.id === drawingState.activePictureId);
+    return notebook.pictures.find(p => p.id === id);
+  }
+
+  function setSelectedInstructions(selectedInstructions) {
+    let picture = getPicture(drawingState.activePictureId);
     let instructions = picture.instructions;
     let parent = InstructionTreeNode.findParent(instructions, selectedInstructions[0]);
     // TODO (nhan): this should check whether an ancestor is a loop instruction
@@ -148,7 +152,13 @@ function drawingStateStore(props) {
       }
 
       case 'SET_ACTIVE_PICTURE': {
-        drawingState.activePictureId = payload.picture.id;
+        let picture = getPicture(payload.pictureId);
+        if (picture) {
+          drawingState.activePictureId = payload.pictureId;
+        } else {
+          drawingState.apiState = 'picture.invalid';
+          drawingState.activePictureId = null;
+        }
         resetState();
         props.fluxStore.emitChange();
         break;
