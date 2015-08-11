@@ -61,7 +61,7 @@ class NotebookEditorMenuBar extends React.Component {
   }
 
   handleNewNotebook() {
-    console.log('handle new notebook');
+    this.context.actions.picture.forkNotebook('default');
   }
 
   handleTogglePictures(evt) {

@@ -410,6 +410,7 @@ span.logo input:focus {
 
 .logo-button {
   margin-top: 5px;
+  cursor: pointer;
 }
 
 .logo-button:hover {
