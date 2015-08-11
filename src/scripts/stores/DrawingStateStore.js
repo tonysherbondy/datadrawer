@@ -11,7 +11,13 @@ function drawingStateStore(props) {
     editingInstructionId: null,
     dataPopupPosition: null,
     showDataPopup: false,
-    pictureForPictureTool: null
+    pictureForPictureTool: null,
+
+    // Used to be in picture store
+    activePictureId: null,
+    // states can be 'loading', 'loaded', 'saving',
+    // 'picture.invalid', 'notebook.invalid', 'forking'
+    apiState: 'init'
   };
 
   function getDrawingState() {
@@ -26,7 +32,8 @@ function drawingStateStore(props) {
   }
 
   function setSelectedInstructions(selectedInstructions) {
-    let picture = props.pictureStore.getActivePicture();
+    let notebook = props.pictureStore.getNotebook();
+    let picture = notebook.pictures.find(p => p.id === drawingState.activePictureId);
     let instructions = picture.instructions;
     let parent = InstructionTreeNode.findParent(instructions, selectedInstructions[0]);
     // TODO (nhan): this should check whether an ancestor is a loop instruction
@@ -140,13 +147,64 @@ function drawingStateStore(props) {
         break;
       }
 
-      // TODO - this eventually needs to depend on the picture store
-      // and also activePicture should be moved back here
-      // TODO - Once the waitFor is there then we can move the App logic
-      // that finds the actual current instruction
-      case 'ADD_NEW_PICTURE':
-      case 'LOADED_NOTEBOOK':
       case 'SET_ACTIVE_PICTURE': {
+        drawingState.activePictureId = payload.picture.id;
+        resetState();
+        props.fluxStore.emitChange();
+        break;
+      }
+
+      case 'SET_INVALID_PICTURE_STATE': {
+        drawingState.apiState = 'picture.invalid';
+        drawingState.activePictureId = null;
+        props.fluxStore.emitChange();
+        break;
+      }
+
+      case 'LOADING_NOTEBOOK': {
+        drawingState.apiState = 'loading';
+        props.fluxStore.emitChange();
+        break;
+      }
+
+      case 'FORKING_NOTEBOOK': {
+        drawingState.apiState = 'forking';
+        props.fluxStore.emitChange();
+        break;
+      }
+
+      case 'NOTEBOOK_NOT_FOUND': {
+        // This should wait because we want to remain in the loading state
+        // until the new notfound notebook is set
+        props.dispatcher.dispatcher.waitFor([props.pictureStore.dispatcherID]);
+        drawingState.apiState = 'notebook.invalid';
+        props.fluxStore.emitChange();
+        break;
+      }
+
+      case 'LOADED_NOTEBOOK': {
+        // This should wait because we want to remain in the loading state
+        // until the new notfound notebook is set
+        props.dispatcher.dispatcher.waitFor([props.pictureStore.dispatcherID]);
+
+        // Set active picture
+        let notebook = props.pictureStore.getNotebook();
+        let picture = notebook.pictures.find(p => p.id === payload.activePictureId);
+        if (picture) {
+          drawingState.apiState = 'loaded';
+          drawingState.activePictureId = picture.id;
+        } else {
+          // TODO - need to decouple states for valid picture vs. valid notebook
+          drawingState.apiState = 'picture.invalid';
+          drawingState.activePictureId = null;
+        }
+        props.fluxStore.emitChange();
+        break;
+      }
+
+      // TODO - Once the waitFor is there then we can move the App logic
+      // that finds the actual current instruction from App to here
+      case 'ADD_NEW_PICTURE': {
         props.dispatcher.dispatcher.waitFor([props.pictureStore.dispatcherID]);
         resetState();
         props.fluxStore.emitChange();

@@ -258,6 +258,7 @@ class Notebook extends React.Component {
         pictureVariables: picture.variables
       });
       this.context.actions.picture.insertInstructionAfterInstruction(
+        this.props.activePicture.id,
         instruction,
         this.props.currentInstruction);
     } else {

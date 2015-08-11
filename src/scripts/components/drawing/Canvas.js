@@ -246,6 +246,7 @@ class Canvas extends React.Component {
               };
               this.setState({startPoint: lastPoint});
               this.context.actions.picture.insertInstructionAfterInstruction(
+                this.props.activePicture.id,
                 new ExtendPathInstruction(props),
                 this.props.currentInstruction);
             }
@@ -256,6 +257,7 @@ class Canvas extends React.Component {
             if (props) {
               this.setState({startPoint: closeControlPoint});
               this.context.actions.picture.insertInstructionAfterInstruction(
+                this.props.activePicture.id,
                 new ScaleInstruction(props),
                 this.props.currentInstruction);
             }
@@ -273,6 +275,7 @@ class Canvas extends React.Component {
             this.setState({startPoint: closeControlPoint});
             let newInstruction = (new RotateInstruction(props)).getCloneWithTo(point, closeControlPoint, this.props.currentLoopIndex);
             this.context.actions.picture.insertInstructionAfterInstruction(
+              this.props.activePicture.id,
               newInstruction,
               this.props.currentInstruction);
             break;
@@ -289,6 +292,7 @@ class Canvas extends React.Component {
             };
             this.setState({startPoint: closeControlPoint});
             this.context.actions.picture.insertInstructionAfterInstruction(
+              this.props.activePicture.id,
               new MoveInstruction(props),
               this.props.currentInstruction);
             break;

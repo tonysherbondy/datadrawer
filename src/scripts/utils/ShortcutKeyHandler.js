@@ -36,6 +36,7 @@ export default class ShortcutKeyHandler {
       keyDown: () => {
         this.drawingStateActions.setDrawingMode('path');
         this.pictureActions.insertInstructionAfterInstruction(
+          this.notebook.props.activePicture.id,
           new DrawPathInstruction(),
           this.notebook.props.currentInstruction);
       }
@@ -121,6 +122,7 @@ export default class ShortcutKeyHandler {
       keyDown: () => {
         this.drawingStateActions.setDrawingMode('rect');
         this.pictureActions.insertInstructionAfterInstruction(
+          this.notebook.props.activePicture.id,
           new DrawRectInstruction(),
           this.notebook.props.currentInstruction);
       }
@@ -164,6 +166,7 @@ export default class ShortcutKeyHandler {
       keyDown: () => {
         this.drawingStateActions.setDrawingMode('text');
         this.pictureActions.insertInstructionAfterInstruction(
+          this.notebook.props.activePicture.id,
           new DrawTextInstruction(),
           this.notebook.props.currentInstruction);
       }
@@ -187,6 +190,7 @@ export default class ShortcutKeyHandler {
       keyDown: () => {
         this.drawingStateActions.setDrawingMode('line');
         this.pictureActions.insertInstructionAfterInstruction(
+          this.notebook.props.activePicture.id,
           new DrawLineInstruction(),
           this.notebook.props.currentInstruction);
       }
@@ -200,6 +204,7 @@ export default class ShortcutKeyHandler {
       keyDown: () => {
         this.drawingStateActions.setDrawingMode('circle');
         this.pictureActions.insertInstructionAfterInstruction(
+          this.notebook.props.activePicture.id,
           new DrawCircleInstruction(),
           this.notebook.props.currentInstruction);
       }

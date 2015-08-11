@@ -19,12 +19,15 @@ class Main extends React.Component {
   }
 
   getStateFromStores(stores) {
+    let drawingState = stores.drawingState.getDrawingState();
+    // Need to do this to have a record of previous apiState o.w.
+    // drawingState object needs to be immutable
+    let {apiState} = drawingState;
     return {
       notebook: stores.picture.getNotebook(),
-      activePicture: stores.picture.getActivePicture(),
-      pictureApiState: stores.picture.getApiState(),
       pictures: stores.picture.getPictures(),
-      drawingState: stores.drawingState.getDrawingState()
+      apiState,
+      drawingState
     };
   }
 

@@ -24,18 +24,20 @@ function pictureActions(pictureApi) {
       this.dispatch({actionType: 'REPLACE_INSTRUCTIONS', picture, toRemove, toAdd});
     },
 
-    insertInstruction(instruction, index, parent) {
+    insertInstruction(pictureId, instruction, index, parent) {
       this.dispatch({
         actionType: 'INSERT_INSTRUCTION',
+        pictureId,
         instruction,
         index,
         parent
       });
     },
 
-    insertInstructionAfterInstruction(instructionToInsert, instruction) {
+    insertInstructionAfterInstruction(pictureId, instructionToInsert, instruction) {
       this.dispatch({
         actionType: 'INSERT_INSTRUCTION_AFTER_INSTRUCTION',
+        pictureId,
         instruction,
         instructionToInsert
       });

@@ -7,20 +7,8 @@ import Notebook from '../models/Notebook';
 // used for supporting undo/redo
 
 function pictureStore(props) {
-  let activePictureId = null;
-  // states can be 'loading', 'loaded', 'saving',
-  // 'picture.invalid', 'notebook.invalid', 'forking'
-  let apiState = 'init';
   let notebook = new Notebook();
   let pictureHistories = OrderedMap();
-
-  function getApiState() {
-    return apiState;
-  }
-
-  function getActivePicture() {
-    return notebook.pictures.get(activePictureId);
-  }
 
   function getNotebook() {
     return notebook;
@@ -116,9 +104,10 @@ function pictureStore(props) {
         break;
       }
 
+      // TODO - need to pass picture ID
       case 'INSERT_INSTRUCTION': {
-        let {instruction, index, parent} = payload;
-        let picture = getActivePicture();
+        let {instruction, index, parent, pictureId} = payload;
+        let picture = notebook.pictures.find(p => p.id === pictureId);
         picture = picture.insertInstructionAtIndexWithParent(
           index, parent, instruction);
         updatePicture(picture);
@@ -126,9 +115,10 @@ function pictureStore(props) {
         break;
       }
 
+      // TODO - need to pass picture ID
       case 'INSERT_INSTRUCTION_AFTER_INSTRUCTION': {
-        let {instruction, instructionToInsert} = payload;
-        let picture = getActivePicture();
+        let {instruction, instructionToInsert, pictureId} = payload;
+        let picture = notebook.pictures.find(p => p.id === pictureId);
         if (!instruction) {
           picture = picture.addInstruction(instructionToInsert);
         } else {
@@ -162,38 +152,10 @@ function pictureStore(props) {
         break;
       }
 
-      case 'SET_ACTIVE_PICTURE': {
-        activePictureId = payload.picture.id;
-        // TODO this is a little weird
-        apiState = 'loaded';
-        props.fluxStore.emitChange();
-        break;
-      }
-
-      case 'SET_INVALID_PICTURE_STATE': {
-        activePictureId = null;
-        apiState = 'picture.invalid';
-        props.fluxStore.emitChange();
-        break;
-      }
-
       case 'NOTEBOOK_NOT_FOUND': {
         // we use this notebook to represent the fact that the call to fetch
         // the notebook returned so that we don't attempt to do it again
         notebook = new Notebook({id: payload.notebookId});
-        apiState = 'notebook.invalid';
-        props.fluxStore.emitChange();
-        break;
-      }
-
-      case 'LOADING_NOTEBOOK': {
-        apiState = 'loading';
-        props.fluxStore.emitChange();
-        break;
-      }
-
-      case 'FORKING_NOTEBOOK': {
-        apiState = 'forking';
         props.fluxStore.emitChange();
         break;
       }
@@ -204,17 +166,6 @@ function pictureStore(props) {
         // Reset history
         pictureHistories = OrderedMap();
         notebook.pictures.forEach(updatePicture);
-
-        // Set active picture
-        let picture = notebook.pictures.find(p => p.id === payload.activePictureId);
-        if (picture) {
-          apiState = 'loaded';
-          activePictureId = picture.id;
-        } else {
-          // TODO - need to decouple states for valid picture vs. valid notebook
-          apiState = 'picture.invalid';
-          activePictureId = null;
-        }
         props.fluxStore.emitChange();
         break;
       }
@@ -224,8 +175,6 @@ function pictureStore(props) {
   return {
     accessors: {
       getNotebook,
-      getApiState,
-      getActivePicture,
       getPictures
     },
     actionHandler: handleAction

@@ -20,7 +20,7 @@ class NotebookNotFound extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.pictureApiState === 'loaded') {
+    if (nextProps.apiState === 'loaded') {
       let firstPicture = nextProps.notebook.pictures.first();
       this.context.router.transitionTo(`/notebook/${nextProps.notebook.id}/picture/${firstPicture.id}/`);
     }
@@ -28,7 +28,7 @@ class NotebookNotFound extends React.Component {
 }
 
 NotebookNotFound.propTypes = {
-  pictureApiState: React.PropTypes.string.isRequired,
+  apiState: React.PropTypes.string.isRequired,
   notebook: React.PropTypes.object.isRequired
 };
 

@@ -11,19 +11,21 @@ import {RouteHandler} from 'react-router';
 class App extends React.Component {
 
   render() {
-    let {pictures, drawingState, pictureApiState} = this.props;
+    let {pictures, drawingState, apiState} = this.props;
 
-    if (pictureApiState === 'loading') {
+    if (apiState === 'loading') {
       return ( <h1>LOADING...</h1>);
-    } else if (pictureApiState === 'picture.invalid') {
+    } else if (apiState === 'picture.invalid') {
       return ( <h1>INVALID PICTURE.</h1>);
-    } else if (pictureApiState === 'notebook.invalid') {
+    } else if (apiState === 'notebook.invalid') {
       return ( <h1>INVALID NOTEBOOK.</h1>);
-    } else if (pictureApiState === 'init') {
+    } else if (apiState === 'init') {
       return ( <h1>LOADING NOTEBOOK...</h1>);
     }
 
-    let activePicture = this.props.activePicture;
+    let activePicture = this.props.notebook.pictures.find(p => {
+      return p.id === this.props.drawingState.activePictureId;
+    });
 
     // Instead of defaulting to first, we should transition to the right route... but I don't
     // want to do this in render
@@ -103,30 +105,29 @@ class App extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    let {notebook, pictures, pictureApiState} = nextProps;
+    let {notebook, pictures, apiState} = nextProps;
 
     // 1. We just finished forking and need to go to new notebook
     // 2. We are transitioning to new notebook id and need to load new notebook
     // 3. Switching pictures within a notebook
     // 4. Picture was not part of the notebook, so we go to the first picture in notebook
     // 5. Notebook was not found so transition to notebook-not-found page
-    if (pictureApiState === 'loaded' && this.props.pictureApiState === 'forking') {
+    if (apiState === 'loaded' && this.props.apiState === 'forking') {
       let firstPicture = nextProps.notebook.pictures.first();
       this.context.router.transitionTo(`/notebook/${nextProps.notebook.id}/picture/${firstPicture.id}/`);
 
-    } else if (nextProps.params.notebookId !== notebook.id) {
+    } else if (nextProps.params.notebookId !== notebook.id && apiState !== 'loading' && apiState !== 'forking') {
       // TODO - this check is a stand-in for intercepting when the route changes
       // it would be better to have a direct hook into the router transition
       // that actually works so that willreceiveprops does not have to issue
       // an action and we don't have to do weird checks like the
-      // pictureApiState != loading below
-      if (pictureApiState !== 'loading') {
-        this.context.actions.picture.loadNotebookAndSetActivePicture(nextProps.params.notebookId, nextProps.params.pictureId);
-      }
+      // apiState != loading below
+      this.context.actions.picture.loadNotebookAndSetActivePicture(nextProps.params.notebookId, nextProps.params.pictureId);
 
     } else if (nextProps.params.pictureId !== this.props.params.pictureId) {
-      // This is like checking if we have the right notebook, but for now we are
-      // just seeing if all pictures have been loaded
+      // TODO - move this aciton to drawingState actions then move this logic into the store as well
+      // We are trying to transition to a new picture so we either do it if our notebook
+      // has that picture or we consider the picture is invalid
       let picture = pictures.find(p => p.id === nextProps.params.pictureId);
       if (picture) {
         this.context.actions.picture.setActivePicture(picture);
@@ -135,13 +136,16 @@ class App extends React.Component {
         // TODO - need to transition to somewhere else
       }
 
-    } else if (pictureApiState === 'picture.invalid') {
+    } else if (apiState === 'picture.invalid') {
+      // If our picture state is invalid, we need should transition to the first picture
+      // in the notebook
       let pathElements = this.router.getCurrentPath().split('/');
       let pathIndex = pathElements.indexOf(nextProps.params.pictureId);
       pathElements[pathIndex] = _.first(pictures).id;
       this.router.transitionTo(pathElements.join('/'));
 
-    } else if (pictureApiState === 'notebook.invalid') {
+    } else if (apiState === 'notebook.invalid') {
+      // If the notebook is invalid (not found) go to not found page
       this.router.replaceWith('/notebook-not-found');
     }
   }
@@ -149,9 +153,8 @@ class App extends React.Component {
 
 App.propTypes = {
   notebook: React.PropTypes.object.isRequired,
-  activePicture: React.PropTypes.object,
-  pictureApiState: React.PropTypes.string.isRequired,
   pictures: React.PropTypes.array.isRequired,
+  apiState: React.PropTypes.string.isRequired,
   drawingState: React.PropTypes.object.isRequired
 };
 
