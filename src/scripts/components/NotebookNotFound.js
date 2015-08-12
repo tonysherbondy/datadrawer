@@ -16,7 +16,10 @@ class NotebookNotFound extends React.Component {
   }
 
   handleCreateNotebook() {
-    this.context.actions.picture.forkNotebook('default');
+    this.context.actions.picture.forkNotebook({
+      notebookId: 'default',
+      newOwnerId: this.props.user.id
+    });
   }
 
   componentWillReceiveProps(nextProps) {

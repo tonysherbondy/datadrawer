@@ -1,0 +1,10 @@
+{
+  "rules": {
+    "notebooks": {
+      "$notebookId": {
+        ".write": "!data.exists() || data.child('owner').val() === auth.uid",
+        ".read": true
+      }
+    }
+  }
+}

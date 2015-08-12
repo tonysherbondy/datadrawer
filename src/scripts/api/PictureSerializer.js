@@ -568,13 +568,14 @@ function pictureSerializer() {
     notebookJson.id = notebook.id;
     notebookJson.name = notebook.name;
     notebookJson.pictures = notebook.pictures.map(pictureToJson).toJS();
+    notebookJson.owner = notebook.ownerId;
     return notebookJson;
   }
 
   function notebookFromJson(notebookJson) {
-    let {id, name} = notebookJson;
+    let {id, name, owner} = notebookJson;
     let pictures = _.mapValues((notebookJson.pictures || {}), pictureFromJson);
-    return new Notebook({id, name, pictures});
+    return new Notebook({id, name, pictures, ownerId: owner});
   }
 
   return {pictureToJson, pictureFromJson, notebookFromJson, notebookToJson};

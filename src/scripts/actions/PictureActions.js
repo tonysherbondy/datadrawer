@@ -95,7 +95,13 @@ function pictureActions(pictureApi) {
           actionType: 'SAVED_PICTURE'
         });
       }).catch((err) => {
-        console.error(err);
+        if (err.status === 401) {
+          this.dispatch({
+            actionType: 'PROMPT_TO_FORK'
+          });
+        } else {
+          console.error(err);
+        }
       });
     },
 
@@ -108,15 +114,40 @@ function pictureActions(pictureApi) {
           actionType: 'SAVED_NOTEBOOK'
         });
       }).catch((err) => {
-        console.error(err);
+        if (err.status === 401) {
+          this.dispatch({
+            actionType: 'PROMPT_TO_FORK'
+          });
+        } else {
+          console.error(err);
+        }
       });
     },
 
-    forkNotebook(notebookId) {
-      let forkedNotebook;
+    cancelFork() {
+      this.dispatch({
+        actionType: 'CANCEL_FORK'
+      });
+    },
+
+    // only one of notebook or notebookId should be provided
+    // the notebook will be loaded from the server if notebookId is given
+    forkNotebook({notebook, notebookId, newOwnerId}) {
       this.dispatch({actionType: 'FORKING_NOTEBOOK'});
-      pictureApi.loadNotebook(notebookId).then((notebook) => {
-        forkedNotebook = notebook.fork();
+
+      let loadNotebook;
+      if (notebookId) {
+        loadNotebook = pictureApi.loadNotebook(notebookId);
+      } else {
+        loadNotebook = Promise.resolve(notebook);
+      }
+
+      // needed because pictureApi.saveNotebook doesn't give the notebook
+      // back right now
+      let forkedNotebook;
+
+      loadNotebook.then((loadedNotebook) => {
+        forkedNotebook = loadedNotebook.fork(newOwnerId);
         return forkedNotebook;
       })
       .then(pictureApi.saveNotebook.bind(pictureApi))

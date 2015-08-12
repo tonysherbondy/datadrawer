@@ -4,7 +4,9 @@ import classNames from 'classnames';
 class NotebookEditorMenuBar extends React.Component {
   render() {
     let {isShowingPictures} = this.props;
+    let userId = (<li key='userId'>{this.props.user.id}</li>);
     let listItems = [
+      userId,
       this.getMenuBarItem('Pictures', this.handleTogglePictures, isShowingPictures)
       //this.getMenuBarItem('Shortcuts', this.handleToggleShortcuts, isShowingShortcuts)
     ];
@@ -65,11 +67,17 @@ class NotebookEditorMenuBar extends React.Component {
   }
 
   handleNotebookFork() {
-    this.context.actions.picture.forkNotebook(this.props.notebook.id);
+    this.context.actions.picture.forkNotebook({
+      notebook: this.props.notebook,
+      newOwnerId: this.props.user.id
+    });
   }
 
   handleNewNotebook() {
-    this.context.actions.picture.forkNotebook('default');
+    this.context.actions.picture.forkNotebook({
+      notebookId: 'default',
+      newOwnerId: this.props.user.id
+    });
   }
 
   handleSaveNotebook() {

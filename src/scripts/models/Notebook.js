@@ -19,13 +19,16 @@ class Notebook {
         [emptyPicture.id, emptyPicture]
       ]);
     }
+
+    this.ownerId = props.ownerId;
   }
 
-  fork() {
+  fork(ownerId) {
     return new Notebook({
       id: guid(),
       name: `Fork of ${this.name}`,
-      pictures: this.pictures
+      pictures: this.pictures,
+      ownerId
     });
   }
 }

@@ -27,7 +27,9 @@ class Main extends React.Component {
       notebook: stores.picture.getNotebook(),
       pictures: stores.picture.getPictures(),
       apiState,
-      drawingState
+      drawingState,
+      user: stores.user.getUser(),
+      authenticationState: stores.user.getAuthenticationState()
     };
   }
 

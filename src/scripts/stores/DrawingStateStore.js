@@ -16,7 +16,7 @@ function drawingStateStore(props) {
     // Used to be in picture store
     activePictureId: null,
     // states can be 'loading', 'loaded', 'saving',
-    // 'picture.invalid', 'notebook.invalid', 'forking'
+    // 'picture.invalid', 'notebook.invalid', 'forking', 'should fork'
     apiState: 'init'
   };
 
@@ -223,6 +223,21 @@ function drawingStateStore(props) {
         props.dispatcher.dispatcher.waitFor([props.pictureStore.dispatcherID]);
         // Need to try to reset to the picture we had before in case we deleted it
         setActivePicture(drawingState.activePictureId);
+        props.fluxStore.emitChange();
+        break;
+      }
+
+      case 'PROMPT_TO_FORK': {
+        props.dispatcher.dispatcher.waitFor([props.pictureStore.dispatcherID]);
+        drawingState.apiState = 'should fork';
+        props.fluxStore.emitChange();
+        break;
+      }
+
+      case 'CANCEL_FORK': {
+        props.dispatcher.dispatcher.waitFor([props.pictureStore.dispatcherID]);
+        // should probably go to the previous state instead of assuming loaded
+        drawingState.apiState = 'loaded';
         props.fluxStore.emitChange();
         break;
       }

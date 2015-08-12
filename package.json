@@ -34,6 +34,7 @@
     "classnames": "^2.1.1",
     "colr-convert": "^1.0.4",
     "csscolorparser": "^1.0.2",
+    "firebase": "^2.2.9",
     "font-awesome": "^4.3.0",
     "immutable": "^3.7.3",
     "jquery": "^2.1.4",

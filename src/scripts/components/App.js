@@ -11,9 +11,17 @@ import {RouteHandler} from 'react-router';
 class App extends React.Component {
 
   render() {
-    let {pictures, drawingState, apiState} = this.props;
+    let {pictures, drawingState, apiState, user, authenticationState} =
+      this.props;
 
-    if (apiState === 'loading') {
+    // TODO: handle authentication error state
+    // should probably just prompt user to reload page
+    if (authenticationState === 'unauthenticated'
+        || authenticationState === 'pending') {
+      return ( <h1>CREATING NEW USER...</h1>);
+    } else if (authenticationState === 'failure') {
+      return ( <h1>UNABLE TO LOAD OR CREATE A NEW USER...</h1>);
+    } else if (apiState === 'loading') {
       return ( <h1>LOADING...</h1>);
     } else if (apiState === 'picture.invalid') {
       return ( <h1>INVALID PICTURE.</h1>);
@@ -21,6 +29,25 @@ class App extends React.Component {
       return ( <h1>INVALID NOTEBOOK.</h1>);
     } else if (apiState === 'init') {
       return ( <h1>LOADING NOTEBOOK...</h1>);
+    } else if (apiState === 'should fork') {
+      let forkAction = () => {
+        this.context.actions.picture.forkNotebook({
+          notebook: this.props.notebook,
+          newOwnerId: user.id
+        });
+      };
+
+      let cancelForkAction = () => {
+        this.context.actions.picture.cancelFork();
+      };
+
+      // TODO make this a modal
+      return (<div>
+                You are not the owner of the this notebook.  Would you like
+                to create your own copy?
+                <button onClick={forkAction}>Yes</button>
+                <button onClick={cancelForkAction}>No</button>
+              </div>);
     }
 
     let activePicture = this.props.notebook.pictures.find(p => {
@@ -41,6 +68,7 @@ class App extends React.Component {
     // Either go to a picture viewer or editor
     return (
       <RouteHandler
+        user={user}
         notebook={this.props.notebook}
         activePicture={activePicture}
         editingInstructionId={drawingState.editingInstructionId}
@@ -105,7 +133,12 @@ class App extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    let {notebook, pictures, apiState} = nextProps;
+    let {notebook, pictures, apiState, authenticationState} = nextProps;
+
+    if (authenticationState === 'unauthenticated') {
+      this.context.actions.user.authenticate();
+      return;
+    }
 
     // 1. We just finished forking and need to go to new notebook
     // 2. We are transitioning to new notebook id and need to load new notebook
