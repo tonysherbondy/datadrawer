@@ -208,8 +208,10 @@ class Notebook extends React.Component {
     let googApi = new GoogleSheetsApi();
     googApi.loadSpreadsheet(url).then( data => {
       console.log('need to load imported data', data);
+      this.setState({ isShowingGoogleImportModal: false });
     }).catch( err => {
       console.log('Error loading spreadheet', err);
+      this.setState({ isShowingGoogleImportModal: false });
     });
   }
 
