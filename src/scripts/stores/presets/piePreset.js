@@ -134,5 +134,5 @@ let instructions = () => [
 ];
 
 export default function() {
-  return new Picture('pie', instructions(), variables());
+  return new Picture({id: 'pie', instructions: instructions(), variables: variables()});
 }

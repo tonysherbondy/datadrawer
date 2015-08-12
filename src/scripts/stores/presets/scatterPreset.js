@@ -231,5 +231,5 @@ const instructions = () => [
 ];
 
 export default function() {
-  return new Picture('scatter', instructions(), variables());
+  return new Picture({id: 'scatter', instructions: instructions(), variables: variables()});
 }

@@ -8,20 +8,24 @@ import Expression from './Expression';
 import {guid} from '../utils/utils';
 
 export default class Picture {
-  constructor(id, instructions=[], variables=[]) {
-    this._id = id || guid();
+  constructor(props={}) {
+    this._id = props.id || guid();
 
+    let instructions = props.instructions || [];
     if (instructions instanceof OrderedMap) {
       this._instructions = instructions;
     } else {
       this._instructions = OrderedMap(instructions.map(i => [i.id, i]));
     }
 
+    let variables = props.variables || [];
     if (variables instanceof OrderedMap) {
       this._variables = variables;
     } else {
       this._variables = OrderedMap(variables.map(v => [v.id, v]));
     }
+
+    this.googleSpreadsheetId = props.googleSpreadsheetId;
   }
 
   get id() { return this._id; }
@@ -35,32 +39,69 @@ export default class Picture {
   set variables(v) { throw `Use addVariable, updateVariable, \
     or removeVariable.  (Tried to set to ${v})`; }
 
+  cloneWith(props) {
+    let curProps = {
+      id: this._id,
+      instructions: this._instructions,
+      variables: this._variables,
+      googleSpreadsheetId: this.googleSpreadsheetId
+    };
+    return new Picture(Object.assign(curProps, props));
+  }
+
   addVariable(variable) {
     // TODO: check that variable doesn't exist
     let variables = this._variables.set(variable.id, variable);
-    return new Picture(this._id, this._instructions, variables);
+    return this.cloneWith({variables});
   }
 
   updateVariable(variable) {
     let variables = this._variables.set(variable.id, variable);
-    return new Picture(this._id, this._instructions, variables);
+    return this.cloneWith({variables});
   }
 
   removeVariable(variable) {
     let variables = this._variables.delete(variable.id);
-    return new Picture(this._id, this._instructions, variables);
+    return this.cloneWith({variables});
+  }
+
+  // TODO - This should just take a list of variables and move this logic into
+  // the external api area
+  // Variable map has keys of variable name and values of array of values
+  importVariables(variableMap) {
+    let picture = this;
+    _.pairs(variableMap).forEach(([key, value]) => {
+      // First see if we already have a variable with this rows name
+      let variable = picture.variables.find(v => v.name === key);
+      let jsonVal = JSON.stringify(value);
+
+      if (variable) {
+        // Modify the existing variable with this definition
+        variable = variable.cloneWithDefinition(new Expression(jsonVal));
+        picture = picture.updateVariable(variable);
+      } else {
+        // Create a new variable
+        variable = picture.generateNewVariable({
+          name: key,
+          isRow: true,
+          definition: jsonVal
+        });
+        picture = picture.addVariable(variable);
+      }
+    });
+    return picture;
   }
 
   addInstruction(instruction) {
     // TODO: check that instruction doesn't exist
     let instructions = this._instructions.set(instruction.id, instruction);
-    return new Picture(this._id, instructions, this._variables);
+    return this.cloneWith({instructions});
   }
 
   //: TODO write better immutable versions of these methods
   updateInstruction(instruction) {
     let instructions = InstructionTreeNode.replaceById(this.instructions, instruction.id, instruction);
-    return new Picture(this._id, instructions, this._variables);
+    return this.cloneWith({instructions});
   }
 
   removeInstructions(instructionsToRemove) {
@@ -68,19 +109,19 @@ export default class Picture {
     instructionsToRemove.forEach(iToRemove => {
       instructions = InstructionTreeNode.removeById(instructions, iToRemove.id);
     });
-    return new Picture(this._id, instructions, this._variables);
+    return this.cloneWith({instructions});
   }
 
   replaceInstructions(toRemove, toAdd) {
     let instructions = this.instructions;
     instructions = InstructionTreeNode.replaceInstructions(instructions, toRemove, toAdd);
-    return new Picture(this._id, instructions, this._variables);
+    return this.cloneWith({instructions});
   }
 
   insertInstructionAtIndexWithParent(index, parent, instruction) {
     let instructions = this.instructions;
     instructions = InstructionTreeNode.insertInstruction(instructions, instruction, index, parent);
-    return new Picture(this._id, instructions, this._variables);
+    return this.cloneWith({instructions});
   }
 
   insertInstructionAfterInstruction(instructionToInsert, instruction) {

@@ -89,5 +89,5 @@ const instructions = () => [
 ];
 
 export default function() {
-  return new Picture('line', instructions(), variables());
+  return new Picture({id: 'line', instructions: instructions(), variables: variables()});
 }

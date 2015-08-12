@@ -26,7 +26,6 @@ class Notebook {
   fork(ownerId) {
     return new Notebook({
       id: guid(),
-      name: `Fork of ${this.name}`,
       pictures: this.pictures,
       ownerId
     });

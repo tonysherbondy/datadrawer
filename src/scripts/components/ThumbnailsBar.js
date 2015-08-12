@@ -103,7 +103,8 @@ export default class ThumbnailsBar extends React.Component {
 ThumbnailsBar.contextTypes = {
   actions: React.PropTypes.shape({
     picture: React.PropTypes.object.isRequired
-  })
+  }),
+  router: React.PropTypes.func.isRequired
 };
 
 ThumbnailsBar.propTypes = {

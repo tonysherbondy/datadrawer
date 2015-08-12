@@ -74,6 +74,21 @@ function pictureStore(props) {
         break;
       }
 
+      case 'IMPORT_VARIABLES': {
+        let picture = payload.picture.importVariables(payload.variableMap);
+        updatePicture(picture);
+        props.fluxStore.emitChange();
+        break;
+      }
+
+      case 'SET_SPREADSHEET_ID': {
+        updatePicture(payload.picture.cloneWith({
+          googleSpreadsheetId: payload.id
+        }));
+        props.fluxStore.emitChange();
+        break;
+      }
+
       case 'MODIFY_VARIABLE': {
         let picture = payload.picture.addVariable(payload.variable);
         updatePicture(picture);

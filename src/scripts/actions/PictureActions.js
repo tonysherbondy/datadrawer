@@ -59,6 +59,14 @@ function pictureActions(pictureApi) {
       this.dispatch({actionType: 'REMOVE_VARIABLE', picture, variable});
     },
 
+    importVariables(picture, variableMap) {
+      this.dispatch({actionType: 'IMPORT_VARIABLES', picture, variableMap});
+    },
+
+    setGoogleSpreadsheetId(picture, id) {
+      this.dispatch({actionType: 'SET_SPREADSHEET_ID', picture, id});
+    },
+
     setActivePicture(pictureId) {
       this.dispatch({actionType: 'SET_ACTIVE_PICTURE', pictureId});
     },

@@ -4,7 +4,6 @@ import Papa from 'papaparse';
 
 import VariablePill from '../VariablePill';
 import ExpressionEditorAndScrub from '../ExpressionEditorAndScrub';
-import Expression from '../../models/Expression';
 import Picture from '../../models/Picture';
 
 class DataTable extends React.Component {
@@ -56,6 +55,7 @@ class DataTable extends React.Component {
       <div>
         <button onClick={this.handleAddVariable.bind(this)}>Add</button>
         <input type='file' onChange={this.handleUpload.bind(this)} />
+        <button onClick={this.props.onGoogleImport.bind(this)}>Google Spreadsheet</button>
       </div>
     );
 
@@ -140,45 +140,23 @@ class DataTable extends React.Component {
       dynamicTyping: true,
 
       complete: (results, f) => {
+        console.log('parsed', f);
         // currently assuming columns are keyed by first row
-        console.log('parsing complete: ', f, results);
-        var rowMap = new Map();
+        var rowMap = Object.create(null);
         // papaparse makes sure all elements have all keys, even
         // if vals are empty
         for (let row of results.data) {
           for (let key of Object.keys(row)) {
             // value is an array of row values
-            if (rowMap.has(key)) {
-              var val = rowMap.get(key);
-              val.push(row[key]);
-              rowMap.set(key, val);
+            let mRow = rowMap[key];
+            if (mRow) {
+              mRow.push(row[key]);
             } else {
-              rowMap.set(key, [row[key]]);
+              rowMap[key] = [row[key]];
             }
           }
         }
-
-        rowMap.forEach((value, key) => {
-          // First see if we already have a variable with this rows name
-          let {picture} = this.props;
-          let variable = picture.variables.find(v => v.name === key);
-          let jsonVal = JSON.stringify(value);
-          console.log('json val:', jsonVal);
-
-          if (variable) {
-            // Modify the existing variable with this definition
-            variable = variable.cloneWithDefinition(new Expression(jsonVal));
-            this.context.actions.picture.modifyVariable(picture, variable);
-          } else {
-            // Create a new variable
-            variable = this.props.picture.generateNewVariable({
-              name: key,
-              isRow: true,
-              definition: jsonVal
-            });
-            this.context.actions.picture.addVariable(this.props.picture, variable);
-          }
-        });
+        this.context.actions.picture.importVariables(this.props.picture, rowMap);
       },
 
       error: (error, f) => {
