@@ -25,6 +25,9 @@ import NotebookEditorMenuBar from './NotebookEditorMenuBar';
 import Popover from './Popover';
 import ShapeDataList from './ShapeDataList';
 
+import Modal from './Modal';
+import GoogleSheetsApi from '../api/GoogleSheetsApi';
+
 import ShortcutKeyHandler from '../utils/ShortcutKeyHandler';
 
 class Notebook extends React.Component {
@@ -35,6 +38,7 @@ class Notebook extends React.Component {
       leftPanelWidth: 300,
       isDebugging: false,
       isShowingPictures: true,
+      isShowingGoogleImportModal: false,
       hideKeyMap: false
     };
 
@@ -90,6 +94,7 @@ class Notebook extends React.Component {
               picture={activePicture}
               currentLoopIndex={this.props.currentLoopIndex}
               dataVariables={activePicture.variables}
+              onGoogleImport={this.handleGoogleImportModalToggle.bind(this)}
               dataValues={variableValues} />
 
             <div className='left-panel-header'>Steps</div>
@@ -151,6 +156,17 @@ class Notebook extends React.Component {
               shapes={this.props.shapes} />
           </Popover>
 
+          {/* for now this is just modal for google import */}
+          <Modal title='Import Google Spreadsheet...'
+            submitTitle='Import'
+            isShowing={this.state.isShowingGoogleImportModal}
+            onSubmit={this.handleGoogleImport.bind(this)}
+            onClose={this.handleGoogleImportModalToggle.bind(this)}
+          >
+            <input ref="inputGoogleUrl" type="text" placeholder="Enter Spreadsheet ID"
+              onKeyDown={this.handleGoogleUrlKeyDown.bind(this)} />
+          </Modal>
+
           <div style={{clear: 'both'}}></div>
         </div>
       </div>
@@ -183,12 +199,22 @@ class Notebook extends React.Component {
     this.keyEventManager.handleKeyDown(e);
   }
 
-  handleNotebookFork() {
-    console.log('fork notebook');
+  handleGoogleImportModalToggle() {
+    this.setState({ isShowingGoogleImportModal: !this.state.isShowingGoogleImportModal });
   }
 
-  handleNewNotebook() {
-    console.log('new notebook');
+  handleGoogleImport() {
+    let url = React.findDOMNode(this.refs.inputGoogleUrl).value;
+    let googApi = new GoogleSheetsApi();
+    googApi.loadSpreadsheet(url).then( data => {
+      console.log('need to load imported data', data);
+    }).catch( err => {
+      console.log('Error loading spreadheet', err);
+    });
+  }
+
+  handleGoogleUrlKeyDown(evt) {
+    evt.stopPropagation();
   }
 
   handleTogglePictures() {

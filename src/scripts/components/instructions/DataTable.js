@@ -56,6 +56,7 @@ class DataTable extends React.Component {
       <div>
         <button onClick={this.handleAddVariable.bind(this)}>Add</button>
         <input type='file' onChange={this.handleUpload.bind(this)} />
+        <button onClick={this.props.onGoogleImport.bind(this)}>Google Spreadsheet</button>
       </div>
     );
 
