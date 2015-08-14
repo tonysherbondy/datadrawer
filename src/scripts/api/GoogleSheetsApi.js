@@ -18,7 +18,8 @@ class GoogleSheetsApi {
                           .pairs()
                           .filter(pair => /^gsx\$/.test(pair[0]))
                           .map(pair => {
-                            return {name: pair[0].slice(4), value: pair[1].$t};
+                            // Assume every value is a number and came in as a string
+                            return {name: pair[0].slice(4), value: +pair[1].$t};
                           })
                           .value();
         columns.map(column => {
