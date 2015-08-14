@@ -6,6 +6,7 @@ class Notebook {
   constructor(props = {}) {
     this.id = props.id || guid();
     this.name = props.name || 'Untitled';
+    this.googleSpreadsheetId = props.googleSpreadsheetId;
 
     if (props.pictures) {
       if (props.pictures instanceof OrderedMap) {
@@ -22,10 +23,12 @@ class Notebook {
   }
 
   fork() {
+    let {name, pictures, googleSpreadsheetId} = this;
     return new Notebook({
       id: guid(),
-      name: `Fork of ${this.name}`,
-      pictures: this.pictures
+      name: `Fork of ${name}`,
+      pictures,
+      googleSpreadsheetId
     });
   }
 }

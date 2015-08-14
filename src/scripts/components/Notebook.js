@@ -25,8 +25,7 @@ import NotebookEditorMenuBar from './NotebookEditorMenuBar';
 import Popover from './Popover';
 import ShapeDataList from './ShapeDataList';
 
-import Modal from './Modal';
-import GoogleSheetsApi from '../api/GoogleSheetsApi';
+import GoogleImportModal from './GoogleImportModal';
 
 import ShortcutKeyHandler from '../utils/ShortcutKeyHandler';
 
@@ -156,16 +155,10 @@ class Notebook extends React.Component {
               shapes={this.props.shapes} />
           </Popover>
 
-          {/* for now this is just modal for google import */}
-          <Modal title='Import Google Spreadsheet...'
-            submitTitle='Import'
-            isShowing={this.state.isShowingGoogleImportModal}
-            onSubmit={this.handleGoogleImport.bind(this)}
+          <GoogleImportModal
+            googleSpreadsheetId={this.props.notebook.googleSpreadsheetId}
             onClose={this.handleGoogleImportModalToggle.bind(this)}
-          >
-            <input ref="inputGoogleUrl" type="text" placeholder="Enter Spreadsheet ID"
-              onKeyDown={this.handleGoogleUrlKeyDown.bind(this)} />
-          </Modal>
+            isShowing={this.state.isShowingGoogleImportModal} />
 
           <div style={{clear: 'both'}}></div>
         </div>
@@ -201,22 +194,6 @@ class Notebook extends React.Component {
 
   handleGoogleImportModalToggle() {
     this.setState({ isShowingGoogleImportModal: !this.state.isShowingGoogleImportModal });
-  }
-
-  handleGoogleImport() {
-    let url = React.findDOMNode(this.refs.inputGoogleUrl).value;
-    let googApi = new GoogleSheetsApi();
-    googApi.loadSpreadsheet(url).then( data => {
-      console.log('need to load imported data', data);
-      this.setState({ isShowingGoogleImportModal: false });
-    }).catch( err => {
-      console.log('Error loading spreadheet', err);
-      this.setState({ isShowingGoogleImportModal: false });
-    });
-  }
-
-  handleGoogleUrlKeyDown(evt) {
-    evt.stopPropagation();
   }
 
   handleTogglePictures() {
