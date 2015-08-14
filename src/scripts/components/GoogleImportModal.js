@@ -35,10 +35,17 @@ class GoogleImportModal extends React.Component {
     let googApi = new GoogleSheetsApi();
     googApi.loadSpreadsheet(this.state.googleSpreadsheetId).then( data => {
       console.log('need to load imported data', data);
-      this.setState({ isShowingGoogleImportModal: false });
+
+      let rowMap = new Map();
+      for (let key of Object.keys(data)) {
+        rowMap.set(key, data[key]);
+      }
+      // TODO - import variables
+      this.context.actions.picture.importVariables(this.props.activePicture, rowMap);
+      this.props.onClose();
     }).catch( err => {
       console.log('Error loading spreadheet', err);
-      this.setState({ isShowingGoogleImportModal: false });
+      this.props.onClose();
     });
   }
 
@@ -46,5 +53,18 @@ class GoogleImportModal extends React.Component {
     evt.stopPropagation();
   }
 }
+
+GoogleImportModal.contextTypes = {
+  actions: React.PropTypes.shape({
+    picture: React.PropTypes.object.isRequired
+  })
+};
+
+GoogleImportModal.propTypes = {
+  isShowing: React.PropTypes.bool,
+  onClose: React.PropTypes.func.isRequired,
+  activePicture: React.PropTypes.object.isRequired,
+  notebook: React.PropTypes.object.isRequired
+};
 
 export default GoogleImportModal;

@@ -51,6 +51,31 @@ export default class Picture {
     return new Picture(this._id, this._instructions, variables);
   }
 
+  // Variable map has keys of variable name and values of array of values
+  importVariables(variableMap) {
+    let picture = this;
+    variableMap.forEach((value, key) => {
+      // First see if we already have a variable with this rows name
+      let variable = picture.variables.find(v => v.name === key);
+      let jsonVal = JSON.stringify(value);
+
+      if (variable) {
+        // Modify the existing variable with this definition
+        variable = variable.cloneWithDefinition(new Expression(jsonVal));
+        picture = picture.updateVariable(variable);
+      } else {
+        // Create a new variable
+        variable = picture.generateNewVariable({
+          name: key,
+          isRow: true,
+          definition: jsonVal
+        });
+        picture = picture.addVariable(variable);
+      }
+    });
+    return picture;
+  }
+
   addInstruction(instruction) {
     // TODO: check that instruction doesn't exist
     let instructions = this._instructions.set(instruction.id, instruction);

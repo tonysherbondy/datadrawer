@@ -74,6 +74,13 @@ function pictureStore(props) {
         break;
       }
 
+      case 'IMPORT_VARIABLES': {
+        let picture = payload.picture.importVariables(payload.variableMap);
+        updatePicture(picture);
+        props.fluxStore.emitChange();
+        break;
+      }
+
       case 'MODIFY_VARIABLE': {
         let picture = payload.picture.addVariable(payload.variable);
         updatePicture(picture);
