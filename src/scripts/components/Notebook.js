@@ -25,6 +25,8 @@ import NotebookEditorMenuBar from './NotebookEditorMenuBar';
 import Popover from './Popover';
 import ShapeDataList from './ShapeDataList';
 
+import GoogleImportModal from './GoogleImportModal';
+
 import ShortcutKeyHandler from '../utils/ShortcutKeyHandler';
 
 class Notebook extends React.Component {
@@ -35,6 +37,7 @@ class Notebook extends React.Component {
       leftPanelWidth: 300,
       isDebugging: false,
       isShowingPictures: true,
+      isShowingGoogleImportModal: false,
       hideKeyMap: false
     };
 
@@ -90,6 +93,7 @@ class Notebook extends React.Component {
               picture={activePicture}
               currentLoopIndex={this.props.currentLoopIndex}
               dataVariables={activePicture.variables}
+              onGoogleImport={this.handleGoogleImportModalToggle.bind(this)}
               dataValues={variableValues} />
 
             <div className='left-panel-header'>Steps</div>
@@ -151,6 +155,13 @@ class Notebook extends React.Component {
               shapes={this.props.shapes} />
           </Popover>
 
+          <GoogleImportModal
+            googleSpreadsheetId={this.props.notebook.googleSpreadsheetId}
+            activePicture={activePicture}
+            notebook={this.props.notebook}
+            onClose={this.handleGoogleImportModalToggle.bind(this)}
+            isShowing={this.state.isShowingGoogleImportModal} />
+
           <div style={{clear: 'both'}}></div>
         </div>
       </div>
@@ -183,12 +194,8 @@ class Notebook extends React.Component {
     this.keyEventManager.handleKeyDown(e);
   }
 
-  handleNotebookFork() {
-    console.log('fork notebook');
-  }
-
-  handleNewNotebook() {
-    console.log('new notebook');
+  handleGoogleImportModalToggle() {
+    this.setState({ isShowingGoogleImportModal: !this.state.isShowingGoogleImportModal });
   }
 
   handleTogglePictures() {
