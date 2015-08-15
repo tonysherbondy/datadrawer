@@ -1,11 +1,12 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import tabletop from 'tabletop';
 
 const urlPrefix = 'https://spreadsheets.google.com/feeds/list';
 const urlPostfix = 'od6/public/values?alt=json';
 
 class GoogleSheetsApi {
-  loadSpreadsheet(id) {
+  loadSpreadsheetOld(id) {
     let url = `${urlPrefix}/${id}/${urlPostfix}`;
     let fetchSheet = Promise.resolve($.getJSON(url));
 
@@ -33,6 +34,29 @@ class GoogleSheetsApi {
         });
       });
       return varMap;
+    });
+  }
+
+  loadSpreadsheet(key) {
+    return new Promise((resolve, reject) => {
+      try {
+        tabletop.init({simpleSheet: true, key, callback: (data) => {
+          let varMap = Object.create(null);
+          data.forEach(d => {
+            _.keys(d).forEach(k => {
+              let v = varMap[k];
+              if (v) {
+                v.push(+d[k]);
+              } else {
+                varMap[k] = [+d[k]];
+              }
+            });
+          });
+          resolve(varMap);
+        }});
+      } catch (e) {
+        reject(e);
+      }
     });
   }
 }
