@@ -140,20 +140,19 @@ class DataTable extends React.Component {
       dynamicTyping: true,
 
       complete: (results, f) => {
+        console.log('parsed', f);
         // currently assuming columns are keyed by first row
-        console.log('parsing complete: ', f, results);
-        var rowMap = new Map();
+        var rowMap = Object.create(null);
         // papaparse makes sure all elements have all keys, even
         // if vals are empty
         for (let row of results.data) {
           for (let key of Object.keys(row)) {
             // value is an array of row values
-            if (rowMap.has(key)) {
-              var val = rowMap.get(key);
-              val.push(row[key]);
-              rowMap.set(key, val);
+            let mRow = rowMap[key];
+            if (mRow) {
+              mRow.push(row[key]);
             } else {
-              rowMap.set(key, [row[key]]);
+              rowMap[key] = [row[key]];
             }
           }
         }

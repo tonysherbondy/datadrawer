@@ -555,3 +555,8 @@ span.logo input:focus {
 .modal .btn:hover {
   background-color: #357ebd;
 }
+
+.modal input {
+  font-size: 14px;
+  padding: 8px;
+}

@@ -54,7 +54,7 @@ export default class Picture {
   // Variable map has keys of variable name and values of array of values
   importVariables(variableMap) {
     let picture = this;
-    variableMap.forEach((value, key) => {
+    _.pairs(variableMap).forEach(([key, value]) => {
       // First see if we already have a variable with this rows name
       let variable = picture.variables.find(v => v.name === key);
       let jsonVal = JSON.stringify(value);

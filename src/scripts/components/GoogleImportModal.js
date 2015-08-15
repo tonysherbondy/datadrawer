@@ -1,13 +1,39 @@
 import React from 'react';
+import _ from 'lodash';
 import Modal from './Modal';
 import GoogleSheetsApi from '../api/GoogleSheetsApi';
+import VariablePill from './VariablePill';
 
 class GoogleImportModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      googleSpreadsheetId: ''
+      googleSpreadsheetId: '',
+      fetchedVariableMap: null
     };
+  }
+
+  fetchedVariablesUi() {
+    if (!this.state.fetchedVariableMap) {
+      return null;
+    }
+
+    let variables = _.pairs(this.state.fetchedVariableMap).map(([key]) => {
+      return (
+        <li className='import-variable-list-item' key={key}>
+          <VariablePill picture={this.props.activePicture} variable={{id: 'rando', name: key}} />
+        </li>
+      );
+    });
+
+    return (
+      <div className="fetched-variables-ui">
+        <h3>Import variables or edit names</h3>
+        <ul className="import-variable-list">
+          {variables}
+        </ul>
+      </div>
+    );
   }
 
   render() {
@@ -22,8 +48,27 @@ class GoogleImportModal extends React.Component {
             value={this.state.googleSpreadsheetId}
             onChange={this.handleIdChange.bind(this)}
             onKeyDown={this.handleGoogleUrlKeyDown.bind(this)} />
+
+          <a
+            onClick={this.handleFetchVariables.bind(this)}
+            className="btn">
+            Fetch Variables
+          </a>
+
+          {this.fetchedVariablesUi()}
+
       </Modal>
     );
+  }
+
+  handleFetchVariables(evt) {
+    let googApi = new GoogleSheetsApi();
+    googApi.loadSpreadsheet(this.state.googleSpreadsheetId).then(data => {
+      this.setState({fetchedVariableMap: data});
+    }).catch( err => {
+      console.log('Error loading spreadheet', err);
+    });
+    evt.preventDefault();
   }
 
   handleIdChange() {
@@ -32,21 +77,8 @@ class GoogleImportModal extends React.Component {
   }
 
   handleGoogleImport() {
-    let googApi = new GoogleSheetsApi();
-    googApi.loadSpreadsheet(this.state.googleSpreadsheetId).then( data => {
-      console.log('need to load imported data', data);
-
-      let rowMap = new Map();
-      for (let key of Object.keys(data)) {
-        rowMap.set(key, data[key]);
-      }
-      // TODO - import variables
-      this.context.actions.picture.importVariables(this.props.activePicture, rowMap);
-      this.props.onClose();
-    }).catch( err => {
-      console.log('Error loading spreadheet', err);
-      this.props.onClose();
-    });
+    this.context.actions.picture.importVariables(this.props.activePicture, this.state.fetchedVariableMap);
+    this.props.onClose();
   }
 
   handleGoogleUrlKeyDown(evt) {
