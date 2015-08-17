@@ -5,6 +5,12 @@ It's like the Tukey you know and love, but rewritten (again), but with React.
 
 ### Usage
 
+#### Firebase setup
+- Change `baseUrl` in FirebaseApi.js to point to your firebase.
+- In your Firebase dashboard, go to `Security & Rules` and paste in the
+  contents of `firebaseSecurityRules.json`.
+
+#### Run the app
 ```
 npm install
 npm start
