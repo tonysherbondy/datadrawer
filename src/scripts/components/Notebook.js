@@ -156,9 +156,7 @@ class Notebook extends React.Component {
           </Popover>
 
           <GoogleImportModal
-            googleSpreadsheetId={this.props.notebook.googleSpreadsheetId}
             activePicture={activePicture}
-            notebook={this.props.notebook}
             onClose={this.handleGoogleImportModalToggle.bind(this)}
             isShowing={this.state.isShowingGoogleImportModal} />
 

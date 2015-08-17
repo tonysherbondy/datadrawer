@@ -3,12 +3,6 @@ import Modal from './Modal';
 import GoogleSheetsApi from '../api/GoogleSheetsApi';
 
 class GoogleImportModal extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      googleSpreadsheetId: ''
-    };
-  }
 
   render() {
     return (
@@ -27,6 +21,16 @@ class GoogleImportModal extends React.Component {
     );
   }
 
+  componentWillMount() {
+    this.setState({googleSpreadsheetId: this.props.activePicture.googleSpreadsheetId});
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.activePicture !== this.props.activePicture) {
+      this.setState({googleSpreadsheetId: nextProps.activePicture.googleSpreadsheetId});
+    }
+  }
+
   handleIdChange() {
     let googleSpreadsheetId = React.findDOMNode(this.refs.inputGoogleUrl).value;
     this.setState({googleSpreadsheetId});
@@ -35,13 +39,14 @@ class GoogleImportModal extends React.Component {
   handleGoogleImport() {
     let googApi = new GoogleSheetsApi();
     googApi.loadSpreadsheet(this.state.googleSpreadsheetId).then(varMap => {
+      this.context.actions.picture.setGoogleSpreadsheetId(
+        this.props.activePicture, this.state.googleSpreadsheetId);
       this.context.actions.picture.importVariables(this.props.activePicture, varMap);
       this.props.onClose();
     }).catch( err => {
       console.log('Error loading spreadheet', err);
       this.props.onClose();
     });
-
   }
 
   handleGoogleUrlKeyDown(evt) {
@@ -58,8 +63,7 @@ GoogleImportModal.contextTypes = {
 GoogleImportModal.propTypes = {
   isShowing: React.PropTypes.bool,
   onClose: React.PropTypes.func.isRequired,
-  activePicture: React.PropTypes.object.isRequired,
-  notebook: React.PropTypes.object.isRequired
+  activePicture: React.PropTypes.object.isRequired
 };
 
 export default GoogleImportModal;

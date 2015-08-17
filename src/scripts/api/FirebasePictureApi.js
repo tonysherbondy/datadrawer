@@ -6,7 +6,8 @@ import barsPreset from '../stores/presets/barsPreset';
 import scatterPreset from '../stores/presets/scatterPreset';
 import linePreset from '../stores/presets/linePreset';
 
-const baseUrl = 'https://datadrawer.firebaseio.com/';
+//const baseUrl = 'https://datadrawer.firebaseio.com/';
+const baseUrl = 'https://dashdrawer.firebaseio.com/';
 
 class FirebasePictureApi {
   constructor(serializer) {

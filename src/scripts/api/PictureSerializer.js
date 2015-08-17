@@ -552,6 +552,7 @@ function pictureSerializer() {
     let picturejson = Object.create(null);
     // expects picture.variables and picture.instructions to be plain JS arrays
     picturejson.id = picture.id;
+    picturejson.googleSpreadsheetId = picture.googleSpreadsheetId;
     picturejson.variables = picture.variables.map(variableToJson);
     picturejson.instructions = picture.instructions.map(instructionToJson);
     return picturejson;
@@ -560,7 +561,8 @@ function pictureSerializer() {
   function pictureFromJson(picturejson) {
     let instructions = (picturejson.instructions || []).map(instructionFromJson);
     let variables = (picturejson.variables || []).map(variableFromJson);
-    return new Picture({id: picturejson.id, instructions: instructions, variables: variables});
+    let {id, googleSpreadsheetId} = picturejson;
+    return new Picture({id, googleSpreadsheetId, instructions: instructions, variables: variables});
   }
 
   function notebookToJson(notebook) {

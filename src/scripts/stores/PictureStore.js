@@ -81,6 +81,14 @@ function pictureStore(props) {
         break;
       }
 
+      case 'SET_SPREADSHEET_ID': {
+        updatePicture(payload.picture.cloneWith({
+          googleSpreadsheetId: payload.id
+        }));
+        props.fluxStore.emitChange();
+        break;
+      }
+
       case 'MODIFY_VARIABLE': {
         let picture = payload.picture.addVariable(payload.variable);
         updatePicture(picture);
