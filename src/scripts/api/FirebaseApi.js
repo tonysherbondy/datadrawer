@@ -7,7 +7,7 @@ import barsPreset from '../stores/presets/barsPreset';
 import scatterPreset from '../stores/presets/scatterPreset';
 import linePreset from '../stores/presets/linePreset';
 
-const baseUrl = 'https://datadrawertest.firebaseio.com/';
+const baseUrl = 'https://datadrawer.firebaseio.com/';
 
 class FirebaseApi {
   constructor({serializer, firebaseRef, localStorage}) {

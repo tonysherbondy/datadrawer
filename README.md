@@ -7,6 +7,8 @@ It's like the Tukey you know and love, but rewritten (again), but with React.
 
 #### Firebase setup
 - Change `baseUrl` in FirebaseApi.js to point to your firebase.
+- In the Firebase dashboard, go to `Login & Auth` then `Anonymous` and
+  enable anonymous authentication.
 - In your Firebase dashboard, go to `Security & Rules` and paste in the
   contents of `firebaseSecurityRules.json`.
 
