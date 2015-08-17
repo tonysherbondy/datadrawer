@@ -59,7 +59,8 @@ NotebookViewer.contextTypes = {
 NotebookViewer.contextTypes = {
   actions: React.PropTypes.shape({
     picture: React.PropTypes.object.isRequired
-  })
+  }),
+  router: React.PropTypes.func.isRequired
 };
 
 export default NotebookViewer;
