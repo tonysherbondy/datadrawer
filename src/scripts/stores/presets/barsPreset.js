@@ -132,5 +132,8 @@ const instructions = () => [
 
 
 export default function() {
-  return new Picture('bars', instructions(), variables());
+  return new Picture({
+    id: 'bars',
+    instructions: instructions(),
+    variables: variables()});
 }

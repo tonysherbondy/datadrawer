@@ -560,7 +560,7 @@ function pictureSerializer() {
   function pictureFromJson(picturejson) {
     let instructions = (picturejson.instructions || []).map(instructionFromJson);
     let variables = (picturejson.variables || []).map(variableFromJson);
-    return new Picture(picturejson.id, instructions, variables);
+    return new Picture({id: picturejson.id, instructions: instructions, variables: variables});
   }
 
   function notebookToJson(notebook) {
