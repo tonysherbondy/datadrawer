@@ -4,6 +4,9 @@ import classNames from 'classnames';
 class Modal extends React.Component {
   render() {
     let modalClass = classNames('modal', {showing: this.props.isShowing});
+    if (!this.props.isShowing) {
+      return null;
+    }
     return (
       <div className={modalClass}>
         <div className="modal-dialog">

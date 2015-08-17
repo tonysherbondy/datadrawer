@@ -42,13 +42,13 @@ class GoogleSheetsApi {
       try {
         tabletop.init({simpleSheet: true, key, callback: (data) => {
           let varMap = Object.create(null);
-          data.forEach(d => {
-            _.keys(d).forEach(k => {
-              let v = varMap[k];
-              if (v) {
-                v.push(+d[k]);
+          data.forEach(row => {
+            _.keys(row).forEach(k => {
+              let column = varMap[k];
+              if (column) {
+                column.push(+row[k]);
               } else {
-                varMap[k] = [+d[k]];
+                varMap[k] = [+row[k]];
               }
             });
           });

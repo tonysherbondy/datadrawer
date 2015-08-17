@@ -65,6 +65,8 @@ export default class Picture {
     return this.cloneWith({variables});
   }
 
+  // TODO - This should just take a list of variables and move this logic into
+  // the external api area
   // Variable map has keys of variable name and values of array of values
   importVariables(variableMap) {
     let picture = this;
