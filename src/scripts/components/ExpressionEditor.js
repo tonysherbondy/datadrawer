@@ -39,6 +39,12 @@ export default class ExpressionEditor extends React.Component {
     );
   }
 
+  componentDidMount() {
+    // The contenteditable should begin focused with all text selected
+    React.findDOMNode(this).focus();
+    this.selectAllContentInDOM();
+  }
+
   componentWillReceiveProps(nextProps) {
     this.setState({
       fragments: this.getSpaceBufferedFragments(nextProps.definition.fragments)
@@ -115,6 +121,30 @@ export default class ExpressionEditor extends React.Component {
 
   updateCursorLocation() {
     this.moveCursorTo(this.state.cursorFragmentIndex, this.state.cursorOffset);
+  }
+
+  selectAllContentInDOM() {
+    let element = React.findDOMNode(this);
+    let nodes = element.childNodes;
+    let startNode = nodes[0];
+    let endNode = nodes[nodes.length - 1];
+    let endOffset = endNode.length;
+
+    try {
+      window.getSelection().removeAllRanges();
+      let range = document.createRange();
+      range.setStart(startNode, 0);
+      range.setEnd(endNode, endOffset);
+      window.getSelection().addRange(range);
+    }
+    catch (err) {
+      console.warn('selecting all content editable', err);
+      // TODO - Perhaps remove this and explore why this fails sometimes
+      this.setState({
+        cursorFragmentIndex: {start: null, end: null},
+        cursorOffset: {start: 0, end: 0}
+      });
+    }
   }
 
   moveCursorTo(nodeIndex, offset) {
@@ -216,7 +246,7 @@ export default class ExpressionEditor extends React.Component {
       // We are within a text node
       let nodeOffset = this.getCursorNodeOffsetWithinTextFragment(container, offset, element);
       // We are either the index ahead of the previous variable or the first
-      let prevEl = nodeOffset.node.previousElementSibling;
+      let prevEl = nodeOffset.node ? nodeOffset.node.previousElementSibling : null;
       if (prevEl && prevEl.hasAttribute('data-fragment-index')) {
         fragmentIndex = +prevEl.getAttribute('data-fragment-index') + 1;
       }
