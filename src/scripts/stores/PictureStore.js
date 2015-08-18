@@ -21,6 +21,7 @@ function pictureStore(props) {
   function updateNotebook(properties) {
     notebook = new Notebook({
       id: properties.id || notebook.id,
+      ownerId: properties.ownerId || notebook.ownerId,
       name: properties.name || notebook.name,
       pictures: properties.pictures || notebook.pictures
     });
@@ -187,8 +188,8 @@ function pictureStore(props) {
       }
 
       case 'LOADED_NOTEBOOK': {
-        let {id, name, pictures} = payload.notebook;
-        updateNotebook({id, name, pictures});
+        let {id, ownerId, name, pictures} = payload.notebook;
+        updateNotebook({id, ownerId, name, pictures});
         // Reset history
         pictureHistories = OrderedMap();
         notebook.pictures.forEach(updatePicture);
