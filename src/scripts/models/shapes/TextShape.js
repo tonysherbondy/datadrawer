@@ -16,8 +16,18 @@ export default class TextShape extends LineShape {
 
   getRenderProps() {
     let {x1, y1, x2, y2} = this;
-    let x = (x2 + x1) / 2;
-    let y = (y2 + y1) / 2;
+
+    let x, y;
+    if (this.textAnchor === 'start') {
+      x = x1;
+      y = y1;
+    } else if (this.textAnchor === 'end') {
+      x = x2;
+      y = y2;
+    } else {
+      x = (x2 + x1) / 2;
+      y = (y2 + y1) / 2;
+    }
 
     // Rotate the shape based on the angle of the line
     // TODO We would have to take any other rotation into
