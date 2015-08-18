@@ -112,9 +112,6 @@ export default class ExpressionEditor extends React.Component {
   }
 
 
-
-
-
   //
   ////////////////// HANDLE CURSOR LOCATION //////////////////
   //

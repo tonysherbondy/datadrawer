@@ -60,9 +60,30 @@ class VariablePill extends React.Component {
       return;
     }
     this.setState({isEditingName: true}, () => {
-      React.findDOMNode(this.refs.theContentEditable).focus();
+      let element = React.findDOMNode(this.refs.theContentEditable);
+      element.focus();
+      this.selectAllContentEditable(element);
     });
   }
+
+  selectAllContentEditable(element) {
+    let nodes = element.childNodes;
+    let startNode = nodes[0];
+    let endNode = nodes[nodes.length - 1];
+    let endOffset = endNode.length;
+
+    try {
+      window.getSelection().removeAllRanges();
+      let range = document.createRange();
+      range.setStart(startNode, 0);
+      range.setEnd(endNode, endOffset);
+      window.getSelection().addRange(range);
+    }
+    catch (err) {
+      console.warn('selecting all content editable', err);
+    }
+  }
+
 
   handleKeyDown(evt) {
     if (evt.which === 13) {
