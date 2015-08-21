@@ -15,6 +15,7 @@ import LoopInstruction from '../models/LoopInstruction';
 import MoveInstruction from '../models/MoveInstruction';
 import RotateInstruction from '../models/RotateInstruction';
 import ScaleInstruction from '../models/ScaleInstruction';
+import AdjustColorInstruction from '../models/AdjustColorInstruction';
 import Picture from '../models/Picture';
 import Notebook from '../models/Notebook';
 
@@ -30,6 +31,7 @@ function pictureSerializer() {
       [MoveInstruction, 'adjust.move'],
       [RotateInstruction, 'adjust.rotate'],
       [ScaleInstruction, 'adjust.scale'],
+      [AdjustColorInstruction, 'adjust.color'],
       [IfInstruction, 'flow.if'],
       [LoopInstruction, 'flow.loop']
     ]);
@@ -371,6 +373,9 @@ function pictureSerializer() {
       case 'adjust.scale':
         setScaleProperties(json, instruction);
         break;
+      case 'adjust.color':
+        setColorProperties(json, instruction);
+        break;
     }
   }
 
@@ -391,6 +396,9 @@ function pictureSerializer() {
         break;
       case 'adjust.scale':
         readScaleProperties(props, json);
+        break;
+      case 'adjust.color':
+        readColorProperties(props, json);
         break;
     }
   }
@@ -474,6 +482,16 @@ function pictureSerializer() {
   function readScaleProperties(props, json) {
     props.prop = json.prop;
     props.to = expressionFromJson(json.by);
+  }
+
+  function setColorProperties(json, instruction) {
+    json.prop = instruction.prop;
+    json.to = expressionToJson(instruction.to);
+  }
+
+  function readColorProperties(props, json) {
+    props.prop = json.prop;
+    props.to = expressionFromJson(json.to);
   }
 
   function setLoopProperties(json, instruction) {
