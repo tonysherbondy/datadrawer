@@ -1,7 +1,9 @@
-Tukey with React
-=====================
+DataDrawer
+==========
 
-It's like the Tukey you know and love, but rewritten (again), but with React.
+A tool for drawing dynamic pictures based on data. Basically, a way for
+us to implement, experiment, and share the great ideas presented by
+Brett Victor in this talk (https://vimeo.com/66085662).
 
 ### Usage
 
