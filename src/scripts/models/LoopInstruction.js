@@ -3,7 +3,7 @@ import Instruction from './Instruction';
 import _ from 'lodash';
 import InstructionTreeNode from './InstructionTreeNode';
 import Expression from '../models/Expression';
-import ExpressionEditor from '../components/ExpressionEditor';
+import ExpressionEditorAndScrub from '../components/ExpressionEditorAndScrub';
 
 export default class LoopInstruction extends Instruction {
   constructor({id, instructions, count}) {
@@ -67,7 +67,7 @@ export default class LoopInstruction extends Instruction {
     return (
       <span className='instruction-sentence'>
         {`Repeat from 1 to `}
-        <ExpressionEditor
+        <ExpressionEditorAndScrub
           picture={picture}
           onChange={this.handleCountChange.bind(this, pictureActions, picture)}
           variableValues={variableValues}
