@@ -37,6 +37,15 @@ class GoogleSheetsApi {
     });
   }
 
+  formatCell(cell) {
+    let numCell = +cell;
+    if (_.isNaN(numCell)) {
+      return cell;
+    } else {
+      return numCell;
+    }
+  }
+
   loadSpreadsheet(key) {
     return new Promise((resolve, reject) => {
       try {
@@ -45,10 +54,11 @@ class GoogleSheetsApi {
           data.forEach(row => {
             _.keys(row).forEach(k => {
               let column = varMap[k];
+              let cell = this.formatCell(row[k]);
               if (column) {
-                column.push(+row[k]);
+                column.push(cell);
               } else {
-                varMap[k] = [+row[k]];
+                varMap[k] = [cell];
               }
             });
           });
