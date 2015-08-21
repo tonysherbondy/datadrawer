@@ -1,6 +1,7 @@
 import DrawPathInstruction from '../models/DrawPathInstruction';
 import DrawInstruction from '../models/DrawInstruction';
 import ScaleInstruction from '../models/ScaleInstruction';
+import AdjustColorInstruction from '../models/AdjustColorInstruction';
 import Canvas from '../components/drawing/Canvas';
 import DrawRectInstruction from '../models/DrawRectInstruction';
 import DrawTextInstruction from '../models/DrawTextInstruction';
@@ -129,6 +130,23 @@ export default class ShortcutKeyHandler {
     });
 
     manager = manager.registerHandler({
+      keyCode: 79,
+      keyDescription: 'o',
+      description: 'color',
+      group: 'adjust',
+      keyDown: () => {
+        let shape = {id: this.notebook.getSelectedShapeId()};
+        if (shape.id) {
+          this.pictureActions.insertInstructionAfterInstruction(
+            this.notebook.props.activePicture.id,
+            new AdjustColorInstruction({shape}),
+            this.notebook.props.currentInstruction);
+          this.drawingStateActions.setDrawingMode('normal');
+        }
+      }
+    });
+
+    manager = manager.registerHandler({
       keyCode: 80,
       keyDescription: 'p',
       description: 'picture',
@@ -243,6 +261,7 @@ export default class ShortcutKeyHandler {
           this.pictureActions, this.drawingStateActions, this.notebook,
           instructions => new LoopInstruction({ instructions })
         );
+        this.drawingStateActions.setDrawingMode('normal');
       }
     });
 

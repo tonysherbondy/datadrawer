@@ -44,6 +44,11 @@ export default class Shape {
     });
   }
 
+  // TODO - Expand this to handle stroke etc.
+  adjustColor(color) {
+    this.fill = color;
+  }
+
   rotatePoint(point) {
     if (this.rotation.isIdentity()) {
       return point;
@@ -104,8 +109,33 @@ export default class Shape {
     return this.rotation.getSvgTransform();
   }
 
+  // Apply some rules to colors to make things easier
+  getValidColor(color) {
+    let isRGB = color.slice(0, 3) === 'rgb';
+    if (isRGB) {
+      // Make sure the first three numbers are rounded
+      let rColor = [0, 0, 0, 1];
+      let r = /-?\d+(?:\.\d*)?/g;
+      let c;
+      let i = 0;
+      while((c = r.exec(color)) !== null && i < 4) {
+        if (i === 3) {
+          rColor[i] = c;
+        } else {
+          rColor[i] = Math.round(+c);
+        }
+        i++;
+      }
+      return `rgba(${rColor.join(',')})`;
+    } else {
+      return color;
+    }
+  }
+
   getRenderProps() {
     let {stroke, strokeWidth, fill} = this;
+    fill = this.getValidColor(fill);
+    stroke = this.getValidColor(stroke);
     let transform = this.getTransform();
     return {
       stroke,
