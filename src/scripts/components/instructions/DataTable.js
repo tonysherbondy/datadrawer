@@ -140,7 +140,7 @@ DataTable.contextTypes = {
 DataTable.propTypes = {
   picture: React.PropTypes.instanceOf(Picture).isRequired,
   readOnly: React.PropTypes.bool,
-  onImport: React.PropTypes.func.isRequired,
+  onImport: React.PropTypes.func,
   isPicturePopup: React.PropTypes.bool,
   variableNameMap: React.PropTypes.object,
   currentLoopIndex: React.PropTypes.number,
