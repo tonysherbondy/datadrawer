@@ -1,6 +1,5 @@
 import React from 'react';
 import _ from 'lodash';
-import Papa from 'papaparse';
 
 import VariablePill from '../VariablePill';
 import ExpressionEditorAndScrub from '../ExpressionEditorAndScrub';
@@ -54,8 +53,7 @@ class DataTable extends React.Component {
     let addUi = this.props.readOnly ? null : (
       <div>
         <button onClick={this.handleAddVariable.bind(this)}>Add</button>
-        <input type='file' onChange={this.handleUpload.bind(this)} />
-        <button onClick={this.props.onGoogleImport.bind(this)}>Google Spreadsheet</button>
+        <button onClick={this.props.onImport.bind(this)}>Import...</button>
       </div>
     );
 
@@ -131,39 +129,6 @@ class DataTable extends React.Component {
     this.context.actions.picture.addVariable(this.props.picture, variable);
   }
 
-  handleUpload(e) {
-    console.log('UPLOAD CSV...');
-    let file = e.target.files[0];
-
-    Papa.parse(file, {
-      header: true,
-      dynamicTyping: true,
-
-      complete: (results, f) => {
-        console.log('parsed', f);
-        // currently assuming columns are keyed by first row
-        var rowMap = Object.create(null);
-        // papaparse makes sure all elements have all keys, even
-        // if vals are empty
-        for (let row of results.data) {
-          for (let key of Object.keys(row)) {
-            // value is an array of row values
-            let mRow = rowMap[key];
-            if (mRow) {
-              mRow.push(row[key]);
-            } else {
-              rowMap[key] = [row[key]];
-            }
-          }
-        }
-        this.context.actions.picture.importVariables(this.props.picture, rowMap);
-      },
-
-      error: (error, f) => {
-        console.log('parse error: ', f, error);
-      }
-    });
-  }
 }
 
 DataTable.contextTypes = {
@@ -175,6 +140,7 @@ DataTable.contextTypes = {
 DataTable.propTypes = {
   picture: React.PropTypes.instanceOf(Picture).isRequired,
   readOnly: React.PropTypes.bool,
+  onImport: React.PropTypes.func.isRequired,
   isPicturePopup: React.PropTypes.bool,
   variableNameMap: React.PropTypes.object,
   currentLoopIndex: React.PropTypes.number,

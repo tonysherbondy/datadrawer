@@ -25,7 +25,7 @@ import NotebookEditorMenuBar from './NotebookEditorMenuBar';
 import Popover from './Popover';
 import ShapeDataList from './ShapeDataList';
 
-import GoogleImportModal from './GoogleImportModal';
+import ImportModal from './ImportModal';
 
 import ShortcutKeyHandler from '../utils/ShortcutKeyHandler';
 
@@ -37,7 +37,7 @@ class Notebook extends React.Component {
       leftPanelWidth: 300,
       isDebugging: false,
       isShowingPictures: true,
-      isShowingGoogleImportModal: false,
+      isShowingImportModal: false,
       hideKeyMap: false
     };
 
@@ -94,7 +94,7 @@ class Notebook extends React.Component {
               picture={activePicture}
               currentLoopIndex={this.props.currentLoopIndex}
               dataVariables={activePicture.variables}
-              onGoogleImport={this.handleGoogleImportModalToggle.bind(this)}
+              onImport={this.handleImportModalToggle.bind(this)}
               dataValues={variableValues} />
 
             <div className='left-panel-header'>Steps</div>
@@ -156,10 +156,10 @@ class Notebook extends React.Component {
               shapes={this.props.shapes} />
           </Popover>
 
-          <GoogleImportModal
+          <ImportModal
             activePicture={activePicture}
-            onClose={this.handleGoogleImportModalToggle.bind(this)}
-            isShowing={this.state.isShowingGoogleImportModal} />
+            onClose={this.handleImportModalToggle.bind(this)}
+            isShowing={this.state.isShowingImportModal} />
 
           <div style={{clear: 'both'}}></div>
         </div>
@@ -193,8 +193,8 @@ class Notebook extends React.Component {
     this.keyEventManager.handleKeyDown(e);
   }
 
-  handleGoogleImportModalToggle() {
-    this.setState({ isShowingGoogleImportModal: !this.state.isShowingGoogleImportModal });
+  handleImportModalToggle() {
+    this.setState({ isShowingImportModal: !this.state.isShowingImportModal });
   }
 
   handleTogglePictures() {
