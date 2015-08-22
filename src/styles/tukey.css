@@ -17,10 +17,22 @@
   height: 100%;
 }
 
+.canvas.view.hidden {
+  display: none;
+}
+
 .picture-thumbnail-wrapper {
   display: inline-block;
   position: relative;
   cursor: pointer;
+}
+
+.share-picture-button {
+  position: absolute;
+  right: 50px;
+  top: 12px;
+  cursor: pointer;
+  opacity: 0;
 }
 
 .preview-picture-button {
@@ -40,6 +52,7 @@
 }
 
 .picture-thumbnail-wrapper:hover .delete-picture-button,
+.picture-thumbnail-wrapper:hover .share-picture-button,
 .picture-thumbnail-wrapper:hover .preview-picture-button {
   opacity: 0.6;
 }
@@ -371,10 +384,8 @@ td, th {
   margin-left: 5px;
 }
 
-.return-to-edit-popover {
+.notebook-viewer-container .btn {
   position: absolute;
-  top: 10px;
-  right: 10px;
   background-color: #333;
   color: #ddd;
   opacity: 0.6;
@@ -382,8 +393,13 @@ td, th {
   padding: 4px;
 }
 
-.return-to-edit-popover:hover {
+.notebook-viewer-container .btn:hover {
   opacity: 1.0;
+}
+
+.btn.return-to-edit {
+  top: 10px;
+  right: 10px;
 }
 
 /* Notebook Editor Menu Bar */

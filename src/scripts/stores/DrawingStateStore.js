@@ -12,6 +12,7 @@ function drawingStateStore(props) {
     dataPopupPosition: null,
     showDataPopup: false,
     pictureForPictureTool: null,
+    pngUrl: null,
 
     // Used to be in picture store
     activePictureId: null,
@@ -91,6 +92,13 @@ function drawingStateStore(props) {
         props.fluxStore.emitChange();
         break;
       }
+
+      //case 'UPLOAD_PNG': {
+        //drawingState.pngUrl = payload.pngUrl;
+        //drawingState.showPngUrlPopup = true;
+        //props.fluxStore.emitChange();
+        //break;
+      //}
 
       case 'SET_DRAWING_MODE': {
         drawingState.mode = payload.data;

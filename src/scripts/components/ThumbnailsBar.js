@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
-
 import Picture from '../models/Picture';
 import Thumbnail from './Thumbnail';
+import SvgToPng from 'utils/SvgToPng';
 
 export default class ThumbnailsBar {
   static contextTypes = {
@@ -36,6 +36,7 @@ export default class ThumbnailsBar {
       }
       return (
         <Thumbnail key={picture.id}
+          ref={this.getThumbnailRef(picture)}
           activePicture={picture}
           notebook={notebook}
           variableValues={this.props.variableValues}
@@ -64,5 +65,16 @@ export default class ThumbnailsBar {
     }
     evt.preventDefault();
   }
+
+  getThumbnailRef(picture) {
+    return `thumbnail-${picture.id}`;
+  }
+
+  getPng(picture) {
+    let thumbnail = this.refs[this.getThumbnailRef(picture)];
+    let canvasNode = React.findDOMNode(thumbnail.refs.canvas);
+    return (new SvgToPng(canvasNode)).getPng();
+  }
+
 }
 

@@ -365,9 +365,11 @@ export default class ShortcutKeyHandler {
       }),
       description: 'save picture',
       keyDown: (e) => {
+        let {activePicture} = this.notebook.props;
         this.pictureActions.savePicture(
           this.notebook.props.notebook.id,
-          this.notebook.props.activePicture
+          activePicture,
+          this.notebook.getPng(activePicture)
         );
         e.preventDefault();
       }

@@ -1,7 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
 import {RouteHandler} from 'react-router';
-
 import InstructionTreeNode from '../models/InstructionTreeNode';
 
 class App extends React.Component {

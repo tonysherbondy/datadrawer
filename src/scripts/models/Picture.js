@@ -26,6 +26,7 @@ export default class Picture {
     }
 
     this.googleSpreadsheetId = props.googleSpreadsheetId;
+    this.pngUrl = props.pngUrl;
   }
 
   get id() { return this._id; }
@@ -44,6 +45,7 @@ export default class Picture {
       id: this._id,
       instructions: this._instructions,
       variables: this._variables,
+      pngUrl: this.pngUrl,
       googleSpreadsheetId: this.googleSpreadsheetId
     };
     return new Picture(Object.assign(curProps, props));

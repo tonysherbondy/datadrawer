@@ -8,25 +8,27 @@ import React from 'react';
 import Router from 'react-router';
 import Biff from 'biff';
 
-import PictureStore from './stores/PictureStore';
-import DrawingStateStore from './stores/DrawingStateStore';
-import UserStore from './stores/UserStore';
-import PictureActions from './actions/PictureActions';
-import UserActions from './actions/UserActions';
-import DrawingStateActions from './actions/DrawingStateActions';
-import pictureSerializer from './api/PictureSerializer';
-import FirebaseApi from './api/FirebaseApi';
-import routes from './routes';
+import PictureStore from 'stores/PictureStore';
+import DrawingStateStore from 'stores/DrawingStateStore';
+import UserStore from 'stores/UserStore';
+import PictureActions from 'actions/PictureActions';
+import UserActions from 'actions/UserActions';
+import DrawingStateActions from 'actions/DrawingStateActions';
+import pictureSerializer from 'api/PictureSerializer';
+import FirebaseApi from 'api/FirebaseApi';
+import ImgurApi from 'api/ImgurApi';
+import routes from 'routes';
 
 // singleton dispatcher, actions and stores
 const dispatcher = new Biff();
 
 let serializer = pictureSerializer();
 let firebaseApi = new FirebaseApi({serializer});
+let imgurApi = new ImgurApi();
 
 const actions = {
   drawingState: new DrawingStateActions(dispatcher),
-  picture: new PictureActions(dispatcher, firebaseApi),
+  picture: new PictureActions(dispatcher, firebaseApi, imgurApi),
   user: new UserActions(dispatcher, firebaseApi)
 };
 

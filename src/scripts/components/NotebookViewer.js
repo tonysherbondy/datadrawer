@@ -28,7 +28,7 @@ export default class NotebookViewer {
           shapes={this.props.shapes} />
         <div
           onClick={this.handleEditClick.bind(this)}
-          className="return-to-edit-popover">
+          className="btn return-to-edit">
           Edit
         </div>
       </div>
@@ -64,4 +64,5 @@ export default class NotebookViewer {
     let {notebookId, pictureId} = this.context.router.getCurrentParams();
     this.context.router.transitionTo(`/notebook/${notebookId}/picture/${pictureId}/edit`);
   }
+
 }

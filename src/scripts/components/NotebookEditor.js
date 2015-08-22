@@ -94,6 +94,7 @@ export default class NotebookEditor extends Component {
 
         {this.state.isShowingPictures ?
           <ThumbnailsBar
+            ref='thumbnailsBar'
             notebook={this.props.notebook}
             variableValues={variableValues}
             activePicture={this.props.activePicture}
@@ -257,6 +258,13 @@ export default class NotebookEditor extends Component {
     window.removeEventListener('mousemove', this.resizeMoveHandler);
     window.removeEventListener('mouseup', this.resizeUpHandler);
     $('body').css('cursor', 'default');
+  }
+
+  getPng(picture) {
+    // get png from thumbnail, because we don't want to deal with the
+    // current instruction
+    let thumbnailsBar = this.refs.thumbnailsBar;
+    return thumbnailsBar.getPng(picture);
   }
 
   getKeyEventManager() {

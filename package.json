@@ -1,11 +1,14 @@
 {
   "name": "tukey-react",
   "version": "1.0.0",
-  "description": "Tukey, but with React.",
+  "description": "DataDrawer",
   "scripts": {
-    "start": "node server.js",
+    "start": "node server",
+    "pro": "NODE_ENV=production node server",
+    "dev": "NODE_ENV=development node server",
+    "postinstall": "node heroku",
     "lint": "eslint . --ext .js --ext .jsx",
-    "deploy": "NODE_ENV=production webpack && cp index.html build/ && firebase deploy"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "react",
@@ -13,7 +16,7 @@
   ],
   "author": "ANZ",
   "license": "MIT",
-  "devDependencies": {
+  "dependencies": {
     "babel-core": "^5.4.7",
     "babel-eslint": "^3.1.10",
     "babel-loader": "^5.1.3",
@@ -27,21 +30,21 @@
     "style-loader": "^0.10.2",
     "url-loader": "^0.5.5",
     "webpack": "^1.9.10",
-    "webpack-dev-server": "^1.8.0"
-  },
-  "dependencies": {
+    "webpack-dev-server": "^1.8.0",
     "biff": "^0.1.6",
     "classnames": "^2.1.1",
     "colr-convert": "^1.0.4",
     "csscolorparser": "^1.0.2",
+    "ejs": "^2.3.3",
+    "express": "^4.13.3",
     "firebase": "^2.2.9",
     "font-awesome": "^4.3.0",
+    "http-proxy": "^1.11.1",
     "immutable": "^3.7.3",
     "jquery": "^2.1.4",
     "lodash": "^3.7.0",
     "papaparse": "^4.1.1",
     "react": "^0.13.2",
-    "react-colorpickr": "^1.4.0",
     "react-draggable": "^0.8.1",
     "react-router": "^0.13.3",
     "tabletop": "git://github.com/tonysherbondy/tabletop.git#56a7883277c67214671e0f0dae0e7b5c5e42ef97"

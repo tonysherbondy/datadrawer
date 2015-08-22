@@ -14,11 +14,30 @@ Brett Victor in this talk (https://vimeo.com/66085662).
 - In your Firebase dashboard, go to `Security & Rules` and paste in the
   contents of `firebaseSecurityRules.json`.
 
-#### Run the app
+#### Run the app in development mode
 ```
 npm install
 npm start
 open http://localhost:3000
+```
+
+#### Run app in production mode
+```
+NODE_ENV=production npm install
+NODE_ENV=production npm start
+open http://localhost:3000
+```
+This will create a public directory where the build will go, *you need
+to remove this directory when running development mode otherwise the
+server will serve from the public directory*
+
+#### Deploying to heroku
+First, install [Heroku CLI](https://devcenter.heroku.com/articles/heroku-command) if you haven't already.
+Then,
+```
+heroku git:remote -a datadrawer
+git push heroku master
+heroku open
 ```
 
 ### Hot Loading JS and CSS

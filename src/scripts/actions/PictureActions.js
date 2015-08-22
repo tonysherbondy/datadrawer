@@ -1,4 +1,4 @@
-function pictureActions(pictureApi) {
+function pictureActions(pictureApi, imgurApi) {
   return {
     addNewPicture(picture) {
       this.dispatch({actionType: 'ADD_NEW_PICTURE', picture});
@@ -75,6 +75,20 @@ function pictureActions(pictureApi) {
       this.dispatch({actionType: 'SET_INVALID_PICTURE_STATE'});
     },
 
+    uploadPngAndSave(notebookId, picture, png) {
+      this.dispatch({actionType: 'SAVING_PICTURE', picture});
+      imgurApi.uploadPng(png).then(response => {
+        let pngUrl = response.data.link;
+        pictureApi.savePngUrl(notebookId, picture.id, pngUrl).then(() => {
+          this.dispatch({actionType: 'UPlOADED_PNG', pngUrl: response.data.link});
+        }).catch(err => {
+          console.err('problem saving png url', err);
+        });
+      }).catch(err => {
+        console.error('Sharing picture failed', err);
+      });
+    },
+
     loadNotebookAndSetActivePicture(notebookId, pictureId) {
       this.dispatch({actionType: 'LOADING_NOTEBOOK'});
       pictureApi.loadNotebook(notebookId).then((notebook) => {
@@ -95,12 +109,26 @@ function pictureActions(pictureApi) {
       });
     },
 
-    savePicture(notebookId, picture) {
+    savePicture(notebookId, picture, pngPreview) {
       this.dispatch({actionType: 'SAVING_PICTURE', picture});
       pictureApi.savePicture(notebookId, picture).then(() => {
         console.log('saved picture');
         this.dispatch({
           actionType: 'SAVED_PICTURE'
+        });
+        // Also save a preview png of the picture
+        console.log('saving png preview');
+        pngPreview.then(pngUri => {
+
+          pictureApi.savePngUri(notebookId, picture.id, pngUri).then(() => {
+            this.dispatch({actionType: 'UPlOADED_PNG'});
+            console.log('saved png preview');
+          }).catch(err => {
+            console.err('problem saving png preview', err);
+          });
+
+        }).catch(err => {
+          console.error('problem creating png preview', err);
         });
       }).catch((err) => {
         if (err.status === 401) {
@@ -190,7 +218,7 @@ function pictureActions(pictureApi) {
 }
 
 export default class {
-  constructor(dispatcher, pictureApi) {
-    return dispatcher.createActions(pictureActions(pictureApi));
+  constructor(dispatcher, pictureApi, imgurApi) {
+    return dispatcher.createActions(pictureActions(pictureApi, imgurApi));
   }
 }

@@ -32,6 +32,7 @@ export default class Thumbnail {
         className='picture-thumbnail-wrapper'
         onClick={this.handleThumbnailClick.bind(this)}>
         <Canvas
+          ref='canvas'
           className={className}
           activePicture={this.props.activePicture}
           drawingMode={'normal'}

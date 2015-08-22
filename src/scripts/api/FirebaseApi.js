@@ -70,6 +70,15 @@ class FirebaseApi {
     return '';
   }
 
+  savePngUri(notebookId, pictureId, pngUri) {
+    return Promise.resolve($.ajax({
+      url: `${baseUrl}/pngs/${notebookId}/${pictureId}.json${this.getParams()}`,
+      method: 'PUT',
+      contentType: 'application/json',
+      data: JSON.stringify({uri: pngUri})
+    }));
+  }
+
   // TODO: we should check that the notebook.ownerId matches the user.id
   // otherwise don't even send the request
   savePicture(notebookId, picture) {
