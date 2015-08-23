@@ -38,7 +38,8 @@ class GoogleSheetsApi {
   }
 
   formatCell(cell) {
-    let numCell = +cell;
+    // Simple formatter to remove usd and commas
+    let numCell = parseFloat(cell.replace(/[$,]/g, ''));
     if (_.isNaN(numCell)) {
       return cell;
     } else {

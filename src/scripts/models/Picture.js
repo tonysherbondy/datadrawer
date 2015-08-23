@@ -73,6 +73,10 @@ export default class Picture {
     _.pairs(variableMap).forEach(([key, value]) => {
       // First see if we already have a variable with this rows name
       let variable = picture.variables.find(v => v.name === key);
+
+      if (_.isEmpty(value.slice(1).join(''))) {
+        value = value[0];
+      }
       let jsonVal = JSON.stringify(value);
 
       if (variable) {
@@ -83,7 +87,7 @@ export default class Picture {
         // Create a new variable
         variable = picture.generateNewVariable({
           name: key,
-          isRow: true,
+          isRow: _.isArray(value),
           definition: jsonVal
         });
         picture = picture.addVariable(variable);
