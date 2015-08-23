@@ -24,8 +24,6 @@ export default class ThumbnailsBar extends React.Component {
           </a>
         );
       }
-            //<div className='picture-thumbnail new-picture-button'>
-
       let isActivePicture = picture.id === activePicture.id;
       let isPictureForPictureTool = pictureForPictureTool &&
         picture.id === pictureForPictureTool.id;

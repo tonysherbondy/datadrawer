@@ -1,6 +1,7 @@
 import React from 'react';
 import Canvas from './drawing/Canvas';
 import GoogleSheetsApi from '../api/GoogleSheetsApi';
+import NotebookPictureCompiler from '../utils/NotebookPictureCompiler';
 
 class NotebookViewer extends React.Component {
 
@@ -11,7 +12,7 @@ class NotebookViewer extends React.Component {
           className='canvas view'
           activePicture={this.props.activePicture}
           drawingMode='normal'
-          shapes={this.props.shapes} />
+          shapes={this.getShapes()} />
         <div
           onClick={this.handleEditClick.bind(this)}
           className="return-to-edit-popover">
@@ -19,6 +20,16 @@ class NotebookViewer extends React.Component {
         </div>
       </div>
     );
+  }
+
+  // TODO - make it so that the other shapes are not computed in the component above
+  // us so that we are not redoing the calculation here. We need to do this because
+  // we want to ignore current instruction for this route
+  getShapes() {
+    let {activePicture, notebook, variableValues} = this.props;
+    let pictures = notebook.pictures.valueSeq().toArray();
+    return (new NotebookPictureCompiler({variableValues, pictures}))
+      .getShapesForPicture(activePicture);
   }
 
   componentWillMount() {
@@ -53,14 +64,16 @@ class NotebookViewer extends React.Component {
 }
 
 NotebookViewer.contextTypes = {
-  router: React.PropTypes.func.isRequired
-};
-
-NotebookViewer.contextTypes = {
   actions: React.PropTypes.shape({
     picture: React.PropTypes.object.isRequired
   }),
   router: React.PropTypes.func.isRequired
+};
+
+NotebookViewer.propTypes = {
+  notebook: React.PropTypes.object.isRequired,
+  variableValues: React.PropTypes.object.isRequired,
+  activePicture: React.PropTypes.object.isRequired
 };
 
 export default NotebookViewer;
