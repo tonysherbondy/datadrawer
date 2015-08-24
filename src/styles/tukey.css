@@ -120,7 +120,7 @@
   opacity: 0;
 }
 
-.left-panel-header:hover .resize-panel-arrow {
+.left-panel:hover .resize-panel-arrow {
   opacity: 1;
 }
 
