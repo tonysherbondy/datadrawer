@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import _ from 'lodash';
 import classNames from 'classnames';
 import $ from 'jquery';
@@ -28,8 +28,36 @@ import ShapeDataList from './ShapeDataList';
 import ImportModal from './ImportModal';
 
 import ShortcutKeyHandler from '../utils/ShortcutKeyHandler';
+import ShapesCompiler from '../utils/ShapesCompiler';
+import VariablesCompiler from '../utils/VariablesCompiler';
 
-class Notebook extends React.Component {
+@VariablesCompiler()
+@ShapesCompiler()
+export default class NotebookEditor extends Component {
+  static propTypes = {
+    notebook: PropTypes.object.isRequired,
+    variableValues: PropTypes.object.isRequired,
+    currentInstruction: PropTypes.instanceOf(Instruction),
+    selectedInstructions: PropTypes.arrayOf(PropTypes.instanceOf(Instruction)),
+    shapes: PropTypes.instanceOf(ShapesMap).isRequired,
+    // Previous Drawing State
+    activePicture: PropTypes.instanceOf(Picture).isRequired,
+    editingInstructionId: PropTypes.string,
+    drawingMode: PropTypes.string.isRequired,
+    pictureForPictureTool: PropTypes.instanceOf(Picture),
+    currentLoopIndex: PropTypes.number,
+    selectedShapeId: PropTypes.string,
+    // For Popup... maybe move up to App
+    showDataPopup: PropTypes.bool,
+    dataPopupPosition: PropTypes.object
+  }
+  static contextTypes = {
+    actions: PropTypes.shape({
+      drawingState: PropTypes.object.isRequired,
+      picture: PropTypes.object.isRequired
+    }),
+    router: PropTypes.func.isRequired
+  }
 
   constructor(props) {
     super(props);
@@ -40,7 +68,6 @@ class Notebook extends React.Component {
       isShowingImportModal: false,
       hideKeyMap: false
     };
-
     this.keyDownListener = this.handleKeyDown.bind(this);
   }
 
@@ -108,6 +135,11 @@ class Notebook extends React.Component {
           </div>
 
           <div className="drawing-area-scroll-wrapper">
+            {this.props.shapesCompilerStatus === 'error' &&
+              <div className='shapes-compiler-error'>
+                Error with current picture
+              </div>
+            }
             <div className='drawing-area'>
 
               <KeyboardControlsList
@@ -356,33 +388,4 @@ class Notebook extends React.Component {
       return i.shapeId === selectedShapeId && i instanceof DrawInstruction;
     });
   }
-
 }
-
-Notebook.propTypes = {
-  notebook: React.PropTypes.object.isRequired,
-  variableValues: React.PropTypes.object.isRequired,
-  currentInstruction: React.PropTypes.instanceOf(Instruction),
-  selectedInstructions: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Instruction)),
-  shapes: React.PropTypes.instanceOf(ShapesMap).isRequired,
-  // Previous Drawing State
-  activePicture: React.PropTypes.instanceOf(Picture).isRequired,
-  editingInstructionId: React.PropTypes.string,
-  drawingMode: React.PropTypes.string.isRequired,
-  pictureForPictureTool: React.PropTypes.instanceOf(Picture),
-  currentLoopIndex: React.PropTypes.number,
-  selectedShapeId: React.PropTypes.string,
-  // For Popup... maybe move up to App
-  showDataPopup: React.PropTypes.bool,
-  dataPopupPosition: React.PropTypes.object
-};
-
-Notebook.contextTypes = {
-  actions: React.PropTypes.shape({
-    drawingState: React.PropTypes.object.isRequired,
-    picture: React.PropTypes.object.isRequired
-  }),
-  router: React.PropTypes.func.isRequired
-};
-
-export default Notebook;

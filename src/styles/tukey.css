@@ -129,6 +129,7 @@
 }
 
 .drawing-area-scroll-wrapper {
+  position: relative;
   overflow: scroll;
   max-width: 1200px;
 }
@@ -569,4 +570,16 @@ span.logo input:focus {
   margin-top: 20px;
   font-size: 14px;
   padding: 8px;
+}
+
+.shapes-compiler-error {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background-color: rgba(250, 16, 16, 0.63);
+  color: white;
+  padding: 10px;
+  height: 20px;
+  font-size: 20px;
+  font-weight: bold;
 }

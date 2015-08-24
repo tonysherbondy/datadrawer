@@ -407,13 +407,13 @@ export default class ExpressionEditor extends React.Component {
 
     // Only update the app if the expression is valid
     let newExpression = new Expression(newFragments);
-    let value = newExpression.evaluate(this.props.variableValues);
-    if (value instanceof Error) {
-      console.log('Invalid Expression', value.message);
-    } else {
+    try {
+      newExpression.evaluate(this.props.variableValues);
       if (this.props.onChange) {
         this.props.onChange(new Expression(newFragments));
       }
+    } catch(err) {
+      console.log('Invalid Expression', err.message);
     }
 
     this.setState({

@@ -1,12 +1,8 @@
 import React from 'react';
 import _ from 'lodash';
-
-import computeVariableValues from '../utils/computeVariableValues';
-import InstructionTreeNode from '../models/InstructionTreeNode';
-import NotebookPictureCompiler from '../utils/NotebookPictureCompiler';
-import DrawPictureInstruction from '../models/DrawPictureInstruction';
-
 import {RouteHandler} from 'react-router';
+
+import InstructionTreeNode from '../models/InstructionTreeNode';
 
 class App extends React.Component {
 
@@ -54,17 +50,6 @@ class App extends React.Component {
       return p.id === this.props.drawingState.activePictureId;
     });
 
-    // Instead of defaulting to first, we should transition to the right route... but I don't
-    // want to do this in render
-    let variableValues = this.getAllDataVariableValues(activePicture);
-
-    // Compute shapes for the active picture
-    let currentInstruction = this.getCurrentInstruction(activePicture);
-    let pictureCompiler = new NotebookPictureCompiler({
-      variableValues, pictures, activePicture, currentInstruction,
-      currentLoopIndex: drawingState.currentLoopIndex});
-    let shapes = pictureCompiler.getShapesForPicture(activePicture);
-
     // Either go to a picture viewer or editor
     return (
       <RouteHandler
@@ -73,36 +58,15 @@ class App extends React.Component {
         activePicture={activePicture}
         editingInstructionId={drawingState.editingInstructionId}
         selectedInstructions={this.getSelectedInstructions(activePicture)}
-        currentInstruction={currentInstruction}
-        variableValues={variableValues}
+        currentInstruction={this.getCurrentInstruction(activePicture)}
         drawingMode={drawingState.mode}
         pictureForPictureTool={drawingState.pictureForPictureTool}
         currentLoopIndex={drawingState.currentLoopIndex}
         selectedShapeId={drawingState.selectedShapeId}
         showDataPopup={drawingState.showDataPopup}
         dataPopupPosition={drawingState.dataPopupPosition}
-        shapes={shapes}
         pictures={pictures} />
     );
-  }
-
-
-  // Compute data variable values used across all pictures. This assumes
-  // that variables are unique across all pictures
-  // Output is a Map between variable ID and the value of that variable
-  getAllDataVariableValues() {
-    let {pictures} = this.props;
-    let pictureVariables = pictures.map(p => p.variables);
-    let instVariables = pictures.map(p => {
-      return _.flatten(InstructionTreeNode.flatten(p.instructions)
-                                .filter(i => i instanceof DrawPictureInstruction)
-                                .map(i => i.pictureVariables));
-    });
-    let allVariables = _(pictureVariables.concat(instVariables))
-                        .flatten()
-                        .unique()
-                        .value();
-    return computeVariableValues(allVariables).variableValues;
   }
 
   // Either a range that the user selected or the last instruction

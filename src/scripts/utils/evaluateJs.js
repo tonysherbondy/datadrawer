@@ -34,7 +34,7 @@ function evaluationUtils(variables, picturesJs) {
       let {shapes} = variables.picture;
       let variable = shapes[name] || shapes[`${name}_${index}`];
       if (!variable) {
-        console.error('Unable to find shape variable', name);
+        throw new Error('Unable to find shape variable');
       }
       return variable;
     },
@@ -110,6 +110,6 @@ export default function evalutateJs(jsCode, variables, picturesJs) {
 
   } catch (error) {
     console.log('EVAL JSCODE ERROR ' + error);
-    return error;
+    throw new Error(error);
   }
 }

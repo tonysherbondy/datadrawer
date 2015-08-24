@@ -116,7 +116,8 @@ export default class ExpressionEditorAndScrub extends React.Component {
   }
 
   handleDragOver(evt) {
-    if (!this.state.isEditing) {
+    if (!this.state.isEditing &&
+        evt.dataTransfer.types.indexOf('datavariable') > -1) {
       evt.preventDefault();
     }
   }

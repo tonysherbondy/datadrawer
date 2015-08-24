@@ -46,6 +46,7 @@ class VariablePill extends React.Component {
 
   handleDragStart(evt) {
     let html = VariablePill.getHtmlString(this.props.variable);
+    evt.dataTransfer.setData('datavariable', this.props.variable.id);
     evt.dataTransfer.setData('text/html',
       `${html}&nbsp;` +
       `<span id="${VariablePill.cursorLocationId}"></span>`);
