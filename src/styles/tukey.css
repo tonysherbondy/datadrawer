@@ -130,7 +130,7 @@
 
 .drawing-area-scroll-wrapper {
   position: relative;
-  overflow: scroll;
+  overflow: auto;
   max-width: 1200px;
 }
 
@@ -270,7 +270,7 @@ td, th {
 .table-container {
   margin-left: 130px;
   margin-bottom: 40px;
-  overflow-x:scroll;
+  overflow-x: auto;
 }
 
 /* data variables */
@@ -285,7 +285,7 @@ td, th {
 }
 
 .dataVariables-list-container {
-  overflow-x: scroll;
+  overflow-x: auto;
 }
 
 .dataVariables-list, .shape-data-list {
