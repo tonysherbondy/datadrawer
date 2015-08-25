@@ -34,13 +34,14 @@ function pictureStore(props) {
   function updatePicture(picture, historyModifier) {
     historyModifier = historyModifier || (history => history.append(picture));
 
-    updateNotebook({ pictures: notebook.pictures.set(picture.id, picture) });
-
     if (pictureHistories.has(picture.id)) {
       pictureHistories = pictureHistories.update(picture.id, historyModifier);
     } else {
       pictureHistories = pictureHistories.set(picture.id, History.of(picture));
     }
+
+    let updatedState = pictureHistories.get(picture.id).currentState();
+    updateNotebook({ pictures: notebook.pictures.set(picture.id, updatedState) });
   }
 
   function deletePicture(picture) {
