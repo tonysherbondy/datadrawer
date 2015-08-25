@@ -62,10 +62,10 @@ class BlockInstructionItem extends React.Component {
   }
 }
 BlockInstructionItem.contextTypes = {
-    actions: React.PropTypes.shape({
-      drawingState: React.PropTypes.object.isRequired,
-      picture: React.PropTypes.object.isRequired
-    })
+  actions: React.PropTypes.shape({
+    drawingState: React.PropTypes.object.isRequired,
+    picture: React.PropTypes.object.isRequired
+  })
 };
 
 
@@ -76,6 +76,7 @@ class InstructionItem extends React.Component {
     let deleteHandler = this.props.deleteHandler;
 
     let itemClass = classNames('instruction-list-item', {
+      dragging: this.props.isDragging,
       selected: this.props.isSelected
     });
 
@@ -87,6 +88,11 @@ class InstructionItem extends React.Component {
 
     return (
       <li className={itemClass}
+        data-id={instruction.id}
+        key={instruction.id}
+        draggable={true}
+        onDragEnd={this.props.onDragEnd}
+        onDragStart={this.props.onDragStart}
         onClick={selectionHandler.bind(null, instruction)}>
         {itemDescription}
         <button type='button' className='delete-instruction'
@@ -97,18 +103,28 @@ class InstructionItem extends React.Component {
     );
   }
 }
+
 InstructionItem.contextTypes = {
-    actions: React.PropTypes.shape({
-      drawingState: React.PropTypes.object.isRequired,
-      picture: React.PropTypes.object.isRequired
-    })
+  actions: React.PropTypes.shape({
+    drawingState: React.PropTypes.object.isRequired,
+    picture: React.PropTypes.object.isRequired
+  })
+};
+
+InstructionItem.PropTypes = {
+  onDragEnd: React.PropTypes.func.isRequired,
+  onDragStart: React.PropTypes.func.isRequired
 };
 
 
 class InstructionList extends React.Component {
-
-  removeInstruction(instruction) {
-    this.context.actions.picture.removeInstruction(this.props.picture, instruction);
+  constructor(props) {
+    super(props);
+    this.state = {
+      dragInstructionId: null,
+      dropzoneParentInstruction: null,
+      dropzoneIndex: null
+    };
   }
 
   render() {
@@ -132,6 +148,9 @@ class InstructionList extends React.Component {
           <InstructionItem
             key={index}
             {...this.props}
+            isDragging={instruction.id === this.state.dragInstructionId}
+            onDragEnd={this.handleDragEnd.bind(this)}
+            onDragStart={this.handleDragStart.bind(this, instruction)}
             instruction={instruction}
             selectionHandler={this.handleItemClick.bind(this)}
             deleteHandler={this.removeInstruction.bind(this)}
@@ -143,10 +162,39 @@ class InstructionList extends React.Component {
     let listClass = this.props.className || 'instructions-list';
 
     return (
-      <ul className={listClass}>
+      <ul className={listClass} onDragOver={this.handleDragOver.bind(this)}>
         {this.props.instructions.map(getInstructionItems)}
       </ul>
     );
+  }
+
+  removeInstruction(instruction) {
+    this.context.actions.picture.removeInstruction(this.props.picture, instruction);
+  }
+
+  handleDragEnd(evt) {
+    console.log('drag end', evt);
+    //this.setState({
+        //dragInstructionId: null,
+        //dropzoneParentInstruction: null,
+        //dropzoneIndex: null
+    //});
+  }
+
+  handleDragStart(instruction, evt) {
+    evt.dataTransfer.effectAllowed = 'move';
+    evt.dataTransfer.setData('text/html', evt.currentTarget);
+    //this.setState({dragInstructionId: instruction.id});
+  }
+
+  handleDragOver(evt) {
+    evt.preventDefault();
+    if (evt.target.className === 'placeholder') {
+      return;
+    }
+    this.over = evt.target;
+    //console.log('drag over', this.over);
+    //evt.target.parentNode.insertBefore(placeholder, evt.target);
   }
 
   handleItemClick(instruction, evt) {

@@ -177,6 +177,19 @@
   font-size: 0.7em;
 }
 
+.instruction-list-item.dragging {
+  display: none;
+}
+
+.instructions-list li.placeholder {
+  background: rgb(255,240,120);
+}
+
+.instructions-list li.placeholder:before {
+  content: "Drop here";
+  color: rgb(225,210,90);
+}
+
 /*TODO: get rid of sub-instructions-list*/
 .sub-instructions-list {
   list-style-type: none;
