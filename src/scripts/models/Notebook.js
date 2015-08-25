@@ -1,11 +1,12 @@
 import {OrderedMap} from 'immutable';
+import _ from 'lodash';
 import {guid} from '../utils/utils';
 import Picture from './Picture';
 
 class Notebook {
   constructor(props = {}) {
     this.id = props.id || guid();
-    this.name = props.name || 'Untitled';
+    this.name = _.isString(props.name) ? props.name : 'Untitled';
 
     if (props.pictures) {
       if (props.pictures instanceof OrderedMap) {

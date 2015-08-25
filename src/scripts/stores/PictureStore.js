@@ -1,4 +1,5 @@
 import {OrderedMap} from 'immutable';
+import _ from 'lodash';
 
 import History from '../models/History';
 import Notebook from '../models/Notebook';
@@ -22,7 +23,7 @@ function pictureStore(props) {
     notebook = new Notebook({
       id: properties.id || notebook.id,
       ownerId: properties.ownerId || notebook.ownerId,
-      name: properties.name || notebook.name,
+      name: _.isString(properties.name) ? properties.name : notebook.name,
       pictures: properties.pictures || notebook.pictures
     });
   }
