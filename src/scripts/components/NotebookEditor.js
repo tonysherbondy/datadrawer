@@ -15,6 +15,8 @@ import DataTable from './instructions/DataTable';
 import DataVariableList from './instructions/DataVariableList';
 import InstructionList from './instructions/InstructionList';
 
+import DnDInstructionList from './instructions/DnDInstructionList';
+
 import KeyboardControlsList from './KeyboardControlsList';
 import InstructionTitle from './instructions/InstructionTitle';
 import Canvas from './drawing/Canvas';
@@ -125,6 +127,9 @@ export default class NotebookEditor extends Component {
               dataValues={variableValues} />
 
             <div className='left-panel-header'>Steps</div>
+            <DnDInstructionList />
+
+            <div className='left-panel-header'>Steps</div>
             <InstructionList
               picture={activePicture}
               currentInstruction={currentInstruction}
@@ -132,6 +137,7 @@ export default class NotebookEditor extends Component {
               variableValues={variableValues}
               shapeNameMap={shapeNameMap}
               instructions={activePicture.instructions} />
+
           </div>
 
           <div className="drawing-area-scroll-wrapper">

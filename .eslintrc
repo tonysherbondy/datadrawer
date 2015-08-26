@@ -31,6 +31,7 @@
     "new-cap": [2,
       {
         "capIsNewExceptions": ["OrderedMap", "List", "Map", "Set", "Record",
+                              "DragDropContext", "DropTarget", "DragSource",
                               "ShapesCompiler", "VariablesCompiler"]
       }
     ]
