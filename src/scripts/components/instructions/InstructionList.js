@@ -218,10 +218,10 @@ class InstructionList extends React.Component {
 }
 
 InstructionList.contextTypes = {
-    actions: React.PropTypes.shape({
-      drawingState: React.PropTypes.object.isRequired,
-      picture: React.PropTypes.object.isRequired
-    })
+  actions: React.PropTypes.shape({
+    drawingState: React.PropTypes.object.isRequired,
+    picture: React.PropTypes.object.isRequired
+  })
 };
 
 InstructionList.propTypes = {

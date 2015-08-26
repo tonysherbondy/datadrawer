@@ -18,6 +18,10 @@ export default class InstructionTreeNode {
     return 1;
   }
 
+  isSame(node) {
+    return this.id === node.id || (!this.id && !node.id);
+  }
+
   getAllInstructions() {
     let subInstructions = (this.instructions || []).map(i => i.getAllInstructions());
     return [this].concat(_.flatten(subInstructions));

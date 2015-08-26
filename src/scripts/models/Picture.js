@@ -129,8 +129,42 @@ export default class Picture {
   }
 
   insertInstructionAfterInstruction(instructionToInsert, instruction) {
+    // TODO - I think we want to add this to the beginning not end
+    if (!instruction) {
+      return this.addInstruction(instructionToInsert);
+    }
     let {parent, index} = InstructionTreeNode.findParentWithIndex(this.instructions, instruction);
     return this.insertInstructionAtIndexWithParent(index + 1, parent, instructionToInsert);
+  }
+
+  // Move the instruction to the position of the other instruction
+  moveInstructionToInstruction(instructionToMove, instruction) {
+    let {instructions} = this;
+    let {
+      parent,
+      index
+    } = InstructionTreeNode.findParentWithIndex(instructions, instruction);
+    let {
+      parent: prevParent,
+      index: prevIndex
+    } = InstructionTreeNode.findParentWithIndex(instructions, instructionToMove);
+
+    // If we are moving it within the same level to a position after the current
+    // position than we need to subtract 1 from the index to take account for the
+    // fact that this instruction will no longer be there
+    if (parent.isSame(prevParent)) {
+      let spliceParams = {$splice: [
+        [prevIndex, 1],
+        [index, 0, instructionToMove]
+      ]};
+      instructions = InstructionTreeNode.spliceParent(instructions, spliceParams, parent);
+      return this.cloneWith({instructions});
+    } else {
+      console.log('Do something for different parents');
+      return this;
+      //let picture = this.removeInstructions([instruction]);
+      //return picture.insertInstructionAtIndexWithParent(index, parent, instruction);
+    }
   }
 
   //TODO: this should be done automatically for you by the store

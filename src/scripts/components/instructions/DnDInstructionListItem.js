@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { DragSource, DropTarget } from 'react-dnd';
 
 const style = {
+  border: '1px dashed gray',
   padding: '0.5rem 1rem',
   marginBottom: '.5rem',
   backgroundColor: 'white',
@@ -43,11 +44,10 @@ class DnDInstructionListItem {
   render() {
     const { instruction, isDragging, connectDragSource, connectDropTarget } = this.props;
     const opacity = isDragging ? 0 : 1;
-    const padding = style.padding;
 
     return connectDragSource(connectDropTarget(
-      <div style={{ ...style, opacity, padding }}>
-        {instruction.id}
+      <div style={{ ...style, opacity }}>
+        {instruction.name}
       </div>
     ));
   }

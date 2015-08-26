@@ -128,6 +128,7 @@ export default class NotebookEditor extends Component {
 
             <div className='left-panel-header'>Steps</div>
             <DnDInstructionList
+              picture={activePicture}
               instructions={activePicture.instructions} />
 
             <div className='left-panel-header'>Steps</div>

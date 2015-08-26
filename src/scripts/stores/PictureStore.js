@@ -148,12 +148,16 @@ function pictureStore(props) {
       case 'INSERT_INSTRUCTION_AFTER_INSTRUCTION': {
         let {instruction, instructionToInsert, pictureId} = payload;
         let picture = notebook.pictures.find(p => p.id === pictureId);
-        if (!instruction) {
-          picture = picture.addInstruction(instructionToInsert);
-        } else {
-          picture = picture.insertInstructionAfterInstruction(
-            instructionToInsert, instruction);
-        }
+        picture = picture.insertInstructionAfterInstruction(instructionToInsert, instruction);
+        updatePicture(picture);
+        props.fluxStore.emitChange();
+        break;
+      }
+
+      case 'MOVE_INSTRUCTION_TO_INSTRUCTION': {
+        let { instructionToMove, instruction, pictureId } = payload;
+        let picture = notebook.pictures.find(p => p.id === pictureId);
+        picture = picture.moveInstructionToInstruction(instructionToMove, instruction);
         updatePicture(picture);
         props.fluxStore.emitChange();
         break;

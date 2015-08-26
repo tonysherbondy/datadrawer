@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import update from 'react/lib/update';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd/modules/backends/HTML5';
 
@@ -10,7 +9,14 @@ const style = {};
 @DragDropContext(HTML5Backend)
 class DnDInstructionList extends Component {
   static propTypes = {
-    instructions: PropTypes.array.isRequired
+    instructions: PropTypes.array.isRequired,
+    picture: PropTypes.object.isRequired
+  }
+
+  static contextTypes = {
+    actions: PropTypes.shape({
+      picture: PropTypes.object.isRequired
+    })
   }
 
   constructor(props) {
@@ -43,22 +49,12 @@ class DnDInstructionList extends Component {
 
   moveInstruction(id, afterId) {
     const { instructions } = this.state;
-
     const instruction = instructions.filter(c => c.id === id)[0];
     const afterInstruction = instructions.filter(c => c.id === afterId)[0];
-    const instructionIndex = instructions.indexOf(instruction);
-    const afterIndex = instructions.indexOf(afterInstruction);
 
-    this.setState(update(this.state, {
-      instructions: {
-        $splice: [
-          [instructionIndex, 1],
-          [afterIndex, 0, instruction]
-        ]
-      }
-    }));
+    this.context.actions.picture.moveInstructionToInstruction(
+      this.props.picture.id, instruction, afterInstruction);
   }
-
 }
 
 export default DnDInstructionList;

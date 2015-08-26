@@ -47,6 +47,15 @@ function pictureActions(pictureApi) {
       });
     },
 
+    moveInstructionToInstruction(pictureId, instructionToMove, instruction) {
+      this.dispatch({
+        actionType: 'MOVE_INSTRUCTION_TO_INSTRUCTION',
+        pictureId,
+        instruction,
+        instructionToMove
+      });
+    },
+
     addVariable(picture, variable) {
       this.dispatch({actionType: 'ADD_VARIABLE', picture, variable});
     },
