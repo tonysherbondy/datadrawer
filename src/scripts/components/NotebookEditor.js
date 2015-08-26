@@ -127,7 +127,8 @@ export default class NotebookEditor extends Component {
               dataValues={variableValues} />
 
             <div className='left-panel-header'>Steps</div>
-            <DnDInstructionList />
+            <DnDInstructionList
+              instructions={activePicture.instructions} />
 
             <div className='left-panel-header'>Steps</div>
             <InstructionList

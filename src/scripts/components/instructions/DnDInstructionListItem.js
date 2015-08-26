@@ -2,33 +2,32 @@ import React, { PropTypes } from 'react';
 import { DragSource, DropTarget } from 'react-dnd';
 
 const style = {
-  border: '1px dashed gray',
   padding: '0.5rem 1rem',
   marginBottom: '.5rem',
   backgroundColor: 'white',
   cursor: 'move'
 };
 
-const cardSource = {
+const instructionSource = {
   beginDrag(props) {
-    return { id: props.id };
+    return { id: props.instruction.id };
   }
 };
 
-const cardTarget = {
+const instructionTarget = {
   hover(props, monitor) {
     const draggedId = monitor.getItem().id;
 
-    if (draggedId !== props.id) {
-      props.moveInstruction(draggedId, props.id);
+    if (draggedId !== props.instruction.id) {
+      props.moveInstruction(draggedId, props.instruction.id);
     }
   }
 };
 
-@DropTarget('instruction', cardTarget, connect => ({
+@DropTarget('instruction', instructionTarget, connect => ({
   connectDropTarget: connect.dropTarget()
 }))
-@DragSource('instruction', cardSource, (connect, monitor) => ({
+@DragSource('instruction', instructionSource, (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
   isDragging: monitor.isDragging()
 }))
@@ -37,18 +36,18 @@ class DnDInstructionListItem {
     connectDragSource: PropTypes.func.isRequired,
     connectDropTarget: PropTypes.func.isRequired,
     isDragging: PropTypes.bool.isRequired,
-    id: PropTypes.any.isRequired,
-    text: PropTypes.string.isRequired,
+    instruction: PropTypes.object.isRequired,
     moveInstruction: PropTypes.func.isRequired
   };
 
   render() {
-    const { text, isDragging, connectDragSource, connectDropTarget } = this.props;
+    const { instruction, isDragging, connectDragSource, connectDropTarget } = this.props;
     const opacity = isDragging ? 0 : 1;
+    const padding = style.padding;
 
     return connectDragSource(connectDropTarget(
-      <div style={{ ...style, opacity }}>
-        {text}
+      <div style={{ ...style, opacity, padding }}>
+        {instruction.id}
       </div>
     ));
   }
