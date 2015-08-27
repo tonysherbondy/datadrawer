@@ -13,6 +13,14 @@ import IfInstruction from '../models/IfInstruction';
 import InstructionStepper from '../utils/InstructionStepper';
 import KeyEventManager from '../utils/KeyEventManager';
 
+function osSpecific({mac, other}) {
+  // TODO: consider better way of detecting OS
+  if (window.navigator.userAgent.indexOf('Mac') > -1) {
+    return mac;
+  }
+  return other;
+}
+
 export default class ShortcutKeyHandler {
   constructor(props) {
     this.notebook = props.notebook;
@@ -54,17 +62,6 @@ export default class ShortcutKeyHandler {
         if (drawInstruction) {
           drawInstruction.modifyProps(this.pictureActions, this.notebook.props.activePicture, {isGuide: !drawInstruction.isGuide});
         }
-      }
-    });
-
-    manager = manager.registerHandler({
-      keyCode: 78,
-      shiftKey: true,
-      keyDescription: 'Shift+n',
-      description: 'next shape',
-      group: 'modifiers',
-      keyDown: () => {
-        this.notebook.selectNextShape();
       }
     });
 
@@ -112,6 +109,17 @@ export default class ShortcutKeyHandler {
             this.pictureActions.modifyInstruction(this.notebook.props.activePicture, instruction);
           }
         }
+      }
+    });
+
+    manager = manager.registerHandler({
+      keyCode: 78,
+      shiftKey: true,
+      keyDescription: '\u21e7 + n',
+      description: 'next shape',
+      group: 'modifiers',
+      keyDown: () => {
+        this.notebook.selectNextShape();
       }
     });
 
@@ -349,8 +357,12 @@ export default class ShortcutKeyHandler {
 
     manager = manager.registerHandler({
       keyCode: 83,
-      metaKey: true,
-      keyDescription: '\u2318 + s',
+      metaKey: osSpecific({mac: true, other: false}),
+      ctrlKey: osSpecific({mac: false, other: true}),
+      keyDescription: osSpecific({
+        mac: '\u2318 + s',
+        other: 'Ctrl + s'
+      }),
       description: 'save picture',
       keyDown: (e) => {
         this.pictureActions.savePicture(
@@ -363,9 +375,13 @@ export default class ShortcutKeyHandler {
 
     manager = manager.registerHandler({
       keyCode: 83,
-      metaKey: true,
+      metaKey: osSpecific({mac: true, other: false}),
+      ctrlKey: osSpecific({mac: false, other: true}),
       shiftKey: true,
-      keyDescription: '\u2318 + \u21e7 + s',
+      keyDescription: osSpecific({
+        mac: '\u2318 + \u21e7 + s',
+        other: 'Ctrl + \u21e7 + s'
+      }),
       description: 'save notebook',
       keyDown: (e) => {
         this.pictureActions.saveNotebook(
@@ -377,8 +393,12 @@ export default class ShortcutKeyHandler {
 
     manager = manager.registerHandler({
       keyCode: 90,
-      metaKey: true,
-      keyDescription: '\u2318 + z',
+      metaKey: osSpecific({mac: true, other: false}),
+      ctrlKey: osSpecific({mac: false, other: true}),
+      keyDescription: osSpecific({
+        mac: '\u2318 + z',
+        other: 'Ctrl + z'
+      }),
       description: 'undo',
       keyDown: () => {
         console.log('undo');
@@ -388,9 +408,13 @@ export default class ShortcutKeyHandler {
 
     manager = manager.registerHandler({
       keyCode: 90,
-      metaKey: true,
+      metaKey: osSpecific({mac: true, other: false}),
+      ctrlKey: osSpecific({mac: false, other: true}),
       shiftKey: true,
-      keyDescription: '\u2318 + \u21e7 + z',
+      keyDescription: osSpecific({
+        mac: '\u2318 + \u21e7 + z',
+        other: 'Ctrl + \u21e7 + z'
+      }),
       description: 'redo',
       keyDown: () => {
         console.log('redo');
