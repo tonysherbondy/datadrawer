@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import update from 'react/lib/update';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd/modules/backends/HTML5';
 
@@ -22,13 +23,14 @@ class DnDInstructionList extends Component {
   constructor(props) {
     super(props);
     this.moveInstruction = this.moveInstruction.bind(this);
-    this.state = {
-      instructions: props.instructions
-    };
+    this.state = {};
   }
 
   render() {
-    const { instructions } = this.state;
+    let { instructions } = this.props;
+    if (this.state.spliceParams) {
+      instructions = update(instructions, {$splice: this.state.spliceParams});
+    }
 
     return (
       <div style={style}>
@@ -43,17 +45,23 @@ class DnDInstructionList extends Component {
     );
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({ instructions: nextProps.instructions });
-  }
-
   moveInstruction(id, afterId) {
-    const { instructions } = this.state;
+    const { instructions } = this.props;
     const instruction = instructions.filter(c => c.id === id)[0];
     const afterInstruction = instructions.filter(c => c.id === afterId)[0];
 
-    this.context.actions.picture.moveInstructionToInstruction(
-      this.props.picture.id, instruction, afterInstruction);
+    //this.context.actions.picture.moveInstructionToInstruction(
+      //this.props.picture.id, instruction, afterInstruction);
+
+    const index = instructions.indexOf(instruction);
+    const afterIndex = instructions.indexOf(afterInstruction);
+
+    this.setState({
+      spliceParams: [
+        [index, 1],
+        [afterIndex, 0, instruction]
+      ]
+    });
   }
 }
 

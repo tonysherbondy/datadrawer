@@ -47,7 +47,7 @@ class DnDInstructionListItem {
 
     return connectDragSource(connectDropTarget(
       <div style={{ ...style, opacity }}>
-        {instruction.name}
+        {instruction.name || 'other'}
       </div>
     ));
   }
