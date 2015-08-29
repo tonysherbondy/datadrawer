@@ -43,7 +43,7 @@ const fluxContext = { actions, stores };
   //console.log(user);
 //});
 
-Router.run(routes(), (Root, state) => {
+Router.run(routes(), Router.HistoryLocation, (Root, state) => {
   // We pass the fluxContext as props to Main component which will make it
   // available to all descendants as part of their context.
   React.render(<Root {...state} {...fluxContext} />, document.getElementById('content'));
