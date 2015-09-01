@@ -5,8 +5,12 @@ export default class DrawCanvas {
   }
 
   getJsCode() {
+    // Even canvas instructions need color properties
     return `utils.rect({\n` +
            `id: 'canvas',\n` +
+           `fill: 'rgba(0, 0, 0, 0)',\n` +
+           `stroke: '#000000',\n` +
+           `strokeWidth: 0,\n` +
            `x: 0,\n` +
            `y: 0,\n` +
            `width: ${this.width},\n` +
