@@ -45,8 +45,14 @@ export default function ShapesCompiler({
 
       render() {
         return (
-          <DecoratedComponent {...this.props} {...this.state} />
+          <DecoratedComponent ref='theComponent' {...this.props} {...this.state} />
         );
+      }
+
+      // TODO - need to access svg from above to take png of it, but wrapped
+      // component doesn't export refs of internal component.
+      getRefs() {
+        return this.refs.theComponent.refs;
       }
 
       getShapes(props) {

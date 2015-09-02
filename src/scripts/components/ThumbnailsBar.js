@@ -72,7 +72,7 @@ export default class ThumbnailsBar {
 
   getPng(picture) {
     let thumbnail = this.refs[this.getThumbnailRef(picture)];
-    let canvasNode = React.findDOMNode(thumbnail.refs.canvas);
+    let canvasNode = React.findDOMNode(thumbnail.getRefs().canvas);
     return (new SvgToPng(canvasNode)).getPng();
   }
 
