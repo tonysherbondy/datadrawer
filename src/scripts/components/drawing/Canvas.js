@@ -1,7 +1,8 @@
 import React from 'react';
 import _ from 'lodash';
-import {distanceBetweenPoints} from '../../utils/utils';
+import shallowEqual from 'react/lib/shallowEqual';
 
+import {distanceBetweenPoints} from '../../utils/utils';
 import ScaleInstruction from '../../models/ScaleInstruction';
 import ExtendPathInstruction from '../../models/ExtendPathInstruction';
 import MoveInstruction from '../../models/MoveInstruction';
@@ -303,6 +304,7 @@ class Canvas extends React.Component {
   }
 
   render() {
+    //console.log('rendering canvas for ', this.props.activePicture.id);
     return (
       <svg
         width='800'
@@ -320,6 +322,12 @@ class Canvas extends React.Component {
     );
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return !shallowEqual(nextProps, this.props)
+    // need to compare state as well since it depends on things other than props
+    // like the location of the mouse pointer
+      || !shallowEqual(nextState, this.state);
+  }
 }
 
 // TODO - shouldn't need this, convert magnet to use same naming convention
