@@ -366,6 +366,7 @@ td, th {
   position: absolute;
   background-color: rgb(244, 244, 244);
   box-shadow: 3px 3px 10px darkgray;
+  z-index: 99;
 }
 
 .close-x {
