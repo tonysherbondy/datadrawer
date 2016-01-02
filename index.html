@@ -5,23 +5,29 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+    <link rel="stylesheet" type="text/css" href="stylesheets/custom.css" media="screen">
 
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-    <title>DataDrawer by tonysherbondy</title>
+    <title>DataDrawer</title>
   </head>
 
   <body>
     <header>
       <div class="inner">
         <h1>DataDrawer</h1>
-        <h2>Create, share and edit dynamic drawings.</h2>
-        <a href="https://github.com/tonysherbondy/datadrawer" class="button"><small>View project on</small> GitHub</a>
+        <h2>
+          <a href="http://datadrawer.io">
+            Create, share and edit dynamic drawings.
+          </a>
+        </h2>
+        <!--a href="https://github.com/tonysherbondy/datadrawer" class="button"><small>View project on</small> GitHub</a-->
       </div>
     </header>
 
@@ -31,42 +37,67 @@
           <h3>
 <a id="what-is-datadrawer" class="anchor" href="#what-is-datadrawer" aria-hidden="true"><span class="octicon octicon-link"></span></a>What is DataDrawer?</h3>
 
-<p>DataDrawer is a prototype for dynamic drawings. The term dynamic drawing comes from <a href="https://vimeo.com/66085662">this talk</a> by Bret Victor and the idea is to provide a tool that mixes the flexibility and directness of a drawing tool, e.g., Adobe Illustrator, with the repeatability of a programming language, e.g., <a href="http://d3js.org/">D3 js</a>.</p>
+<p>DataDrawer is a prototype for dynamic drawings. The term dynamic drawing comes from <a href="https://vimeo.com/66085662">this talk</a> by Bret Victor. The idea is to provide a tool that mixes the flexibility and directness of a drawing tool, e.g., Adobe Illustrator, with the repeatability of a programming language, e.g., <a href="http://d3js.org/">D3 js</a>.</p>
 
 <h3>
 <a id="why-was-this-built" class="anchor" href="#why-was-this-built" aria-hidden="true"><span class="octicon octicon-link"></span></a>Why was this built?</h3>
 
-<p>The primary purpose is to explore the ideas around more direct programming interfaces for infographics. We waited around a bit to see if a tool would come out that implemented the ideas of the talk and didn't see it so we built it. We also put some effort into making it as light weight as possible with regards to sharing and forking drawings and a model like (jsbin)[<a href="https://jsbin.com/">https://jsbin.com/</a>] seemed the best to us.</p>
+<p>The primary purpose is to explore the ideas around more direct programming interfaces for infographics. We waited around a bit to see if a tool would come out that implemented the ideas we were so fired up from Bret's talk and eventually built it when nothing surfaced. We also put some effort into making it as light weight as possible with regards to sharing and forking drawings and a model like <a href="https://jsbin.com/">JS Bin</a> seemed the best to us.</p>
+
+
+<h3>
+  <a id="how" class="anchor" href="#how" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+  How do I use it?
+</h3>
+<p>
+  Admittedly, the UX has a lot of rough edges and is at too early of a stage for us to even know what the best use cases are to optimize around, but we were
+  already having a lot of fun playing with it and thought maybe some of you would too, so we shipped it anyway :). To help get you get started we started making some
+  videos that will just cover basic functionality.
+</p>
+
+<iframe src="https://player.vimeo.com/video/150544130" width="500" height="375" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
 
 <h3>
 <a id="sourcecode" class="anchor" href="#sourcecode" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sourcecode</h3>
 
-<p>Oh yeah, one other reason we built this was to explore what types of architectures could best support building a tool like this. We actually scrapped the very first attempt at this tool because the code got complicated pretty fast. The basic idea of this tool is simple enough, but getting a lot of the details right and the edge cases required some thought and elbow grease to make sure the code didn't come out a complete non-performant mess. The current architecture takes advantage of React and Immutable to address these goals.</p>
+<p>
+Oh yeah, one other reason we built this was to explore what types of architectures could best support building a tool like this.
+We actually scrapped the very first attempt at this tool because the code got complicated pretty fast.
+The basic idea of this tool is simple enough, but getting a lot of the details right and the edge cases required some thought and
+elbow grease to make sure the code didn't come out a complete non-performant mess.
+The current architecture takes advantage of React and Immutable to address these goals. So if the tool isn't fun enough for you we
+are providing the source code too so you can have some more fun swimming in that!
+</p>
 
 <h3>
 <a id="contributors" class="anchor" href="#contributors" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contributors</h3>
 
-<p>Code credits: Anthony Sherbondy (<a href="https://github.com/tonysherbondy" class="user-mention">@tonysherbondy</a>), Nhan Nguyen (<a href="https://github.com/nhan" class="user-mention">@nhan</a>), Zack Reynolds (<a href="https://github.com/reynoldz" class="user-mention">@reynoldz</a>), and Ethan Sherbondy (<a href="https://github.com/sherbondy" class="user-mention">@sherbondy</a>).
-Inspiration and UX guide: Bret Victor's <a href="https://vimeo.com/66085662">talk on Dynamic Drawing</a> and also the <a href="http://worrydream.com/DrawingDynamicVisualizationsTalkAddendum/">additional notes</a>. </p>
+<p>
+Code credits: Anthony Sherbondy (<a href="https://github.com/tonysherbondy" class="user-mention">@tonysherbondy</a>), Nhan Nguyen (<a href="https://github.com/nhan" class="user-mention">@nhan</a>), Zack Reynolds (<a href="https://github.com/reynoldz" class="user-mention">@reynoldz</a>), and Ethan Sherbondy (<a href="https://github.com/sherbondy" class="user-mention">@sherbondy</a>).
+</p>
+
+<p>
+Inspiration and UX guide: Bret Victor's <a href="https://vimeo.com/66085662">talk on Dynamic Drawing</a> and also the <a href="http://worrydream.com/DrawingDynamicVisualizationsTalkAddendum/">additional notes</a>.
+</p>
         </section>
 
         <aside id="sidebar">
-          <a href="https://github.com/tonysherbondy/datadrawer/zipball/master" class="button">
-            <small>Download</small>
-            .zip file
+          <a href="http://datadrawer.io/" class="myaside button">
+              <i class="fa fa-2x fa-fw fa-paint-brush"></i>
+              Draw now!
           </a>
-          <a href="https://github.com/tonysherbondy/datadrawer/tarball/master" class="button">
-            <small>Download</small>
-            .tar.gz file
+          <a href="https://github.com/tonysherbondy/datadrawer" class="myaside button">
+            <i class="fa fa-2x fa-fw fa-github"></i>
+            Get code.
           </a>
 
-          <p class="repo-owner"><a href="https://github.com/tonysherbondy/datadrawer"></a> is maintained by <a href="https://github.com/tonysherbondy">tonysherbondy</a>.</p>
-
-          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+          <p class="repo-owner">
+            <a href="https://github.com/tonysherbondy/datadrawer"></a>
+            is maintained by <a href="https://github.com/tonysherbondy">tonysherbondy</a>
+            and <a href="https://github.com/nhan">nhan</a>.
+          </p>
         </aside>
       </div>
     </div>
-
-  
   </body>
 </html>

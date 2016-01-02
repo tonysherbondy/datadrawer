@@ -1,0 +1,26 @@
+header h2 a {
+  color: #9ddcff;
+}
+
+header h2 a:hover {
+  color: #fff;
+}
+
+a.myaside.button {
+  padding-left: 10px;
+  padding-top: 10px;
+  width: 200px;
+  height: 70px;
+}
+
+a.myaside.button i {
+  /*margin-top: 10px;*/
+  position: relative;
+  top: 10px;
+}
+
+@media only screen and (max-width: 767px) {
+  aside#sidebar a.myaside.button {
+    display: none;
+  }
+}
