@@ -7,8 +7,9 @@ class NotebookEditorMenuBar extends React.Component {
     let userId = (<li key='userId'>{this.props.user.id}</li>);
     let listItems = [
       userId,
-      this.getMenuBarItem('Pictures', this.handleTogglePictures, isShowingPictures)
+      this.getMenuBarItem('Pictures', this.handleTogglePictures, isShowingPictures),
       //this.getMenuBarItem('Shortcuts', this.handleToggleShortcuts, isShowingShortcuts)
+      this.getMenuBarItem('Help', this.handleHelpClick)
     ];
 
     return (
@@ -61,6 +62,9 @@ class NotebookEditorMenuBar extends React.Component {
     );
   }
 
+  handleHelpClick() {
+    window.open('http://tonysherbondy.github.io/datadrawer', '_blank');
+  }
 
   handleNotebookNameChange(evt) {
     this.context.actions.picture.setNotebookName(evt.target.value);
