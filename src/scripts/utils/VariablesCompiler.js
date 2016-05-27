@@ -11,7 +11,8 @@ export default function VariablesCompiler() {
       static DecoratedComponent = DecoratedComponent;
 
       static propTypes = {
-        notebook: PropTypes.object.isRequired
+        notebook: PropTypes.object.isRequired,
+        activePicture: PropTypes.object.isRequired
       };
 
       constructor(props) {
@@ -20,7 +21,19 @@ export default function VariablesCompiler() {
       }
 
       componentWillReceiveProps(nextProps) {
-        this.setState(this.getStateFromProps(nextProps));
+        // TODO: This works currently because the only the variables for the
+        // active picture can change.  We should really move variable
+        // compilation below the notebook editor level by separating the
+        // thumbnails bar from the rest of the editor so that we can compile
+        // the variables for each picture separately.
+        // TODO: we are checking ._variables because .variables is a getter
+        // that creates a new array every time, and ._variables is an
+        // immutable.js OrderedMap. This won't be an issue once we switch
+        // over to immutable.js completely.
+        if (this.props.activePicture._variables
+            !== nextProps.activePicture._variables) {
+          this.setState(this.getStateFromProps(nextProps));
+        }
       }
 
       getStateFromProps(props) {
@@ -41,6 +54,7 @@ export default function VariablesCompiler() {
       // that variables are unique across all pictures
       // Output is a Map between variable ID and the value of that variable
       getAllDataVariableValues({ notebook }) {
+        //console.log('compiling variables for ', this.props.activePicture.id);
         let pictures = notebook.pictures.valueSeq().toArray();
         let pictureVariables = pictures.map(p => p.variables);
         let instVariables = pictures.map(p => {

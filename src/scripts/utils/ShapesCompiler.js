@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import _ from 'lodash';
 
 import {computeShapes, compileAllPicturesToJsMap} from '../utils/compileUtils';
 import ShapesMap from '../models/shapes/ShapesMap';
@@ -23,29 +24,56 @@ export default function ShapesCompiler({
         this.state = this.getStateFromProps(props);
       }
 
+      shouldRecomputeShapes(nextProps) {
+        // always recompute if the picture has changed
+        if (nextProps.activePicture !== this.props.activePicture) {
+          return true;
+        }
+
+        // if we are using the current instruction, recompute if the current
+        // instruction or loop index has changed
+        if (!ignoreCurrentInstruction) {
+          if ((nextProps.currentInstruction !== this.props.currentInstruction)
+              || (nextProps.currentLoopIndex !== this.props.currentLoopIndex)) {
+            return true;
+          }
+        }
+
+        return false;
+      }
+
       componentWillReceiveProps(nextProps) {
-        this.setState(this.getStateFromProps(nextProps));
+        if (this.shouldRecomputeShapes(nextProps)) {
+          this.setState(this.getStateFromProps(nextProps));
+        }
       }
 
       getStateFromProps(props) {
         // TODO - if there is an error compiling the shapes set a compiler
         // state and leave the shapes alone, that way the previous shapes are still
         // being rendered until error is fixed
-        let shapes, shapesCompilerStatus;
+        let shapes, shapesCompilerStatus, variableValues;
         try {
-          shapes = this.getShapes(props);
+          let shapesCompilationResult = this.compileShapes(props);
+          shapes = shapesCompilationResult.shapes;
+          variableValues = shapesCompilationResult.variableValues;
           shapesCompilerStatus = 'ok';
         } catch(err) {
           // Set to previous shapes and notify error
           shapes = this.state.shapes;
           shapesCompilerStatus = 'error';
         }
-        return { shapes, shapesCompilerStatus };
+        return { shapes, shapesCompilerStatus, variableValues };
       }
 
       render() {
+        // we want to pass down the variableValues from state
+        // create a shallow clone of props and delete variableValues so we can use spread
+        let propsWithOutVariableValues = _.clone(this.props);
+        delete propsWithOutVariableValues.variableValues;
+
         return (
-          <DecoratedComponent ref='theComponent' {...this.props} {...this.state} />
+          <DecoratedComponent ref='theComponent' {...propsWithOutVariableValues} {...this.state} />
         );
       }
 
@@ -55,9 +83,14 @@ export default function ShapesCompiler({
         return this.refs.theComponent.refs;
       }
 
-      getShapes(props) {
+      compileShapes(props) {
+        //console.log('compiling shapes for ', this.props.activePicture.id);
         let { notebook, activePicture, variableValues,
               currentInstruction, currentLoopIndex } = props;
+
+        // create a our own copy variableValues, since we'll be mutating it
+        variableValues = {data: variableValues.data};
+
         let pictures = notebook.pictures.valueSeq().toArray();
 
         let allPicturesJs = ignoreCurrentInstruction ?
@@ -65,9 +98,8 @@ export default function ShapesCompiler({
           :
           compileAllPicturesToJsMap(pictures, variableValues, activePicture, currentInstruction, currentLoopIndex);
 
-        return new ShapesMap(
-          computeShapes(activePicture, variableValues, allPicturesJs).shapes
-        );
+        let shapes = computeShapes(activePicture, variableValues, allPicturesJs).shapes;
+        return {shapes: new ShapesMap(shapes), variableValues};
       }
 
     };
